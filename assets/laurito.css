@@ -287,7 +287,58 @@ aside.card{margin:0!important;border-left:0!important;border-radius:0}
 .lc-more-menu[hidden]{display:none}
 .lc-more-menu button,.lc-more-menu a{display:block;width:100%;text-align:left;background:#fff;border:0;border-bottom:1px solid #e6eef3;padding:7px 10px;font:inherit;font-size:13px;color:var(--ink);text-decoration:none;cursor:pointer}
 .lc-more-menu button:hover,.lc-more-menu a:hover{background:#f4f8fb}
+body.ios-find #assets_view{display:none}
+body.ios-find.ios-details #assets_view{display:block}
+.ios-cities{display:grid;grid-template-columns:1fr;gap:16px;margin:24px 0 8px}
+.ios-city{display:flex;flex-direction:column;align-items:flex-start;gap:8px;text-align:left;background:#fff;border:1px solid #d5dee6;border-radius:16px;padding:28px 24px;min-height:132px;cursor:pointer}
+body.ios-find .lc-fold{display:none}
+body.ios-find.ios-details .lc-fold{display:block}
+body.ios-deal input[type="radio"],body.ios-deal input[type="checkbox"]{min-height:22px;width:22px;height:22px;background:#fff;accent-color:#021726}
+.ios-city-name{font-size:28px;font-weight:600;color:#021726;letter-spacing:0}
+.ios-city-meta{font-size:17px;color:#3d4c59}
+.ios-city-yield{font-size:15px;color:#021726}
+.ios-text{background:transparent;border:0;color:#021726;font:inherit;font-size:17px;padding:12px 0;cursor:pointer;text-decoration:underline;min-height:44px}
+.ios-progress{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.ios-progress button{background:transparent;border:0;border-bottom:2px solid transparent;color:#5c6b78;font:inherit;font-size:15px;padding:8px 4px;white-space:nowrap;min-height:44px;cursor:pointer}
+.ios-progress button.on{color:#021726;border-bottom-color:#021726;font-weight:600}
+.ios-progress button.done{color:#021726}
+.ios-step[hidden]{display:none!important}
+.ios-step{padding:8px 0 48px}
+.ios-step h1{font-size:34px;line-height:1.1;margin:8px 0 8px;font-weight:600}
+.ios-step .card{border:0;border-radius:16px;padding:20px;margin:16px 0;background:#fff}
+.ios-step .card > h2,.ios-step .card > h3,.ios-step .lead,.ios-step p.foot,#uw_percent_help,#uw_status{display:none}
+#niy_box h3{display:block;font-size:20px;margin:0 0 12px}
+.ios-hide{display:none!important}
+.ios-nav{display:flex;flex-direction:column;gap:8px;margin-top:24px}
+.ios-next{width:100%;min-height:50px;border-radius:14px;font-size:17px;background:#021726;color:#fff}
+#deal_body .btn.sec,#deal_body #uw_download{background:transparent;border:0;color:#021726;text-decoration:underline;box-shadow:none;min-height:44px}
+.ios-kicker{margin:0;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:#5c6b78}
+.ios-hero{margin:0 0 8px;font-size:64px;line-height:1;font-weight:600;letter-spacing:-.03em;color:#021726}
+.ios-support{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0 32px}
+.ios-support b{display:block;font-size:22px;font-weight:600}
+.ios-support span{color:#5c6b78;font-size:13px}
+.ios-h{font-size:20px;margin:8px 0 12px}
+#ios_result svg{width:100%;height:auto;background:#fff;border-radius:16px}
+.ios-disc{background:#fff;border-radius:16px;margin:16px 0;padding:4px 16px 12px}
+.ios-disc > summary{cursor:pointer;font-size:17px;font-weight:600;padding:16px 0;min-height:44px}
+.ios-grid{width:100%;border-collapse:collapse;font-size:15px}
+.ios-grid th,.ios-grid td{text-align:right;padding:12px 8px;border-bottom:1px solid #e6eef3}
+.ios-grid th:first-child,.ios-grid td:first-child{text-align:left}
+.ios-grid td.here{background:#9DC8ED;color:#021726;font-weight:600}
+.ios-returns div{display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid #e6eef3;font-size:17px}
+body.ios-deal .dlf small,body.ios-deal th,body.ios-deal .lc-fold > summary{text-transform:none;letter-spacing:0;font-size:13px;font-weight:500}
+body.ios-deal input,body.ios-deal select,body.ios-deal textarea{min-height:44px;border-radius:10px;border:0;background:#f2f3f5;font-size:16px;padding:10px 12px;width:100%}
+body.ios-deal select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,#021726 50%),linear-gradient(135deg,#021726 50%,transparent 50%);background-position:calc(100% - 18px) 18px,calc(100% - 12px) 18px;background-size:6px 6px,6px 6px;background-repeat:no-repeat;padding-right:32px}
+.mainb{text-transform:none;letter-spacing:0;font-size:17px}
 #distress_view > .card{border-left:0!important}
+@media(max-width:720px){
+  header{flex-wrap:wrap}
+  #status{display:none}
+  .ios-hero{font-size:48px}
+  .ios-step h1{font-size:28px}
+  .lc-screen{padding:20px 16px 4px}
+  main{padding:8px 16px 24px}
+}
 .dm-kpi{background:#fff!important;color:var(--ink)!important;border:1px solid var(--line);border-radius:0!important}
 .dm-kpi b,.dm-kpi span{color:var(--ink)!important}
 #map_legend .sw{border-color:#c5d3df}
