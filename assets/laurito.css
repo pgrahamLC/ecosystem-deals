@@ -342,3 +342,7 @@ body.ios-deal select{appearance:none;background-image:linear-gradient(45deg,tran
 .dm-kpi{background:#fff!important;color:var(--ink)!important;border:1px solid var(--line);border-radius:0!important}
 .dm-kpi b,.dm-kpi span{color:var(--ink)!important}
 #map_legend .sw{border-color:#c5d3df}
+.grade-legend{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;padding:12px 4px 4px;font-size:15px}
+.grade-legend details{flex-basis:100%}
+.grade-legend summary{cursor:pointer;color:#3d4c59;min-height:44px;display:inline-flex;align-items:center}
+.grade-legend p{margin:8px 0 0;max-width:68ch;line-height:1.45}

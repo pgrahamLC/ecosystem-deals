@@ -298,7 +298,7 @@
   }
 
   function foldLeads() {
-    const grid = document.querySelector('#distress_view .dm-grid');
+    const grid = document.getElementById('dm_map');
     if (grid && !grid.closest('details.lc-fold')) {
       fold(grid, 'Full map');
       const details = grid.closest('details.lc-fold');
