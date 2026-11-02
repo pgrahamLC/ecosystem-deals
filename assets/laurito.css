@@ -81,7 +81,7 @@ header h1,.lc-product b{color:#fff}
 }
 .mainb.on,.mainb:hover{color:var(--ink)!important}
 .mainb.on{border-bottom-color:var(--brand)!important}
-#subnav{gap:0;margin:0;padding:0 12px;min-height:0;background:#f7fafc;border-bottom:1px solid var(--line)}
+#subnav{display:none!important}
 .subb,#subnav [data-v="distress"],#subnav [data-v="sales"]{
   background:transparent!important;
   color:var(--mut)!important;
@@ -265,5 +265,29 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-
 .next,.ev li{border-radius:0}
 .pipe-empty{border-radius:0;border:1px solid var(--line)}
 
-aside.card{margin:0!important;border-left:3px solid var(--accent)!important;border-radius:0}
+aside.card{margin:0!important;border-left:0!important;border-radius:0}
+.lc-screen{background:#fff;border-bottom:1px solid var(--line);padding:8px 12px 6px}
+.lc-screen h1{margin:0;font-size:22px;font-weight:600;line-height:1.15;font-family:var(--sans)}
+.lc-kicker{margin:0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.lc-purpose{margin:2px 0 6px;max-width:68ch;color:var(--mut);font-size:13px}
+.lc-stats{display:flex;flex-wrap:wrap;gap:4px 16px}
+.lc-stats div{min-width:72px}
+.lc-stats b{display:block;font-size:16px;font-weight:600;color:var(--ink);line-height:1.2}
+.lc-stats span{display:block;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--mut)}
+.lc-decision{background:#fff;border:1px solid var(--line);border-top:3px solid var(--brand);padding:6px 10px;margin:0 0 6px}
+.lc-fold{background:#fff;border:1px solid var(--line);margin:6px 12px}
+.lc-fold > summary{cursor:pointer;padding:6px 10px;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.lc-fold > summary:hover{background:#f7fafc}
+.lc-inline{display:inline}
+.lc-inline > summary{display:inline;cursor:pointer;color:var(--mut);font-weight:600}
+.lc-inline > div,.lc-note details p{margin:4px 0 0;color:#d5e4f2}
+.lc-inline > div{color:var(--mut);font-weight:400}
+.lc-more{position:relative}
+.lc-more-menu{position:absolute;z-index:30;top:100%;left:0;min-width:200px;background:#fff;border:1px solid var(--line);box-shadow:none}
+.lc-more-menu[hidden]{display:none}
+.lc-more-menu button,.lc-more-menu a{display:block;width:100%;text-align:left;background:#fff;border:0;border-bottom:1px solid #e6eef3;padding:7px 10px;font:inherit;font-size:13px;color:var(--ink);text-decoration:none;cursor:pointer}
+.lc-more-menu button:hover,.lc-more-menu a:hover{background:#f4f8fb}
+#distress_view > .card{border-left:0!important}
+.dm-kpi{background:#fff!important;color:var(--ink)!important;border:1px solid var(--line);border-radius:0!important}
+.dm-kpi b,.dm-kpi span{color:var(--ink)!important}
 #map_legend .sw{border-color:#c5d3df}
