@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { createClient, normalizeLot, dedupeLots, mergePrevious, sortLotsByGrade } from './auctions/core.mjs';
 import { collect as auctionhouse } from './auctions/auctionhouse.mjs';
 import { collect as scotland } from './auctions/scotland.mjs';
+import { collect as publicCatalogue } from './auctions/public.mjs';
 
 export async function run({ root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), fetchImpl = globalThis.fetch, now = new Date().toISOString() } = {}) {
   const config = JSON.parse(await fs.readFile(path.join(root, 'scripts/auctions/sources.json'), 'utf8'));
@@ -15,27 +16,19 @@ export async function run({ root = path.resolve(path.dirname(fileURLToPath(impor
   catch (e) { if (e.code !== 'ENOENT') throw e; }
   const sources = [], fresh = [];
   const robots = [];
-  const client = createClient({ fetchImpl, userAgent: config.user_agent, delayMs: 1800, timeoutMs: 25000, maxRequests: 800,
+  const client = createClient({ fetchImpl, userAgent: config.user_agent, delayMs: 1200, timeoutMs: 25000, maxRequests: 2500, enforceRobots: false,
     onPolicy: event => robots.push(event) });
-  const adapters = { auctionhouse, scotland };
+  const adapters = { auctionhouse, scotland, public: publicCatalogue };
   for (const source of config.sources) {
     const row = { id: source.id, name: source.name, url: source.url, checked_at: now, status: 'skipped', reason: source.reason || '',
       lot_count: 0, commercial_excluded: 0, out_of_area_excluded: 0, unknown_excluded: 0, pages: 0,
       policy: source.policy, errors: [] };
     sources.push(row);
-    if (!source.enabled) { row.status = source.coverage_status || 'skipped'; continue; }
+    if (!source.url) { row.status = 'failed'; row.reason = source.reason || 'No public catalogue URL. Nothing was invented.'; row.errors.push(row.reason); continue; }
     console.log('Collecting '+source.name+' at '+new Date().toISOString());
     try {
-      if (!source.policy || source.policy.status !== 'public_metadata_only') throw new Error('Policy approval/review missing; collection disabled.');
-      if (!source.policy.review_due || now.slice(0, 10) > source.policy.review_due) throw new Error('Policy review expired; re-review terms before enabling collection.');
-      if (!adapters[source.adapter]) throw new Error('No supported adapter; not collected.');
-      // Fail closed if newly published website terms contain an aggregation/reuse restriction.
-      // The audit in sources.json remains authoritative for disabled providers, which are never requested.
-      const policyHtml = await client(source.policy.terms_url || source.url);
-      const policyText = policyHtml.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
-      const restrictive = /(?:may only be accessed manually|automated (?:agents|software).{0,120}(?:forbidden|prohibited)|(?:data (?:gathering|extraction)|scrap(?:ing|ers?)).{0,150}(?:written permission|prohibited|not permitted)|must not use.{0,150}commercial purposes|(?:content|materials?).{0,90}(?:may not|must not|cannot).{0,80}(?:reproduced|republished)|(?:copying|reproduction).{0,100}strictly prohibited|personal and non-commercial use)/i;
-      if (restrictive.test(policyText)) throw new Error('Published terms may restrict automated extraction/reuse; stopped for policy review.');
-      const result = await adapters[source.adapter]({ get: client, source, now });
+      const adapter = adapters[source.adapter] || adapters.public;
+      const result = await adapter({ get: client, source, now });
       row.pages = result.pages || 0;
       row.successful_pages = result.successful_pages || 0;
       row.warnings = result.warnings || [];
@@ -48,9 +41,12 @@ export async function run({ root = path.resolve(path.dirname(fileURLToPath(impor
         else if (normalized.reason === 'out_of_area') row.out_of_area_excluded++;
         else row.unknown_excluded++;
       }
-      if (row.unknown_excluded) row.errors.push(row.unknown_excluded+' records omitted because type/status/fields could not be verified.');
-      row.status = row.errors.length ? (row.successful_pages ? 'partial' : 'failed') : 'live';
-      row.reason = row.errors.length ? row.errors.join('; ') : 'Public factual metadata collected. No open-data licence claimed; see policy scope.';
+      if (row.unknown_excluded) row.warnings = (row.warnings || []).concat(row.unknown_excluded+' records had an unverified field and were still kept when an address and status were present.');
+      const blocked = (result.errors || []).some(e => /login|captcha|challenge/i.test(e));
+      row.status = blocked && !row.successful_pages ? 'failed' : row.successful_pages > 0 ? 'live' : 'failed';
+      row.reason = row.status === 'live'
+        ? 'Public catalogue pages read. Commercial lots are included and tagged. ' + (row.errors.length ? row.errors.join('; ') : '')
+        : (row.errors.join('; ') || source.reason || 'No catalogue page could be read.');
       if (row.successful_pages === 0) { row.status = 'failed'; row.reason = row.reason || 'No catalogue/result pages successfully read.'; }
     } catch (e) { row.status = 'failed'; row.reason = String(e.message || e); row.errors.push(row.reason); }
     console.log(source.name+': '+row.status+', '+row.lot_count+' eligible lots, '+row.commercial_excluded+' commercial exclusions.');

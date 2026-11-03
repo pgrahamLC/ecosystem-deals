@@ -269,6 +269,10 @@ details>summary::-webkit-details-marker{display:none}
 #auctions_view .aq-tabs{background:#e8edf2;border:0}
 #auctions_view .aq-tabs button{background:transparent}
 #auctions_view .aq-lot,#auctions_view .aq-coverage{border:0}
+.src-chips{display:flex;flex-wrap:wrap;gap:8px}
+.src-chips button{appearance:none;min-height:44px;border:0;border-radius:999px;background:var(--fill);color:var(--ink);padding:8px 14px;font-size:15px;font-weight:600}
+.src-chips button.on{background:var(--brand);color:#fff}
+.src-pill{border-radius:999px}
 #overview_view,#pipeline_view,#sales_view,#map_view,#accom_view,#overview_view main,#pipeline_view main,#sales_view main,#map_view main,#accom_view main{max-width:100%;overflow-x:hidden}
 .scroll{max-width:100%}
 

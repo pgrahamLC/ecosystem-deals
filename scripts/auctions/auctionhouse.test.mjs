@@ -17,7 +17,7 @@ test('result Sold for is achieved price, Last Bid is not; ignore iframe',async()
 test('commercial excluded; mixed-use, blocks and residential development retained',async()=>{
  const types=['Commercial Property','Mixed-use shop with upper flat','Block of Apartments','Residential Development'];
  const map={[base]:types.map((t,i)=>card(i+1,t)).join('')};for(let i=2;i<=4;i++)map[lot(i)]=detail(types[i-1]);
- const r=await run(map);assert.equal(r.commercial_excluded,1);assert.deepEqual(r.lots.map(x=>x.residential_subtype),['Mixed-use','Blocks','Development']);
+ const r=await run(map);assert.equal(r.commercial_excluded,0);assert.deepEqual(r.lots.map(x=>x.residential_subtype),['Commercial','Mixed-use','Blocks','Development']);
 });
 test('opening-only online date remains null; preserve numbered header address',async()=>{
  const online='https://online.auctionhouse.co.uk/lot/redirect/123';

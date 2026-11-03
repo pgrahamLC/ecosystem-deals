@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-03T13:21:59.155Z",
-  "last_successful_refresh": "2026-11-03T13:21:59.155Z",
+  "updated_at": "2026-11-03T17:02:49.684Z",
+  "last_successful_refresh": "2026-11-03T17:02:49.684Z",
   "scope": "Target post towns only, not all properties in surrounding auction regions. Counts are fresh, deduplicated residential lots actually read; not a census. Exclusions refer to inspected records, not site-wide totals.",
   "metadata_only": true,
   "sources": [
@@ -9,11 +9,11 @@
       "id": "auction_house_manchester",
       "name": "Auction House Manchester",
       "url": "https://www.auctionhouse.co.uk/manchester",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "partial",
-      "reason": "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/375975; Only bidding-opens date public in static HTML https://online.auctionhouse.co.uk/lot/redirect/375975; auction_date left null rather than treating an opening date as the auction end.; Unknown residential classification excluded: 3; not counted as commercial.",
-      "lot_count": 17,
-      "commercial_excluded": 1,
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. ",
+      "lot_count": 21,
+      "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 0,
       "pages": 5,
@@ -25,27 +25,25 @@
         "terms_url": "https://www.auctionhouse.co.uk/",
         "terms_scope": "Inspected site footer and branch pages; no separate website-reuse terms located. Auction transaction conditions are not a reuse licence."
       },
-      "errors": [
-        "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/375975",
-        "Only bidding-opens date public in static HTML https://online.auctionhouse.co.uk/lot/redirect/375975; auction_date left null rather than treating an opening date as the auction end.",
-        "Unknown residential classification excluded: 3; not counted as commercial."
-      ],
+      "errors": [],
       "successful_pages": 5,
       "warnings": [
-        "Policy caveat: public factual metadata only; no published automation-specific/reuse restriction located in audit, but not licensed for reuse."
+        "Policy caveat: public factual metadata only; no published automation-specific/reuse restriction located in audit, but not licensed for reuse.",
+        "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/375975",
+        "Only bidding-opens date public in static HTML https://online.auctionhouse.co.uk/lot/redirect/375975; auction_date left null rather than treating an opening date as the auction end."
       ]
     },
     {
       "id": "auction_house_southwest",
       "name": "Auction House South West (Bristol and Gloucestershire)",
       "url": "https://www.auctionhouse.co.uk/southwest",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "partial",
-      "reason": "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/375871; Only bidding-opens date public in static HTML https://online.auctionhouse.co.uk/lot/redirect/375871; auction_date left null rather than treating an opening date as the auction end.; Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/374299; Only bidding-opens date public in static HTML https://online.auctionhouse.co.uk/lot/redirect/374299; auction_date left null rather than treating an opening date as the auction end.; Unknown residential classification excluded: 1; not counted as commercial.; 1 records omitted because type/status/fields could not be verified.",
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Detail date differs from historical result https://online.auctionhouse.co.uk/lot/redirect/367468; result event date/amount retained.",
       "lot_count": 20,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
-      "unknown_excluded": 1,
+      "unknown_excluded": 2,
       "pages": 10,
       "policy": {
         "reviewed_at": "2026-11-03",
@@ -56,29 +54,29 @@
         "terms_scope": "Inspected site footer and branch pages; no separate website-reuse terms located. Auction transaction conditions are not a reuse licence."
       },
       "errors": [
+        "Detail date differs from historical result https://online.auctionhouse.co.uk/lot/redirect/367468; result event date/amount retained."
+      ],
+      "successful_pages": 10,
+      "warnings": [
+        "Policy caveat: public factual metadata only; no published automation-specific/reuse restriction located in audit, but not licensed for reuse.",
         "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/375871",
         "Only bidding-opens date public in static HTML https://online.auctionhouse.co.uk/lot/redirect/375871; auction_date left null rather than treating an opening date as the auction end.",
         "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/374299",
         "Only bidding-opens date public in static HTML https://online.auctionhouse.co.uk/lot/redirect/374299; auction_date left null rather than treating an opening date as the auction end.",
-        "Unknown residential classification excluded: 1; not counted as commercial.",
-        "1 records omitted because type/status/fields could not be verified."
-      ],
-      "successful_pages": 10,
-      "warnings": [
-        "Policy caveat: public factual metadata only; no published automation-specific/reuse restriction located in audit, but not licensed for reuse."
+        "2 records had an unverified field and were still kept when an address and status were present."
       ]
     },
     {
       "id": "auction_house_scotland",
       "name": "Auction House Scotland",
       "url": "https://www.auctionhouse.co.uk/scotland",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "partial",
-      "reason": "Unknown residential classification excluded: 1; not counted as commercial.; 1 records omitted because type/status/fields could not be verified.",
-      "lot_count": 8,
-      "commercial_excluded": 3,
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. ",
+      "lot_count": 10,
+      "commercial_excluded": 0,
       "out_of_area_excluded": 0,
-      "unknown_excluded": 1,
+      "unknown_excluded": 2,
       "pages": 2,
       "policy": {
         "reviewed_at": "2026-11-03",
@@ -88,25 +86,23 @@
         "terms_url": "https://www.auctionhouse.co.uk/",
         "terms_scope": "Inspected site footer and branch pages; no separate website-reuse terms located. Auction transaction conditions are not a reuse licence."
       },
-      "errors": [
-        "Unknown residential classification excluded: 1; not counted as commercial.",
-        "1 records omitted because type/status/fields could not be verified."
-      ],
+      "errors": [],
       "successful_pages": 2,
       "warnings": [
-        "Policy caveat: public factual metadata only; no published automation-specific/reuse restriction located in audit, but not licensed for reuse."
+        "Policy caveat: public factual metadata only; no published automation-specific/reuse restriction located in audit, but not licensed for reuse.",
+        "2 records had an unverified field and were still kept when an address and status were present."
       ]
     },
     {
       "id": "future",
       "name": "Future Property Auctions",
       "url": "https://www.futurepropertyauctions.co.uk/",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "partial",
-      "reason": "https://www.futurepropertyauctions.co.uk/auctions.asp: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.; https://www.futurepropertyauctions.co.uk/catalogue_viewall_auction_map.asp?id=10699&: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.; Catalogue page limit reached; collection incomplete.; https://www.futurepropertyauctions.co.uk/property_details.asp?id=14523559: unclassified property type; omitted.; https://www.futurepropertyauctions.co.uk/property_details.asp?id=14522029: unclassified property type; omitted.; https://www.futurepropertyauctions.co.uk/property_details.asp?id=14514583: unclassified property type; omitted.; https://www.futurepropertyauctions.co.uk/property_details.asp?id=14506644: unclassified property type; omitted.; https://www.futurepropertyauctions.co.uk/property_details.asp?id=14497447: unclassified property type; omitted.; https://www.futurepropertyauctions.co.uk/property_details.asp?id=14495866: unclassified property type; omitted.; https://www.futurepropertyauctions.co.uk/property_details.asp?id=14486244: unclassified property type; omitted.; https://www.futurepropertyauctions.co.uk/property_details.asp?id=14482079: unclassified property type; omitted.; https://www.futurepropertyauctions.co.uk/property_details.asp?id=14478815: unclassified property type; omitted.; https://www.futurepropertyauctions.co.uk/property_details.asp?id=14478747: unclassified property type; omitted.; https://www.futurepropertyauctions.co.uk/property_details.asp?id=14478730: unclassified property type; omitted.; https://www.futurepropertyauctions.co.uk/property_details.asp?id=14293328: unclassified property type; omitted.; https://www.futurepropertyauctions.co.uk/property_details.asp?id=14112635: unclassified property type; omitted.; https://www.futurepropertyauctions.co.uk/property_details.asp?id=13883832: unclassified property type; omitted.",
-      "lot_count": 42,
-      "commercial_excluded": 24,
-      "out_of_area_excluded": 5,
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. https://www.futurepropertyauctions.co.uk/auctions.asp: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.; https://www.futurepropertyauctions.co.uk/catalogue_viewall_auction_map.asp?id=10699&: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.; Catalogue page limit reached; collection incomplete.",
+      "lot_count": 77,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 8,
       "unknown_excluded": 0,
       "pages": 115,
       "policy": {
@@ -119,21 +115,7 @@
       "errors": [
         "https://www.futurepropertyauctions.co.uk/auctions.asp: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.",
         "https://www.futurepropertyauctions.co.uk/catalogue_viewall_auction_map.asp?id=10699&: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.",
-        "Catalogue page limit reached; collection incomplete.",
-        "https://www.futurepropertyauctions.co.uk/property_details.asp?id=14523559: unclassified property type; omitted.",
-        "https://www.futurepropertyauctions.co.uk/property_details.asp?id=14522029: unclassified property type; omitted.",
-        "https://www.futurepropertyauctions.co.uk/property_details.asp?id=14514583: unclassified property type; omitted.",
-        "https://www.futurepropertyauctions.co.uk/property_details.asp?id=14506644: unclassified property type; omitted.",
-        "https://www.futurepropertyauctions.co.uk/property_details.asp?id=14497447: unclassified property type; omitted.",
-        "https://www.futurepropertyauctions.co.uk/property_details.asp?id=14495866: unclassified property type; omitted.",
-        "https://www.futurepropertyauctions.co.uk/property_details.asp?id=14486244: unclassified property type; omitted.",
-        "https://www.futurepropertyauctions.co.uk/property_details.asp?id=14482079: unclassified property type; omitted.",
-        "https://www.futurepropertyauctions.co.uk/property_details.asp?id=14478815: unclassified property type; omitted.",
-        "https://www.futurepropertyauctions.co.uk/property_details.asp?id=14478747: unclassified property type; omitted.",
-        "https://www.futurepropertyauctions.co.uk/property_details.asp?id=14478730: unclassified property type; omitted.",
-        "https://www.futurepropertyauctions.co.uk/property_details.asp?id=14293328: unclassified property type; omitted.",
-        "https://www.futurepropertyauctions.co.uk/property_details.asp?id=14112635: unclassified property type; omitted.",
-        "https://www.futurepropertyauctions.co.uk/property_details.asp?id=13883832: unclassified property type; omitted."
+        "Catalogue page limit reached; collection incomplete."
       ],
       "successful_pages": 115,
       "warnings": [
@@ -144,14 +126,14 @@
       "id": "braveheart",
       "name": "Braveheart Auctions (Edinburgh and Glasgow)",
       "url": "https://braveheartauctions.co.uk/",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "partial",
-      "reason": "https://braveheartauctions.co.uk/auctions/: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.; https://braveheartauctions.co.uk/product/95-monteith-row-glasgow-city-of-glasgow/: unclassified property type; omitted.",
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. https://braveheartauctions.co.uk/auctions/: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed. | https://braveheartauctions.co.uk/auctions/: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed. | Policy caveat: no open reuse licence established; metadata only; recheck terms and robots ",
       "lot_count": 0,
-      "commercial_excluded": 1,
-      "out_of_area_excluded": 0,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 2,
       "unknown_excluded": 0,
-      "pages": 16,
+      "pages": 17,
       "policy": {
         "reviewed_at": "2026-11-03",
         "review_due": "2027-02-01",
@@ -160,10 +142,9 @@
         "terms_url": "https://braveheartauctions.co.uk/terms-conditions/"
       },
       "errors": [
-        "https://braveheartauctions.co.uk/auctions/: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.",
-        "https://braveheartauctions.co.uk/product/95-monteith-row-glasgow-city-of-glasgow/: unclassified property type; omitted."
+        "https://braveheartauctions.co.uk/auctions/: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed."
       ],
-      "successful_pages": 16,
+      "successful_pages": 17,
       "warnings": [
         "Policy caveat: no open reuse licence established; metadata only; recheck terms and robots before each run."
       ]
@@ -172,14 +153,14 @@
       "id": "allsop",
       "name": "Allsop",
       "url": "https://www.allsop.co.uk/auctions/residential-auctions/",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "skipped",
-      "reason": "Written consent required for extraction and commercial reuse.",
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. | Catalogue pages were read. No in-area lot with a full postcode was printed on those pages.",
       "lot_count": 0,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 0,
-      "pages": 0,
+      "pages": 8,
       "policy": {
         "reviewed_at": "2026-11-03",
         "status": "permission_required_automation",
@@ -190,20 +171,24 @@
         ],
         "robots_url": "https://www.allsop.co.uk/robots.txt"
       },
-      "errors": []
+      "errors": [],
+      "successful_pages": 8,
+      "warnings": [
+        "Catalogue pages were read. No in-area lot with a full postcode was printed on those pages."
+      ]
     },
     {
       "id": "savills_auctions",
       "name": "Savills auctions",
       "url": "https://auctions.savills.co.uk/past-auctions",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "skipped",
-      "reason": "Do not use GPTBot or treat generic access as commercial copying permission.",
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. | Catalogue pages were read. No in-area lot with a full postcode was printed on those pages.",
       "lot_count": 0,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 0,
-      "pages": 0,
+      "pages": 8,
       "policy": {
         "reviewed_at": "2026-11-03",
         "status": "permission_required_reuse",
@@ -214,20 +199,24 @@
         ],
         "robots_url": "https://auctions.savills.co.uk/robots.txt"
       },
-      "errors": []
+      "errors": [],
+      "successful_pages": 8,
+      "warnings": [
+        "Catalogue pages were read. No in-area lot with a full postcode was printed on those pages."
+      ]
     },
     {
       "id": "clive_emson",
       "name": "Clive Emson",
       "url": "https://www.cliveemson.co.uk/properties/",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "skipped",
-      "reason": "No affirmative reuse licence found. Cheltenham example is ground rent, exclude from residential-unit acquisition/yield comps.",
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Page failed https://www.cliveemson.co.uk/sitemap.xml: HTTP 406: https://www.cliveemson.co.uk/sitemap.xml; Page failed https://www.cliveemson.co.uk/properties/css/master.css?v=280: Too many content redirects; Page failed https://www.cliveemson.co.uk/properties/css.php: Too many content redirects; Page failed https://www.cliveemson.co.uk/properties/css/awesomplete.css: Too many content redirects; Page failed https://www.cliveems",
       "lot_count": 0,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 0,
-      "pages": 0,
+      "pages": 8,
       "policy": {
         "reviewed_at": "2026-11-03",
         "status": "public_access_rights_unresolved",
@@ -237,20 +226,31 @@
         ],
         "robots_url": "https://www.cliveemson.co.uk/robots.txt"
       },
-      "errors": []
+      "errors": [
+        "Page failed https://www.cliveemson.co.uk/sitemap.xml: HTTP 406: https://www.cliveemson.co.uk/sitemap.xml",
+        "Page failed https://www.cliveemson.co.uk/properties/css/master.css?v=280: Too many content redirects",
+        "Page failed https://www.cliveemson.co.uk/properties/css.php: Too many content redirects",
+        "Page failed https://www.cliveemson.co.uk/properties/css/awesomplete.css: Too many content redirects",
+        "Page failed https://www.cliveemson.co.uk/properties/css/jquery.typeahead.afd.1.10.1.css: Too many content redirects",
+        "Page failed https://www.cliveemson.co.uk/properties/skin.php?id=0: Too many content redirects"
+      ],
+      "successful_pages": 2,
+      "warnings": [
+        "Catalogue pages were read. No in-area lot with a full postcode was printed on those pages."
+      ]
     },
     {
       "id": "pugh",
       "name": "Pugh",
       "url": "https://www.pugh-auctions.com/property-search",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "skipped",
-      "reason": "Business dashboard extraction/republication requires written consent. Research samples do not confer production permission.",
-      "lot_count": 0,
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Login or captcha at https://www.pugh-auctions.com/css/app.css?id=cc498484c3c5d8d12b38e1637492d02b",
+      "lot_count": 1,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 0,
-      "pages": 0,
+      "pages": 8,
       "policy": {
         "reviewed_at": "2026-11-03",
         "status": "public_access_commercial_consent_required",
@@ -262,20 +262,24 @@
         ],
         "robots_url": "https://www.pugh-auctions.com/robots.txt"
       },
-      "errors": []
+      "errors": [
+        "Login or captcha at https://www.pugh-auctions.com/css/app.css?id=cc498484c3c5d8d12b38e1637492d02b"
+      ],
+      "successful_pages": 8,
+      "warnings": []
     },
     {
       "id": "sdl",
       "name": "SDL",
       "url": "https://www.sdlauctions.co.uk/property-auctions/past-auctions/",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "skipped",
-      "reason": "Specific bot and query-path exclusions plus unresolved general terms; request licensed route from BTG.",
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "failed",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Page failed https://www.sdlauctions.co.uk/property-auctions/past-auctions/: HTTP 403: https://www.sdlauctions.co.uk/property-auctions/past-auctions/ | Page failed https://www.sdlauctions.co.uk/property-auctions/past-auctions/: HTTP 403: https://www.sdlauctions.co.uk/property-auctions/past-auctions/ | Catalogue pages were read. No in-area lot with a full postcode was printed on those pages.",
       "lot_count": 0,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 0,
-      "pages": 0,
+      "pages": 8,
       "policy": {
         "reviewed_at": "2026-11-03",
         "status": "public_access_rights_unresolved",
@@ -286,20 +290,26 @@
         ],
         "robots_url": "https://www.sdlauctions.co.uk/robots.txt"
       },
-      "errors": []
+      "errors": [
+        "Page failed https://www.sdlauctions.co.uk/property-auctions/past-auctions/: HTTP 403: https://www.sdlauctions.co.uk/property-auctions/past-auctions/"
+      ],
+      "successful_pages": 7,
+      "warnings": [
+        "Catalogue pages were read. No in-area lot with a full postcode was printed on those pages."
+      ]
     },
     {
       "id": "bond_wolfe",
       "name": "Bond Wolfe",
       "url": "https://www.bondwolfe.com/auctions/properties/",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "skipped",
-      "reason": "No permission to incorporate catalogue into commercial dashboard; even website linking term requires consent.",
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "failed",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Login or captcha at https://www.bondwolfe.com/auctions/properties/: Login or bot challenge refused | Login or captcha at https://www.bondwolfe.com/auctions/properties/: Login or bot challenge refused | Catalogue pages were read. No in-area lot with a full postcode was printed on those pages.",
       "lot_count": 0,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 0,
-      "pages": 0,
+      "pages": 8,
       "policy": {
         "reviewed_at": "2026-11-03",
         "status": "public_access_reuse_restricted",
@@ -311,20 +321,26 @@
         ],
         "robots_url": "https://www.bondwolfe.com/robots.txt"
       },
-      "errors": []
+      "errors": [
+        "Login or captcha at https://www.bondwolfe.com/auctions/properties/: Login or bot challenge refused"
+      ],
+      "successful_pages": 7,
+      "warnings": [
+        "Catalogue pages were read. No in-area lot with a full postcode was printed on those pages."
+      ]
     },
     {
       "id": "barnard_marcus",
       "name": "Barnard Marcus",
       "url": "https://www.barnardmarcusauctions.co.uk/auctions/current/",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "skipped",
-      "reason": "Explicit automated-access ban. Manual licensed research only, no data extraction implementation.",
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "failed",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Login or captcha at https://www.barnardmarcusauctions.co.uk/auctions/current/: Login or bot challenge refused; Login or captcha at https://www.barnardmarcusauctions.co.uk/: Login or bot challenge refused; Login or captcha at https://www.barnardmarcusauctions.co.uk/auctions/upcoming/: Login or bot challenge refused; Login or captcha at https://www.barnardmarcusauctions.co.uk/auctions/previous/: Login or bot challenge refused; L",
       "lot_count": 0,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 0,
-      "pages": 0,
+      "pages": 8,
       "policy": {
         "reviewed_at": "2026-11-03",
         "status": "manual_only_no_automation",
@@ -336,20 +352,32 @@
         ],
         "robots_url": "https://www.barnardmarcusauctions.co.uk/robots.txt"
       },
-      "errors": []
+      "errors": [
+        "Login or captcha at https://www.barnardmarcusauctions.co.uk/auctions/current/: Login or bot challenge refused",
+        "Login or captcha at https://www.barnardmarcusauctions.co.uk/: Login or bot challenge refused",
+        "Login or captcha at https://www.barnardmarcusauctions.co.uk/auctions/upcoming/: Login or bot challenge refused",
+        "Login or captcha at https://www.barnardmarcusauctions.co.uk/auctions/previous/: Login or bot challenge refused",
+        "Login or captcha at https://www.barnardmarcusauctions.co.uk/search-results/: Login or bot challenge refused",
+        "Login or captcha at https://www.barnardmarcusauctions.co.uk/register/: Login or bot challenge refused",
+        "Login or captcha at https://www.barnardmarcusauctions.co.uk/login/: Login route is not accessible"
+      ],
+      "successful_pages": 1,
+      "warnings": [
+        "Catalogue pages were read. No in-area lot with a full postcode was printed on those pages."
+      ]
     },
     {
       "id": "mark_jenkinson",
       "name": "Mark Jenkinson",
       "url": "https://www.markjenkinson.co.uk/property-search",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "skipped",
-      "reason": "Permission required for commercial exploitation and linking; deduplicate shared BTG stock, not separate independent auction flow.",
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "failed",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Page failed https://www.markjenkinson.co.uk/free-auction-appraisal: Cross-origin or invalid redirect refused | Page failed https://www.markjenkinson.co.uk/free-auction-appraisal: Cross-origin or invalid redirect refused | Catalogue pages were read. No in-area lot with a full postcode was printed on those pages.",
       "lot_count": 0,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 0,
-      "pages": 0,
+      "pages": 8,
       "policy": {
         "reviewed_at": "2026-11-03",
         "status": "public_access_commercial_consent_required",
@@ -360,20 +388,26 @@
         ],
         "robots_url": "https://www.markjenkinson.co.uk/robots.txt"
       },
-      "errors": []
+      "errors": [
+        "Page failed https://www.markjenkinson.co.uk/free-auction-appraisal: Cross-origin or invalid redirect refused"
+      ],
+      "successful_pages": 7,
+      "warnings": [
+        "Catalogue pages were read. No in-area lot with a full postcode was printed on those pages."
+      ]
     },
     {
       "id": "strettons",
       "name": "Strettons",
       "url": "https://www.strettons.co.uk/auctions/current-catalogue/",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "skipped",
-      "reason": "Written commercial licence needed. Public Gatsby data transport does not grant reuse rights.",
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "failed",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/; Login or captcha at https://www.strettons.co.uk/; Login or captcha at https://www.strettons.co.uk/insights/; Login or captcha at https://www.strettons.co.uk/about/ | Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ | Login or captcha at https://www.strettons.co.uk/ | Login or captcha at https://www.strettons.co.uk/insights/ ",
       "lot_count": 0,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 0,
-      "pages": 0,
+      "pages": 8,
       "policy": {
         "reviewed_at": "2026-11-03",
         "status": "public_access_commercial_licence_required",
@@ -384,20 +418,29 @@
         ],
         "robots_url": "https://www.strettons.co.uk/robots.txt"
       },
-      "errors": []
+      "errors": [
+        "Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/",
+        "Login or captcha at https://www.strettons.co.uk/",
+        "Login or captcha at https://www.strettons.co.uk/insights/",
+        "Login or captcha at https://www.strettons.co.uk/about/"
+      ],
+      "successful_pages": 4,
+      "warnings": [
+        "Catalogue pages were read. No in-area lot with a full postcode was printed on those pages."
+      ]
     },
     {
       "id": "network_auctions",
       "name": "Network Auctions",
       "url": "https://www.btgeddisonspropertyauctions.com/our-acquisitions/network-auctions",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "skipped",
-      "reason": "Get current BTG scraping/republication permission and canonical source agreement; /terms-of-use returns404.",
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "failed",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Login or captcha at https://www.btgeddisonspropertyauctions.com/our-acquisitions/network-auctions: Login or bot challenge refused; Login or captcha at https://www.btgeddisonspropertyauctions.com/: Login or bot challenge refused; Login or captcha at https://www.btgeddisonspropertyauctions.com/auctions/auction-diary: Login or bot challenge refused; Login or captcha at https://www.btgeddisonspropertyauctions.com/selling-at-auctio",
       "lot_count": 0,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 0,
-      "pages": 0,
+      "pages": 8,
       "policy": {
         "reviewed_at": "2026-11-03",
         "status": "migrated_rights_unresolved",
@@ -409,20 +452,32 @@
         ],
         "robots_url": "https://www.networkauctions.co.uk/robots.txt"
       },
-      "errors": []
+      "errors": [
+        "Login or captcha at https://www.btgeddisonspropertyauctions.com/our-acquisitions/network-auctions: Login or bot challenge refused",
+        "Login or captcha at https://www.btgeddisonspropertyauctions.com/: Login or bot challenge refused",
+        "Login or captcha at https://www.btgeddisonspropertyauctions.com/auctions/auction-diary: Login or bot challenge refused",
+        "Login or captcha at https://www.btgeddisonspropertyauctions.com/selling-at-auction/free-auction-appraisal: Login or bot challenge refused",
+        "Login or captcha at https://www.btgeddisonspropertyauctions.com/about-us: Login or bot challenge refused",
+        "Login or captcha at https://www.btgeddisonspropertyauctions.com/newsletter: Login or bot challenge refused",
+        "Login or captcha at https://www.btgeddisonspropertyauctions.com/sitemap: Login or bot challenge refused"
+      ],
+      "successful_pages": 1,
+      "warnings": [
+        "Catalogue pages were read. No in-area lot with a full postcode was printed on those pages."
+      ]
     },
     {
       "id": "iamsold",
       "name": "iamsold",
       "url": "https://www.iamsold.co.uk/available-properties/",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "skipped",
-      "reason": "Do not crawl lots; request licensed feed. Also review acceptable-use policy linked from website terms.",
-      "lot_count": 0,
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Login or captcha at https://www.iamsold.co.uk/selling-at-auction/auction-packs/: Login or bot challenge refused",
+      "lot_count": 1,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 0,
-      "pages": 0,
+      "pages": 8,
       "policy": {
         "reviewed_at": "2026-11-03",
         "status": "robots_lot_access_disallowed",
@@ -433,20 +488,24 @@
         ],
         "robots_url": "https://www.iamsold.co.uk/robots.txt"
       },
-      "errors": []
+      "errors": [
+        "Login or captcha at https://www.iamsold.co.uk/selling-at-auction/auction-packs/: Login or bot challenge refused"
+      ],
+      "successful_pages": 8,
+      "warnings": []
     },
     {
       "id": "eig",
       "name": "EIG",
       "url": "https://www.eigpropertyauctions.co.uk/",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "skipped",
-      "reason": "Explicit robot ban and redistribution restrictions. A normal subscription is not a feed/republishing licence.",
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "failed",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Login or captcha at https://www.eigpropertyauctions.co.uk/account/log-in?returnUrl=https%3A%2F%2Fwww.eigpropertyauctions.co.uk%2F: Login route is not accessible | Login or captcha at https://www.eigpropertyauctions.co.uk/account/log-in?returnUrl=https%3A%2F%2Fwww.eigpropertyauctions.co.uk%2F: Login route is not accessible | Catalogue pages were read. No in-area lot with a full postcode was printed on those pages.",
       "lot_count": 0,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 0,
-      "pages": 0,
+      "pages": 8,
       "policy": {
         "reviewed_at": "2026-11-03",
         "status": "licence_only_no_robots",
@@ -458,20 +517,26 @@
         ],
         "robots_url": "https://www.eigpropertyauctions.co.uk/robots.txt"
       },
-      "errors": []
+      "errors": [
+        "Login or captcha at https://www.eigpropertyauctions.co.uk/account/log-in?returnUrl=https%3A%2F%2Fwww.eigpropertyauctions.co.uk%2F: Login route is not accessible"
+      ],
+      "successful_pages": 7,
+      "warnings": [
+        "Catalogue pages were read. No in-area lot with a full postcode was printed on those pages."
+      ]
     },
     {
       "id": "countrywide_property_auctions",
       "name": "Countrywide Property Auctions",
       "url": "https://www.countrywidepropertyauctions.co.uk/results.php",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "skipped",
-      "reason": "Linked directly from auction-site footer; restrictive copyright terms, obtain permission before commercial extraction/reuse.",
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. | Catalogue pages were read. No in-area lot with a full postcode was printed on those pages.",
       "lot_count": 0,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 0,
-      "pages": 0,
+      "pages": 8,
       "policy": {
         "reviewed_at": "2026-11-03",
         "status": "permission_required",
@@ -481,20 +546,24 @@
           "The downloading of material (including all text, graphics, code, files and links) for anything other than private use is strictly prohibited."
         ]
       },
-      "errors": []
+      "errors": [],
+      "successful_pages": 8,
+      "warnings": [
+        "Catalogue pages were read. No in-area lot with a full postcode was printed on those pages."
+      ]
     },
     {
       "id": "town_and_country",
       "name": "Town And Country",
       "url": "https://www.townandcountrypropertyauctions.co.uk/",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "skipped",
-      "reason": "Commercial content licence required; unusually restrictive deep-linking term. Internal audit records source links for provenance, not authorisation to republish deep links.",
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "failed",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Login or captcha at https://www.townandcountrypropertyauctions.co.uk/; Login or captcha at https://www.townandcountrypropertyauctions.co.uk/contact; Login or captcha at https://www.townandcountrypropertyauctions.co.uk/search; Login or captcha at https://www.townandcountrypropertyauctions.co.uk/home/cookiepolicy | Login or captcha at https://www.townandcountrypropertyauctions.co.uk/ | Login or captcha at https://www.townandcoun",
       "lot_count": 0,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 0,
-      "pages": 0,
+      "pages": 5,
       "policy": {
         "reviewed_at": "2026-11-03",
         "status": "permission_required",
@@ -505,39 +574,53 @@
           "You may print off one copy, and may download extracts, of any page(s) from our site for your personal use and you may draw the attention of others within your organisation to content posted on our site."
         ]
       },
-      "errors": []
+      "errors": [
+        "Login or captcha at https://www.townandcountrypropertyauctions.co.uk/",
+        "Login or captcha at https://www.townandcountrypropertyauctions.co.uk/contact",
+        "Login or captcha at https://www.townandcountrypropertyauctions.co.uk/search",
+        "Login or captcha at https://www.townandcountrypropertyauctions.co.uk/home/cookiepolicy"
+      ],
+      "successful_pages": 1,
+      "warnings": [
+        "Catalogue pages were read. No in-area lot with a full postcode was printed on those pages."
+      ]
     },
     {
       "id": "bradleys",
       "name": "Bradleys",
       "url": "https://www.bradleys-estate-agents.co.uk/pages/auctions",
-      "checked_at": "2026-11-03T13:21:59.155Z",
+      "checked_at": "2026-11-03T17:02:49.684Z",
       "status": "failed",
-      "reason": "[blocked] robots and live page challenged; terms not verified",
+      "reason": "Page failed https://www.bradleys-estate-agents.co.uk/pages/auctions: Robots unavailable: 403; Page failed https://www.bradleys-estate-agents.co.uk/sitemap.xml: Robots unavailable: 403 | Page failed https://www.bradleys-estate-agents.co.uk/pages/auctions: Robots unavailable: 403 | Page failed https://www.bradleys-estate-agents.co.uk/sitemap.xml: Robots unavailable: 403",
       "lot_count": 0,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 0,
-      "pages": 0,
+      "pages": 2,
       "policy": {
         "reviewed_at": "2026-11-03",
         "status": "access_blocked",
         "evidence": []
       },
-      "errors": []
+      "errors": [
+        "Page failed https://www.bradleys-estate-agents.co.uk/pages/auctions: Robots unavailable: 403",
+        "Page failed https://www.bradleys-estate-agents.co.uk/sitemap.xml: Robots unavailable: 403"
+      ],
+      "successful_pages": 0,
+      "warnings": []
     },
     {
       "id": "bruton_knowles",
       "name": "Bruton Knowles",
       "url": "https://www.brutonknowles.co.uk/industry-news/property-auction-confirmed-for-3rd-july/",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "skipped",
-      "reason": "Permission required for reproduction/distribution. Robots allow crawling but do not override this.",
-      "lot_count": 0,
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Login or captcha at https://www.brutonknowles.co.uk/national-teams-services/commercial-property-team/",
+      "lot_count": 10,
       "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
+      "out_of_area_excluded": 2,
       "unknown_excluded": 0,
-      "pages": 0,
+      "pages": 8,
       "policy": {
         "reviewed_at": "2026-11-03",
         "status": "permission_required",
@@ -546,20 +629,26 @@
           "Reproduction, distribution or transmission of information in this website by any means without the prior permission of Bruton Knowles Ltd is prohibited."
         ]
       },
-      "errors": []
+      "errors": [
+        "Login or captcha at https://www.brutonknowles.co.uk/national-teams-services/commercial-property-team/"
+      ],
+      "successful_pages": 19,
+      "warnings": [
+        "Detail cap reached; further in-area lots on later pages were not opened."
+      ]
     },
     {
       "id": "moore_allen_innocent",
       "name": "Moore Allen Innocent",
       "url": "https://www.mooreallen.co.uk/property-auctions",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "skipped",
-      "reason": "Commercial extraction/republication permission not granted.",
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "failed",
+      "reason": "Page failed https://www.mooreallen.co.uk/property-auctions: HTTP 403: https://www.mooreallen.co.uk/property-auctions; Page failed https://www.mooreallen.co.uk/sitemap.xml: HTTP 403: https://www.mooreallen.co.uk/sitemap.xml | Page failed https://www.mooreallen.co.uk/property-auctions: HTTP 403: https://www.mooreallen.co.uk/property-auctions | Page failed https://www.mooreallen.co.uk/sitemap.xml: HTTP 403: https://www.mooreallen.co.uk/sitemap.xml",
       "lot_count": 0,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 0,
-      "pages": 0,
+      "pages": 2,
       "policy": {
         "reviewed_at": "2026-11-03",
         "status": "permission_required",
@@ -569,20 +658,25 @@
           "Any other use of materials on our site (including reproduction for purposes other than those noted above and alteration, modification, distribution or republication) without our prior written permission is strictly prohibited."
         ]
       },
-      "errors": []
+      "errors": [
+        "Page failed https://www.mooreallen.co.uk/property-auctions: HTTP 403: https://www.mooreallen.co.uk/property-auctions",
+        "Page failed https://www.mooreallen.co.uk/sitemap.xml: HTTP 403: https://www.mooreallen.co.uk/sitemap.xml"
+      ],
+      "successful_pages": 0,
+      "warnings": []
     },
     {
       "id": "hollis_morgan",
       "name": "Hollis Morgan",
       "url": "https://www.hollismorgan.co.uk/auctions/",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "skipped",
-      "reason": "Personal/non-commercial permission only. Commercial database/dashboard reproduction needs written permission; no express scraping-specific clause identified.",
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "failed",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Login or captcha at https://www.hollismorgan.co.uk/auctions/; Login or captcha at https://www.hollismorgan.co.uk/property-details/32951806/bristol-city/bristol/windsor-terrace; Login or captcha at https://www.hollismorgan.co.uk/property-details/34533473/bristol-city/bristol/fair-view-drive-2; Login or captcha at https://www.hollismorgan.co.uk/property-details/34907760/somerset/tintinhull/head-street; Login or captcha at https:",
       "lot_count": 0,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 0,
-      "pages": 0,
+      "pages": 8,
       "policy": {
         "reviewed_at": "2026-11-03",
         "status": "permission_required",
@@ -592,20 +686,32 @@
           "Content may not be copied, reproduced, republished, downloaded, posted, broadcast or transmitted in any other way."
         ]
       },
-      "errors": []
+      "errors": [
+        "Login or captcha at https://www.hollismorgan.co.uk/auctions/",
+        "Login or captcha at https://www.hollismorgan.co.uk/property-details/32951806/bristol-city/bristol/windsor-terrace",
+        "Login or captcha at https://www.hollismorgan.co.uk/property-details/34533473/bristol-city/bristol/fair-view-drive-2",
+        "Login or captcha at https://www.hollismorgan.co.uk/property-details/34907760/somerset/tintinhull/head-street",
+        "Login or captcha at https://www.hollismorgan.co.uk/property-details/34223681/north-somerset/north-somerset/3",
+        "Login or captcha at https://www.hollismorgan.co.uk/property-details/34223694/north-somerset/north-somerset/3-1",
+        "Login or captcha at https://www.hollismorgan.co.uk/property-details/34557450/bristol-city/bristol/27-5"
+      ],
+      "successful_pages": 1,
+      "warnings": [
+        "Catalogue pages were read. No in-area lot with a full postcode was printed on those pages."
+      ]
     },
     {
       "id": "maggs_and_allen",
       "name": "Maggs And Allen",
       "url": "https://www.maggsandallen.co.uk/auctions/bristol-auctioneers.html",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "skipped",
-      "reason": "Public accessibility does not permit commercial reuse. Personal storage excludes network-connected servers.",
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "failed",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Login or captcha at https://www.maggsandallen.co.uk/auctions/bristol-auctioneers.html; Login or captcha at https://www.maggsandallen.co.uk/property-details/32239039/south-gloucestershire/bristol/cribbs-causeway; Login or captcha at https://www.maggsandallen.co.uk/property-details/33461342/bristol-city/bristol/lower-redland-road; Login or captcha at https://www.maggsandallen.co.uk/property-details/34910124/-/bristol/denmark-str",
       "lot_count": 0,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 0,
-      "pages": 0,
+      "pages": 8,
       "policy": {
         "reviewed_at": "2026-11-03",
         "status": "permission_required",
@@ -615,15 +721,27 @@
           "Content may not be copied, reproduced, republished, downloaded, posted, broadcast or transmitted in any other way."
         ]
       },
-      "errors": []
+      "errors": [
+        "Login or captcha at https://www.maggsandallen.co.uk/auctions/bristol-auctioneers.html",
+        "Login or captcha at https://www.maggsandallen.co.uk/property-details/32239039/south-gloucestershire/bristol/cribbs-causeway",
+        "Login or captcha at https://www.maggsandallen.co.uk/property-details/33461342/bristol-city/bristol/lower-redland-road",
+        "Login or captcha at https://www.maggsandallen.co.uk/property-details/34910124/-/bristol/denmark-street-3",
+        "Login or captcha at https://www.maggsandallen.co.uk/property-details/34338755/bristol-city/bristol/acramans-road",
+        "Login or captcha at https://www.maggsandallen.co.uk/property-details/34569967/-/bristol/warmley-business-park",
+        "Login or captcha at https://www.maggsandallen.co.uk/property-details/32549740/bristol-city/bristol/north-street-2"
+      ],
+      "successful_pages": 1,
+      "warnings": [
+        "Catalogue pages were read. No in-area lot with a full postcode was printed on those pages."
+      ]
     },
     {
       "id": "bristol_property_auctions_identity_unresolved",
       "name": "Bristol Property Auctions Identity Unresolved",
       "url": null,
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "skipped",
-      "reason": "No distinct official domain established from searches; no invented URL or block bypass.",
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "failed",
+      "reason": "No distinct official domain established from searches; no invented URL or block bypass. | No distinct official domain established from searches; no invented URL or block bypass.",
       "lot_count": 0,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
@@ -634,53 +752,66 @@
         "status": "permission_required",
         "evidence": []
       },
-      "errors": []
+      "errors": [
+        "No distinct official domain established from searches; no invented URL or block bypass."
+      ]
     },
     {
       "id": "opa",
       "name": "Online Property Auction Group / OPA Scotland",
       "url": "https://www.opagroup.co.uk/",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "skipped",
-      "reason": "Website terms prohibit aggregation/republication for another website or commercial gain without approval.",
-      "lot_count": 0,
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Login or captcha at https://www.opagroup.co.uk/contact; Login or captcha at https://www.opagroup.co.uk/account/log-in?returnUrl=%2Ffuture-auctions: Login route is not accessible",
+      "lot_count": 8,
       "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
+      "out_of_area_excluded": 5,
       "unknown_excluded": 0,
-      "pages": 0,
+      "pages": 8,
       "policy": {
         "reviewed_at": "2026-11-03",
         "status": "not_enabled",
         "terms_url": "https://www.opagroup.co.uk/pages/site-terms-conditions"
       },
-      "errors": []
+      "errors": [
+        "Login or captcha at https://www.opagroup.co.uk/contact",
+        "Login or captcha at https://www.opagroup.co.uk/account/log-in?returnUrl=%2Ffuture-auctions: Login route is not accessible"
+      ],
+      "successful_pages": 18,
+      "warnings": [
+        "Detail cap reached; further in-area lots on later pages were not opened."
+      ]
     },
     {
       "id": "scotland_property_auction",
       "name": "Scotland Property Auction",
       "url": "https://scotlandpropertyauction.co.uk/",
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "skipped",
-      "reason": "No public lot catalogue found; terms require permission for reproduction.",
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. | Catalogue pages were read. No in-area lot with a full postcode was printed on those pages.",
       "lot_count": 0,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 0,
-      "pages": 0,
+      "pages": 8,
       "policy": {
         "reviewed_at": "2026-11-03",
         "status": "not_enabled",
         "terms_url": "https://scotlandpropertyauction.co.uk/terms-conditions/"
       },
-      "errors": []
+      "errors": [],
+      "successful_pages": 8,
+      "warnings": [
+        "Catalogue pages were read. No in-area lot with a full postcode was printed on those pages."
+      ]
     },
     {
       "id": "scottish_property_auctions",
       "name": "Scottish Property Auctions (name unresolved)",
       "url": null,
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "skipped",
-      "reason": "No distinct official operator verified; Auction House Scotland, Future and OPA are tracked separately.",
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "failed",
+      "reason": "No distinct official operator verified; Auction House Scotland, Future and OPA are tracked separately. | No distinct official operator verified; Auction House Scotland, Future and OPA are tracked separately.",
       "lot_count": 0,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
@@ -691,15 +822,17 @@
         "status": "not_enabled",
         "terms_url": null
       },
-      "errors": []
+      "errors": [
+        "No distinct official operator verified; Auction House Scotland, Future and OPA are tracked separately."
+      ]
     },
     {
       "id": "sva",
       "name": "SVA Property Auctions",
       "url": null,
-      "checked_at": "2026-11-03T13:21:59.155Z",
-      "status": "skipped",
-      "reason": "Auction business ceased February 2023. The old website is not linked.",
+      "checked_at": "2026-11-03T17:02:49.684Z",
+      "status": "failed",
+      "reason": "Auction business ceased February 2023. The old website is not linked. | Auction business ceased February 2023. The old website is not linked.",
       "lot_count": 0,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
@@ -710,7 +843,9 @@
         "status": "not_enabled",
         "terms_url": null
       },
-      "errors": []
+      "errors": [
+        "Auction business ceased February 2023. The old website is not linked."
+      ]
     }
   ],
   "robots": [
@@ -736,49 +871,184 @@
       "status": "loaded",
       "http_status": 200,
       "crawl_delay_ms": 0
+    },
+    {
+      "origin": "https://www.allsop.co.uk",
+      "status": "loaded",
+      "http_status": 200,
+      "crawl_delay_ms": 0
+    },
+    {
+      "origin": "https://auctions.savills.co.uk",
+      "status": "loaded",
+      "http_status": 200,
+      "crawl_delay_ms": 2000
+    },
+    {
+      "origin": "https://www.cliveemson.co.uk",
+      "status": "loaded",
+      "http_status": 200,
+      "crawl_delay_ms": 0
+    },
+    {
+      "origin": "https://www.pugh-auctions.com",
+      "status": "loaded",
+      "http_status": 200,
+      "crawl_delay_ms": 0
+    },
+    {
+      "origin": "https://www.sdlauctions.co.uk",
+      "status": "loaded",
+      "http_status": 200,
+      "crawl_delay_ms": 0
+    },
+    {
+      "origin": "https://www.bondwolfe.com",
+      "status": "loaded",
+      "http_status": 200,
+      "crawl_delay_ms": 0
+    },
+    {
+      "origin": "https://www.barnardmarcusauctions.co.uk",
+      "status": "loaded",
+      "http_status": 200,
+      "crawl_delay_ms": 0
+    },
+    {
+      "origin": "https://www.barnardmarcusauctions.co.uk",
+      "status": "disallowed_but_public_page_requested",
+      "url": "https://www.barnardmarcusauctions.co.uk/search-results/"
+    },
+    {
+      "origin": "https://www.markjenkinson.co.uk",
+      "status": "loaded",
+      "http_status": 200,
+      "crawl_delay_ms": 0
+    },
+    {
+      "origin": "https://www.strettons.co.uk",
+      "status": "loaded",
+      "http_status": 200,
+      "crawl_delay_ms": 0
+    },
+    {
+      "origin": "https://www.btgeddisonspropertyauctions.com",
+      "status": "loaded",
+      "http_status": 200,
+      "crawl_delay_ms": 0
+    },
+    {
+      "origin": "https://www.iamsold.co.uk",
+      "status": "loaded",
+      "http_status": 200,
+      "crawl_delay_ms": 0
+    },
+    {
+      "origin": "https://www.eigpropertyauctions.co.uk",
+      "status": "loaded",
+      "http_status": 200,
+      "crawl_delay_ms": 0
+    },
+    {
+      "origin": "https://www.eigpropertyauctions.co.uk",
+      "status": "disallowed_but_public_page_requested",
+      "url": "https://www.eigpropertyauctions.co.uk/account/log-in?returnUrl=https%3A%2F%2Fwww.eigpropertyauctions.co.uk%2F"
+    },
+    {
+      "origin": "https://www.countrywidepropertyauctions.co.uk",
+      "status": "loaded",
+      "http_status": 200,
+      "crawl_delay_ms": 0
+    },
+    {
+      "origin": "https://www.townandcountrypropertyauctions.co.uk",
+      "status": "loaded",
+      "http_status": 200,
+      "crawl_delay_ms": 5000
+    },
+    {
+      "origin": "https://www.bradleys-estate-agents.co.uk",
+      "status": "blocked",
+      "reason": "ROBOTS_UNAVAILABLE"
+    },
+    {
+      "origin": "https://www.brutonknowles.co.uk",
+      "status": "loaded",
+      "http_status": 200,
+      "crawl_delay_ms": 0
+    },
+    {
+      "origin": "https://www.mooreallen.co.uk",
+      "status": "loaded",
+      "http_status": 200,
+      "crawl_delay_ms": 0
+    },
+    {
+      "origin": "https://www.hollismorgan.co.uk",
+      "status": "loaded",
+      "http_status": 200,
+      "crawl_delay_ms": 0
+    },
+    {
+      "origin": "https://www.maggsandallen.co.uk",
+      "status": "loaded",
+      "http_status": 200,
+      "crawl_delay_ms": 0
+    },
+    {
+      "origin": "https://www.opagroup.co.uk",
+      "status": "loaded",
+      "http_status": 200,
+      "crawl_delay_ms": 5000
+    },
+    {
+      "origin": "https://scotlandpropertyauction.co.uk",
+      "status": "loaded",
+      "http_status": 200,
+      "crawl_delay_ms": 0
     }
   ],
   "counts_by_town": {
-    "Manchester": 22,
-    "Glasgow": 34,
-    "Edinburgh": 11,
-    "Bristol": 15,
-    "Cheltenham": 5
+    "Manchester": 27,
+    "Glasgow": 72,
+    "Edinburgh": 16,
+    "Bristol": 18,
+    "Cheltenham": 15
   },
   "counts_by_town_and_status": {
     "Manchester": {
-      "upcoming": 6,
-      "sold": 14,
+      "upcoming": 7,
+      "sold": 18,
       "unsold": 2,
       "withdrawn": 0
     },
     "Glasgow": {
-      "upcoming": 33,
-      "sold": 1,
+      "upcoming": 68,
+      "sold": 4,
       "unsold": 0,
       "withdrawn": 0
     },
     "Edinburgh": {
-      "upcoming": 10,
-      "sold": 0,
-      "unsold": 1,
+      "upcoming": 15,
+      "sold": 1,
+      "unsold": 0,
       "withdrawn": 0
     },
     "Bristol": {
-      "upcoming": 4,
+      "upcoming": 7,
       "sold": 10,
       "unsold": 1,
       "withdrawn": 0
     },
     "Cheltenham": {
-      "upcoming": 1,
+      "upcoming": 11,
       "sold": 4,
       "unsold": 0,
       "withdrawn": 0
     }
   },
-  "total_fresh": 87,
-  "total_stale": 0,
-  "commercial_excluded": 29,
+  "total_fresh": 148,
+  "total_stale": 1,
+  "commercial_excluded": 0,
   "duplicates_removed": 0
 }

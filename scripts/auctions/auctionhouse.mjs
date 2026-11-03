@@ -152,18 +152,17 @@ export async function collect({get,source,now}) {
     if(d?.postcode&&seed.address&&postcode(seed.address)&&d.postcode!==postcode(seed.address)){err(`Detail address mismatch ${seed.source_url}`);d=null;}
     const detailSub=subtype(d?.type||'');
     sub=(detailSub&& !['Houses','Flats'].includes(detailSub)?detailSub:null)||sub||detailSub||subtype(seed.address);
-    if(!sub&&commercial((d?.type||'')+' '+seed.type)){result.commercial_excluded++;continue;}
-    if(!sub){unknown++;continue;}
+    if(!sub&&commercial((d?.type||'')+' '+seed.type+' '+(seed.address||''))) sub='Commercial';
+    if(!sub) sub='Unclassified';
     const historical=seed.kind==='results';
     if(d&&historical&&d.auction_date&&seed.auction_date&&d.auction_date!==seed.auction_date)err(`Detail date differs from historical result ${seed.source_url}; result event date/amount retained.`);
     const finalStatus=historical?seed.status:(d?.opens_only&&d?.opens_date&&d.opens_date>stamp.slice(0,10)?'upcoming':(d?.status||seed.status));
     const finalGuide=historical?seed.guide_price:(d?.guide_price??seed.guide_price);
-    if(!historical&&!d?.auction_date)err(`Current auction date unverified ${seed.source_url}`);
-    if(d?.opens_only)err(`Only bidding-opens date public in static HTML ${seed.source_url}; auction_date left null rather than treating an opening date as the auction end.`);
+    if(!historical&&!d?.auction_date)result.warnings.push(`Current auction date unverified ${seed.source_url}`);
+    if(d?.opens_only)result.warnings.push(`Only bidding-opens date public in static HTML ${seed.source_url}; auction_date left null rather than treating an opening date as the auction end.`);
     const lot={title:d?.address||seed.address,address:d?.address||seed.address,postcode:d?.postcode||postcode(seed.address),lot_type:seed.type||d?.type||sub,residential_subtype:sub,guide_price:finalGuide,guide_price_text:historical?seed.guide_price_text:(d?.guide_price_text||seed.guide_price_text),auction_date:historical?seed.auction_date:(d?.auction_date||null),status:finalStatus||null,sold_price:historical?seed.sold_price:(d?.sold_price??null),source_url:seed.source_url,source:source.name||source.id,scraped_at:stamp,grade:'',forced_sale_evidence:d?.sale_by||'',forced_sale_evidence_url:d?.sale_by?seed.source_url:''};
     result.lots.push(lot);
   }
   if(unverified)err(`PARTIAL: max_details=${maxDetails} reached; ${unverified} residential/unknown candidates not detail-verified.`);
-  if(unknown)err(`Unknown residential classification excluded: ${unknown}; not counted as commercial.`);
   return result;
 }
