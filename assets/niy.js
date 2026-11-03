@@ -79,9 +79,9 @@
     if (/mixed/i.test(t)) return 'Mixed-use';
     if (/hmo/i.test(t)) return 'HMO';
     if (/development|conversion|building plot/i.test(t)) return 'Development';
-    if (/block of|apartment block|\d+\s+flats\b|\d+\s+apartments\b/i.test(t)) return 'Resi block';
+    if (/portfolio|resi block|block of|apartment block|\d+\s+flats\b|\d+\s+apartments\b/i.test(t)) return 'Resi block';
     if (/studio|\bflat\b|apartment|maisonette/i.test(t)) return 'Flats';
-    if (/house|terrace|semi|detached|bungalow|cottage/i.test(t)) return 'Houses';
+    if (/house|terrace|semi|detached|bungalow|cottage|dwelling|residential/i.test(t)) return 'Houses';
     return 'Other residential';
   }
 
