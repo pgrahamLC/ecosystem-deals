@@ -36,7 +36,8 @@ export async function collect({ source, now, fetchImpl = globalThis.fetch }) {
             const featureText = Array.isArray(row.features) ? row.features.map(item => item && (item.value || item)).join(' ') : row.features;
             const words = [row.property_byline, row.allsop_propertybyline, row.main_byline, featureText, row.live_addendum, row.rent_notes].filter(Boolean).join(' ');
             const tag = saleTag(words);
-            const status = /withdrawn/i.test(row.lot_status || '') ? 'withdrawn' : /sold/i.test(row.lot_status || '') ? 'sold' : 'upcoming';
+            const rawStatus = String(row.lot_status || '');
+            const status = /withdrawn/i.test(rawStatus) ? 'withdrawn' : /\bunsold\b/i.test(rawStatus) ? 'unsold' : /\bsold\b/i.test(rawStatus) ? 'sold' : 'upcoming';
             const version = row.website_allsop_lot_version_id || row.version_id || row.allsop_lotid;
             result.lots.push({
               title: address,
@@ -77,7 +78,7 @@ export async function collect({ source, now, fetchImpl = globalThis.fetch }) {
 }
 
 async function enrich(result, fetchImpl) {
-  const queue = result.lots.filter(lot => lot.allsop_lotid);
+  const queue = result.lots.filter(lot => lot.allsop_lotid && (lot.status === 'upcoming' || lot.status === 'unsold'));
   let cursor = 0;
   async function one(lot) {
     const response = await fetchImpl('https://www.allsop.co.uk/api/lot/' + lot.allsop_lotid + '?react', { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; LauritoAuctionsBot/1.0)', Accept: 'application/json' } });

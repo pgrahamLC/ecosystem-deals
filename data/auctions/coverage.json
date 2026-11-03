@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-03T20:58:01.279Z",
+  "updated_at": "2026-11-03T21:54:13.103Z",
   "last_successful_refresh": "2026-11-03T20:06:29.686Z",
   "scope": "Target post towns only, not all properties in surrounding auction regions. Counts are fresh, deduplicated residential lots actually read; not a census. Exclusions refer to inspected records, not site-wide totals.",
   "metadata_only": true,
@@ -38,6 +38,10 @@
       },
       "by_tag": {
         "Auction": 46
+      },
+      "current_count": 6,
+      "current_by_town": {
+        "Manchester": 6
       }
     },
     {
@@ -78,6 +82,11 @@
       },
       "by_tag": {
         "Auction": 36
+      },
+      "current_count": 6,
+      "current_by_town": {
+        "Bristol": 5,
+        "Cheltenham": 1
       }
     },
     {
@@ -112,6 +121,11 @@
       },
       "by_tag": {
         "Auction": 13
+      },
+      "current_count": 12,
+      "current_by_town": {
+        "Glasgow": 8,
+        "Edinburgh": 4
       }
     },
     {
@@ -150,6 +164,13 @@
       },
       "by_tag": {
         "Auction": 85
+      },
+      "current_count": 85,
+      "current_by_town": {
+        "Glasgow": 64,
+        "Edinburgh": 13,
+        "Manchester": 6,
+        "Bristol": 2
       }
     },
     {
@@ -181,7 +202,9 @@
       },
       "by_tag": {
         "Auction": 1
-      }
+      },
+      "current_count": 0,
+      "current_by_town": {}
     },
     {
       "id": "allsop",
@@ -223,20 +246,26 @@
         "Auction": 2491,
         "Receiver": 140,
         "Lender": 42
+      },
+      "current_count": 25,
+      "current_by_town": {
+        "Manchester": 20,
+        "Cheltenham": 3,
+        "Bristol": 2
       }
     },
     {
       "id": "savills_auctions",
       "name": "Savills auctions",
       "url": "https://auctions.savills.co.uk/past-auctions",
-      "checked_at": "2026-11-03T20:06:29.686Z",
+      "checked_at": "2026-11-03T21:54:13.103Z",
       "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them.",
+      "reason": "Read 100 lots from 2 upcoming Savills catalogues and each catalogue location search. 0 were in Manchester, Glasgow, Edinburgh, Bristol or Cheltenham. 26 January 2027 is on the calendar with no catalogue link. Spot-check found \"76 Harley Street, Marylebone\" on https://auctions.savills.co.uk/auctions/24-november-2026-246/76-harley-street-marylebone-london-w1g-7hh-25334 Spot-check found \"Cobalt 12, Cobalt Business P\" on https://auctions.savills.co.uk/auctions/24-november-2026-246/cobalt-12-cobalt-business-park-newcastle-upon-tyne-ne27-0qw-25622 Spot-check found \"Site 4, Aviation Business Pa\" on https://auctions.savills.co.uk/auctions/24-november-2026-246/site-4-aviation-business-park-enterprise-way-bournemouth-international-airport-christchurch-bh23-6nw-25795",
       "lot_count": 0,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 0,
-      "pages": 4,
+      "pages": 49,
       "policy": {
         "reviewed_at": "2026-11-03",
         "status": "permission_required_reuse",
@@ -248,13 +277,15 @@
         "robots_url": "https://auctions.savills.co.uk/robots.txt"
       },
       "errors": [],
-      "successful_pages": 4,
+      "successful_pages": 49,
       "warnings": [
         "Rendered pages were read. No Manchester, Glasgow, Edinburgh, Bristol or Cheltenham/Gloucestershire lot was found in the visible text or the JSON those pages requested.",
         "Public pages were read. No in-area lot with a street address or full postcode was on them."
       ],
       "by_town": {},
-      "by_tag": {}
+      "by_tag": {},
+      "current_count": 0,
+      "current_by_town": {}
     },
     {
       "id": "clive_emson",
@@ -287,7 +318,9 @@
       },
       "by_tag": {
         "Auction": 1
-      }
+      },
+      "current_count": 0,
+      "current_by_town": {}
     },
     {
       "id": "pugh",
@@ -323,6 +356,11 @@
       },
       "by_tag": {
         "Auction": 98
+      },
+      "current_count": 96,
+      "current_by_town": {
+        "Manchester": 94,
+        "Cheltenham": 2
       }
     },
     {
@@ -356,7 +394,9 @@
         "Public pages were read. No in-area lot with a street address or full postcode was on them."
       ],
       "by_town": {},
-      "by_tag": {}
+      "by_tag": {},
+      "current_count": 0,
+      "current_by_town": {}
     },
     {
       "id": "bond_wolfe",
@@ -390,7 +430,9 @@
         "Public pages were read. No in-area lot with a street address or full postcode was on them."
       ],
       "by_town": {},
-      "by_tag": {}
+      "by_tag": {},
+      "current_count": 0,
+      "current_by_town": {}
     },
     {
       "id": "barnard_marcus",
@@ -432,6 +474,12 @@
       },
       "by_tag": {
         "Auction": 24
+      },
+      "current_count": 24,
+      "current_by_town": {
+        "Manchester": 13,
+        "Bristol": 5,
+        "Cheltenham": 6
       }
     },
     {
@@ -464,6 +512,10 @@
       },
       "by_tag": {
         "Auction": 3
+      },
+      "current_count": 3,
+      "current_by_town": {
+        "Manchester": 3
       }
     },
     {
@@ -502,7 +554,9 @@
         "Public pages were read. No in-area lot with a street address or full postcode was on them."
       ],
       "by_town": {},
-      "by_tag": {}
+      "by_tag": {},
+      "current_count": 0,
+      "current_by_town": {}
     },
     {
       "id": "network_auctions",
@@ -536,7 +590,9 @@
         "Public pages were read. No in-area lot with a street address or full postcode was on them."
       ],
       "by_town": {},
-      "by_tag": {}
+      "by_tag": {},
+      "current_count": 0,
+      "current_by_town": {}
     },
     {
       "id": "iamsold",
@@ -567,7 +623,9 @@
         "Public pages were read. No in-area lot with a street address or full postcode was on them."
       ],
       "by_town": {},
-      "by_tag": {}
+      "by_tag": {},
+      "current_count": 0,
+      "current_by_town": {}
     },
     {
       "id": "eig",
@@ -599,7 +657,9 @@
         "Public pages were read. No in-area lot with a street address or full postcode was on them."
       ],
       "by_town": {},
-      "by_tag": {}
+      "by_tag": {},
+      "current_count": 0,
+      "current_by_town": {}
     },
     {
       "id": "countrywide_property_auctions",
@@ -632,6 +692,10 @@
       },
       "by_tag": {
         "Auction": 4
+      },
+      "current_count": 3,
+      "current_by_town": {
+        "Manchester": 3
       }
     },
     {
@@ -669,6 +733,13 @@
       },
       "by_tag": {
         "Auction": 15
+      },
+      "current_count": 13,
+      "current_by_town": {
+        "Glasgow": 4,
+        "Manchester": 6,
+        "Cheltenham": 1,
+        "Bristol": 2
       }
     },
     {
@@ -695,7 +766,9 @@
       "successful_pages": 0,
       "warnings": [],
       "by_town": {},
-      "by_tag": {}
+      "by_tag": {},
+      "current_count": 0,
+      "current_by_town": {}
     },
     {
       "id": "bruton_knowles",
@@ -726,6 +799,11 @@
       },
       "by_tag": {
         "Auction": 23
+      },
+      "current_count": 23,
+      "current_by_town": {
+        "Cheltenham": 22,
+        "Bristol": 1
       }
     },
     {
@@ -762,7 +840,9 @@
       "successful_pages": 0,
       "warnings": [],
       "by_town": {},
-      "by_tag": {}
+      "by_tag": {},
+      "current_count": 0,
+      "current_by_town": {}
     },
     {
       "id": "hollis_morgan",
@@ -796,6 +876,11 @@
       },
       "by_tag": {
         "Auction": 6
+      },
+      "current_count": 6,
+      "current_by_town": {
+        "Bristol": 4,
+        "Cheltenham": 2
       }
     },
     {
@@ -826,7 +911,9 @@
         "Public pages were read. No in-area lot with a street address or full postcode was on them."
       ],
       "by_town": {},
-      "by_tag": {}
+      "by_tag": {},
+      "current_count": 0,
+      "current_by_town": {}
     },
     {
       "id": "bristol_property_auctions_identity_unresolved",
@@ -849,7 +936,9 @@
         "No distinct official domain established from searches; no invented URL or block bypass."
       ],
       "by_town": {},
-      "by_tag": {}
+      "by_tag": {},
+      "current_count": 0,
+      "current_by_town": {}
     },
     {
       "id": "opa",
@@ -880,6 +969,12 @@
       },
       "by_tag": {
         "Auction": 15
+      },
+      "current_count": 14,
+      "current_by_town": {
+        "Glasgow": 12,
+        "Edinburgh": 1,
+        "Manchester": 1
       }
     },
     {
@@ -906,7 +1001,9 @@
         "Public pages were read. No in-area lot with a street address or full postcode was on them."
       ],
       "by_town": {},
-      "by_tag": {}
+      "by_tag": {},
+      "current_count": 0,
+      "current_by_town": {}
     },
     {
       "id": "scottish_property_auctions",
@@ -929,7 +1026,9 @@
         "No distinct official operator verified; Auction House Scotland, Future and OPA are tracked separately."
       ],
       "by_town": {},
-      "by_tag": {}
+      "by_tag": {},
+      "current_count": 0,
+      "current_by_town": {}
     },
     {
       "id": "sva",
@@ -952,7 +1051,9 @@
         "Auction business ceased February 2023. The old website is not linked."
       ],
       "by_town": {},
-      "by_tag": {}
+      "by_tag": {},
+      "current_count": 0,
+      "current_by_town": {}
     }
   ],
   "robots": [

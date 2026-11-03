@@ -8,6 +8,7 @@ import { collect as scotland } from './auctions/scotland.mjs';
 import { collect as publicCatalogue } from './auctions/public.mjs';
 import { collect as renderCatalogue, closeBrowser } from './auctions/render.mjs';
 import { collect as allsopCatalogue } from './auctions/allsop.mjs';
+import { collect as savillsCatalogue } from './auctions/savills.mjs';
 import { collect as catalogue } from './auctions/catalogues.mjs';
 
 export async function run({ root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), fetchImpl = globalThis.fetch, now = new Date().toISOString() } = {}) {
@@ -21,7 +22,7 @@ export async function run({ root = path.resolve(path.dirname(fileURLToPath(impor
   const robots = [];
   const client = createClient({ fetchImpl, userAgent: config.user_agent, delayMs: 700, timeoutMs: 25000, maxRequests: 5000, maxBytes: 5_000_000, enforceRobots: false,
     onPolicy: event => robots.push(event) });
-  const adapters = { auctionhouse, scotland, public: publicCatalogue, render: renderCatalogue, allsop: allsopCatalogue, catalogue };
+  const adapters = { auctionhouse, scotland, public: publicCatalogue, render: renderCatalogue, allsop: allsopCatalogue, catalogue, savills: savillsCatalogue };
   for (const source of config.sources) {
     const row = { id: source.id, name: source.name, url: source.url, checked_at: now, status: 'skipped', reason: source.reason || '',
       lot_count: 0, commercial_excluded: 0, out_of_area_excluded: 0, unknown_excluded: 0, pages: 0,

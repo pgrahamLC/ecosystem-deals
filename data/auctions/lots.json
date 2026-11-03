@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-03T20:58:01.279Z",
+  "updated_at": "2026-11-03T21:54:13.103Z",
   "attempted_at": "2026-11-03T20:06:29.686Z",
   "lots": [
     {
@@ -4496,104 +4496,6 @@
         }
       ],
       "id": "lot-95e689e04d2d08f0"
-    },
-    {
-      "address": "1|-2gMnt.E 130Lt.E rb0 Dd0 dVb0 b6p0 TX0 EoB0 LL0 gnd0 rz0 43d0 AL0 1Nd0 XX0 1Cp0 pz0 dEp0 4mn0 SyN0 AL0 1Nd0 wn0 1FB",
-      "postcode": "WN0 1FB",
-      "town": "Manchester",
-      "city": "Manchester",
-      "residential_subtype": "Unclassified",
-      "lot_type": "1|-2gMnt.E 130Lt.E rb0 Dd0 dVb0 b6p0 TX0 EoB0 LL0 gnd0 rz0 43d0 AL0 1Nd0 XX0 1Cp0 pz0 dEp0 4mn0 SyN0 AL0 1Nd0 wn0 1FB",
-      "property_type": "Unclassified",
-      "title": "1|-2gMnt.E 130Lt.E rb0 Dd0 dVb0 b6p0 TX0 EoB0 LL0 gnd0 rz0 43d0 AL0 1Nd0 XX0 1Cp0 pz0 dEp0 4mn0 SyN0 AL0 1Nd0 wn0 1FB",
-      "status": "upcoming",
-      "auction_date": null,
-      "source": "Savills auctions",
-      "source_url": "https://auctions.savills.co.uk/past-auctions",
-      "sources": [
-        {
-          "name": "Savills auctions",
-          "url": "https://auctions.savills.co.uk/past-auctions"
-        }
-      ],
-      "scraped_at": "2026-11-03T19:27:43.857Z",
-      "stale": true,
-      "guide_price": null,
-      "guide_price_text": null,
-      "opening_bid": null,
-      "current_bid": null,
-      "sold_price": null,
-      "grade": null,
-      "grade_evidence": null,
-      "grade_evidence_url": null,
-      "grade_verified": false,
-      "sale_tag": "Auction",
-      "sale_tag_evidence": null,
-      "provenance": [
-        {
-          "source": "Savills auctions",
-          "source_url": "https://auctions.savills.co.uk/past-auctions",
-          "scraped_at": "2026-11-03T19:27:43.857Z",
-          "status": "upcoming",
-          "auction_date": null,
-          "guide_price": null,
-          "opening_bid": null,
-          "current_bid": null,
-          "sold_price": null
-        }
-      ],
-      "id": "lot-2e5f02a9b5d36979",
-      "stale_reason": "missing_from_successful_crawl",
-      "stale_checked_at": "2026-11-03T20:06:29.686Z"
-    },
-    {
-      "address": "10 -20|01213454545454545454545454545454545454545454545454543|-2GJdu 1Ajdu 1cL0 1SqL0 9Io0 16P0 1nX0 11B0 1qL0 WN0 1qL",
-      "postcode": "WN0 1QL",
-      "town": "Manchester",
-      "city": "Manchester",
-      "residential_subtype": "Unclassified",
-      "lot_type": "10 -20|01213454545454545454545454545454545454545454545454543|-2GJdu 1Ajdu 1cL0 1SqL0 9Io0 16P0 1nX0 11B0 1qL0 WN0 1qL",
-      "property_type": "Unclassified",
-      "title": "10 -20|01213454545454545454545454545454545454545454545454543|-2GJdu 1Ajdu 1cL0 1SqL0 9Io0 16P0 1nX0 11B0 1qL0 WN0 1qL",
-      "status": "upcoming",
-      "auction_date": null,
-      "source": "Savills auctions",
-      "source_url": "https://auctions.savills.co.uk/past-auctions",
-      "sources": [
-        {
-          "name": "Savills auctions",
-          "url": "https://auctions.savills.co.uk/past-auctions"
-        }
-      ],
-      "scraped_at": "2026-11-03T19:27:43.857Z",
-      "stale": true,
-      "guide_price": null,
-      "guide_price_text": null,
-      "opening_bid": null,
-      "current_bid": null,
-      "sold_price": null,
-      "grade": null,
-      "grade_evidence": null,
-      "grade_evidence_url": null,
-      "grade_verified": false,
-      "sale_tag": "Auction",
-      "sale_tag_evidence": null,
-      "provenance": [
-        {
-          "source": "Savills auctions",
-          "source_url": "https://auctions.savills.co.uk/past-auctions",
-          "scraped_at": "2026-11-03T19:27:43.857Z",
-          "status": "upcoming",
-          "auction_date": null,
-          "guide_price": null,
-          "opening_bid": null,
-          "current_bid": null,
-          "sold_price": null
-        }
-      ],
-      "id": "lot-3ab8ccfa562837a2",
-      "stale_reason": "missing_from_successful_crawl",
-      "stale_checked_at": "2026-11-03T20:06:29.686Z"
     },
     {
       "address": "10 Alderley Road, Wilmslow, Cheshire, SK9 1PD",
@@ -128471,55 +128373,6 @@
         }
       ],
       "id": "lot-e2974ab920b65fb8"
-    },
-    {
-      "address": "eoul|LMT KST JST KST KDT KDT|-8r.Q -8u -90 -90 -9u -a0|0123141414141414135353|-2um8r.Q 97XV.Q 1m1zu kKo0 2I0u OL0 1FB",
-      "postcode": "OL0 1FB",
-      "town": "Manchester",
-      "city": "Manchester",
-      "residential_subtype": "Unclassified",
-      "lot_type": "eoul|LMT KST JST KST KDT KDT|-8r.Q -8u -90 -90 -9u -a0|0123141414141414135353|-2um8r.Q 97XV.Q 1m1zu kKo0 2I0u OL0 1FB",
-      "property_type": "Unclassified",
-      "title": "eoul|LMT KST JST KST KDT KDT|-8r.Q -8u -90 -90 -9u -a0|0123141414141414135353|-2um8r.Q 97XV.Q 1m1zu kKo0 2I0u OL0 1FB",
-      "status": "upcoming",
-      "auction_date": null,
-      "source": "Savills auctions",
-      "source_url": "https://auctions.savills.co.uk/past-auctions",
-      "sources": [
-        {
-          "name": "Savills auctions",
-          "url": "https://auctions.savills.co.uk/past-auctions"
-        }
-      ],
-      "scraped_at": "2026-11-03T19:27:43.857Z",
-      "stale": true,
-      "guide_price": null,
-      "guide_price_text": null,
-      "opening_bid": null,
-      "current_bid": null,
-      "sold_price": null,
-      "grade": null,
-      "grade_evidence": null,
-      "grade_evidence_url": null,
-      "grade_verified": false,
-      "sale_tag": "Auction",
-      "sale_tag_evidence": null,
-      "provenance": [
-        {
-          "source": "Savills auctions",
-          "source_url": "https://auctions.savills.co.uk/past-auctions",
-          "scraped_at": "2026-11-03T19:27:43.857Z",
-          "status": "upcoming",
-          "auction_date": null,
-          "guide_price": null,
-          "opening_bid": null,
-          "current_bid": null,
-          "sold_price": null
-        }
-      ],
-      "id": "lot-b8aa298668866307",
-      "stale_reason": "missing_from_successful_crawl",
-      "stale_checked_at": "2026-11-03T20:06:29.686Z"
     },
     {
       "address": "Eton House, 6 Wellington Street, Cheltenham, Gloucestershire, GL50 1XY",

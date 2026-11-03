@@ -139,7 +139,7 @@
     {
       "id": "savills_auctions",
       "name": "Savills auctions",
-      "url": "https://auctions.savills.co.uk/past-auctions",
+      "url": "https://auctions.savills.co.uk/upcoming-auctions",
       "enabled": true,
       "coverage_status": "skipped",
       "reason": "Do not use GPTBot or treat generic access as commercial copying permission.",
@@ -153,11 +153,12 @@
         ],
         "robots_url": "https://auctions.savills.co.uk/robots.txt"
       },
-      "adapter": "catalogue",
-      "max_pages": 3,
-      "max_details": 8,
+      "adapter": "savills",
+      "max_pages": 15,
+      "max_details": 40,
       "entries": [
-        "https://auctions.savills.co.uk/past-auctions"
+        "https://auctions.savills.co.uk/upcoming-auctions",
+        "https://auctions.savills.co.uk/upcoming-auctions/upcoming/page-2"
       ]
     },
     {
