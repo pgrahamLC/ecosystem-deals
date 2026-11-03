@@ -5,6 +5,7 @@
   const PRIMARY = [
     ['assets', 'Find'],
     ['distress', 'Leads'],
+    ['auctions', 'Auctions'],
     ['deal', 'Deal'],
     ['comps', 'Comps']
   ];
@@ -20,6 +21,7 @@
   const COPY = {
     assets: ['Find', 'Where to look', 'Manchester, Cheltenham and Bristol. Open a town, then a lead, then a deal.'],
     distress: ['Leads', 'Who has to sell', 'A is a live insolvency. B is a lender or receiver sale. C is a watchlist, not a forced sale.'],
+    auctions: ['Auctions', 'What is in the room', 'Manchester, Glasgow, Edinburgh, Bristol and Cheltenham. Houses, flats, blocks, HMOs, portfolios, mixed-use and residential development.'],
     sales: ['Leads', 'For sale now', 'Checked listings only. An empty list is not proof that nothing is for sale.'],
     deal: ['Deal', 'The decision', 'Rent, operating income, the NIY you are using, the maximum bid, and the return.'],
     comps: ['Comps', 'What sold nearby', 'Land Registry prices for this town. A yield is shown only when the same lot states rent and price.'],

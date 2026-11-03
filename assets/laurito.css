@@ -342,6 +342,24 @@ body.ios-deal select{appearance:none;background-image:linear-gradient(45deg,tran
 .dm-kpi{background:#fff!important;color:var(--ink)!important;border:1px solid var(--line);border-radius:0!important}
 .dm-kpi b,.dm-kpi span{color:var(--ink)!important}
 #map_legend .sw{border-color:#c5d3df}
+.auc-updated{margin:8px 0 20px;color:#3d4c59;font-size:15px}
+.auc-tabs{display:flex;gap:8px;margin:8px 0 16px}
+.auc-tabs button{min-height:44px;padding:10px 18px;border-radius:12px;border:0;background:#e7eef3;color:#021726;font:inherit;font-size:16px}
+.auc-tabs button.on{background:#021726;color:#fff}
+.auc-filters{display:flex;flex-wrap:wrap;gap:16px 20px;margin:8px 0 12px}
+.auc-filters label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:#3d4c59;min-width:160px}
+.auc-filters select,.auc-filters input{min-height:44px;border-radius:10px;border:0;background:#fff;font:inherit;font-size:16px;padding:8px 12px;color:#021726}
+.auc-count{margin:8px 0 16px;font-size:15px;color:#3d4c59}
+.auc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.auc-card{background:#fff;border-radius:16px;padding:20px 20px 16px;display:flex;flex-direction:column;gap:8px}
+.auc-top{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.auc-type,.auc-status{font-size:13px;color:#3d4c59}
+.auc-card h2{font-size:20px;line-height:1.25;margin:4px 0;font-weight:600}
+.auc-meta{margin:0;color:#3d4c59;font-size:14px}
+.auc-price{margin:4px 0;font-size:22px;font-weight:600}
+.auc-price span{display:block;font-size:12px;font-weight:500;color:#3d4c59}
+.auc-desc{margin:0;color:#24323c;font-size:15px;line-height:1.4}
+.auc-link{margin-top:8px;min-height:44px;display:inline-flex;align-items:center;color:#021726;font-weight:600}
 .grade-legend{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;padding:12px 4px 4px;font-size:15px}
 .grade-legend details{flex-basis:100%}
 .grade-legend summary{cursor:pointer;color:#3d4c59;min-height:44px;display:inline-flex;align-items:center}
