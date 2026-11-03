@@ -93,6 +93,14 @@ function isoDate(text) {
   if (iso) return iso[1] + '-' + iso[2] + '-' + iso[3];
   const slug = String(text || '').match(/\b(\d{1,2})-(january|february|march|april|may|june|july|august|september|october|november|december)-(20\d{2})\b/i);
   if (slug) return slug[3] + '-' + months[slug[2].toLowerCase()] + '-' + slug[1].padStart(2, '0');
+  const bare = String(text || '').match(/\b(\d{1,2})(?:st|nd|rd|th)?\s+(January|February|March|April|May|June|July|August|September|October|November|December)\b/i);
+  if (bare) {
+    const month = months[bare[2].toLowerCase()];
+    const day = bare[1].padStart(2, '0');
+    let year = Number(NOW.slice(0, 4));
+    if ((month + '-' + day) < NOW.slice(5, 10)) year += 1;
+    return year + '-' + month + '-' + day;
+  }
   return '';
 }
 
