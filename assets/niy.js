@@ -4,7 +4,7 @@
 
   const FEE = 0.018;
   const AREAS = ['Manchester', 'Cheltenham', 'Bristol', 'Glasgow', 'Edinburgh'];
-  const CLASSES = ['Resi block', 'Houses', 'Flats', 'HMO', 'Mixed-use', 'Office', 'Development'];
+  const CLASSES = ['Resi block', 'Houses', 'Flats', 'HMO', 'Mixed-use', 'Office', 'Retail', 'Development'];
 
   function round2(n) {
     return Math.round((n + Number.EPSILON) * 100) / 100;
@@ -61,9 +61,21 @@
     return null;
   }
 
+  function commercialOnly(type) {
+    const t = String(type || '');
+    return /retail|office/i.test(t) && !/flat|house|hmo|dwelling|residential|mixed/i.test(t);
+  }
+
   function costs(price, city, type) {
     const count = dwellingCount(type);
     const many = count != null && count >= 6;
+    if (commercialOnly(type) && scotland(city)) {
+      const lbtt = bands(price, [[150000, 0], [250000, 0.01], [Infinity, 0.05]]);
+      return { tax: lbtt, label: 'LBTT at non-residential rates' };
+    }
+    if (commercialOnly(type)) {
+      return { tax: sdltNonResidential(price), label: 'SDLT at non-residential rates' };
+    }
     if (scotland(city)) {
       return { tax: lbttWithAds(price), label: 'LBTT plus 8% additional dwelling supplement' };
     }
@@ -75,6 +87,7 @@
 
   function assetClass(type) {
     const t = String(type || '');
+    if (/retail|shop|leisure|nightclub/i.test(t) && !/flat|apartment|house|hmo|residential|block/i.test(t)) return 'Retail';
     if (/office/i.test(t)) return 'Office';
     if (/mixed/i.test(t)) return 'Mixed-use';
     if (/hmo/i.test(t)) return 'HMO';
