@@ -342,6 +342,11 @@ body.ios-deal select{appearance:none;background-image:linear-gradient(45deg,tran
 .dm-kpi{background:#fff!important;color:var(--ink)!important;border:1px solid var(--line);border-radius:0!important}
 .dm-kpi b,.dm-kpi span{color:var(--ink)!important}
 #map_legend .sw{border-color:#c5d3df}
+.niy-avg{width:100%;border-collapse:collapse;font-size:15px}
+.niy-avg th,.niy-avg td{text-align:right;padding:12px 10px;border-bottom:1px solid #e6eef3}
+.niy-avg th:first-child,.niy-avg td:first-child,.niy-avg th:nth-child(2),.niy-avg td:nth-child(2){text-align:left}
+.niy-inuse{font-size:17px;margin:12px 0}
+#niy_set{min-height:44px;width:100%}
 .grade-legend{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;padding:12px 4px 4px;font-size:15px}
 .grade-legend details{flex-basis:100%}
 .grade-legend summary{cursor:pointer;color:#3d4c59;min-height:44px;display:inline-flex;align-items:center}
