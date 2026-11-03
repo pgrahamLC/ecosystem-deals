@@ -96,7 +96,8 @@ def sale_parts(row: dict) -> dict:
 
 
 def epc_parts(row: dict) -> dict | None:
-    area = row.get("TOTAL_FLOOR_AREA") or row.get("total-floor-area") or row.get("total_floor_area")
+    row = {str(k).upper().replace("-", "_"): v for k, v in row.items()}
+    area = row.get("TOTAL_FLOOR_AREA")
     try:
         metres = float(str(area).strip())
     except (TypeError, ValueError):
@@ -106,10 +107,11 @@ def epc_parts(row: dict) -> dict | None:
     lodged = (row.get("LODGEMENT_DATE") or row.get("lodgement-date") or row.get("lodgement_date") or "")[:10]
     if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", lodged):
         return None
-    address = " ".join(
-        row.get(key) or ""
-        for key in ("ADDRESS", "ADDRESS1", "ADDRESS2", "ADDRESS3", "address", "address1", "address2", "address3")
-    )
+    # Address line 3 is usually the locality, not the street. Using it makes
+    # "High Street" look like a different road from "High Street, Bedminster".
+    address = " ".join(row.get(key) or "" for key in ("ADDRESS1", "ADDRESS2"))
+    if not address.strip():
+        address = row.get("ADDRESS") or ""
     nums = numbers(address)
     # A leading flat number plus a building number: the last number before the street is the building.
     paon = nums[-1] if nums else ""
@@ -161,7 +163,9 @@ def match_sale(sale: dict, by_postcode: dict[str, list[dict]]) -> dict | None:
             continue
         if cert["street"] == parts["street"]:
             exact.append(cert)
-        elif cert["street"] and (cert["street"] in parts["street"] or parts["street"] in cert["street"]):
+        elif cert["street"] and (cert["street"].startswith(parts["street"]) or parts["street"].startswith(cert["street"])):
+            # Extra text is only a suffix or prefix, typically a locality on the certificate.
+            # A street buried inside a different building name is not a confident match.
             fuzzy.append(cert)
     chosen = choose_certificate(exact, sale["date"])
     if chosen:
