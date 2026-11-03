@@ -1,0 +1,301 @@
+{
+  "generated_at": "2026-11-03T12:44:33.309Z",
+  "towns": [
+    "Cheltenham",
+    "Edinburgh",
+    "Bristol",
+    "Glasgow",
+    "Manchester"
+  ],
+  "residential": "Blocks, houses, flats and studios, HMOs, portfolios, mixed-use with homes, and residential development. Purely commercial lots are left out.",
+  "commercial_excluded": 15,
+  "deduped_lots": 33,
+  "sources": [
+    {
+      "id": "auction-house-northwest",
+      "name": "Auction House North West (Manchester)",
+      "url": "https://www.auctionhouse.co.uk/northwest/auction/future-auction-dates",
+      "status": "live",
+      "reason": "Public catalogue read.",
+      "lots": 2,
+      "commercial_excluded": 0,
+      "outside_town": 98,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "auction-house-southwest",
+      "name": "Auction House South West (Bristol and Gloucestershire)",
+      "url": "https://www.auctionhouse.co.uk/southwest/auction/future-auction-dates",
+      "status": "live",
+      "reason": "Public page read. No residential lots in the five towns.",
+      "lots": 0,
+      "commercial_excluded": 0,
+      "outside_town": 2,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "auction-house-scotland",
+      "name": "Auction House Scotland",
+      "url": "https://www.auctionhouse.co.uk/scotland/auction/future-auction-dates",
+      "status": "live",
+      "reason": "Public catalogue read.",
+      "lots": 7,
+      "commercial_excluded": 3,
+      "outside_town": 95,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "savills",
+      "name": "Savills Auctions",
+      "url": "https://auctions.savills.co.uk/upcoming-auctions",
+      "status": "live",
+      "reason": "Public catalogue read.",
+      "lots": 1,
+      "commercial_excluded": 0,
+      "outside_town": 25,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "pugh",
+      "name": "Pugh Auctions",
+      "url": "https://www.pugh-auctions.com/property-search?include-sold=off",
+      "status": "live",
+      "reason": "Public catalogue read.",
+      "lots": 3,
+      "commercial_excluded": 10,
+      "outside_town": 107,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "mark-jenkinson",
+      "name": "Mark Jenkinson",
+      "url": "https://www.markjenkinson.co.uk/property-search?include-sold=off",
+      "status": "live",
+      "reason": "Public page read. No residential lots in the five towns.",
+      "lots": 0,
+      "commercial_excluded": 0,
+      "outside_town": 80,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "maggs-allen",
+      "name": "Maggs & Allen",
+      "url": "https://www.maggsandallen.co.uk/search-auction/?auction=1&orderby=lot_no&n=0&showsold=on&showstc=on",
+      "status": "live",
+      "reason": "Public catalogue read.",
+      "lots": 20,
+      "commercial_excluded": 1,
+      "outside_town": 3,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "hollis-morgan",
+      "name": "Hollis Morgan",
+      "url": "https://www.hollismorgan.co.uk/auctions/",
+      "status": "live",
+      "reason": "The search catalogue URL is disallowed by robots.txt. Lots are those linked from the public auctions page.",
+      "lots": 0,
+      "commercial_excluded": 0,
+      "outside_town": 0,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "paul-fosh",
+      "name": "Paul Fosh Auctions",
+      "url": "https://auction.paulfosh.com/future-auctions/",
+      "status": "live",
+      "reason": "Public page read. No residential lots in the five towns.",
+      "lots": 0,
+      "commercial_excluded": 1,
+      "outside_town": 49,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "clive-emson",
+      "name": "Clive Emson",
+      "url": "https://www.cliveemson.co.uk/properties/",
+      "status": "live",
+      "reason": "Public page read. No residential lots in the five towns.",
+      "lots": 0,
+      "commercial_excluded": 0,
+      "outside_town": 174,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "allsop",
+      "name": "Allsop",
+      "url": "https://www.allsop.co.uk/auctions/residential-auctions/",
+      "status": "live",
+      "reason": "Public auction calendar is readable. Individual lots are not in the HTML, so none were imported.",
+      "lots": 0,
+      "commercial_excluded": 0,
+      "outside_town": 0,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "bond-wolfe",
+      "name": "Bond Wolfe",
+      "url": "https://www.bondwolfe.com/auctions/properties/",
+      "status": "live",
+      "reason": "The properties page is a search form. Lot cards are not in the HTML.",
+      "lots": 0,
+      "commercial_excluded": 0,
+      "outside_town": 0,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "barnard-marcus",
+      "name": "Barnard Marcus",
+      "url": "https://www.barnardmarcusauctions.co.uk/auctions/upcoming/",
+      "status": "live",
+      "reason": "The dated catalogue page does not include lot cards in the HTML. The site loads lots through a path robots.txt disallows, so they were not fetched.",
+      "lots": 0,
+      "commercial_excluded": 0,
+      "outside_town": 0,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "strettons",
+      "name": "Strettons",
+      "url": "https://www.strettons.co.uk/auctions/available-lots/",
+      "status": "live",
+      "reason": "Available-lots page does not list lot addresses in the HTML.",
+      "lots": 0,
+      "commercial_excluded": 0,
+      "outside_town": 0,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "town-country",
+      "name": "Town & Country Property Auctions",
+      "url": "https://www.townandcountrypropertyauctions.co.uk/search",
+      "status": "live",
+      "reason": "Search page has no lot cards in the HTML.",
+      "lots": 0,
+      "commercial_excluded": 0,
+      "outside_town": 0,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "future-property",
+      "name": "Future Property Auctions",
+      "url": "https://www.futurepropertyauctions.co.uk/",
+      "status": "live",
+      "reason": "The public page is a client-side bidding shell. Lots are not in the HTML.",
+      "lots": 0,
+      "commercial_excluded": 0,
+      "outside_town": 0,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "eig",
+      "name": "Essential Information Group",
+      "url": "https://www.eigpropertyauctions.co.uk/search",
+      "status": "live",
+      "reason": "eigroup.co.uk robots.txt disallows the whole host. The public search page on eigpropertyauctions.co.uk has no lot list in the HTML, and tokenised search results are disallowed.",
+      "lots": 0,
+      "commercial_excluded": 0,
+      "outside_town": 0,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "sdl",
+      "name": "SDL Auctions",
+      "url": "https://www.sdlauctions.co.uk/",
+      "status": "skipped",
+      "reason": "HTTP 403",
+      "lots": 0,
+      "commercial_excluded": 0,
+      "outside_town": 0,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "iamsold",
+      "name": "iamsold",
+      "url": "https://www.iamsold.co.uk/",
+      "status": "skipped",
+      "reason": "robots.txt disallows /property/ pages, so lot details were not fetched.",
+      "lots": 0,
+      "commercial_excluded": 0,
+      "outside_town": 0,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "moore-allen",
+      "name": "Moore Allen",
+      "url": "https://www.mooreallen.co.uk/auctions",
+      "status": "skipped",
+      "reason": "HTTP 403",
+      "lots": 0,
+      "commercial_excluded": 0,
+      "outside_town": 0,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "network-auctions",
+      "name": "Network Auctions",
+      "url": "https://www.networkauctions.co.uk/",
+      "status": "live",
+      "reason": "The hostname redirects to a BTG Eddisons brand page, not a lot catalogue. No lot cards on that page.",
+      "lots": 0,
+      "commercial_excluded": 0,
+      "outside_town": 0,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "bruton-knowles",
+      "name": "Bruton Knowles",
+      "url": "https://www.brutonknowles.co.uk/property-auctions/",
+      "status": "live",
+      "reason": "No public auction catalogue at the usual path. The residential search is agency stock, not an auction, so it was not imported.",
+      "lots": 0,
+      "commercial_excluded": 0,
+      "outside_town": 0,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "bradleys",
+      "name": "Bradleys",
+      "url": "https://www.bradleys-auctions.co.uk/",
+      "status": "failed",
+      "reason": "fetch failed",
+      "lots": 0,
+      "commercial_excluded": 0,
+      "outside_town": 0,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "bristol-property-auctions",
+      "name": "Bristol Property Auctions",
+      "url": "https://www.bristolpropertyauctions.co.uk/",
+      "status": "failed",
+      "reason": "fetch failed",
+      "lots": 0,
+      "commercial_excluded": 0,
+      "outside_town": 0,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "scottish-property-auctions",
+      "name": "Scottish Property Auctions",
+      "url": "https://www.scottishpropertyauctions.co.uk/",
+      "status": "failed",
+      "reason": "fetch failed",
+      "lots": 0,
+      "commercial_excluded": 0,
+      "outside_town": 0,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    },
+    {
+      "id": "countrywide",
+      "name": "Countrywide Property Auctions",
+      "url": "https://www.countrywidepropertyauctions.co.uk/",
+      "status": "live",
+      "reason": "The site responded, but it is not a public lot catalogue.",
+      "lots": 0,
+      "commercial_excluded": 0,
+      "outside_town": 0,
+      "scraped_at": "2026-11-03T12:44:33.309Z"
+    }
+  ]
+}

@@ -32,6 +32,7 @@ function decode(s) {
     .replace(/&pound;|&#163;/g, '£')
     .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
     .replace(/\s+/g, ' ')
+    .replace(/,\s*,+/g, ', ')
     .trim();
 }
 
@@ -51,12 +52,27 @@ function postcodeOf(text) {
   return m ? m[1] + ' ' + m[2] : '';
 }
 
+function mentionsTown(raw, name) {
+  const re = new RegExp('\\b' + name + '\\b(?!\\s+(Road|Street|Avenue|Lane|Way|Drive|Crescent|Close|Place|Gardens|Terrace|Row|Hill|Park|Boulevard))', 'i');
+  return re.test(raw);
+}
+
 function townOf(text) {
-  const raw = String(text || '');
-  for (const t of TOWNS) if (t.name.test(raw)) return t.id;
-  const pc = postcodeOf(raw);
-  if (!pc) return '';
-  for (const t of TOWNS) if (t.pc.test(pc)) return t.id;
+  // "Greater Manchester" is a county. "Glasgow Road" is a street. EH and G postcodes cover towns outside the two cities.
+  const raw = String(text || '').replace(/Greater Manchester/ig, ' ');
+  if (mentionsTown(raw, 'Cheltenham')) return 'Cheltenham';
+  if (mentionsTown(raw, 'Edinburgh') && !/\b(Lanarkshire|West Lothian|Midlothian|East Lothian)\b/i.test(raw)) return 'Edinburgh';
+  if (mentionsTown(raw, 'Glasgow') && !/\b(East Dunbartonshire|Renfrewshire|Lanarkshire|Paisley|Kirkintilloch)\b/i.test(raw)) return 'Glasgow';
+  if (mentionsTown(raw, 'Manchester')) return 'Manchester';
+  if (mentionsTown(raw, 'Bristol')) {
+    const pc = postcodeOf(text);
+    if (!pc) return 'Bristol';
+    const district = Number((pc.match(/^BS(\d{1,2})/i) || [])[1]);
+    if (district >= 1 && district <= 16) return 'Bristol';
+    return '';
+  }
+  const pc = postcodeOf(text);
+  if (pc && /^GL5[0-3]/i.test(pc) && !/\b(Gloucester|Stroud|Cirencester|Tewkesbury|Lydney)\b/i.test(raw)) return 'Cheltenham';
   return '';
 }
 
@@ -83,18 +99,21 @@ function isoDate(text) {
 export function classifyResidential(text) {
   const t = String(text || '').toLowerCase();
   const resi = /flat|apartment|studio|maisonette|house|bungalow|cottage|\bhmo\b|dwelling|residential|bedroom|beds?\b|terraced|semi-detached|detached|portfolio|conversion|upper parts|dwellinghouse/;
-  const commercialOnly = /office|retail unit|\bshop\b|warehouse|industrial|\bpub\b|hotel|petrol|restaurant|surgery|commercial premises|lock-?up garage|land for sale|vacant land|car park|factory|workshop|high street retail|office investment/;
+  const commercialOnly = /office|retail unit|\bshop\b|warehouse|industrial|\bpub\b|hotel|petrol|restaurant|surgery|commercial premises|land for sale|vacant land|car park|factory|workshop|high street retail|office investment/;
   const hasResi = resi.test(t) || /\d+\s*flats?\b/.test(t) || /block of flats/.test(t);
-  const mixed = /mixed[-\s]?use|upper parts|flat above|flats above|shop with (a )?(flat|maisonette)|commercial with (residential|flat)|resi(dential)? (above|over)/.test(t);
+  const mixed = /mixed[-\s]?use|upper parts|flat above|flats above|shop with (a )?(flat|maisonette)|shop and .{0,40}flat|commercial with (residential|flat)|resi(dential)? (above|over)/.test(t);
   const development = /development (site|opportunity)|for conversion|to be converted|planning (consent|permission)|consent for \d+|residential development|conversion to/.test(t);
   if (!hasResi && !mixed && !development) return commercialOnly.test(t) || /land\b/.test(t) ? null : null;
   if (!hasResi && !mixed && development && !/residential|flat|house|dwelling|home/.test(t)) return null;
   if (/portfolio of|residential portfolio|parcel of \d+|collection of \d+/.test(t)) return 'portfolio';
   if (/\bhmo\b|house in multiple occupation|licen[cs]ed house/.test(t)) return 'hmo';
+  if (/\bbuilding plot\b|\bland adjoining\b|\bland rear\b|\bland at\b/.test(t)) {
+    return /planning|consent|residential|house|flat|dwelling/.test(t) ? 'development' : null;
+  }
   if (development && (hasResi || /residential|flat|house|dwelling/.test(t))) return 'development';
-  if (mixed || (commercialOnly.test(t) && hasResi)) return 'mixed';
+  if (mixed) return 'mixed';
   if (/block of flats|purpose[-\s]?built block|apartment block|mansion block|\d+\s+flats\b/.test(t)) return 'block';
-  if (/\bflat\b|apartment|\bstudio\b|maisonette/.test(t) && !/\bhouse\b|bungalow|terraced|semi-detached|detached/.test(t)) return 'flat';
+  if (/\bflat\b|apartment|\bstudio\b|maisonette/.test(t) && !/flats above|flat above/.test(t)) return 'flat';
   if (/\bhouse\b|bungalow|cottage|terraced|semi-detached|detached|dwellinghouse/.test(t)) return 'house';
   if (/\bflat\b|apartment|\bstudio\b|maisonette/.test(t)) return 'flat';
   if (hasResi) return 'house';
@@ -595,10 +614,7 @@ async function collectAll() {
       url: 'https://www.strettons.co.uk/auctions/available-lots/',
       async collect(stats) {
         const html = await fetchAllowed(this.url);
-        if (!/grid-address|lot-name|property-details/.test(html)) {
-          stats.reason = 'Available-lots page does not list lot addresses in the HTML.';
-          return [];
-        }
+        stats.reason = 'Available-lots page does not list lot addresses in the HTML.';
         return [];
       }
     },
@@ -723,7 +739,13 @@ async function collectAll() {
       id: 'countrywide',
       name: 'Countrywide Property Auctions',
       url: 'https://www.countrywidepropertyauctions.co.uk/',
-      async collect() { await fetchAllowed(this.url); return []; }
+      async collect(stats) {
+        const html = await fetchAllowed(this.url);
+        stats.reason = /guide price|lot-name|auction lot/i.test(html)
+          ? 'Public page read. No residential lots in the five towns.'
+          : 'The site responded, but it is not a public lot catalogue.';
+        return [];
+      }
     }
   ];
 
@@ -787,6 +809,11 @@ if (process.argv.includes('--self-test')) {
     ['Licensed HMO, 6 bedrooms', 'hmo'],
     ['Residential portfolio of 4 houses', 'portfolio'],
     ['Shop with flat above', 'mixed'],
+    ['Well-presented one-bedroom flat. Wide range of shops nearby', 'flat'],
+    ['Freehold mixed-use investment. Ground floor shop and 2-bedroom flat', 'mixed'],
+    ['368 Glasgow Road, Paisley', null],
+    ['Church, Edinburgh Road, Harthill, North Lanarkshire', null],
+    ['Building plot with consent for a detached house, Bristol BS16', 'development'],
     ['Development site with consent for 6 flats', 'development'],
     ['High street retail unit', null],
     ['Vacant office investment', null]
