@@ -133,6 +133,7 @@
       rent: row.rent_pa,
       url: row.url || '',
       source: row.auctioneer || 'Auction catalogue',
+      subArea: row.sub_area || '',
       rentWords: row.rent_text || '',
       rentKind: row.rent_basis || '',
       priceKind: basisPrice

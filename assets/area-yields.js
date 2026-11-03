@@ -142,7 +142,7 @@
         const s = r.stat;
         const dates = (s.from || '—') + (s.to && s.to !== s.from ? ' to ' + s.to : '');
         const low = s.n < 3 ? ' · low sample' : '';
-        return '<tr' + (s.n < 3 ? ' class="niy-low"' : '') + '><td class="l">' + esc(r.city) + '</td><td class="l">' + esc(r.asset) + low + '</td><td>' + pct(s.mean) + '</td><td>' + pct(s.median) + '</td><td>' + s.n + '</td><td>' + pct(s.min) + ' – ' + pct(s.max) + '</td><td>' + esc(dates) + '</td></tr>';
+        return '<tr' + (s.n < 3 ? ' class="niy-low"' : '') + '><td class="l">' + esc(r.city) + '</td><td class="l">' + esc(r.asset) + low + '</td><td class="niy-mean"><b>' + pct(s.mean) + '</b> <span class="niy-n">n=' + s.n + '</span></td><td>' + pct(s.median) + '</td><td class="niy-mean"><span class="niy-n">n=' + s.n + '</span></td><td>' + pct(s.min) + ' – ' + pct(s.max) + '</td><td>' + esc(dates) + '</td></tr>';
       }).join('');
     }).join('');
     return '<div class="scroll"><table class="niy-avg"><thead><tr><th class="l">Area</th><th class="l">Asset</th><th>Mean</th><th>Median</th><th>n</th><th>Range</th><th>Dates</th></tr></thead><tbody>' + body + '</tbody></table></div>';
@@ -159,9 +159,22 @@
     const lines = here.map(function (r) {
       const link = r.url ? '<a href="' + esc(r.url) + '" target="_blank" rel="noopener">' + esc(r.source) + '</a>' : esc(r.source);
       const niy = r.pct == null ? 'NIY unavailable' : pct(r.pct) + (r.review ? ' · review' : '');
-      return '<tr><td class="l">' + esc(r.address) + '</td><td class="l">' + esc(r.asset) + '</td><td>' + niy + '</td><td>' + esc(r.basis) + '</td><td>' + esc(r.date || '—') + '</td><td class="l">' + link + '<div class="foot">' + esc(r.note) + (r.average === false ? ' Not in an average.' : '') + '</div></td></tr>';
+      const where = r.subArea && r.subArea !== r.city ? esc(r.address) + ' <span class="foot">' + esc(r.subArea) + '</span>' : esc(r.address);
+      return '<tr><td class="l">' + where + '</td><td class="l">' + esc(r.asset) + '</td><td>' + niy + '</td><td>' + esc(r.basis) + '</td><td>' + esc(r.date || '—') + '</td><td class="l">' + link + '<div class="foot">' + esc(r.note) + (r.average === false ? ' Not in an average.' : '') + '</div></td></tr>';
     }).join('');
-    host.innerHTML = '<h2>NIY by area and asset</h2><p class="lead">Mean, median, count, range and dates. A published NIY is the figure the source printed. A derived NIY uses only that comp’s stated rent and price, plus SDLT or LBTT and 1.8% fees. NIY unavailable is excluded. Glasgow and Edinburgh are listed even when the file has no rent.</p>' +
+    const tally = {};
+    ((window.lcNiy && window.lcNiy.AREAS) || []).forEach(function (name) { tally[name] = { verified: 0, inAverage: 0 }; });
+    comps.forEach(function (r) {
+      if (!tally[r.city]) return;
+      if (r.basis === 'derived' || (r.basis === 'published' && r.average)) tally[r.city].verified += 1;
+      if (r.average) tally[r.city].inAverage += 1;
+    });
+    const tallyHtml = '<div class="niy-area-counts">' + Object.keys(tally).map(function (name) {
+      const t = tally[name];
+      return '<div><b>n=' + t.verified + '</b>' + esc(name) + '<span class="foot">' + t.inAverage + ' in the 3–12% averages · target 100</span></div>';
+    }).join('') + '</div>';
+    host.innerHTML = '<h2>NIY by area and asset</h2><p class="lead">Each average is shown with its sample size. A verified comp has a passing rent and a completed sold price on the same source. The target is 100 verified comps in each area, including labelled surrounding towns. Nothing is estimated.</p>' +
+      tallyHtml +
       '<p class="foot">In this evidence file: ' + (counts.published || 0) + ' published, ' + (counts.derived || 0) + ' derived from passing rent and a sold price, ' + (counts.unverified || 0) + ' unverified (kept out), ' + (counts.unavailable || 0) + ' unavailable, ' + (counts.review || 0) + ' flagged because the NIY is outside 3% to 12%. ' + (counts.inAverage || 0) + ' comps go into an average. Averages with fewer than 3 comps are marked low sample and are not in the deal picker.</p>' +
       averageTable(avgs) +
       '<h3>' + esc(key) + ' comps</h3>' +
@@ -217,7 +230,7 @@
       ? ' Pre-selected from the deal’s town and type (' + window.lcNiy.hintAsset(state) + ').'
       : ' No asset type is named on the deal, so the largest sample in the town is pre-selected.';
     const inUse = chosen && avg
-      ? chosen.city + ' · ' + chosen.asset + ' · mean ' + pct(avg.mean) + ' · median ' + pct(avg.median) + ' · n=' + avg.n
+      ? chosen.city + ' · ' + chosen.asset + ' · ' + pct(avg.mean) + ' (n=' + avg.n + ') · median ' + pct(avg.median)
       : 'No average selected';
     box.innerHTML = '<h3>Yield you want to buy at</h3><div class="ctl"><label><input type="radio" name="niy_mode" value="manual"' + (mode === 'manual' ? ' checked' : '') + '> Enter a figure</label><label><input type="radio" name="niy_mode" value="average"' + (mode === 'average' ? ' checked' : '') + '> Use an area average</label></div>' +
       '<p class="niy-inuse"><b>In use:</b> ' + esc(mode === 'average' ? inUse : 'Your own figure') + '</p>' +
@@ -225,11 +238,11 @@
       (!chosen ? '<option value="" selected>No average with 3 or more comps for this town</option>' : '') +
       rows.map(function (s) {
         const low = s.stat.n < 3;
-        return '<option value="' + esc(s.id) + '"' + (low ? ' disabled' : '') + (chosen && s.id === chosen.id ? ' selected' : '') + '>' + esc(s.city) + ' · ' + esc(s.asset) + ' · mean ' + pct(s.stat.mean) + ' · median ' + pct(s.stat.median) + ' · n=' + s.stat.n + (low ? ' · low sample' : '') + '</option>';
+        return '<option value="' + esc(s.id) + '"' + (low ? ' disabled' : '') + (chosen && s.id === chosen.id ? ' selected' : '') + '>' + esc(s.city) + ' · ' + esc(s.asset) + ' · ' + pct(s.stat.mean) + ' (n=' + s.stat.n + ')' + (low ? ' · low sample' : '') + '</option>';
       }).join('') + '</select></label>' +
       '<p class="foot">' + esc(matchNote) + (avg && avg.n < 5 ? ' Thin sample.' : '') + '</p>' +
       (quote ? '<p><b>' + (isStJames(state) ? 'Vendor quote on this asset. ' : 'Vendor quote on St James House, kept separate. ') + '</b>' + pct(quote.yield_pct) + ' published NIY, asking. <a href="' + esc(quote.url) + '" target="_blank" rel="noopener">Source</a>.</p>' : '') +
-      (mode === 'average' && avg ? '<p><button class="btn sec" id="niy_reset" type="button">Reset to the ' + pct(avg.mean) + ' mean</button></p>' : '') +
+      (mode === 'average' && avg ? '<p><button class="btn sec" id="niy_reset" type="button">Reset to the ' + pct(avg.mean) + ' mean (n=' + avg.n + ')</button></p>' : '') +
       '<details class="ios-disc"><summary>Mean, median, n, range and dates</summary>' + averageTable(window.lcNiy ? window.lcNiy.averages(comps) : []) +
       (chosen ? '<p class="foot">Comps in the selected average</p><ul>' + chosen.rows.map(function (r) {
         return '<li>' + esc(r.address) + ' · ' + (r.pct == null ? 'NIY unavailable' : pct(r.pct)) + ' · ' + esc(r.basis) + '</li>';
