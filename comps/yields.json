@@ -791,6 +791,57 @@
       "url": "https://www.hollismorgan.co.uk/property-details/32217908/south-gloucestershire/bristol/high-street-9",
       "evidence": "Hollis Morgan property page states a sold auction price and a current let on the same lot. https://www.hollismorgan.co.uk/property-details/32217908/south-gloucestershire/bristol/high-street-9",
       "sub_area": "Thornbury"
+    },
+    {
+      "city": "Bristol",
+      "address": "Flats A & B 4 Southend Road WSM, North Somerset BS23 4JZ",
+      "postcode": "BS23 4JZ",
+      "type": "resi block",
+      "sold_price": 200000,
+      "sold_date": "2026-02-11",
+      "rent_pa": 20400,
+      "rent_text": "ONLINE VIEWINGS – REFER TO DETAILS LEGAL PACK COMPLETE SOLD @ FEBRUARY LIVE ONLINE AUCTION FREEHOLD BLOCK OF FLATS 1 BED GARDEN | 2 BED FIRST FLOOR FULLY LET @ £20,400 PA EXTENDED 8 WEEK COMPLETION FOR SALE BY LIVE ONLIN",
+      "rent_basis": "passing",
+      "price_basis": "sold",
+      "gross_yield": 0.102,
+      "auctioneer": "Hollis Morgan",
+      "url": "https://www.hollismorgan.co.uk/property-details/34354345/north-somerset/north-somerset/southend-road",
+      "evidence": "Hollis Morgan property page states a sold auction price and a current let on the same lot. https://www.hollismorgan.co.uk/property-details/34354345/north-somerset/north-somerset/southend-road",
+      "sub_area": "Weston-super-Mare"
+    },
+    {
+      "city": "Bristol",
+      "address": "Flat 20 Cumberland House, Norfolk Crescent, Bath BA1 2BG",
+      "postcode": "BA1 2BG",
+      "type": "flat",
+      "sold_price": 170000,
+      "sold_date": "2026-05-20",
+      "rent_pa": 11700,
+      "rent_text": "pa An excellent investment in this sought after terrace. The flat is sold subject to the existing AST tenancy. 12 month contract commencing 28th January 2026 @ £975 pcm BASEMENT / CELLAR Please note there is a basement a",
+      "rent_basis": "passing",
+      "price_basis": "sold",
+      "gross_yield": 0.0688,
+      "auctioneer": "Hollis Morgan",
+      "url": "https://www.hollismorgan.co.uk/property-details/34551463/bath-and-north-east-somerset/bath/cumberland-house",
+      "evidence": "Hollis Morgan property page states a sold auction price and a current let on the same lot. https://www.hollismorgan.co.uk/property-details/34551463/bath-and-north-east-somerset/bath/cumberland-house",
+      "sub_area": "Bath"
+    },
+    {
+      "city": "Bristol",
+      "address": "Flat 1, 4 The Centre, Weston-Super-Mare, North Somerset BS23 1US",
+      "postcode": "BS23 1US",
+      "type": "flat",
+      "sold_price": 61000,
+      "sold_date": "2026-07-22",
+      "rent_pa": 9000,
+      "rent_text": "D JULY 2026 VIRTUAL TOUR NOW ONLINE VIEWINGS – REFER TO DETAILS LEGAL PACK COMPLETE SOLD @ JULY LIVE ONLINE AUCTION LEASEHOLD FIRST FLOOR FLAT TENANTED | AST | £9,000 PA RESI INVESTMENT CLOSE TO SEA FRONT & SHOPS EXTENDE",
+      "rent_basis": "passing",
+      "price_basis": "sold",
+      "gross_yield": 0.1475,
+      "auctioneer": "Hollis Morgan",
+      "url": "https://www.hollismorgan.co.uk/property-details/34562288/north-somerset/north-somerset/4-2",
+      "evidence": "Hollis Morgan property page states a sold auction price and a current let on the same lot. https://www.hollismorgan.co.uk/property-details/34562288/north-somerset/north-somerset/4-2",
+      "sub_area": "Weston-super-Mare"
     }
   ]
 }

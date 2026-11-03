@@ -39,6 +39,7 @@ function cityOf(address, pc) {
   if (/^GL/.test(code)) return 'Cheltenham';
   if (/^G\d/.test(code)) return 'Glasgow';
   if (/^BS/.test(code)) return 'Bristol';
+  if (/^BA[1-3]/.test(code)) return 'Bristol';
   if (/^M\d/.test(code)) return 'Manchester';
   const blob = address || '';
   if (/\bEdinburgh\b/i.test(blob)) return 'Edinburgh';
@@ -303,7 +304,12 @@ async function main() {
   process.stdout.write('WROTE ' + rows.length + ' ' + JSON.stringify(counts) + '\n');
 }
 
-main().catch(err => {
-  console.error(err);
-  process.exit(1);
-});
+export { rowFrom, decode, get, cityOf, postcode };
+
+const invoked = process.argv[1] && process.argv[1].endsWith('harvest-sold-niy.mjs');
+if (invoked) {
+  main().catch(err => {
+    console.error(err);
+    process.exit(1);
+  });
+}
