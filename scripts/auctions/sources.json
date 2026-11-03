@@ -96,14 +96,14 @@
       "id": "braveheart",
       "name": "Braveheart Auctions (Edinburgh and Glasgow)",
       "url": "https://braveheartauctions.co.uk/",
-      "adapter": "scotland",
+      "adapter": "catalogue",
       "enabled": true,
       "entries": [
         "https://braveheartauctions.co.uk/auctions/",
         "https://braveheartauctions.co.uk/all-auctions/"
       ],
-      "max_pages": 30,
-      "max_details": 150,
+      "max_pages": 3,
+      "max_details": 8,
       "policy": {
         "reviewed_at": "2026-11-03",
         "review_due": "2027-02-01",
@@ -129,7 +129,7 @@
         ],
         "robots_url": "https://www.allsop.co.uk/robots.txt"
       },
-      "adapter": "public",
+      "adapter": "allsop",
       "max_pages": 8,
       "max_details": 12,
       "entries": [
@@ -153,9 +153,9 @@
         ],
         "robots_url": "https://auctions.savills.co.uk/robots.txt"
       },
-      "adapter": "public",
-      "max_pages": 8,
-      "max_details": 12,
+      "adapter": "catalogue",
+      "max_pages": 3,
+      "max_details": 8,
       "entries": [
         "https://auctions.savills.co.uk/past-auctions"
       ]
@@ -176,9 +176,9 @@
         ],
         "robots_url": "https://www.cliveemson.co.uk/robots.txt"
       },
-      "adapter": "public",
-      "max_pages": 8,
-      "max_details": 12,
+      "adapter": "catalogue",
+      "max_pages": 3,
+      "max_details": 8,
       "entries": [
         "https://www.cliveemson.co.uk/properties/"
       ]
@@ -201,9 +201,9 @@
         ],
         "robots_url": "https://www.pugh-auctions.com/robots.txt"
       },
-      "adapter": "public",
-      "max_pages": 8,
-      "max_details": 12,
+      "adapter": "catalogue",
+      "max_pages": 3,
+      "max_details": 8,
       "entries": [
         "https://www.pugh-auctions.com/property-search"
       ]
@@ -225,9 +225,9 @@
         ],
         "robots_url": "https://www.sdlauctions.co.uk/robots.txt"
       },
-      "adapter": "public",
-      "max_pages": 8,
-      "max_details": 12,
+      "adapter": "catalogue",
+      "max_pages": 3,
+      "max_details": 8,
       "entries": [
         "https://www.sdlauctions.co.uk/property-auctions/past-auctions/"
       ]
@@ -250,9 +250,9 @@
         ],
         "robots_url": "https://www.bondwolfe.com/robots.txt"
       },
-      "adapter": "public",
-      "max_pages": 8,
-      "max_details": 12,
+      "adapter": "catalogue",
+      "max_pages": 3,
+      "max_details": 8,
       "entries": [
         "https://www.bondwolfe.com/auctions/properties/"
       ]
@@ -275,9 +275,9 @@
         ],
         "robots_url": "https://www.barnardmarcusauctions.co.uk/robots.txt"
       },
-      "adapter": "public",
-      "max_pages": 8,
-      "max_details": 12,
+      "adapter": "catalogue",
+      "max_pages": 3,
+      "max_details": 8,
       "entries": [
         "https://www.barnardmarcusauctions.co.uk/auctions/current/"
       ]
@@ -299,9 +299,9 @@
         ],
         "robots_url": "https://www.markjenkinson.co.uk/robots.txt"
       },
-      "adapter": "public",
-      "max_pages": 8,
-      "max_details": 12,
+      "adapter": "catalogue",
+      "max_pages": 3,
+      "max_details": 8,
       "entries": [
         "https://www.markjenkinson.co.uk/property-search"
       ]
@@ -323,9 +323,9 @@
         ],
         "robots_url": "https://www.strettons.co.uk/robots.txt"
       },
-      "adapter": "public",
-      "max_pages": 8,
-      "max_details": 12,
+      "adapter": "catalogue",
+      "max_pages": 3,
+      "max_details": 8,
       "entries": [
         "https://www.strettons.co.uk/auctions/current-catalogue/"
       ]
@@ -348,9 +348,9 @@
         ],
         "robots_url": "https://www.networkauctions.co.uk/robots.txt"
       },
-      "adapter": "public",
-      "max_pages": 8,
-      "max_details": 12,
+      "adapter": "catalogue",
+      "max_pages": 3,
+      "max_details": 8,
       "entries": [
         "https://www.btgeddisonspropertyauctions.com/our-acquisitions/network-auctions"
       ]
@@ -372,9 +372,9 @@
         ],
         "robots_url": "https://www.iamsold.co.uk/robots.txt"
       },
-      "adapter": "public",
-      "max_pages": 8,
-      "max_details": 12,
+      "adapter": "catalogue",
+      "max_pages": 3,
+      "max_details": 8,
       "entries": [
         "https://www.iamsold.co.uk/available-properties/"
       ]
@@ -397,9 +397,9 @@
         ],
         "robots_url": "https://www.eigpropertyauctions.co.uk/robots.txt"
       },
-      "adapter": "public",
-      "max_pages": 8,
-      "max_details": 12,
+      "adapter": "catalogue",
+      "max_pages": 3,
+      "max_details": 8,
       "entries": [
         "https://www.eigpropertyauctions.co.uk/"
       ]
@@ -420,9 +420,9 @@
           "The downloading of material (including all text, graphics, code, files and links) for anything other than private use is strictly prohibited."
         ]
       },
-      "adapter": "public",
-      "max_pages": 8,
-      "max_details": 12,
+      "adapter": "catalogue",
+      "max_pages": 3,
+      "max_details": 8,
       "entries": [
         "https://www.countrywidepropertyauctions.co.uk/results.php"
       ]
@@ -444,9 +444,9 @@
           "You may print off one copy, and may download extracts, of any page(s) from our site for your personal use and you may draw the attention of others within your organisation to content posted on our site."
         ]
       },
-      "adapter": "public",
-      "max_pages": 8,
-      "max_details": 12,
+      "adapter": "catalogue",
+      "max_pages": 3,
+      "max_details": 8,
       "entries": [
         "https://www.townandcountrypropertyauctions.co.uk/"
       ]
@@ -463,9 +463,9 @@
         "status": "access_blocked",
         "evidence": []
       },
-      "adapter": "public",
-      "max_pages": 8,
-      "max_details": 12,
+      "adapter": "catalogue",
+      "max_pages": 3,
+      "max_details": 8,
       "entries": [
         "https://www.bradleys-estate-agents.co.uk/pages/auctions"
       ]
@@ -485,9 +485,9 @@
           "Reproduction, distribution or transmission of information in this website by any means without the prior permission of Bruton Knowles Ltd is prohibited."
         ]
       },
-      "adapter": "public",
-      "max_pages": 8,
-      "max_details": 12,
+      "adapter": "catalogue",
+      "max_pages": 3,
+      "max_details": 8,
       "entries": [
         "https://www.brutonknowles.co.uk/industry-news/property-auction-confirmed-for-3rd-july/"
       ]
@@ -508,9 +508,9 @@
           "Any other use of materials on our site (including reproduction for purposes other than those noted above and alteration, modification, distribution or republication) without our prior written permission is strictly prohibited."
         ]
       },
-      "adapter": "public",
-      "max_pages": 8,
-      "max_details": 12,
+      "adapter": "catalogue",
+      "max_pages": 3,
+      "max_details": 8,
       "entries": [
         "https://www.mooreallen.co.uk/property-auctions"
       ]
@@ -531,9 +531,9 @@
           "Content may not be copied, reproduced, republished, downloaded, posted, broadcast or transmitted in any other way."
         ]
       },
-      "adapter": "public",
-      "max_pages": 8,
-      "max_details": 12,
+      "adapter": "catalogue",
+      "max_pages": 3,
+      "max_details": 8,
       "entries": [
         "https://www.hollismorgan.co.uk/auctions/"
       ]
@@ -554,9 +554,9 @@
           "Content may not be copied, reproduced, republished, downloaded, posted, broadcast or transmitted in any other way."
         ]
       },
-      "adapter": "public",
-      "max_pages": 8,
-      "max_details": 12,
+      "adapter": "catalogue",
+      "max_pages": 3,
+      "max_details": 8,
       "entries": [
         "https://www.maggsandallen.co.uk/auctions/bristol-auctioneers.html"
       ]
@@ -589,9 +589,9 @@
         "status": "not_enabled",
         "terms_url": "https://www.opagroup.co.uk/pages/site-terms-conditions"
       },
-      "adapter": "public",
-      "max_pages": 8,
-      "max_details": 12,
+      "adapter": "catalogue",
+      "max_pages": 3,
+      "max_details": 8,
       "entries": [
         "https://www.opagroup.co.uk/"
       ]
@@ -608,9 +608,9 @@
         "status": "not_enabled",
         "terms_url": "https://scotlandpropertyauction.co.uk/terms-conditions/"
       },
-      "adapter": "public",
-      "max_pages": 8,
-      "max_details": 12,
+      "adapter": "catalogue",
+      "max_pages": 3,
+      "max_details": 8,
       "entries": [
         "https://scotlandpropertyauction.co.uk/"
       ]

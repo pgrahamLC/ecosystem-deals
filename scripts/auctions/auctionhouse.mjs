@@ -2,7 +2,7 @@
  * Transport MUST enforce robots, identified UA, crawl delay and block handling.
  * Public access is not a commercial reuse licence; no affirmative licence located.
  */
-import { instructionEvidence } from './core.mjs';
+import { instructionEvidence, areaMatch } from './core.mjs';
 const POLICY = 'Policy caveat: public factual metadata only; no published automation-specific/reuse restriction located in audit, but not licensed for reuse.';
 function decode(s = '') {
   return String(s).replace(/&(#x[\da-f]+|#\d+|pound|amp|nbsp|quot|apos|lt|gt);/gi, (a, b) => {
@@ -144,7 +144,7 @@ export async function collect({get,source,now}) {
   for(const seed of seeds.values()){
     // Region catalogues also contain unrelated towns. Do not request their details.
     const pc=postcode(seed.address)||'';
-    if(!(/\bManchester\b/i.test(seed.address)&&/^M\d/.test(pc)||/\bGlasgow\b/i.test(seed.address)&&/^G\d/.test(pc)||/\bEdinburgh\b/i.test(seed.address)&&/^EH\d/.test(pc)||/\bBristol\b/i.test(seed.address)&&/^BS\d/.test(pc)||/\bCheltenham\b/i.test(seed.address)&&/^GL5[0-4]/.test(pc))) continue;
+    if(!areaMatch(seed.address+' '+(pc||''))) continue;
     let sub=subtype(seed.type),d=null,verification='unverified';
     if(details<maxDetails){
       details++;try {const html=await get(seed.source_url);if(!html||/<title>\s*(?:Just a moment|Access denied)|cf-chl-/i.test(html))throw Error('Empty or blocked detail');d=detail(html,seed);verification='detail checked';}catch(e){err(`Detail failed ${seed.source_url}: ${e.message||e}`);}
