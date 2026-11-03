@@ -260,7 +260,7 @@
   function clipLong(root) {
     if (!root) return;
     root.querySelectorAll('p, .foot').forEach(function (p) {
-      if (p.dataset.clipped || p.closest('.lc-decision, .lc-screen, details, table, .lc-stats')) return;
+      if (p.dataset.clipped || p.closest('.lc-decision, .lc-screen, details, table, .lc-stats, .auc-card')) return;
       if (p.querySelector('button, input, select, table')) return;
       const plain = p.textContent.replace(/\s+/g, ' ').trim();
       if (plain.length < 170) return;
