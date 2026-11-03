@@ -691,6 +691,55 @@
       "auctioneer": "Hollis Morgan",
       "url": "https://www.hollismorgan.co.uk/property-details/33352720",
       "evidence": "Price and income are both stated for this lot. One lot is not a market yield. Not a surveyor valuation."
+    },
+    {
+      "city": "Glasgow",
+      "address": "53B Denbrae Street, Glasgow",
+      "postcode": "G32 7DB",
+      "type": "flat",
+      "sold_price": 39500,
+      "sold_date": "2025-11-27",
+      "rent_pa": 10172,
+      "rent_text": "post works potential income of £10,172 per annum (LHA)",
+      "rent_basis": "potential",
+      "price_basis": "sold",
+      "gross_yield": null,
+      "auctioneer": "Auction House Scotland",
+      "url": "https://www.auctionhouse.co.uk/scotland/auction/lot/143277",
+      "evidence": "Auction House Scotland lot page. Sold £39,500 on 27 November 2025. The income is a post-works LHA figure, not rent a tenant is paying, so the comp is unverified and is not in an average."
+    },
+    {
+      "city": "Edinburgh",
+      "address": "31 Mertoun Place, Edinburgh",
+      "postcode": "EH11 1JX",
+      "type": "flat",
+      "sold_price": 210000,
+      "sold_date": "2026-09-24",
+      "rent_pa": 12000,
+      "rent_text": "once refurbished, estimated to achieve approximately £1,000 per calendar month, £12,000 per annum",
+      "rent_basis": "potential",
+      "price_basis": "sold",
+      "gross_yield": null,
+      "auctioneer": "Auction House Scotland",
+      "url": "https://www.auctionhouse.co.uk/scotland/auction/lot/151540",
+      "evidence": "Auction House Scotland lot page. Sold £210,000 on 24 September 2026. The rent is an estimate after a full refurbishment, not passing rent, so the comp is unverified and is not in an average."
+    },
+    {
+      "city": "Edinburgh",
+      "address": "38 Hillwood Terrace, Ratho Station, Newbridge",
+      "postcode": "EH28 8QA",
+      "type": "house (mid terrace)",
+      "sold_price": null,
+      "guide_price": 140000,
+      "price_basis": "guide",
+      "sold_date": "",
+      "rent_pa": 12804,
+      "rent_text": "long term tenant in situ currently paying £1,067 per calendar month, £12,804 per annum",
+      "rent_basis": "passing",
+      "gross_yield": null,
+      "auctioneer": "Auction House Scotland",
+      "url": "https://www.auctionhouse.co.uk/scotland/auction/lot/153580",
+      "evidence": "Auction House Scotland lot page for the 26 November 2026 auction. The tenant's current rent is stated. The only price on the page is a guide of £140,000. No completed sold price is stated, so no NIY is used in an average."
     }
   ]
 }

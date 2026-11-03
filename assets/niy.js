@@ -104,30 +104,63 @@
     };
   }
 
+  function priceBasis(row) {
+    if (row.price_basis === 'guide' || row.price_basis === 'sold') return row.price_basis;
+    const blob = [row.rent_text, row.evidence, row.notes].join(' ');
+    if (/guide price|if purchased at the guide|around the guide/i.test(blob) && !(row.sold_price > 0)) return 'guide';
+    return row.sold_price > 0 ? 'sold' : '';
+  }
+
+  function passingRent(row) {
+    return row.rent_basis === 'passing' && !/in the region of|scope for|asking rent|potential|lha|estimated to achieve|appraisal/i.test(row.rent_text || '');
+  }
+
+  function outlier(pct) {
+    return pct != null && (pct > 12 || pct < 3);
+  }
+
   function fromAuction(row) {
     const klass = assetClass(row.type);
+    const basisPrice = priceBasis(row);
+    const passing = passingRent(row);
     const base = {
       id: 'auction-' + (row.url || row.address),
       city: cityName(row.city),
       asset: klass,
       address: row.address,
       date: row.sold_date || '',
-      price: row.sold_price,
+      price: basisPrice === 'sold' ? row.sold_price : (row.guide_price || null),
       rent: row.rent_pa,
       url: row.url || '',
       source: row.auctioneer || 'Auction catalogue',
       rentWords: row.rent_text || '',
-      rentKind: row.rent_basis || ''
+      rentKind: row.rent_basis || '',
+      priceKind: basisPrice
     };
-    if (!(row.sold_price > 0) || !(row.rent_pa > 0)) {
-      return Object.assign(base, { basis: 'unavailable', pct: null, note: 'NIY unavailable. This comp does not publish both a price and a rent. No rent has been estimated.' });
+    if (!(row.rent_pa > 0) || basisPrice !== 'sold') {
+      const why = row.rent_pa > 0 && basisPrice === 'guide'
+        ? 'Unverified. Passing or stated rent is on the page, but the only price is a guide, not a completed sale. No NIY is derived from a guide.'
+        : 'NIY unavailable. This comp does not publish both a completed sold price and a rent. No rent has been estimated.';
+      return Object.assign(base, { basis: row.rent_pa > 0 && basisPrice === 'guide' ? 'unverified' : 'unavailable', pct: null, average: false, review: false, note: why });
     }
-    const d = derive(row.sold_price, row.rent_pa, row.city, row.type);
-    const kind = row.rent_basis === 'passing' ? 'stated passing rent' : 'stated potential or asking rent, not confirmed passing rent';
+    const price = row.sold_price;
+    const d = derive(price, row.rent_pa, row.city, row.type);
+    const kind = passing ? 'stated passing rent' : 'not passing rent (asking, ERV, LHA or “in the region of”)';
+    const priceWords = 'completed sold price';
+    const review = outlier(d.pct);
+    const qualified = passing && basisPrice === 'sold';
+    const verified = row.verified === true && qualified;
+    const average = qualified && (!review || verified);
+    let why = '';
+    if (!qualified) why = 'Unverified. An average uses only passing rent and a completed sold price.';
+    else if (review && !verified) why = 'Review. The derived NIY is outside 3% to 12% and has not been verified, so it is kept out of the average.';
     return Object.assign(base, {
-      basis: 'derived',
+      basis: qualified ? 'derived' : 'unverified',
       pct: d.pct,
-      note: 'Derived. ' + kind + ' ' + money(row.rent_pa) + ' a year, divided by ' + money(row.sold_price) + ' plus ' + d.taxLabel + ' of ' + money(d.tax) + ' and fees at 1.8% (' + money(d.fees) + '). The auctioneer did not print this NIY.'
+      average: average,
+      review: review,
+      lowSample: false,
+      note: (why ? why + ' ' : '') + 'Worked figure: ' + kind + ' ' + money(row.rent_pa) + ' a year, divided by the ' + priceWords + ' ' + money(price) + ' plus ' + d.taxLabel + ' of ' + money(d.tax) + ' and fees at 1.8% (' + money(d.fees) + '). The auctioneer did not print this NIY.'
     });
   }
 
@@ -153,11 +186,21 @@
       });
     }
     if (row.yield_kind === 'niy' && row.yield_pct != null) {
+      const sold = row.quote_status === 'completed sale';
+      const review = outlier(Number(row.yield_pct));
+      const conflict = /disagree|not used in an average|not averaged|counted twice|left out of the average/i.test(row.notes || '');
+      const verified = row.verified === true && sold;
+      const average = sold && !conflict && (!review || verified);
+      let why = '';
+      if (!sold) why = 'Unverified. The figure is an asking quote, not a completed sale.';
+      else if (conflict) why = 'Kept out. The notes say this figure double-counts a building or disagrees with another source.';
+      else if (review && !verified) why = 'Review. Published NIY is outside 3% to 12% and is not verified for the average.';
       return Object.assign(base, {
-        basis: 'published',
+        basis: sold ? 'published' : 'unverified',
         pct: Number(row.yield_pct),
-        average: row.in_average !== false,
-        note: 'Published NIY. ' + (row.source || '') + (row.notes ? ' ' + row.notes : '')
+        average: average,
+        review: review,
+        note: (why ? why + ' ' : '') + 'Published NIY. ' + (row.source || '') + (row.notes ? ' ' + row.notes : '')
       });
     }
     return Object.assign(base, {
@@ -226,25 +269,30 @@
     return '';
   }
 
+  function usableAverage(row) {
+    return row && row.stat && row.stat.n >= 3;
+  }
+
   function pickId(comps, state) {
     const rows = averages(comps);
     const city = cityName(state && state.city);
     const hinted = hintAsset(state);
-    const withStat = rows.filter(function (r) { return r.stat; });
+    const withStat = rows.filter(usableAverage);
     const exact = withStat.filter(function (r) { return r.city === city && r.asset === hinted; })[0];
     if (exact) return exact.id;
     const inCity = withStat.filter(function (r) { return r.city === city; }).sort(function (a, b) { return b.stat.n - a.stat.n; })[0];
-    if (inCity) return inCity.id;
-    const any = withStat.slice().sort(function (a, b) { return b.stat.n - a.stat.n; })[0];
-    return any ? any.id : '';
+    return inCity ? inCity.id : '';
   }
 
   function counts(comps) {
-    const c = { published: 0, derived: 0, unavailable: 0 };
+    const c = { published: 0, derived: 0, unverified: 0, unavailable: 0, inAverage: 0, review: 0 };
     (comps || []).forEach(function (row) {
       if (row.basis === 'published') c.published += 1;
       else if (row.basis === 'derived') c.derived += 1;
+      else if (row.basis === 'unverified') c.unverified += 1;
       else c.unavailable += 1;
+      if (row.average) c.inAverage += 1;
+      if (row.review) c.review += 1;
     });
     return c;
   }
@@ -261,6 +309,7 @@
     fromEvidence: fromEvidence,
     book: book,
     averages: averages,
+    usableAverage: usableAverage,
     hintAsset: hintAsset,
     pickId: pickId,
     counts: counts,

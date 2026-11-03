@@ -294,8 +294,8 @@
       (matched.length ? '<div class="scroll" style="max-height:420px"><table><thead><tr><th>Sold</th><th class="l">Lot</th><th>Price</th><th>Rent / year</th><th>NIY</th><th class="l">Basis</th></tr></thead><tbody>' +
         matched.map(function (r) {
           const row = niy ? niy.fromAuction(r) : { pct: null, basis: 'unavailable', note: 'NIY unavailable.' };
-          const shown = row.pct == null ? 'NIY unavailable' : row.pct.toFixed(2) + '%';
-          return '<tr><td>' + esc(r.sold_date || 'Unknown') + '</td><td class="l"><a href="' + esc(r.url) + '" target="_blank" rel="noopener">' + esc(r.address) + '</a><div class="foot">' + esc(r.postcode || '') + ' · ' + esc(r.auctioneer || '') + ' · ' + esc(niy ? niy.assetClass(r.type) : r.type) + '</div></td><td>' + money(r.sold_price) + '</td><td>' + money(r.rent_pa) + '</td><td>' + shown + '</td><td class="l">' + esc(row.basis) + '. ' + esc(row.note) + '</td></tr>';
+          const shown = row.pct == null ? 'NIY unavailable' : row.pct.toFixed(2) + '%' + (row.review ? ' · review' : '');
+          return '<tr><td>' + esc(r.sold_date || 'Unknown') + '</td><td class="l"><a href="' + esc(r.url) + '" target="_blank" rel="noopener">' + esc(r.address) + '</a><div class="foot">' + esc(r.postcode || '') + ' · ' + esc(r.auctioneer || '') + ' · ' + esc(niy ? niy.assetClass(r.type) : r.type) + '</div></td><td>' + money(r.sold_price || r.guide_price) + '</td><td>' + money(r.rent_pa) + '</td><td>' + shown + '</td><td class="l">' + esc(row.basis) + '. ' + esc(row.note) + '</td></tr>';
         }).join('') + '</tbody></table></div>' : '<p>No lot in this cut. No yield is inferred from ONS rent or from LHA.</p>');
   }
 

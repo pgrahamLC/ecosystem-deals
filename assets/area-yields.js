@@ -141,7 +141,8 @@
       return mine.map(function (r) {
         const s = r.stat;
         const dates = (s.from || '—') + (s.to && s.to !== s.from ? ' to ' + s.to : '');
-        return '<tr><td class="l">' + esc(r.city) + '</td><td class="l">' + esc(r.asset) + '</td><td>' + pct(s.mean) + '</td><td>' + pct(s.median) + '</td><td>' + s.n + '</td><td>' + pct(s.min) + ' – ' + pct(s.max) + '</td><td>' + esc(dates) + '</td></tr>';
+        const low = s.n < 3 ? ' · low sample' : '';
+        return '<tr' + (s.n < 3 ? ' class="niy-low"' : '') + '><td class="l">' + esc(r.city) + '</td><td class="l">' + esc(r.asset) + low + '</td><td>' + pct(s.mean) + '</td><td>' + pct(s.median) + '</td><td>' + s.n + '</td><td>' + pct(s.min) + ' – ' + pct(s.max) + '</td><td>' + esc(dates) + '</td></tr>';
       }).join('');
     }).join('');
     return '<div class="scroll"><table class="niy-avg"><thead><tr><th class="l">Area</th><th class="l">Asset</th><th>Mean</th><th>Median</th><th>n</th><th>Range</th><th>Dates</th></tr></thead><tbody>' + body + '</tbody></table></div>';
@@ -157,11 +158,11 @@
     const here = comps.filter(function (r) { return r.city === key; });
     const lines = here.map(function (r) {
       const link = r.url ? '<a href="' + esc(r.url) + '" target="_blank" rel="noopener">' + esc(r.source) + '</a>' : esc(r.source);
-      const niy = r.pct == null ? 'NIY unavailable' : pct(r.pct);
+      const niy = r.pct == null ? 'NIY unavailable' : pct(r.pct) + (r.review ? ' · review' : '');
       return '<tr><td class="l">' + esc(r.address) + '</td><td class="l">' + esc(r.asset) + '</td><td>' + niy + '</td><td>' + esc(r.basis) + '</td><td>' + esc(r.date || '—') + '</td><td class="l">' + link + '<div class="foot">' + esc(r.note) + (r.average === false ? ' Not in an average.' : '') + '</div></td></tr>';
     }).join('');
     host.innerHTML = '<h2>NIY by area and asset</h2><p class="lead">Mean, median, count, range and dates. A published NIY is the figure the source printed. A derived NIY uses only that comp’s stated rent and price, plus SDLT or LBTT and 1.8% fees. NIY unavailable is excluded. Glasgow and Edinburgh are listed even when the file has no rent.</p>' +
-      '<p class="foot">In this file: ' + counts.published + ' published, ' + counts.derived + ' derived, ' + counts.unavailable + ' unavailable.</p>' +
+      '<p class="foot">In this evidence file: ' + (counts.published || 0) + ' published, ' + (counts.derived || 0) + ' derived from passing rent and a sold price, ' + (counts.unverified || 0) + ' unverified (kept out), ' + (counts.unavailable || 0) + ' unavailable, ' + (counts.review || 0) + ' flagged because the NIY is outside 3% to 12%. ' + (counts.inAverage || 0) + ' comps go into an average. Averages with fewer than 3 comps are marked low sample and are not in the deal picker.</p>' +
       averageTable(avgs) +
       '<h3>' + esc(key) + ' comps</h3>' +
       (lines ? '<div class="scroll"><table><thead><tr><th class="l">Comp</th><th class="l">Asset</th><th>NIY</th><th>Basis</th><th>Date</th><th class="l">Source</th></tr></thead><tbody>' + lines + '</tbody></table></div>' : '<p>No comp loaded for ' + esc(key) + '.</p>') +
@@ -207,8 +208,8 @@
     const comps = niyBook();
     const rows = window.lcNiy ? window.lcNiy.averages(comps).filter(function (r) { return r.stat; }) : [];
     const hinted = window.lcNiy ? window.lcNiy.pickId(comps, state) : '';
-    const chosenId = state.niySet && rows.some(function (r) { return r.id === state.niySet; }) ? state.niySet : hinted;
-    const chosen = rows.filter(function (r) { return r.id === chosenId; })[0] || rows[0];
+    const chosenId = state.niySet && rows.some(function (r) { return r.id === state.niySet && r.stat.n >= 3; }) ? state.niySet : hinted;
+    const chosen = rows.filter(function (r) { return r.id === chosenId && r.stat.n >= 3; })[0];
     const mode = state.niyMode === 'average' ? 'average' : 'manual';
     const quote = cityKey(state.city) === 'Cheltenham' ? subjectQuote() : null;
     const avg = chosen && chosen.stat;
@@ -221,8 +222,10 @@
     box.innerHTML = '<h3>Yield you want to buy at</h3><div class="ctl"><label><input type="radio" name="niy_mode" value="manual"' + (mode === 'manual' ? ' checked' : '') + '> Enter a figure</label><label><input type="radio" name="niy_mode" value="average"' + (mode === 'average' ? ' checked' : '') + '> Use an area average</label></div>' +
       '<p class="niy-inuse"><b>In use:</b> ' + esc(mode === 'average' ? inUse : 'Your own figure') + '</p>' +
       '<label class="dlf"><small>Every area and asset type</small><select id="niy_set">' +
+      (!chosen ? '<option value="" selected>No average with 3 or more comps for this town</option>' : '') +
       rows.map(function (s) {
-        return '<option value="' + esc(s.id) + '"' + (chosen && s.id === chosen.id ? ' selected' : '') + '>' + esc(s.city) + ' · ' + esc(s.asset) + ' · mean ' + pct(s.stat.mean) + ' · median ' + pct(s.stat.median) + ' · n=' + s.stat.n + '</option>';
+        const low = s.stat.n < 3;
+        return '<option value="' + esc(s.id) + '"' + (low ? ' disabled' : '') + (chosen && s.id === chosen.id ? ' selected' : '') + '>' + esc(s.city) + ' · ' + esc(s.asset) + ' · mean ' + pct(s.stat.mean) + ' · median ' + pct(s.stat.median) + ' · n=' + s.stat.n + (low ? ' · low sample' : '') + '</option>';
       }).join('') + '</select></label>' +
       '<p class="foot">' + esc(matchNote) + (avg && avg.n < 5 ? ' Thin sample.' : '') + '</p>' +
       (quote ? '<p><b>' + (isStJames(state) ? 'Vendor quote on this asset. ' : 'Vendor quote on St James House, kept separate. ') + '</b>' + pct(quote.yield_pct) + ' published NIY, asking. <a href="' + esc(quote.url) + '" target="_blank" rel="noopener">Source</a>.</p>' : '') +
@@ -238,7 +241,7 @@
         state.niySet = (document.getElementById('niy_set') || {}).value || chosenId;
         if (el.value === 'average') {
           const next = rows.filter(function (s) { return s.id === state.niySet; })[0];
-          if (next && next.stat) applyAverage(next, state);
+          if (next && next.stat && next.stat.n >= 3) applyAverage(next, state);
         }
         if (typeof uwStore === 'function') uwStore();
         if (typeof uwUpdate === 'function') uwUpdate();
@@ -250,7 +253,7 @@
       state.niySet = sel.value;
       if (state.niyMode === 'average') {
         const next = rows.filter(function (s) { return s.id === sel.value; })[0];
-        if (next && next.stat) applyAverage(next, state);
+        if (next && next.stat && next.stat.n >= 3) applyAverage(next, state);
         else state.niyUserOverride = false;
       }
       if (typeof uwStore === 'function') uwStore();
@@ -277,7 +280,7 @@
         if (!nextRows.some(function (s) { return s.id === now.niySet; })) now.niySet = nextId;
         if (now.niyMode === 'average' && !now.niyUserOverride) {
           const next = nextRows.filter(function (s) { return s.id === now.niySet; })[0];
-          if (next && next.stat) applyAverage(next, now);
+          if (next && next.stat && next.stat.n >= 3) applyAverage(next, now);
         }
         paintDeal();
       });

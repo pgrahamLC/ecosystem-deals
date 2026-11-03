@@ -346,6 +346,8 @@ body.ios-deal select{appearance:none;background-image:linear-gradient(45deg,tran
 .niy-avg th,.niy-avg td{text-align:right;padding:12px 10px;border-bottom:1px solid #e6eef3}
 .niy-avg th:first-child,.niy-avg td:first-child,.niy-avg th:nth-child(2),.niy-avg td:nth-child(2){text-align:left}
 .niy-inuse{font-size:17px;margin:12px 0}
+.niy-low{color:#6a7782}
+#niy_set option:disabled{color:#8b95a1}
 #niy_set{min-height:44px;width:100%}
 .grade-legend{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;padding:12px 4px 4px;font-size:15px}
 .grade-legend details{flex-basis:100%}
