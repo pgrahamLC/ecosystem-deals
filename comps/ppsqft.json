@@ -1,0 +1,104 @@
+{
+  "schema": 1,
+  "status": "no_epc_file",
+  "reason": "No domestic EPC file was read. Bulk CSV and the search API both require a GOV.UK One Login bearer token from https://get-energy-performance-data.communities.gov.uk/. The unauthenticated call returns: Access denied. Bad authentication header. Scottish EPC and Registers of Scotland were not used: these sales are England and Wales Price Paid.",
+  "credential": {
+    "service": "Get energy performance of buildings data",
+    "account": "https://get-energy-performance-data.communities.gov.uk/",
+    "sign_in": "GOV.UK One Login",
+    "token": "Bearer token shown on the account page after sign-in",
+    "header": "Authorization: Bearer <token>",
+    "bulk": "https://api.get-energy-performance-data.communities.gov.uk/api/files/domestic/csv",
+    "bulk_info": "https://api.get-energy-performance-data.communities.gov.uk/api/files/domestic/csv/info",
+    "search": "https://api.get-energy-performance-data.communities.gov.uk/api/domestic/search?postcode=",
+    "field": "TOTAL_FLOOR_AREA (m2) on a domestic certificate",
+    "scotland": "https://www.scottishepcregister.org.uk/ is the Scotland source. These Price Paid files do not contain Scottish sales."
+  },
+  "constant_m2_to_sqft": 10.7639,
+  "sales": 141297,
+  "matched": 0,
+  "areas": {
+    "Manchester": {
+      "all": {
+        "sales": 53049,
+        "matched": 0,
+        "median_gbp_per_sqft": null
+      },
+      "D": {
+        "sales": 2202,
+        "matched": 0,
+        "median_gbp_per_sqft": null
+      },
+      "F": {
+        "sales": 18022,
+        "matched": 0,
+        "median_gbp_per_sqft": null
+      },
+      "S": {
+        "sales": 15375,
+        "matched": 0,
+        "median_gbp_per_sqft": null
+      },
+      "T": {
+        "sales": 17450,
+        "matched": 0,
+        "median_gbp_per_sqft": null
+      }
+    },
+    "Bristol": {
+      "all": {
+        "sales": 66813,
+        "matched": 0,
+        "median_gbp_per_sqft": null
+      },
+      "D": {
+        "sales": 3239,
+        "matched": 0,
+        "median_gbp_per_sqft": null
+      },
+      "F": {
+        "sales": 20664,
+        "matched": 0,
+        "median_gbp_per_sqft": null
+      },
+      "S": {
+        "sales": 14264,
+        "matched": 0,
+        "median_gbp_per_sqft": null
+      },
+      "T": {
+        "sales": 28646,
+        "matched": 0,
+        "median_gbp_per_sqft": null
+      }
+    },
+    "Cheltenham": {
+      "all": {
+        "sales": 21435,
+        "matched": 0,
+        "median_gbp_per_sqft": null
+      },
+      "D": {
+        "sales": 3451,
+        "matched": 0,
+        "median_gbp_per_sqft": null
+      },
+      "F": {
+        "sales": 5628,
+        "matched": 0,
+        "median_gbp_per_sqft": null
+      },
+      "S": {
+        "sales": 6474,
+        "matched": 0,
+        "median_gbp_per_sqft": null
+      },
+      "T": {
+        "sales": 5882,
+        "matched": 0,
+        "median_gbp_per_sqft": null
+      }
+    }
+  },
+  "matches": {}
+}
