@@ -170,7 +170,8 @@
       subArea: row.sub_area || townOf(row),
       rentWords: row.rent_text || '',
       rentKind: row.rent_basis || '',
-      priceKind: basisPrice
+      priceKind: basisPrice,
+      price_per_sqft: row.price_per_sqft > 0 ? row.price_per_sqft : null
     };
     if (!(row.rent_pa > 0) || basisPrice !== 'sold') {
       const why = row.rent_pa > 0 && basisPrice === 'guide'
@@ -348,6 +349,11 @@
     assetClass: assetClass,
     cityName: cityName,
     fromAuction: fromAuction,
+    sqftBeside: function (row) {
+      const n = Number(row && row.price_per_sqft);
+      if (isFinite(n) && n > 0) return '£' + Math.round(n).toLocaleString('en-GB') + '/sq ft';
+      return 'no floor area';
+    },
     fromEvidence: fromEvidence,
     book: book,
     averages: averages,

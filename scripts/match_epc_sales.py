@@ -18,10 +18,12 @@ is not applied to them.
 from __future__ import annotations
 
 import argparse
+import calendar
 import csv
 import json
 import os
 import re
+import urllib.parse
 import urllib.request
 from collections import defaultdict
 from datetime import datetime
@@ -82,6 +84,54 @@ def street_key(value: str) -> str:
 
 def numbers(value: str) -> list[str]:
     return re.findall(r"\d+[A-Z]?", (value or "").upper())
+
+
+FULL_PC = re.compile(r"\b([A-Z]{1,2}\d[A-Z\d]?)\s*(\d[A-Z]{2})\b", re.I)
+PLACE_TAIL = re.compile(
+    r",\s*(?:greater manchester|manchester|bristol|cheltenham|gloucestershire|edinburgh|glasgow|salford|stockport|bolton|oldham|wigan|warrington|lancashire|cheshire|avon|city of)\b.*$",
+    re.I,
+)
+
+
+def sale_day(value: str) -> str:
+    text = str(value or "").strip()
+    if re.fullmatch(r"\d{4}-\d{2}-\d{2}", text[:10]) and len(text) >= 10:
+        return text[:10]
+    if re.fullmatch(r"\d{4}-\d{2}", text[:7]):
+        year, month = int(text[:4]), int(text[5:7])
+        if 1 <= month <= 12:
+            return f"{year:04d}-{month:02d}-{calendar.monthrange(year, month)[1]:02d}"
+    return ""
+
+
+def comp_to_sale(row: dict) -> dict | None:
+    """Turn one auction comp into the same fields the Price Paid matcher uses."""
+    pc = norm_postcode(row.get("postcode") or "")
+    address = row.get("address") or ""
+    if not re.fullmatch(r"[A-Z]{1,2}\d[A-Z\d]? \d[A-Z]{2}", pc):
+        found = FULL_PC.search(address)
+        pc = norm_postcode(found.group(0)) if found else ""
+    if not re.fullmatch(r"[A-Z]{1,2}\d[A-Z\d]? \d[A-Z]{2}", pc):
+        return None
+    cleaned = re.sub(r"\([^)]*\)", " ", address)
+    cleaned = FULL_PC.sub(" ", cleaned)
+    cleaned = PLACE_TAIL.sub(" ", cleaned)
+    nums = numbers(cleaned)
+    # Three or more numbers is a range or several buildings, not one dwelling.
+    if len(set(nums)) > 2 or not nums:
+        return None
+    date = sale_day(row.get("sold_date") or row.get("date") or "")
+    price = row.get("sold_price") or row.get("price")
+    if not date or not price:
+        return None
+    return {
+        "date": date,
+        "price": price,
+        "postcode": pc,
+        "paon": nums[-1],
+        "saon": "" if len(nums) == 1 or nums[0] == nums[-1] else nums[0],
+        "street": re.sub(r"\d+[A-Z]?", " ", cleaned),
+    }
 
 
 def sale_parts(row: dict) -> dict:
@@ -318,10 +368,109 @@ def build_report(epc_rows) -> dict:
     return report
 
 
+def api_json(token: str, url: str) -> dict:
+    request = urllib.request.Request(url, headers={
+        "Authorization": "Bearer " + token,
+        "Accept": "application/json",
+        "User-Agent": "LauritoCapital-comps/1.0",
+    })
+    with urllib.request.urlopen(request, timeout=60) as response:
+        return json.loads(response.read().decode())
+
+
+def certificates_for_postcodes(token: str, postcodes: set[str]) -> list[dict]:
+    """Search the domestic register and read each certificate's floor area."""
+    rows = []
+    seen_numbers = set()
+    for postcode in sorted(postcodes):
+        page = 1
+        while page:
+            payload = api_json(token, API + "/api/domestic/search?postcode=" + urllib.parse.quote(postcode) + "&page_size=100&current_page=" + str(page))
+            fresh = 0
+            for item in payload.get("data") or []:
+                number = item.get("certificateNumber") or item.get("certificate_number")
+                if not number or number in seen_numbers:
+                    continue
+                seen_numbers.add(number)
+                fresh += 1
+                cert = api_json(token, API + "/api/certificate?certificate_number=" + urllib.parse.quote(number))
+                data = cert.get("data") or cert
+                if isinstance(data, list):
+                    data = data[0] if data else {}
+                lodged = str(data.get("registration_date") or data.get("inspection_date") or "")[:10]
+                rows.append({
+                    "ADDRESS1": data.get("address_line_1") or "",
+                    "ADDRESS2": data.get("address_line_2") or "",
+                    "POSTCODE": data.get("postcode") or postcode,
+                    "TOTAL_FLOOR_AREA": data.get("total_floor_area"),
+                    "LODGEMENT_DATE": lodged,
+                })
+            if not fresh:
+                break
+            page = (payload.get("pagination") or {}).get("nextPage") or 0
+        print("postcode_done", postcode, "certificates", len(rows), flush=True)
+    return rows
+
+
+def apply_yield_matches(path: Path, epc_rows) -> dict:
+    grouped = index_certificates(epc_rows)
+    document = json.loads(path.read_text())
+    matched = 0
+    eligible = 0
+    by_city = {}
+    for row in document.get("rows") or []:
+        sale = comp_to_sale(row)
+        hit = match_sale(sale, grouped) if sale else None
+        if sale:
+            eligible += 1
+        city = row.get("city") or "Unknown"
+        slot = by_city.setdefault(city, {"comps": 0, "eligible": 0, "matched": 0})
+        slot["comps"] += 1
+        if sale:
+            slot["eligible"] += 1
+        if hit:
+            matched += 1
+            slot["matched"] += 1
+            row["floor_area_m2"] = hit["floor_area_m2"]
+            row["floor_area_sqft"] = hit["floor_area_sqft"]
+            row["price_per_sqft"] = hit["price_per_sqft"]
+            row["epc_match"] = hit["epc_match"]
+            row["epc_date"] = hit["epc_date"]
+        else:
+            row["floor_area_m2"] = None
+            row["floor_area_sqft"] = None
+            row["price_per_sqft"] = None
+            row["epc_match"] = None
+            row["epc_date"] = None
+    path.write_text(json.dumps(document, indent=2) + "\n")
+    return {"comps": len(document.get("rows") or []), "eligible": eligible, "matched": matched, "by_city": by_city}
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Match Price Paid sales to domestic EPC floor area.")
     parser.add_argument("--epc-csv", type=Path, help="Domestic certificate CSV with TOTAL_FLOOR_AREA and LODGEMENT_DATE")
+    parser.add_argument("--yields", type=Path, help="Auction comps JSON to attach £/sq ft")
+    parser.add_argument("--token-file", type=Path, help="File containing only the EPC bearer token")
     args = parser.parse_args()
+    if args.yields:
+        token = args.token_file.read_text().strip() if args.token_file else os.environ.get("EPC_BEARER_TOKEN", "").strip()
+        if not token:
+            raise SystemExit("A token file is required to read domestic certificates for the comps.")
+        postcodes = set()
+        for row in json.loads(args.yields.read_text()).get("rows") or []:
+            sale = comp_to_sale(row)
+            if not sale:
+                continue
+            pc = sale["postcode"]
+            # This token's register is England and Wales. Scottish postcodes stay unmatched.
+            if pc.startswith("EH") or (pc.startswith("G") and not pc.startswith("GL")):
+                continue
+            postcodes.add(pc)
+        print("comp_postcodes", len(postcodes), flush=True)
+        rows = certificates_for_postcodes(token, postcodes)
+        summary = apply_yield_matches(args.yields, rows)
+        print(json.dumps(summary))
+        return
     token = os.environ.get("EPC_BEARER_TOKEN", "").strip()
     if args.epc_csv:
         report = build_report(load_epc_csv(args.epc_csv))

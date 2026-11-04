@@ -2,7 +2,7 @@
 """Matcher rules: exact and fuzzy address, date choice, and no guessed area."""
 import unittest
 
-from match_epc_sales import index_certificates, match_sale
+from match_epc_sales import comp_to_sale, index_certificates, match_sale
 
 SALE = {
     "id": "sale-1",
@@ -65,6 +65,42 @@ class MatchTests(unittest.TestCase):
             cert(ADDRESS2="10 HIGH STREET SOUTH", LODGEMENT_DATE="2021-01-01", TOTAL_FLOOR_AREA="80"),
         ])
         self.assertIsNone(match_sale(SALE, grouped))
+
+    def test_comp_address_uses_the_building_number_and_full_postcode(self):
+        sale = comp_to_sale({
+            "address": "Apartment 307, 6 Ludgate Hill, Manchester",
+            "postcode": "M4 4BW",
+            "sold_price": 86000,
+            "sold_date": "2026-07-01",
+        })
+        self.assertEqual(sale["paon"], "6")
+        self.assertEqual(sale["saon"], "307")
+        self.assertEqual(sale["postcode"], "M4 4BW")
+        grouped = index_certificates([cert(
+            ADDRESS1="Apartment 307", ADDRESS2="6 Ludgate Hill", POSTCODE="M4 4BW",
+            LODGEMENT_DATE="2024-01-01", TOTAL_FLOOR_AREA="55",
+        )])
+        hit = match_sale(sale, grouped)
+        self.assertEqual(hit["epc_match"], "exact")
+        self.assertEqual(hit["floor_area_m2"], 55.0)
+
+    def test_month_precision_sale_date_uses_the_end_of_that_month(self):
+        sale = comp_to_sale({
+            "address": "344 Stapleton Road, Easton",
+            "postcode": "BS5 0NN",
+            "sold_price": 752500,
+            "sold_date": "2026-04",
+        })
+        self.assertEqual(sale["date"], "2026-04-30")
+        self.assertEqual(sale["paon"], "344")
+
+    def test_outward_only_postcode_is_not_a_match(self):
+        self.assertIsNone(comp_to_sale({
+            "address": "Apartment 504, 25 Simpson Street, Manchester, M4",
+            "postcode": "",
+            "sold_price": 98000,
+            "sold_date": "2026-10-21",
+        }))
 
     def test_blank_or_absurd_area_is_ignored(self):
         grouped = index_certificates([
