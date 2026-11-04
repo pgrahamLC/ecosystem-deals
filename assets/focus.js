@@ -155,7 +155,7 @@
     ];
   }
 
-  const YIELD = { Manchester: '…', Cheltenham: '…', Bristol: '…', Edinburgh: '…' };
+  const PPS = { Manchester: '…', Bristol: '…', Cheltenham: '…', Glasgow: '…', Edinburgh: '…' };
   let dealStep = 0;
 
   function compact(n) {
@@ -185,26 +185,39 @@
     return t;
   }
 
-  function loadYields() {
-    Promise.all([
-      fetch('comps/area-yields.json').then(function (r) { return r.json(); }),
-      fetch('comps/yields.json').then(function (r) { return r.json(); })
-    ]).then(function (pair) {
-      if (!window.lcNiy) return;
-      const comps = window.lcNiy.book(pair[0], pair[1]);
-      const avgs = window.lcNiy.averages(comps);
-      ['Manchester', 'Cheltenham', 'Bristol', 'Edinburgh'].forEach(function (city) {
-        const rows = avgs.filter(function (row) { return row.city === city && window.lcNiy.usableAverage(row); });
-        rows.sort(function (a, b) { return b.stat.n - a.stat.n; });
-        const best = rows[0];
-        YIELD[city] = best
-          ? best.stat.mean.toFixed(1) + '% residential · n=' + best.stat.n
-          : 'No residential average with 3 or more comps';
+  function moneySqft(n) {
+    if (n == null || !isFinite(+n)) return '';
+    return '£' + Math.round(+n).toLocaleString('en-GB');
+  }
+  function saleCount(n) {
+    return Number(n).toLocaleString('en-GB');
+  }
+  function priceHtml(city) {
+    const row = PPS[city];
+    if (row === '…') return '…';
+    if (!row || row.floor === false) return 'no floor-area data';
+    const all = row.all;
+    if (!all || all.median_gbp_per_sqft == null || !(all.n >= 5)) return 'no floor-area data';
+    let html = '<b>' + moneySqft(all.median_gbp_per_sqft) + '/sq ft</b> · n=' + saleCount(all.n);
+    [['houses', 'Houses'], ['flats', 'Flats']].forEach(function (pair) {
+      const block = row[pair[0]];
+      if (!block || block.median_gbp_per_sqft == null || !(block.n >= 5)) return;
+      html += '<span class="ios-city-split">' + pair[1] + ' ' + moneySqft(block.median_gbp_per_sqft) + '/sq ft · n=' + saleCount(block.n) + '</span>';
+    });
+    return html;
+  }
+
+  function loadPrices() {
+    const cities = ['Manchester', 'Bristol', 'Cheltenham', 'Glasgow', 'Edinburgh'];
+    fetch('comps/home-ppsqft.json').then(function (r) { return r.json(); }).then(function (data) {
+      const areas = (data && data.areas) || {};
+      cities.forEach(function (city) {
+        PPS[city] = Object.prototype.hasOwnProperty.call(areas, city) && areas[city] ? areas[city] : { floor: false };
       });
       if (document.body.classList.contains('ios-find')) paintFind();
     }).catch(function () {
-      ['Manchester', 'Cheltenham', 'Bristol', 'Edinburgh'].forEach(function (city) {
-        if (YIELD[city] === '…') YIELD[city] = 'No residential average with 3 or more comps';
+      cities.forEach(function (city) {
+        if (PPS[city] === '…') PPS[city] = { missing: true };
       });
       if (document.body.classList.contains('ios-find')) paintFind();
     });
@@ -230,12 +243,15 @@
   }
 
   function paintFind() {
-    const towns = [['Manchester', 'Manchester'], ['Cheltenham', 'Cheltenham'], ['City Of Bristol', 'Bristol'], ['Edinburgh', 'Edinburgh']];
+    const towns = [['Manchester', 'Manchester'], ['City Of Bristol', 'Bristol'], ['Cheltenham', 'Cheltenham'], ['Glasgow', 'Glasgow'], ['Edinburgh', 'Edinburgh']];
     const host = screenHost();
-    host.innerHTML = '<p class="lc-kicker">Find</p><h1>Choose a town</h1><p class="lc-purpose">Tap a town to see who has to sell there.</p><div class="ios-cities">' +
+    host.innerHTML = '<p class="lc-kicker">Find</p><h1>Choose a town</h1><p class="lc-purpose">Tap a town to see who has to sell there. The price is the median of matched Land Registry sales.</p><div class="ios-cities">' +
       towns.map(function (t) {
         const n = leadCount(t[0]);
-        return '<button type="button" class="ios-city" data-city="' + esc(t[0]) + '"><span class="ios-city-name">' + esc(t[1] === 'Manchester' ? 'Greater Manchester' : t[1]) + '</span><span class="ios-city-meta">' + (n == null ? 'A/B/C leads' : n + ' A/B/C lead' + (n === 1 ? '' : 's')) + '</span><span class="ios-city-yield">' + esc(YIELD[t[1]] || '') + '</span></button>';
+        const label = t[1] === 'Manchester' ? 'Greater Manchester' : t[1];
+        const price = PPS[t[1]];
+        const priceText = price && price.missing ? '£/sq ft unavailable' : priceHtml(t[1]);
+        return '<button type="button" class="ios-city" data-city="' + esc(t[0]) + '"><span class="ios-city-name">' + esc(label) + '</span><span class="ios-city-meta">' + (n == null ? 'A/B/C leads' : n + ' A/B/C lead' + (n === 1 ? '' : 's')) + '</span><span class="ios-city-yield">' + priceText + '</span></button>';
       }).join('') + '</div><button type="button" class="ios-text" id="lc_details">' + (document.body.classList.contains('ios-details') ? 'Hide details' : 'Details') + '</button>';
     host.querySelectorAll('.ios-city').forEach(function (btn) {
       btn.onclick = function () { openCity(btn.getAttribute('data-city')); };
@@ -678,7 +694,7 @@
     }, 0);
   });
 
-  loadYields();
+  loadPrices();
   const watch = new MutationObserver(function () {
     if (!document.body.classList.contains('ios-deal')) return;
     const box = document.getElementById('niy_box');
