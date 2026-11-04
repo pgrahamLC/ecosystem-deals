@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   const TYPE_LABEL = {all: 'All existing homes', F: 'Flat', T: 'Terraced', S: 'Semi-detached', D: 'Detached'};
-  const state = {summary: null, city: 'Manchester', level: 'la', area: '', type: 'all', from: '2016', to: '2026', q: '', sales: {}, yields: null, rents: null, lha: null, checks: null};
+  const state = {summary: null, city: 'Manchester', level: 'la', area: '', type: 'all', from: '2016', to: '2026', q: '', sales: {}, yields: null, rents: null, lha: null, checks: null, ppsqft: null, saleSort: {key: 'date', dir: 'desc'}};
 
   function esc(s) {
     return (typeof window.esc === 'function') ? window.esc(s) : String(s == null ? '' : s);
@@ -84,14 +84,19 @@
     sec.id = 'comps_view';
     sec.className = 'hidden';
     sec.style.margin = '16px 24px';
-    sec.innerHTML = '<div class="card"><h2>Comps: what did homes sell for, and what is the rent evidence?</h2><p class="lead">Manchester, Cheltenham and Bristol only. Sales are HM Land Registry Price Paid from 2016, standard existing homes. Rents are the ONS local-authority average, not a street comp. A yield is shown only where one public auction lot states both a price and a rent.</p><div id="comps_meta" class="foot">Loading Price Paid summary…</div><div class="ctl" style="margin-top:10px"><label>Place <select id="comp_city"></select></label><label>Cut <select id="comp_level"><option value="la">Whole local authority</option><option value="district">Postcode district</option><option value="sector">Postcode sector</option></select></label><label>Area <select id="comp_area"></select></label><label>Type <select id="comp_type"></select></label><label>From <select id="comp_from"></select></label><label>To <select id="comp_to"></select></label><input id="comp_q" placeholder="Filter area list" style="width:160px"></div><div id="comp_table"></div><div class="ctl"><button class="btn" id="comp_load" type="button">Load individual sales</button><button class="btn sec" id="comp_csv" type="button">Download this filter (CSV)</button><span class="foot" id="comp_sales_note"></span></div><div id="comp_sales"></div></div><div class="card" id="comp_area_yields"><p class="foot">Loading yields by place…</p></div><div class="g2"><div class="card" id="comp_rents"></div><div class="card" id="comp_yields"></div></div>';
+    sec.innerHTML = '<div class="card"><h2>Comps: what did homes sell for, and what is the rent evidence?</h2><p class="lead">Manchester, Cheltenham and Bristol only. Sales are HM Land Registry Price Paid from 2016, standard existing homes. Rents are the ONS local-authority average, not a street comp. A yield is shown only where one public auction lot states both a price and a rent. £/sq ft is the sale price divided by the floor area on a matched domestic EPC, and is blank when that certificate is missing.</p><div id="comps_meta" class="foot">Loading Price Paid summary…</div><div class="ctl" style="margin-top:10px"><label>Place <select id="comp_city"></select></label><label>Cut <select id="comp_level"><option value="la">Whole local authority</option><option value="district">Postcode district</option><option value="sector">Postcode sector</option></select></label><label>Area <select id="comp_area"></select></label><label>Type <select id="comp_type"></select></label><label>From <select id="comp_from"></select></label><label>To <select id="comp_to"></select></label><input id="comp_q" placeholder="Filter area list" style="width:160px"></div><div id="comp_table"></div><div id="comp_ppsqft"></div><div class="ctl"><button class="btn" id="comp_load" type="button">Load individual sales</button><button class="btn sec" id="comp_csv" type="button">Download this filter (CSV)</button><span class="foot" id="comp_sales_note"></span></div><div id="comp_sales"></div></div><div class="card" id="comp_area_yields"><p class="foot">Loading yields by place…</p></div><div class="g2"><div class="card" id="comp_rents"></div><div class="card" id="comp_yields"></div></div>';
     (document.getElementById('app') || document.body).appendChild(sec);
-    sec.querySelector('#comp_city').onchange = function (e) { state.city = e.target.value; state.area = ''; fillAreas(); draw(); drawRents(); drawYields(); if (window.lcDrawAreaYields) window.lcDrawAreaYields(); };
-    sec.querySelector('#comp_level').onchange = function (e) { state.level = e.target.value; state.area = ''; fillAreas(); draw(); };
-    sec.querySelector('#comp_area').onchange = function (e) { state.area = e.target.value; draw(); };
-    sec.querySelector('#comp_type').onchange = function (e) { state.type = e.target.value; draw(); };
-    sec.querySelector('#comp_from').onchange = function (e) { state.from = e.target.value; draw(); };
-    sec.querySelector('#comp_to').onchange = function (e) { state.to = e.target.value; draw(); };
+    sec.querySelector('#comp_city').onchange = function (e) { state.city = e.target.value; state.area = ''; state.lastFilter = null; fillAreas(); draw(); drawPpsqft(null); drawRents(); drawYields(); if (window.lcDrawAreaYields) window.lcDrawAreaYields(); };
+    function refreshLoadedSales() {
+      const slug = {Manchester: 'manchester', Cheltenham: 'cheltenham', Bristol: 'bristol'}[state.city];
+      if (state.sales[slug] && document.getElementById('comp_sales').querySelector('table')) loadSales(true);
+      else drawPpsqft(null);
+    }
+    sec.querySelector('#comp_level').onchange = function (e) { state.level = e.target.value; state.area = ''; fillAreas(); draw(); refreshLoadedSales(); };
+    sec.querySelector('#comp_area').onchange = function (e) { state.area = e.target.value; draw(); refreshLoadedSales(); };
+    sec.querySelector('#comp_type').onchange = function (e) { state.type = e.target.value; draw(); refreshLoadedSales(); };
+    sec.querySelector('#comp_from').onchange = function (e) { state.from = e.target.value; draw(); refreshLoadedSales(); };
+    sec.querySelector('#comp_to').onchange = function (e) { state.to = e.target.value; draw(); refreshLoadedSales(); };
     sec.querySelector('#comp_q').oninput = function (e) { state.q = e.target.value.trim().toUpperCase(); fillAreas(); };
     sec.querySelector('#comp_load').onclick = function () { loadSales(true); };
     sec.querySelector('#comp_csv').onclick = function () { downloadCsv(); };
@@ -221,6 +226,64 @@
     });
   }
 
+  function ppsqftOf(row) {
+    const hit = state.ppsqft && state.ppsqft.matches && state.ppsqft.matches[row.id];
+    const raw = hit && hit.price_per_sqft != null ? hit.price_per_sqft : row.price_per_sqft;
+    const n = Number(raw);
+    if (!isFinite(n) || n <= 0) return null;
+    return {value: n, match: (hit && hit.epc_match) || row.epc_match || '', date: (hit && hit.epc_date) || row.epc_date || '', sqft: (hit && hit.floor_area_sqft) || row.floor_area_sqft || ''};
+  }
+  function medianOf(values) {
+    if (!values || values.length < 5) return null;
+    const s = values.slice().sort(function (a, b) { return a - b; });
+    const mid = Math.floor(s.length / 2);
+    return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
+  }
+  function drawPpsqft(rows) {
+    const host = document.getElementById('comp_ppsqft');
+    if (!host) return;
+    const file = state.ppsqft;
+    const note = file && file.reason ? file.reason : '£/sq ft stays blank until a domestic EPC floor area is matched. Nothing is guessed.';
+    const types = ['all', 'D', 'S', 'T', 'F'];
+    let body = '';
+    if (rows) {
+      body = types.map(function (typ) {
+        const subset = typ === 'all' ? rows : rows.filter(function (r) { return r.type === typ; });
+        const nums = subset.map(ppsqftOf).filter(Boolean).map(function (x) { return x.value; });
+        const med = medianOf(nums);
+        return '<tr><td>' + esc(TYPE_LABEL[typ] || typ) + '</td><td>' + subset.length + '</td><td>' + nums.length + '</td><td>' + (med == null ? '' : money(med)) + '</td></tr>';
+      }).join('');
+    } else if (file && file.areas && file.areas[state.city]) {
+      const area = file.areas[state.city];
+      body = types.map(function (typ) {
+        const block = area[typ];
+        if (!block) return '';
+        return '<tr><td>' + esc(TYPE_LABEL[typ] || typ) + '</td><td>' + (block.sales || 0) + '</td><td>' + (block.matched || 0) + '</td><td>' + (block.median_gbp_per_sqft == null ? '' : money(block.median_gbp_per_sqft)) + '</td></tr>';
+      }).join('');
+    }
+    host.innerHTML = '<h3>Median £/sq ft</h3><p class="foot">' + esc(note) + ' Floor area is TOTAL_FLOOR_AREA in m² times 10.7639. A median is quoted only with 5 or more confident matches. Auction comps have no floor area on the lot, so £/sq ft is not added there.</p>' +
+      (body ? '<div class="scroll"><table><thead><tr><th>Type</th><th>Sales</th><th>Matched n</th><th>Median £/sq ft</th></tr></thead><tbody>' + body + '</tbody></table></div>' : '');
+  }
+  function sortSales(rows) {
+    const key = state.saleSort.key;
+    const dir = state.saleSort.dir === 'asc' ? 1 : -1;
+    return rows.slice().sort(function (a, b) {
+      const av = key === 'price_per_sqft' ? (ppsqftOf(a) && ppsqftOf(a).value) : key === 'price' ? Number(a.price) : key === 'address' ? [a.saon, a.paon, a.street].filter(Boolean).join(' ') : (a[key] || '');
+      const bv = key === 'price_per_sqft' ? (ppsqftOf(b) && ppsqftOf(b).value) : key === 'price' ? Number(b.price) : key === 'address' ? [b.saon, b.paon, b.street].filter(Boolean).join(' ') : (b[key] || '');
+      const aBlank = av == null || av === '';
+      const bBlank = bv == null || bv === '';
+      if (aBlank && bBlank) return 0;
+      if (aBlank) return 1;
+      if (bBlank) return -1;
+      if (av < bv) return -1 * dir;
+      if (av > bv) return 1 * dir;
+      return 0;
+    });
+  }
+  function saleHeader(key, label, left) {
+    const mark = state.saleSort.key === key ? (state.saleSort.dir === 'asc' ? ' ↑' : ' ↓') : '';
+    return '<th' + (left ? ' class="l"' : '') + '><button type="button" data-sort="' + key + '" class="btn sec" style="min-height:36px">' + label + mark + '</button></th>';
+  }
   async function loadSales(render) {
     const slug = {Manchester: 'manchester', Cheltenham: 'cheltenham', Bristol: 'bristol'}[state.city];
     if (!state.sales[slug]) {
@@ -231,15 +294,30 @@
     }
     const rows = filteredSales(state.sales[slug]);
     state.lastFilter = rows;
-    document.getElementById('comp_sales_note').textContent = rows.length + ' standard existing-home sales in this filter. Every one is NIY unavailable: Price Paid does not state the rent, so these rows are excluded from the area averages. The table shows the latest 200.';
+    const matched = rows.filter(function (r) { return ppsqftOf(r); }).length;
+    document.getElementById('comp_sales_note').textContent = rows.length + ' standard existing-home sales in this filter. ' + matched + ' have a confident EPC floor area. £/sq ft is blank on the rest. NIY stays unavailable because Price Paid does not state the rent. The table shows 200 rows.';
+    drawPpsqft(rows);
     if (!render) return rows;
-    const shown = rows.slice().sort(function (a, b) { return b.date.localeCompare(a.date); }).slice(0, 200);
-    document.getElementById('comp_sales').innerHTML = '<div class="scroll" style="max-height:420px"><table><thead><tr><th>Date</th><th class="l">Address</th><th>Postcode</th><th>Type</th><th>Tenure</th><th>Price</th><th>NIY</th><th class="l">Basis</th><th></th></tr></thead><tbody>' +
+    const shown = sortSales(rows).slice(0, 200);
+    const host = document.getElementById('comp_sales');
+    host.innerHTML = '<div class="scroll" style="max-height:420px"><table><thead><tr>' +
+      saleHeader('date', 'Date') + saleHeader('address', 'Address', true) + saleHeader('postcode', 'Postcode') + saleHeader('type', 'Type') + saleHeader('tenure', 'Tenure') + saleHeader('price', 'Price') + saleHeader('price_per_sqft', '£/sq ft') +
+      '<th>NIY</th><th class="l">Basis</th><th></th></tr></thead><tbody>' +
       shown.map(function (r) {
         const addr = [r.saon, r.paon, r.street].filter(Boolean).join(', ');
         const href = 'https://landregistry.data.gov.uk/data/ppi/transaction/' + encodeURIComponent(r.id) + '/current';
-        return '<tr><td>' + esc(r.date) + '</td><td class="l">' + esc(addr) + '</td><td>' + esc(r.postcode) + '</td><td>' + esc(TYPE_LABEL[r.type] || r.type) + '</td><td>' + esc(r.tenure) + '</td><td>' + money(r.price) + '</td><td>NIY unavailable</td><td class="l">Unavailable. Land Registry does not publish the rent, so none is inferred.</td><td><a href="' + href + '" target="_blank" rel="noopener">Land Registry</a></td></tr>';
+        const area = ppsqftOf(r);
+        const cell = area ? '<span title="' + esc(area.match + (area.date ? ' · EPC ' + area.date : '') + (area.sqft ? ' · ' + area.sqft + ' sq ft' : '')) + '">' + money(area.value) + '</span>' : '';
+        return '<tr><td>' + esc(r.date) + '</td><td class="l">' + esc(addr) + '</td><td>' + esc(r.postcode) + '</td><td>' + esc(TYPE_LABEL[r.type] || r.type) + '</td><td>' + esc(r.tenure) + '</td><td>' + money(r.price) + '</td><td>' + cell + '</td><td>NIY unavailable</td><td class="l">Unavailable. Land Registry does not publish the rent, so none is inferred.</td><td><a href="' + href + '" target="_blank" rel="noopener">Land Registry</a></td></tr>';
       }).join('') + '</tbody></table></div>';
+    host.querySelectorAll('button[data-sort]').forEach(function (btn) {
+      btn.onclick = function () {
+        const key = btn.getAttribute('data-sort');
+        if (state.saleSort.key === key) state.saleSort.dir = state.saleSort.dir === 'asc' ? 'desc' : 'asc';
+        else state.saleSort = {key: key, dir: key === 'date' || key === 'price' || key === 'price_per_sqft' ? 'desc' : 'asc'};
+        loadSales(true);
+      };
+    });
     return rows;
   }
 
@@ -249,7 +327,7 @@
       document.getElementById('comp_sales_note').textContent = 'Load individual sales first, then download the filter.';
       return;
     }
-    const cols = ['id', 'date', 'price', 'postcode', 'sector', 'type', 'tenure', 'paon', 'saon', 'street', 'local_authority'];
+    const cols = ['id', 'date', 'price', 'postcode', 'sector', 'type', 'tenure', 'paon', 'saon', 'street', 'local_authority', 'floor_area_m2', 'floor_area_sqft', 'price_per_sqft', 'epc_match', 'epc_date'];
     const csv = [cols.join(',')].concat(rows.map(function (r) {
       return cols.map(function (c) {
         const v = r[c] == null ? '' : String(r[c]);
@@ -294,7 +372,7 @@
       (matched.length ? '<div class="scroll" style="max-height:420px"><table><thead><tr><th>Sold</th><th class="l">Lot</th><th>Price</th><th>Rent / year</th><th>NIY</th><th class="l">Basis</th></tr></thead><tbody>' +
         matched.map(function (r) {
           const row = niy ? niy.fromAuction(r) : { pct: null, basis: 'unavailable', note: 'NIY unavailable.' };
-          const shown = row.pct == null ? 'NIY unavailable' : row.pct.toFixed(2) + '%' + (row.review ? ' · review' : '');
+          const shown = (row.pct == null ? 'NIY unavailable' : row.pct.toFixed(2) + '%' + (row.review ? ' · review' : '')) + ' <span class="foot">' + esc(niy && niy.sqftBeside ? niy.sqftBeside(r) : (window.lcNiy && window.lcNiy.sqftBeside ? window.lcNiy.sqftBeside(r) : 'no floor area')) + '</span>';
           return '<tr><td>' + esc(r.sold_date || 'Unknown') + '</td><td class="l"><a href="' + esc(r.url) + '" target="_blank" rel="noopener">' + esc(r.address) + '</a><div class="foot">' + esc(r.postcode || '') + ' · ' + esc(r.auctioneer || '') + ' · ' + esc(niy ? niy.assetClass(r.type) : r.type) + '</div></td><td>' + money(r.sold_price || r.guide_price) + '</td><td>' + money(r.rent_pa) + '</td><td>' + shown + '</td><td class="l">' + esc(row.basis) + '. ' + esc(row.note) + '</td></tr>';
         }).join('') + '</tbody></table></div>' : '<p>No lot in this cut. No yield is inferred from ONS rent or from LHA.</p>');
   }
@@ -314,6 +392,7 @@
         fetch('comps/yields.json').then(function (r) { return r.ok ? r.json() : {rows: [], rule: ''}; })
       ]);
       state.rents = rents; state.lha = lha; state.yields = yields;
+      state.ppsqft = await fetch('comps/ppsqft.json').then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
       const citySel = document.getElementById('comp_city');
       Object.keys(state.summary.places).forEach(function (name) {
         const o = document.createElement('option');
@@ -325,6 +404,7 @@
     }
     fillAreas();
     draw();
+    drawPpsqft(state.lastFilter || null);
     drawRents();
     drawYields();
     if (window.lcDrawAreaYields) window.lcDrawAreaYields();

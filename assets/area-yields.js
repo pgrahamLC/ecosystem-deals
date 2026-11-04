@@ -160,7 +160,7 @@
     const here = comps.filter(function (r) { return r.city === key; });
     const lines = here.map(function (r) {
       const link = r.url ? '<a href="' + esc(r.url) + '" target="_blank" rel="noopener">' + esc(r.source) + '</a>' : esc(r.source);
-      const niy = r.pct == null ? 'NIY unavailable' : pct(r.pct) + (r.review ? ' · review' : '');
+      const niy = (r.pct == null ? 'NIY unavailable' : pct(r.pct) + (r.review ? ' · review' : '')) + ' <span class="foot">' + esc(window.lcNiy && window.lcNiy.sqftBeside ? window.lcNiy.sqftBeside(r) : 'no floor area') + '</span>';
       const place = window.lcNiy && window.lcNiy.areaLabel ? window.lcNiy.areaLabel(r.city) : r.city;
       const town = r.subArea && r.subArea !== place ? r.subArea : '';
       const where = esc(r.address) + (town ? ' <span class="foot">' + esc(town) + (place ? ' · ' + esc(place) : '') + '</span>' : (place && place !== r.city ? ' <span class="foot">' + esc(place) + '</span>' : ''));
@@ -251,7 +251,7 @@
       (mode === 'average' && avg ? '<p><button class="btn sec" id="niy_reset" type="button">Reset to the ' + pct(avg.mean) + ' mean (n=' + avg.n + ')</button></p>' : '') +
       '<details class="ios-disc"><summary>Mean, median, n, range and dates</summary>' + averageTable(window.lcNiy ? window.lcNiy.averages(comps) : []) +
       (chosen ? '<p class="foot">Comps in the selected average</p><ul>' + chosen.rows.map(function (r) {
-        return '<li>' + esc(r.address) + (r.subArea ? ' · ' + esc(r.subArea) : '') + ' · ' + (r.pct == null ? 'NIY unavailable' : pct(r.pct)) + ' · ' + esc(r.basis) + '</li>';
+        return '<li>' + esc(r.address) + (r.subArea ? ' · ' + esc(r.subArea) : '') + ' · ' + (r.pct == null ? 'NIY unavailable' : pct(r.pct)) + ' <span class="foot">' + esc(window.lcNiy && window.lcNiy.sqftBeside ? window.lcNiy.sqftBeside(r) : 'no floor area') + '</span> · ' + esc(r.basis) + '</li>';
       }).join('') + '</ul>' : '') + '</details>' +
       '<p class="foot">Changing the NIY box after you choose an average keeps your figure. The list still shows which average you picked.</p>';
     box.querySelectorAll('input[name="niy_mode"]').forEach(function (el) {
