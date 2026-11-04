@@ -16,7 +16,8 @@
     ['accom', 'Demand'],
     ['pipeline', 'Pipeline'],
     ['shortlist', 'Shortlist'],
-    ['overview', 'Overview']
+    ['overview', 'Overview'],
+    ['rentgap', 'Rent gap']
   ];
   const COPY = {
     assets: ['Find', 'Where to look', 'Manchester, Cheltenham, Bristol and Edinburgh. Open a town, then a lead, then a deal.'],
@@ -269,6 +270,14 @@
     screenHost().hidden = mode === 'auctions';
     if (mode === 'auctions') { document.body.classList.remove('ios-find', 'ios-deal'); markNav(mode); return; }
     if (mode === 'assets') return paintFind();
+    if (mode === 'rentgap') {
+      document.body.classList.remove('ios-find', 'ios-deal');
+      markNav(mode);
+      const host = screenHost();
+      if (window.lcRentGap) window.lcRentGap.paint(host);
+      else host.innerHTML = '<p class="lc-kicker">More</p><h1>LHA vs market rent</h1><p>The rent comparison has not loaded.</p>';
+      return;
+    }
     document.body.classList.remove('ios-find');
     if (mode === 'deal') {
       document.body.classList.add('ios-deal');
