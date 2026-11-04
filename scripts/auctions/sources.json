@@ -117,17 +117,11 @@
       "name": "Allsop",
       "url": "https://www.allsop.co.uk/auctions/residential-auctions/",
       "enabled": true,
-      "coverage_status": "skipped",
-      "reason": "Written consent required for extraction and commercial reuse.",
       "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "permission_required_automation",
-        "terms_url": "https://www.allsop.co.uk/policies-legal/allsop-llp-policies-legal/legal",
-        "evidence": [
-          "You may not use any data gathering or data extraction tools, such as robots, on the Allsop website ... without the prior written permission of Allsop.",
-          "Any other use of Allsop website content requires the prior written permission of Allsop."
-        ],
-        "robots_url": "https://www.allsop.co.uk/robots.txt"
+        "reviewed_at": "2026-11-04",
+        "status": "public_catalogue",
+        "note": "Upcoming catalogues are read from the public search the Allsop website uses. This is an internal non-commercial tool. Commercial lots are kept and tagged Commercial. Requests are one at a time, with no login.",
+        "terms_url": "https://www.allsop.co.uk/auctions/residential-auctions/"
       },
       "adapter": "allsop",
       "max_pages": 8,
