@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-04T15:35:19.529Z",
-  "last_successful_refresh": "2026-11-04T15:35:19.529Z",
+  "updated_at": "2026-11-04T15:42:45.770Z",
+  "last_successful_refresh": "2026-11-04T15:42:45.770Z",
   "scope": "Target post towns only, not all properties in surrounding auction regions. Counts are fresh, deduplicated residential lots actually read; not a census. Exclusions refer to inspected records, not site-wide totals.",
   "metadata_only": true,
   "sources": [
@@ -9,10 +9,10 @@
       "id": "auction_house_manchester",
       "name": "Auction House Manchester",
       "url": "https://www.auctionhouse.co.uk/manchester",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "live",
       "reason": "Public catalogue pages read. Commercial lots are included and tagged. ",
-      "lot_count": 45,
+      "lot_count": 43,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 2,
@@ -29,25 +29,25 @@
       "successful_pages": 5,
       "warnings": [
         "Policy caveat: public factual metadata only; no published automation-specific/reuse restriction located in audit, but not licensed for reuse.",
-        "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/375975",
-        "Only bidding-opens date public in static HTML https://online.auctionhouse.co.uk/lot/redirect/375975; auction_date left null rather than treating an opening date as the auction end.",
+        "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/375976",
+        "Only bidding-opens date public in static HTML https://online.auctionhouse.co.uk/lot/redirect/375976; auction_date left null rather than treating an opening date as the auction end.",
         "2 records had an unverified field and were still kept when an address and status were present."
       ],
       "by_town": {
-        "Manchester": 45
+        "Manchester": 43
       },
       "by_tag": {
-        "Auction": 45
+        "Auction": 43
       }
     },
     {
       "id": "auction_house_southwest",
       "name": "Auction House South West (Bristol and Gloucestershire)",
       "url": "https://www.auctionhouse.co.uk/southwest",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "live",
       "reason": "Public catalogue pages read. Commercial lots are included and tagged. Detail date differs from historical result https://online.auctionhouse.co.uk/lot/redirect/367468; result event date/amount retained.",
-      "lot_count": 36,
+      "lot_count": 35,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 2,
@@ -74,17 +74,17 @@
       ],
       "by_town": {
         "Cheltenham": 12,
-        "Bristol": 24
+        "Bristol": 23
       },
       "by_tag": {
-        "Auction": 36
+        "Auction": 35
       }
     },
     {
       "id": "auction_house_scotland",
       "name": "Auction House Scotland",
       "url": "https://www.auctionhouse.co.uk/scotland",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "live",
       "reason": "Public catalogue pages read. Commercial lots are included and tagged. ",
       "lot_count": 13,
@@ -118,7 +118,7 @@
       "id": "future",
       "name": "Future Property Auctions",
       "url": "https://www.futurepropertyauctions.co.uk/",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "live",
       "reason": "Public catalogue pages read. Commercial lots are included and tagged. https://www.futurepropertyauctions.co.uk/auctions.asp: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.; https://www.futurepropertyauctions.co.uk/catalogue_viewall_auction_map.asp?id=10699&: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.; Catalogue page limit reached; collection incomplete.",
       "lot_count": 85,
@@ -156,7 +156,7 @@
       "id": "braveheart",
       "name": "Braveheart Auctions (Edinburgh and Glasgow)",
       "url": "https://braveheartauctions.co.uk/",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "live",
       "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check found \"13 Bath Street, Full Fir\" on https://braveheartauctions.co.uk/product/13-bath-street-full-first-floor-glasgow-city-centre/",
       "lot_count": 0,
@@ -183,10 +183,10 @@
       "id": "allsop",
       "name": "Allsop",
       "url": "https://www.allsop.co.uk/auctions/residential-auctions/",
-      "checked_at": "2026-11-04T15:35:19.529Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "live",
-      "reason": "Upcoming public catalogues read. Commercial lots are included and tagged. Upcoming Allsop catalogues read from the public search. In-area upcoming lots: Manchester 20, Bristol 2, Cheltenham 3, Glasgow 0, Edinburgh 0. Spot-check: Flat 41 St. Johns Court, New Road, Manchester, Lancashire, M26 1NH from the public Allsop catalogue, page https://www.allsop.co.uk/lot-overview/38ccfdfc-d7a3-11f1-807b-0242ac110002",
-      "lot_count": 2654,
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check: Flat 41 St. Johns Court, New Road, Manchester, Lancashire, M26 1NH from the public Allsop catalogue, page https://www.allsop.co.uk/lot-overview/38ccfdfc-d7a3-11f1-807b-0242ac110002",
+      "lot_count": 28,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 7,
@@ -201,25 +201,24 @@
       "successful_pages": 34,
       "warnings": [
         "Upcoming Allsop catalogues read from the public search. In-area upcoming lots: Manchester 20, Bristol 2, Cheltenham 3, Glasgow 0, Edinburgh 0.",
-        "Spot-check: Flat 41 St. Johns Court, New Road, Manchester, Lancashire, M26 1NH from the public Allsop catalogue, page https://www.allsop.co.uk/lot-overview/38ccfdfc-d7a3-11f1-807b-0242ac110002"
+        "Spot-check: Flat 41 St. Johns Court, New Road, Manchester, Lancashire, M26 1NH from the public Allsop catalogue, page https://www.allsop.co.uk/lot-overview/38ccfdfc-d7a3-11f1-807b-0242ac110002",
+        "7 records had an unverified field and were still kept when an address and status were present."
       ],
       "by_town": {
-        "Glasgow": 140,
-        "Manchester": 1618,
-        "Cheltenham": 459,
-        "Bristol": 367,
-        "Edinburgh": 70
+        "Manchester": 23,
+        "Cheltenham": 3,
+        "Bristol": 2
       },
       "by_tag": {
-        "Auction": 2651,
-        "Receiver": 3
+        "Auction": 26,
+        "Receiver": 2
       }
     },
     {
       "id": "savills_auctions",
       "name": "Savills auctions",
       "url": "https://auctions.savills.co.uk/upcoming-auctions",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "live",
       "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check found \"63 Bayswater Road, London W2\" on https://auctions.savills.co.uk/auctions/8-december-2026-247/63-bayswater-road-london-w2-3ph-25181 Spot-check found \"The Dene, The Green, Rotting\" on https://auctions.savills.co.uk/auctions/8-december-2026-247/the-dene-the-green-rottingdean-bn2-7ha-25885",
       "lot_count": 0,
@@ -252,7 +251,7 @@
       "id": "clive_emson",
       "name": "Clive Emson",
       "url": "https://www.cliveemson.co.uk/properties/",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "live",
       "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check found \"GL51 9QN\" on https://www.cliveemson.co.uk/properties/268/88/",
       "lot_count": 1,
@@ -285,7 +284,7 @@
       "id": "pugh",
       "name": "Pugh",
       "url": "https://www.pugh-auctions.com/property-search",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "live",
       "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check found \"WN3 4TJ\" on https://www.pugh-auctions.com/property/202601231232sq_gm55",
       "lot_count": 99,
@@ -322,7 +321,7 @@
       "id": "sdl",
       "name": "SDL",
       "url": "https://www.sdlauctions.co.uk/property-auctions/past-auctions/",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "failed",
       "reason": "HTTP 403: https://www.sdlauctions.co.uk/property-auctions/past-auctions/; Login or captcha at https://www.sdlauctions.co.uk/property-auctions/past-auctions/ (page 1)",
       "lot_count": 0,
@@ -353,7 +352,7 @@
       "id": "bond_wolfe",
       "name": "Bond Wolfe",
       "url": "https://www.bondwolfe.com/auctions/properties/",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "live",
       "reason": "Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them. Login or bot challenge refused",
       "lot_count": 0,
@@ -387,7 +386,7 @@
       "id": "barnard_marcus",
       "name": "Barnard Marcus",
       "url": "https://www.barnardmarcusauctions.co.uk/auctions/current/",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "live",
       "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check failed: Login or bot challenge refused",
       "lot_count": 24,
@@ -424,7 +423,7 @@
       "id": "mark_jenkinson",
       "name": "Mark Jenkinson",
       "url": "https://www.markjenkinson.co.uk/property-search",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "live",
       "reason": "Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them.",
       "lot_count": 0,
@@ -455,7 +454,7 @@
       "id": "strettons",
       "name": "Strettons",
       "url": "https://www.strettons.co.uk/auctions/current-catalogue/",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "live",
       "reason": "Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them. Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (page 1); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Manchester); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Glasgow); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Edinburgh); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Bristol); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Cheltenham); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Gloucester)",
       "lot_count": 0,
@@ -493,7 +492,7 @@
       "id": "network_auctions",
       "name": "Network Auctions",
       "url": "https://www.btgeddisonspropertyauctions.com/our-acquisitions/network-auctions",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "live",
       "reason": "Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them. Login or bot challenge refused",
       "lot_count": 0,
@@ -527,14 +526,14 @@
       "id": "iamsold",
       "name": "iamsold",
       "url": "https://www.iamsold.co.uk/available-properties/",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them.",
-      "lot_count": 0,
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check did not find \"BL8 1ST\" on https://www.iamsold.co.uk/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.iamsold.co.uk%2Favailable-properties%2F&format=xml",
+      "lot_count": 1,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 0,
-      "pages": 9,
+      "pages": 2,
       "policy": {
         "reviewed_at": "2026-11-03",
         "status": "robots_lot_access_disallowed",
@@ -546,19 +545,22 @@
         "robots_url": "https://www.iamsold.co.uk/robots.txt"
       },
       "errors": [],
-      "successful_pages": 9,
+      "successful_pages": 2,
       "warnings": [
-        "Rendered pages were read. No Manchester, Glasgow, Edinburgh, Bristol or Cheltenham/Gloucestershire lot was found in the visible text or the JSON those pages requested.",
-        "Public pages were read. No in-area lot with a street address or full postcode was on them."
+        "Spot-check did not find \"BL8 1ST\" on https://www.iamsold.co.uk/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.iamsold.co.uk%2Favailable-properties%2F&format=xml"
       ],
-      "by_town": {},
-      "by_tag": {}
+      "by_town": {
+        "Manchester": 1
+      },
+      "by_tag": {
+        "Auction": 1
+      }
     },
     {
       "id": "eig",
       "name": "EIG",
       "url": "https://www.eigpropertyauctions.co.uk/",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "live",
       "reason": "Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them.",
       "lot_count": 0,
@@ -590,7 +592,7 @@
       "id": "countrywide_property_auctions",
       "name": "Countrywide Property Auctions",
       "url": "https://www.countrywidepropertyauctions.co.uk/results.php",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "live",
       "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check did not find \"WA8 8UH\" on https://www.countrywidepropertyauctions.co.uk/property_details.php?auction_date=current&auction_location=SK&id=374486",
       "lot_count": 1,
@@ -623,10 +625,10 @@
       "id": "town_and_country",
       "name": "Town And Country",
       "url": "https://www.townandcountrypropertyauctions.co.uk/",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check found \"BS23 4AL\" on https://www.townandcountrypropertyauctions.co.uk/search?auctionOpen=true",
-      "lot_count": 15,
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check found \"M5 4JN\" on https://www.townandcountrypropertyauctions.co.uk/search?auctionOpen=true",
+      "lot_count": 13,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 0,
@@ -644,23 +646,23 @@
       "errors": [],
       "successful_pages": 20,
       "warnings": [
-        "Spot-check found \"BS23 4AL\" on https://www.townandcountrypropertyauctions.co.uk/search?auctionOpen=true"
+        "Spot-check found \"M5 4JN\" on https://www.townandcountrypropertyauctions.co.uk/search?auctionOpen=true"
       ],
       "by_town": {
         "Glasgow": 4,
         "Manchester": 6,
-        "Cheltenham": 3,
-        "Bristol": 2
+        "Cheltenham": 2,
+        "Bristol": 1
       },
       "by_tag": {
-        "Auction": 15
+        "Auction": 13
       }
     },
     {
       "id": "bradleys",
       "name": "Bradleys",
       "url": "https://www.bradleys-estate-agents.co.uk/pages/auctions",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "failed",
       "reason": "Robots unavailable: 403; Login or captcha at https://www.bradleys-estate-agents.co.uk/pages/auctions (page 1)",
       "lot_count": 0,
@@ -686,7 +688,7 @@
       "id": "bruton_knowles",
       "name": "Bruton Knowles",
       "url": "https://www.brutonknowles.co.uk/industry-news/property-auction-confirmed-for-3rd-july/",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "live",
       "reason": "Public catalogue pages read. Commercial lots are included and tagged. ",
       "lot_count": 23,
@@ -717,7 +719,7 @@
       "id": "moore_allen_innocent",
       "name": "Moore Allen Innocent",
       "url": "https://www.mooreallen.co.uk/property-auctions",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "failed",
       "reason": "HTTP 403: https://www.mooreallen.co.uk/property-auctions; Login or captcha at https://www.mooreallen.co.uk/property-auctions (page 1)",
       "lot_count": 0,
@@ -747,7 +749,7 @@
       "id": "hollis_morgan",
       "name": "Hollis Morgan",
       "url": "https://www.hollismorgan.co.uk/auctions/",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "live",
       "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check found \"GL3 4NJ\" on https://www.hollismorgan.co.uk/property-details/34976004/gloucestershire/gloucester/green-gardens?bid=11&showstc=on&orderby=lot_no+asc&extra_2%21=501%2C502",
       "lot_count": 6,
@@ -781,7 +783,7 @@
       "id": "maggs_and_allen",
       "name": "Maggs And Allen",
       "url": "https://www.maggsandallen.co.uk/auctions/bristol-auctioneers.html",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "live",
       "reason": "Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them.",
       "lot_count": 0,
@@ -811,7 +813,7 @@
       "id": "bristol_property_auctions_identity_unresolved",
       "name": "Bristol Property Auctions Identity Unresolved",
       "url": null,
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "failed",
       "reason": "No distinct official domain established from searches; no invented URL or block bypass.",
       "lot_count": 0,
@@ -834,7 +836,7 @@
       "id": "opa",
       "name": "Online Property Auction Group / OPA Scotland",
       "url": "https://www.opagroup.co.uk/",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "live",
       "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check did not find \"G2 3DH\" on https://www.opagroup.co.uk/lot/details/0135dc64-42c0-4bd6-9d6d-4b77aaee22d4",
       "lot_count": 14,
@@ -865,7 +867,7 @@
       "id": "scotland_property_auction",
       "name": "Scotland Property Auction",
       "url": "https://scotlandpropertyauction.co.uk/",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "live",
       "reason": "Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them.",
       "lot_count": 0,
@@ -891,7 +893,7 @@
       "id": "scottish_property_auctions",
       "name": "Scottish Property Auctions (name unresolved)",
       "url": null,
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "failed",
       "reason": "No distinct official operator verified; Auction House Scotland, Future and OPA are tracked separately.",
       "lot_count": 0,
@@ -914,7 +916,7 @@
       "id": "sva",
       "name": "SVA Property Auctions",
       "url": null,
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:42:45.770Z",
       "status": "failed",
       "reason": "Auction business ceased February 2023. The old website is not linked.",
       "lot_count": 0,
@@ -1173,46 +1175,46 @@
     }
   ],
   "counts_by_town": {
-    "Manchester": 1786,
-    "Glasgow": 230,
-    "Edinburgh": 88,
-    "Bristol": 405,
-    "Cheltenham": 507
+    "Manchester": 190,
+    "Glasgow": 90,
+    "Edinburgh": 18,
+    "Bristol": 38,
+    "Cheltenham": 50
   },
   "counts_by_town_and_status": {
     "Manchester": {
-      "upcoming": 147,
-      "sold": 1235,
-      "unsold": 111,
-      "withdrawn": 293
+      "upcoming": 148,
+      "sold": 36,
+      "unsold": 4,
+      "withdrawn": 2
     },
     "Glasgow": {
-      "upcoming": 89,
-      "sold": 109,
-      "unsold": 15,
-      "withdrawn": 17
+      "upcoming": 88,
+      "sold": 2,
+      "unsold": 0,
+      "withdrawn": 0
     },
     "Edinburgh": {
       "upcoming": 18,
-      "sold": 53,
-      "unsold": 2,
-      "withdrawn": 15
+      "sold": 0,
+      "unsold": 0,
+      "withdrawn": 0
     },
     "Bristol": {
-      "upcoming": 21,
-      "sold": 298,
-      "unsold": 22,
-      "withdrawn": 64
+      "upcoming": 20,
+      "sold": 17,
+      "unsold": 1,
+      "withdrawn": 0
     },
     "Cheltenham": {
-      "upcoming": 38,
-      "sold": 352,
-      "unsold": 20,
-      "withdrawn": 97
+      "upcoming": 37,
+      "sold": 13,
+      "unsold": 0,
+      "withdrawn": 0
     }
   },
-  "total_fresh": 3016,
-  "total_stale": 1,
+  "total_fresh": 386,
+  "total_stale": 2635,
   "commercial_excluded": 0,
-  "duplicates_removed": 19
+  "duplicates_removed": 17
 }
