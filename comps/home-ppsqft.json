@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "source": "comps/ppsqft.json",
+  "method": "Median £ per sq ft of HM Land Registry standard sales matched to an EPC floor area. Houses pool detached, semi-detached and terraced sales. A median is shown only when at least 5 sales match. Glasgow and Edinburgh are not on the England and Wales EPC register.",
+  "areas": {
+    "Manchester": {
+      "all": {"n": 42151, "median_gbp_per_sqft": 244.16},
+      "houses": {"n": 33509, "median_gbp_per_sqft": 234.38},
+      "flats": {"n": 8642, "median_gbp_per_sqft": 278.7}
+    },
+    "Bristol": {
+      "all": {"n": 51774, "median_gbp_per_sqft": 342.67},
+      "houses": {"n": 44269, "median_gbp_per_sqft": 339.9},
+      "flats": {"n": 7505, "median_gbp_per_sqft": 362.32}
+    },
+    "Cheltenham": {
+      "all": {"n": 16642, "median_gbp_per_sqft": 335.0},
+      "houses": {"n": 14352, "median_gbp_per_sqft": 343.05},
+      "flats": {"n": 2290, "median_gbp_per_sqft": 281.43}
+    },
+    "Glasgow": null,
+    "Edinburgh": null
+  }
+}
