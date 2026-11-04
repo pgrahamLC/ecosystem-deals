@@ -307,6 +307,16 @@ body.ios-deal input[type="radio"],body.ios-deal input[type="checkbox"]{min-heigh
 .ios-step[hidden]{display:none!important}
 .ios-step{padding:8px 0 48px}
 .ios-step h1{font-size:34px;line-height:1.1;margin:8px 0 8px;font-weight:600}
+.ios-scenario-wrap{margin:8px 0 16px}
+.ios-scenarios{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.ios-scenario{background:#fff;border-radius:16px;padding:16px 18px}
+.ios-scenario.is-downside{background:#f3f6f4;box-shadow:inset 0 0 0 1px #c5d5cc}
+.ios-scenario h2{font-size:17px;margin:4px 0 8px;font-weight:600}
+.ios-scenario .ios-figure{font-size:28px;font-weight:600;margin:0;letter-spacing:0}
+.ios-scenario p{margin:4px 0;font-size:15px;color:#3d4c59}
+.ios-scenario-wrap .ios-source{display:block;margin:8px 0 0;font-size:13px;line-height:1.4;color:#3d4c59}
+.ios-scenario b{color:#021726}
+@media (max-width:700px){.ios-scenarios{grid-template-columns:1fr}}
 .ios-step .card{border:0;border-radius:16px;padding:20px;margin:16px 0;background:#fff}
 .ios-step .card > h2,.ios-step .card > h3,.ios-step .lead,.ios-step p.foot,#uw_percent_help,#uw_status{display:none}
 #niy_box h3{display:block;font-size:20px;margin:0 0 12px}
