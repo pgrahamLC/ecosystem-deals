@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-04T09:16:20.524Z",
-  "last_successful_refresh": "2026-11-04T09:16:20.524Z",
+  "updated_at": "2026-11-04T15:35:19.529Z",
+  "last_successful_refresh": "2026-11-04T15:35:19.529Z",
   "scope": "Target post towns only, not all properties in surrounding auction regions. Counts are fresh, deduplicated residential lots actually read; not a census. Exclusions refer to inspected records, not site-wide totals.",
   "metadata_only": true,
   "sources": [
@@ -183,29 +183,25 @@
       "id": "allsop",
       "name": "Allsop",
       "url": "https://www.allsop.co.uk/auctions/residential-auctions/",
-      "checked_at": "2026-11-04T09:16:20.524Z",
+      "checked_at": "2026-11-04T15:35:19.529Z",
       "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check: 11 Armadale Close, Davenport, Stockport, Greater Manchester, SK3 8RZ  from Allsop /api/search and /api/lot, page https://www.allsop.co.uk/lot-overview/0edce42c-654e-11ef-9652-0242ac110002",
+      "reason": "Upcoming public catalogues read. Commercial lots are included and tagged. Upcoming Allsop catalogues read from the public search. In-area upcoming lots: Manchester 20, Bristol 2, Cheltenham 3, Glasgow 0, Edinburgh 0. Spot-check: Flat 41 St. Johns Court, New Road, Manchester, Lancashire, M26 1NH from the public Allsop catalogue, page https://www.allsop.co.uk/lot-overview/38ccfdfc-d7a3-11f1-807b-0242ac110002",
       "lot_count": 2654,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
-      "unknown_excluded": 20,
-      "pages": 701,
+      "unknown_excluded": 7,
+      "pages": 34,
       "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "permission_required_automation",
-        "terms_url": "https://www.allsop.co.uk/policies-legal/allsop-llp-policies-legal/legal",
-        "evidence": [
-          "You may not use any data gathering or data extraction tools, such as robots, on the Allsop website ... without the prior written permission of Allsop.",
-          "Any other use of Allsop website content requires the prior written permission of Allsop."
-        ],
-        "robots_url": "https://www.allsop.co.uk/robots.txt"
+        "reviewed_at": "2026-11-04",
+        "status": "public_catalogue",
+        "note": "Upcoming catalogues are read from the public search the Allsop website uses. This is an internal non-commercial tool. Commercial lots are kept and tagged Commercial. Requests are one at a time, with no login.",
+        "terms_url": "https://www.allsop.co.uk/auctions/residential-auctions/"
       },
       "errors": [],
-      "successful_pages": 701,
+      "successful_pages": 34,
       "warnings": [
-        "Spot-check: 11 Armadale Close, Davenport, Stockport, Greater Manchester, SK3 8RZ  from Allsop /api/search and /api/lot, page https://www.allsop.co.uk/lot-overview/0edce42c-654e-11ef-9652-0242ac110002",
-        "20 records had an unverified field and were still kept when an address and status were present."
+        "Upcoming Allsop catalogues read from the public search. In-area upcoming lots: Manchester 20, Bristol 2, Cheltenham 3, Glasgow 0, Edinburgh 0.",
+        "Spot-check: Flat 41 St. Johns Court, New Road, Manchester, Lancashire, M26 1NH from the public Allsop catalogue, page https://www.allsop.co.uk/lot-overview/38ccfdfc-d7a3-11f1-807b-0242ac110002"
       ],
       "by_town": {
         "Glasgow": 140,

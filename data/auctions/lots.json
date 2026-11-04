@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-04T09:16:20.524Z",
-  "attempted_at": "2026-11-04T09:16:20.524Z",
+  "updated_at": "2026-11-04T15:35:19.529Z",
+  "attempted_at": "2026-11-04T15:35:19.529Z",
   "lots": [
     {
       "address": "(Plot 6), Land To The East Of Beaufort Road, Bacup, Lancashire OL13 8RY",
@@ -525,9 +525,9 @@
       "postcode": "M11 4PW",
       "town": "Manchester",
       "city": "Manchester",
-      "residential_subtype": "Unclassified",
-      "lot_type": "1 Dargai Street, Manchester, Lancashire, M11 4PW",
-      "property_type": "Unclassified",
+      "residential_subtype": "Houses",
+      "lot_type": "House",
+      "property_type": "Houses",
       "title": "1 Dargai Street, Manchester, Lancashire, M11 4PW",
       "status": "upcoming",
       "auction_date": "2026-11-18",
@@ -539,7 +539,7 @@
           "url": "https://www.allsop.co.uk/lot-overview/eaaa1376-d7a2-11f1-96dd-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": 120000,
       "guide_price_text": "£120,000+",
@@ -556,7 +556,7 @@
         {
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/eaaa1376-d7a2-11f1-96dd-0242ac110002",
-          "scraped_at": "2026-11-04T09:16:20.524Z",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-18",
           "guide_price": 120000,
@@ -4422,7 +4422,7 @@
           "url": "https://www.allsop.co.uk/lot-overview/2ae1fff4-d7a2-11f1-beb4-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": 725000,
       "guide_price_text": "£725,000+",
@@ -4434,12 +4434,12 @@
       "grade_evidence_url": null,
       "grade_verified": false,
       "sale_tag": "Receiver",
-      "sale_tag_evidence": "By order of Receivers INVESTMENT/VACANT - Freehold Grade II\\* Listed Mid Terrace Building The propert",
+      "sale_tag_evidence": "By order of Receivers INVESTMENT/VACANT - Freehold Grade II\\* Listed Mid Terrace Building",
       "provenance": [
         {
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/2ae1fff4-d7a2-11f1-beb4-0242ac110002",
-          "scraped_at": "2026-11-04T09:16:20.524Z",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-18",
           "guide_price": 725000,
@@ -5630,9 +5630,9 @@
       "postcode": "OL2 8EJ",
       "town": "Manchester",
       "city": "Manchester",
-      "residential_subtype": "Unclassified",
-      "lot_type": "100 Oak Street, Shaw, Oldham, Lancashire, OL2 8EJ",
-      "property_type": "Unclassified",
+      "residential_subtype": "Houses",
+      "lot_type": "House",
+      "property_type": "Houses",
       "title": "100 Oak Street, Shaw, Oldham, Lancashire, OL2 8EJ",
       "status": "upcoming",
       "auction_date": "2026-11-18",
@@ -5644,7 +5644,7 @@
           "url": "https://www.allsop.co.uk/lot-overview/dee3b5f6-d7a2-11f1-a695-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": 115000,
       "guide_price_text": "£115,000+",
@@ -5661,7 +5661,7 @@
         {
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/dee3b5f6-d7a2-11f1-a695-0242ac110002",
-          "scraped_at": "2026-11-04T09:16:20.524Z",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-18",
           "guide_price": 115000,
@@ -10932,9 +10932,9 @@
       "postcode": "WN3 5UG",
       "town": "Manchester",
       "city": "Manchester",
-      "residential_subtype": "Unclassified",
-      "lot_type": "12 Brockhurst Walk, Wigan, Lancashire, WN3 5UG",
-      "property_type": "Unclassified",
+      "residential_subtype": "Blocks",
+      "lot_type": "Flat / Block",
+      "property_type": "Blocks",
       "title": "12 Brockhurst Walk, Wigan, Lancashire, WN3 5UG",
       "status": "upcoming",
       "auction_date": "2026-11-18",
@@ -10946,7 +10946,7 @@
           "url": "https://www.allsop.co.uk/lot-overview/9df8797c-d7a3-11f1-b95b-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": 35000,
       "guide_price_text": "£35,000+",
@@ -10963,7 +10963,7 @@
         {
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/9df8797c-d7a3-11f1-b95b-0242ac110002",
-          "scraped_at": "2026-11-04T09:16:20.524Z",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-18",
           "guide_price": 35000,
@@ -10972,7 +10972,7 @@
           "sold_price": null
         }
       ],
-      "id": "lot-48f7dd7624246dcc"
+      "id": "lot-246871b5eb4c1ec1"
     },
     {
       "address": "12 Churchgate, Bolton, Lancashire BL1 1HL",
@@ -17063,7 +17063,7 @@
           "url": "https://www.allsop.co.uk/lot-overview/da704430-d7b1-11f1-b6b3-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": 275000,
       "guide_price_text": "£275,000+",
@@ -17080,7 +17080,7 @@
         {
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/da704430-d7b1-11f1-b6b3-0242ac110002",
-          "scraped_at": "2026-11-04T09:16:20.524Z",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-11",
           "guide_price": 275000,
@@ -18741,21 +18741,25 @@
       "postcode": "SK4 1QN",
       "town": "Manchester",
       "city": "Manchester",
-      "residential_subtype": "Unclassified",
-      "lot_type": "15 Clement Street, Stockport, Cheshire, SK4 1QN",
-      "property_type": "Unclassified",
+      "residential_subtype": "Houses",
+      "lot_type": "House",
+      "property_type": "Houses",
       "title": "15 Clement Street, Stockport, Cheshire, SK4 1QN",
       "status": "upcoming",
       "auction_date": "2026-11-18",
       "source": "Allsop",
-      "source_url": "https://www.allsop.co.uk/lot-overview/5acc8592-d787-11f1-9911-0242ac110002",
+      "source_url": "https://www.allsop.co.uk/lot-overview/0df93568-d844-11f1-b90a-0242ac110002",
       "sources": [
         {
           "name": "Allsop",
           "url": "https://www.allsop.co.uk/lot-overview/5acc8592-d787-11f1-9911-0242ac110002"
+        },
+        {
+          "name": "Allsop",
+          "url": "https://www.allsop.co.uk/lot-overview/0df93568-d844-11f1-b90a-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": null,
       "guide_price_text": null,
@@ -18773,6 +18777,17 @@
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/5acc8592-d787-11f1-9911-0242ac110002",
           "scraped_at": "2026-11-04T09:16:20.524Z",
+          "status": "upcoming",
+          "auction_date": "2026-11-18",
+          "guide_price": null,
+          "opening_bid": null,
+          "current_bid": null,
+          "sold_price": null
+        },
+        {
+          "source": "Allsop",
+          "source_url": "https://www.allsop.co.uk/lot-overview/0df93568-d844-11f1-b90a-0242ac110002",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-18",
           "guide_price": null,
@@ -21270,9 +21285,9 @@
       "postcode": "M40 1JR",
       "town": "Manchester",
       "city": "Manchester",
-      "residential_subtype": "Unclassified",
-      "lot_type": "16 Innis Avenue, Manchester, Lancashire, M40 1JR",
-      "property_type": "Unclassified",
+      "residential_subtype": "Houses",
+      "lot_type": "House",
+      "property_type": "Houses",
       "title": "16 Innis Avenue, Manchester, Lancashire, M40 1JR",
       "status": "upcoming",
       "auction_date": "2026-11-18",
@@ -21284,7 +21299,7 @@
           "url": "https://www.allsop.co.uk/lot-overview/d4b05ac0-d7a3-11f1-abba-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": 140000,
       "guide_price_text": "£140,000+",
@@ -21301,7 +21316,7 @@
         {
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/d4b05ac0-d7a3-11f1-abba-0242ac110002",
-          "scraped_at": "2026-11-04T09:16:20.524Z",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-18",
           "guide_price": 140000,
@@ -30285,9 +30300,9 @@
       "postcode": "WA14 4UG",
       "town": "Manchester",
       "city": "Manchester",
-      "residential_subtype": "Unclassified",
-      "lot_type": "2 Spey Close, Altrincham, Cheshire, WA14 4UG",
-      "property_type": "Unclassified",
+      "residential_subtype": "Houses",
+      "lot_type": "House",
+      "property_type": "Houses",
       "title": "2 Spey Close, Altrincham, Cheshire, WA14 4UG",
       "status": "upcoming",
       "auction_date": "2026-11-18",
@@ -30299,7 +30314,7 @@
           "url": "https://www.allsop.co.uk/lot-overview/5208c2d2-d786-11f1-96a8-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": 200000,
       "guide_price_text": "£200,000+",
@@ -30316,7 +30331,7 @@
         {
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/5208c2d2-d786-11f1-96a8-0242ac110002",
-          "scraped_at": "2026-11-04T09:16:20.524Z",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-18",
           "guide_price": 200000,
@@ -35434,9 +35449,9 @@
       "postcode": "OL1 4AT",
       "town": "Manchester",
       "city": "Manchester",
-      "residential_subtype": "Unclassified",
-      "lot_type": "22 Bottomfield Close, Oldham, Lancashire, OL1 4AT",
-      "property_type": "Unclassified",
+      "residential_subtype": "Houses",
+      "lot_type": "House",
+      "property_type": "Houses",
       "title": "22 Bottomfield Close, Oldham, Lancashire, OL1 4AT",
       "status": "upcoming",
       "auction_date": "2026-11-18",
@@ -35448,7 +35463,7 @@
           "url": "https://www.allsop.co.uk/lot-overview/e70ede30-d7a3-11f1-8fbf-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": 115000,
       "guide_price_text": "£115,000+",
@@ -35465,7 +35480,7 @@
         {
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/e70ede30-d7a3-11f1-8fbf-0242ac110002",
-          "scraped_at": "2026-11-04T09:16:20.524Z",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-18",
           "guide_price": 115000,
@@ -35952,7 +35967,7 @@
       "town": "Manchester",
       "city": "Manchester",
       "residential_subtype": "Commercial",
-      "lot_type": "22 Industrial Street, Bacup, Lancashire, OL13 9JJ",
+      "lot_type": "House",
       "property_type": "Commercial",
       "title": "22 Industrial Street, Bacup, Lancashire, OL13 9JJ",
       "status": "upcoming",
@@ -35965,7 +35980,7 @@
           "url": "https://www.allsop.co.uk/lot-overview/8784b93c-d783-11f1-8980-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": 70000,
       "guide_price_text": "£70,000+",
@@ -35982,7 +35997,7 @@
         {
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/8784b93c-d783-11f1-8980-0242ac110002",
-          "scraped_at": "2026-11-04T09:16:20.524Z",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-18",
           "guide_price": 70000,
@@ -37691,21 +37706,25 @@
       "postcode": "M32 0NX",
       "town": "Manchester",
       "city": "Manchester",
-      "residential_subtype": "Unclassified",
-      "lot_type": "23 Keswick Road, Stretford, Manchester, Lancashire, M32 0NX",
-      "property_type": "Unclassified",
+      "residential_subtype": "Houses",
+      "lot_type": "House",
+      "property_type": "Houses",
       "title": "23 Keswick Road, Stretford, Manchester, Lancashire, M32 0NX",
       "status": "upcoming",
       "auction_date": "2026-11-18",
       "source": "Allsop",
-      "source_url": "https://www.allsop.co.uk/lot-overview/46c4de7a-d7a3-11f1-9d3a-0242ac110002",
+      "source_url": "https://www.allsop.co.uk/lot-overview/bb520e08-d833-11f1-8011-0242ac110002",
       "sources": [
         {
           "name": "Allsop",
           "url": "https://www.allsop.co.uk/lot-overview/46c4de7a-d7a3-11f1-9d3a-0242ac110002"
+        },
+        {
+          "name": "Allsop",
+          "url": "https://www.allsop.co.uk/lot-overview/bb520e08-d833-11f1-8011-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": 205000,
       "guide_price_text": "£205,000+",
@@ -37723,6 +37742,17 @@
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/46c4de7a-d7a3-11f1-9d3a-0242ac110002",
           "scraped_at": "2026-11-04T09:16:20.524Z",
+          "status": "upcoming",
+          "auction_date": "2026-11-18",
+          "guide_price": 205000,
+          "opening_bid": null,
+          "current_bid": null,
+          "sold_price": null
+        },
+        {
+          "source": "Allsop",
+          "source_url": "https://www.allsop.co.uk/lot-overview/bb520e08-d833-11f1-8011-0242ac110002",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-18",
           "guide_price": 205000,
@@ -53445,9 +53475,9 @@
       "postcode": "M40 1PA",
       "town": "Manchester",
       "city": "Manchester",
-      "residential_subtype": "Unclassified",
-      "lot_type": "34 Silverwell Street, Manchester, Lancashire, M40 1PA",
-      "property_type": "Unclassified",
+      "residential_subtype": "Houses",
+      "lot_type": "House",
+      "property_type": "Houses",
       "title": "34 Silverwell Street, Manchester, Lancashire, M40 1PA",
       "status": "upcoming",
       "auction_date": "2026-11-18",
@@ -53459,7 +53489,7 @@
           "url": "https://www.allsop.co.uk/lot-overview/c48e1e66-d7a3-11f1-85b8-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": 120000,
       "guide_price_text": "£120,000+",
@@ -53476,7 +53506,7 @@
         {
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/c48e1e66-d7a3-11f1-85b8-0242ac110002",
-          "scraped_at": "2026-11-04T09:16:20.524Z",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-18",
           "guide_price": 120000,
@@ -57788,9 +57818,9 @@
       "postcode": "WA1 1EN",
       "town": "Manchester",
       "city": "Manchester",
-      "residential_subtype": "Commercial",
-      "lot_type": "4 Arundel House, Rylands Street, Warrington, Cheshire, WA1 1EN",
-      "property_type": "Commercial",
+      "residential_subtype": "Blocks",
+      "lot_type": "Flat / Block",
+      "property_type": "Blocks",
       "title": "4 Arundel House, Rylands Street, Warrington, Cheshire, WA1 1EN",
       "status": "upcoming",
       "auction_date": "2026-11-18",
@@ -57802,7 +57832,7 @@
           "url": "https://www.allsop.co.uk/lot-overview/19ba9ad6-d786-11f1-a116-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": 41000,
       "guide_price_text": "£41,000+",
@@ -57819,7 +57849,7 @@
         {
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/19ba9ad6-d786-11f1-a116-0242ac110002",
-          "scraped_at": "2026-11-04T09:16:20.524Z",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-18",
           "guide_price": 41000,
@@ -57828,7 +57858,7 @@
           "sold_price": null
         }
       ],
-      "id": "lot-b2176ac5c5dd6b4a"
+      "id": "lot-797209478686bc33"
     },
     {
       "address": "4 Clegge Street, Warrington, Cheshire, WA2 7AT",
@@ -66464,9 +66494,9 @@
       "postcode": "GL11 5LS",
       "town": "Cheltenham",
       "city": "Cheltenham",
-      "residential_subtype": "Unclassified",
-      "lot_type": "5 Knapp Lane, Cam, Dursley, Gloucestershire, GL11 5LS",
-      "property_type": "Unclassified",
+      "residential_subtype": "Houses",
+      "lot_type": "House",
+      "property_type": "Houses",
       "title": "5 Knapp Lane, Cam, Dursley, Gloucestershire, GL11 5LS",
       "status": "upcoming",
       "auction_date": "2026-11-18",
@@ -66478,7 +66508,7 @@
           "url": "https://www.allsop.co.uk/lot-overview/417ec3d8-d783-11f1-9ec7-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": 100000,
       "guide_price_text": "£100,000+",
@@ -66495,7 +66525,7 @@
         {
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/417ec3d8-d783-11f1-9ec7-0242ac110002",
-          "scraped_at": "2026-11-04T09:16:20.524Z",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-18",
           "guide_price": 100000,
@@ -66793,9 +66823,9 @@
       "postcode": "OL9 8PA",
       "town": "Manchester",
       "city": "Manchester",
-      "residential_subtype": "Unclassified",
-      "lot_type": "5 Ravenside Park, Chadderton, Oldham, Lancashire, OL9 8PA",
-      "property_type": "Unclassified",
+      "residential_subtype": "Houses",
+      "lot_type": "House",
+      "property_type": "Houses",
       "title": "5 Ravenside Park, Chadderton, Oldham, Lancashire, OL9 8PA",
       "status": "upcoming",
       "auction_date": "2026-11-18",
@@ -66807,7 +66837,7 @@
           "url": "https://www.allsop.co.uk/lot-overview/0990172a-d787-11f1-b22f-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": null,
       "guide_price_text": null,
@@ -66824,7 +66854,7 @@
         {
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/0990172a-d787-11f1-b22f-0242ac110002",
-          "scraped_at": "2026-11-04T09:16:20.524Z",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-18",
           "guide_price": null,
@@ -69129,14 +69159,18 @@
       "status": "upcoming",
       "auction_date": "2026-11-11",
       "source": "Allsop",
-      "source_url": "https://www.allsop.co.uk/lot-overview/44791304-d6d4-11f1-a42f-0242ac110002",
+      "source_url": "https://www.allsop.co.uk/lot-overview/5ed379b0-d85a-11f1-88b4-0242ac110002",
       "sources": [
         {
           "name": "Allsop",
           "url": "https://www.allsop.co.uk/lot-overview/44791304-d6d4-11f1-a42f-0242ac110002"
+        },
+        {
+          "name": "Allsop",
+          "url": "https://www.allsop.co.uk/lot-overview/5ed379b0-d85a-11f1-88b4-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": 250000,
       "guide_price_text": "£250,000",
@@ -69154,6 +69188,17 @@
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/44791304-d6d4-11f1-a42f-0242ac110002",
           "scraped_at": "2026-11-04T09:16:20.524Z",
+          "status": "upcoming",
+          "auction_date": "2026-11-11",
+          "guide_price": 250000,
+          "opening_bid": null,
+          "current_bid": null,
+          "sold_price": null
+        },
+        {
+          "source": "Allsop",
+          "source_url": "https://www.allsop.co.uk/lot-overview/5ed379b0-d85a-11f1-88b4-0242ac110002",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-11",
           "guide_price": 250000,
@@ -74175,7 +74220,7 @@
           "url": "https://www.allsop.co.uk/lot-overview/4536768e-d6b0-11f1-b241-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": 3000000,
       "guide_price_text": "£3M - £3.2M",
@@ -74192,7 +74237,7 @@
         {
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/4536768e-d6b0-11f1-b241-0242ac110002",
-          "scraped_at": "2026-11-04T09:16:20.524Z",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-11",
           "guide_price": 3000000,
@@ -75054,9 +75099,9 @@
       "postcode": "BS11 9TD",
       "town": "Bristol",
       "city": "Bristol",
-      "residential_subtype": "Unclassified",
-      "lot_type": "60 Priory Road, Shirehampton, Bristol, Avon, BS11 9TD",
-      "property_type": "Unclassified",
+      "residential_subtype": "Blocks",
+      "lot_type": "Flat / Block",
+      "property_type": "Blocks",
       "title": "60 Priory Road, Shirehampton, Bristol, Avon, BS11 9TD",
       "status": "upcoming",
       "auction_date": "2026-11-18",
@@ -75068,7 +75113,7 @@
           "url": "https://www.allsop.co.uk/lot-overview/28101574-d787-11f1-b5ad-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": 100000,
       "guide_price_text": "£100,000+",
@@ -75085,7 +75130,7 @@
         {
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/28101574-d787-11f1-b5ad-0242ac110002",
-          "scraped_at": "2026-11-04T09:16:20.524Z",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-18",
           "guide_price": 100000,
@@ -75094,7 +75139,7 @@
           "sold_price": null
         }
       ],
-      "id": "lot-af92bc04c0a0245f"
+      "id": "lot-0cfacfac9a3446b0"
     },
     {
       "address": "60 Ravenscroft Street, Edinburgh, Midlothian, EH17 8QW",
@@ -75759,9 +75804,9 @@
       "postcode": "OL2 6YT",
       "town": "Manchester",
       "city": "Manchester",
-      "residential_subtype": "Unclassified",
-      "lot_type": "61 Seatoller Court, Royton, Oldham, Lancashire, OL2 6YT",
-      "property_type": "Unclassified",
+      "residential_subtype": "Blocks",
+      "lot_type": "Flat / Block",
+      "property_type": "Blocks",
       "title": "61 Seatoller Court, Royton, Oldham, Lancashire, OL2 6YT",
       "status": "upcoming",
       "auction_date": "2026-11-18",
@@ -75773,7 +75818,7 @@
           "url": "https://www.allsop.co.uk/lot-overview/c96b454a-d7a2-11f1-b5eb-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": 68000,
       "guide_price_text": "£68,000+",
@@ -75790,7 +75835,7 @@
         {
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/c96b454a-d7a2-11f1-b5eb-0242ac110002",
-          "scraped_at": "2026-11-04T09:16:20.524Z",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-18",
           "guide_price": 68000,
@@ -75799,7 +75844,7 @@
           "sold_price": null
         }
       ],
-      "id": "lot-029aaac71f78b573"
+      "id": "lot-fd275c1df09cc13c"
     },
     {
       "address": "61- 63 Upper Church Road, Weston-super-mare, Avon, BS23 2HY",
@@ -77654,9 +77699,9 @@
       "postcode": "M12 5ED",
       "town": "Manchester",
       "city": "Manchester",
-      "residential_subtype": "Unclassified",
-      "lot_type": "67 Anthony Close, Manchester, Lancashire, M12 5ED",
-      "property_type": "Unclassified",
+      "residential_subtype": "Houses",
+      "lot_type": "House",
+      "property_type": "Houses",
       "title": "67 Anthony Close, Manchester, Lancashire, M12 5ED",
       "status": "upcoming",
       "auction_date": "2026-11-18",
@@ -77668,7 +77713,7 @@
           "url": "https://www.allsop.co.uk/lot-overview/0b30e700-d7a3-11f1-95d0-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": 140000,
       "guide_price_text": "£140,000+",
@@ -77685,7 +77730,7 @@
         {
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/0b30e700-d7a3-11f1-95d0-0242ac110002",
-          "scraped_at": "2026-11-04T09:16:20.524Z",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-18",
           "guide_price": 140000,
@@ -80390,9 +80435,9 @@
       "postcode": "M12 5ED",
       "town": "Manchester",
       "city": "Manchester",
-      "residential_subtype": "Unclassified",
-      "lot_type": "71 Anthony Close, Manchester, Lancashire, M12 5ED",
-      "property_type": "Unclassified",
+      "residential_subtype": "Houses",
+      "lot_type": "House",
+      "property_type": "Houses",
       "title": "71 Anthony Close, Manchester, Lancashire, M12 5ED",
       "status": "upcoming",
       "auction_date": "2026-11-18",
@@ -80404,7 +80449,7 @@
           "url": "https://www.allsop.co.uk/lot-overview/2c4a1844-d7a3-11f1-bda1-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": 145000,
       "guide_price_text": "£145,000+",
@@ -80421,7 +80466,7 @@
         {
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/2c4a1844-d7a3-11f1-bda1-0242ac110002",
-          "scraped_at": "2026-11-04T09:16:20.524Z",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-18",
           "guide_price": 145000,
@@ -83558,9 +83603,9 @@
       "postcode": "WN3 5UG",
       "town": "Manchester",
       "city": "Manchester",
-      "residential_subtype": "Unclassified",
-      "lot_type": "8 Brockhurst Walk, Wigan, Lancashire, WN3 5UG",
-      "property_type": "Unclassified",
+      "residential_subtype": "Blocks",
+      "lot_type": "Flat / Block",
+      "property_type": "Blocks",
       "title": "8 Brockhurst Walk, Wigan, Lancashire, WN3 5UG",
       "status": "upcoming",
       "auction_date": "2026-11-18",
@@ -83572,7 +83617,7 @@
           "url": "https://www.allsop.co.uk/lot-overview/abd55a20-d7a2-11f1-bce0-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": 43000,
       "guide_price_text": "£43,000+",
@@ -83589,7 +83634,7 @@
         {
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/abd55a20-d7a2-11f1-bce0-0242ac110002",
-          "scraped_at": "2026-11-04T09:16:20.524Z",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-18",
           "guide_price": 43000,
@@ -83598,7 +83643,7 @@
           "sold_price": null
         }
       ],
-      "id": "lot-49a950964b8e2813"
+      "id": "lot-a821d2b7536fd9dc"
     },
     {
       "address": "8 Deerpark Road, Manchester, Lancashire, M16 8FR",
@@ -111261,9 +111306,9 @@
       "postcode": "M26 1NH",
       "town": "Manchester",
       "city": "Manchester",
-      "residential_subtype": "Flats",
-      "lot_type": "Flat 41 St. Johns Court, New Road, Manchester, Lancashire, M26 1NH",
-      "property_type": "Flats",
+      "residential_subtype": "Blocks",
+      "lot_type": "Flat / Block",
+      "property_type": "Blocks",
       "title": "Flat 41 St. Johns Court, New Road, Manchester, Lancashire, M26 1NH",
       "status": "upcoming",
       "auction_date": "2026-11-18",
@@ -111275,7 +111320,7 @@
           "url": "https://www.allsop.co.uk/lot-overview/38ccfdfc-d7a3-11f1-807b-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": 50000,
       "guide_price_text": "£50,000+",
@@ -111292,7 +111337,7 @@
         {
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/38ccfdfc-d7a3-11f1-807b-0242ac110002",
-          "scraped_at": "2026-11-04T09:16:20.524Z",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-18",
           "guide_price": 50000,
@@ -111301,7 +111346,7 @@
           "sold_price": null
         }
       ],
-      "id": "lot-825488f6b2d6a998"
+      "id": "lot-a08f8f77dd6c2cc2"
     },
     {
       "address": "Flat 44 Pegasus Court, 58 Beach Road, Weston-super-Mare, Avon, BS23 4AL",
@@ -118256,7 +118301,7 @@
           "url": "https://www.allsop.co.uk/lot-overview/c1096488-d782-11f1-80e8-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": 95000,
       "guide_price_text": "£95,000+",
@@ -118273,7 +118318,7 @@
         {
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/c1096488-d782-11f1-80e8-0242ac110002",
-          "scraped_at": "2026-11-04T09:16:20.524Z",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-18",
           "guide_price": 95000,
@@ -130461,7 +130506,7 @@
           "url": "https://www.allsop.co.uk/lot-overview/7e09884e-d79a-11f1-8ddf-0242ac110002"
         }
       ],
-      "scraped_at": "2026-11-04T09:16:20.524Z",
+      "scraped_at": "2026-11-04T15:35:19.529Z",
       "stale": false,
       "guide_price": 1800000,
       "guide_price_text": "£1.8M - £2M",
@@ -130473,12 +130518,12 @@
       "grade_evidence_url": null,
       "grade_verified": false,
       "sale_tag": "Receiver",
-      "sale_tag_evidence": "By order of Fixed Charge Receivers Freehold Industrial & Open Storage Investment Comprises a mix of industrial uni",
+      "sale_tag_evidence": "By order of Fixed Charge Receivers Freehold Industrial & Open Storage Investment",
       "provenance": [
         {
           "source": "Allsop",
           "source_url": "https://www.allsop.co.uk/lot-overview/7e09884e-d79a-11f1-8ddf-0242ac110002",
-          "scraped_at": "2026-11-04T09:16:20.524Z",
+          "scraped_at": "2026-11-04T15:35:19.529Z",
           "status": "upcoming",
           "auction_date": "2026-11-11",
           "guide_price": 1800000,

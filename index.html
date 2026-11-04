@@ -1335,7 +1335,7 @@ async function vaComps(){const el=$('#va_comps');el.innerHTML='<p>Loading transa
 
 /* Distressed blocks: one clear map of sites where a distressed / strained landlord holds homes, plus forced-sale auction lots. 22 Oct 2026. */
 (function(){
- const DM={started:false,map:null,layer:null,sites:[],titles:null,pc:{},scope:'targets',min:1,big:5,bigOnly:false,src:'',types:'homes',show:{d:true,lot:true,pre:true,sale:true,s:true,pre2:false,epc:false,feed:true},q:'',markers:{}};
+ const DM={started:false,map:null,layer:null,sites:[],titles:null,pc:{},scope:'targets',min:1,big:5,bigOnly:false,src:'',types:'all',show:{d:true,lot:true,pre:true,sale:true,s:true,pre2:false,epc:false,feed:true},q:'',markers:{}};
  window.DM=DM;
  const CITIES=['Manchester','Cheltenham','City Of Bristol','Edinburgh','Glasgow'];
  const COL={d:'#c62828',lot:'#6a1b9a',pre:'#b26a00',sale:'#5c6b7a',s:'#b26a00',pre2:'#c48a2a',epc:'#5c6b7a',feed:'#021726'};
@@ -1378,7 +1378,7 @@ async function vaComps(){const el=$('#va_comps');el.innerHTML='<p>Loading transa
   '<select id="dm_big" title="How many homes at one site count as a big block"><option value="5" selected>Big block = 5+ homes</option><option value="10">Big block = 10+ homes</option><option value="20">Big block = 20+ homes</option></select><label style="display:inline-flex;gap:4px;align-items:center"><input type="checkbox" id="dm_bigonly"> big blocks only</label>'+
   '<input id="dm_q" placeholder="search owner, street, postcode" style="width:220px">'+
   '<button class="btn sec" id="dm_csv">Download list (CSV)</button><span id="dm_status" class="foot"></span></div>'+
-  '<div class="src-chips" id="dm_src"><button type="button" data-src="" class="on">All</button><button type="button" data-src="Receiver">Receiver</button><button type="button" data-src="Lender">Lender</button><button type="button" data-src="Auction">Auction</button><button type="button" data-type="homes" class="on">Homes</button><button type="button" data-type="commercial">Commercial</button><button type="button" data-type="all">All types</button></div>'+
+  '<div class="src-chips" id="dm_src"><button type="button" data-src="" class="on">All</button><button type="button" data-src="Receiver">Receiver</button><button type="button" data-src="Lender">Lender</button><button type="button" data-src="Auction">Auction</button><button type="button" data-type="homes">Homes</button><button type="button" data-type="commercial">Commercial</button><button type="button" data-type="all" class="on">All types</button></div>'+
   '<div class="dm-kpis" id="dm_kpis"></div>'+
   '<details class="dm-key"><summary><b>What the colours mean and how we know</b></summary>'+
   '<p><b class="c" style="background:'+COL.d+'"></b><b>A · Verified insolvency</b>: the company that owns these homes is in an insolvency process that is still running (administration, liquidation, court winding-up, CVA) or a lender has appointed a receiver. An office-holder now controls the property and has to sell it. <i>Source: Companies House filing history (AM01, WU04, LIQ02/600, RM01 etc., with no closing filing).</i></p>'+

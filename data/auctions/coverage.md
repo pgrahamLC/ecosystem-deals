@@ -1,6 +1,6 @@
 # Auction collection
 
-Checked: 2026-11-04T09:16:20.524Z
+Checked: 2026-11-04T15:35:19.529Z
 
 Fresh: 3016; stale: 1; commercial lots are kept and tagged, not dropped.
 
@@ -17,7 +17,7 @@ Fresh: 3016; stale: 1; commercial lots are kept and tagged, not dropped.
 - **Auction House Scotland**: live; 13 lots (Glasgow 9, Edinburgh 4); tags Auction 13. Public catalogue pages read. Commercial lots are included and tagged. 
 - **Future Property Auctions**: live; 85 lots (Glasgow 64, Edinburgh 13, Manchester 6, Bristol 2); tags Auction 85. Public catalogue pages read. Commercial lots are included and tagged. https://www.futurepropertyauctions.co.uk/auctions.asp: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.; https://www.futurepropertyauctions.co.uk/catalogue_viewall_auction_map.asp?id=10699&: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.; Catalogue page limit reached; collection incomplete.
 - **Braveheart Auctions (Edinburgh and Glasgow)**: live; 0 lots (none); tags none. Public catalogue pages read. Commercial lots are included and tagged. Spot-check found "13 Bath Street, Full Fir" on https://braveheartauctions.co.uk/product/13-bath-street-full-first-floor-glasgow-city-centre/
-- **Allsop**: live; 2654 lots (Glasgow 140, Manchester 1618, Cheltenham 459, Bristol 367, Edinburgh 70); tags Auction 2651, Receiver 3. Public catalogue pages read. Commercial lots are included and tagged. Spot-check: 11 Armadale Close, Davenport, Stockport, Greater Manchester, SK3 8RZ  from Allsop /api/search and /api/lot, page https://www.allsop.co.uk/lot-overview/0edce42c-654e-11ef-9652-0242ac110002
+- **Allsop**: live; 2654 lots (Glasgow 140, Manchester 1618, Cheltenham 459, Bristol 367, Edinburgh 70); tags Auction 2651, Receiver 3. Upcoming public catalogues read. Commercial lots are included and tagged. Upcoming Allsop catalogues read from the public search. In-area upcoming lots: Manchester 20, Bristol 2, Cheltenham 3, Glasgow 0, Edinburgh 0. Spot-check: Flat 41 St. Johns Court, New Road, Manchester, Lancashire, M26 1NH from the public Allsop catalogue, page https://www.allsop.co.uk/lot-overview/38ccfdfc-d7a3-11f1-807b-0242ac110002
 - **Savills auctions**: live; 0 lots (none); tags none. Public catalogue pages read. Commercial lots are included and tagged. Spot-check found "63 Bayswater Road, London W2" on https://auctions.savills.co.uk/auctions/8-december-2026-247/63-bayswater-road-london-w2-3ph-25181 Spot-check found "The Dene, The Green, Rotting" on https://auctions.savills.co.uk/auctions/8-december-2026-247/the-dene-the-green-rottingdean-bn2-7ha-25885
 - **Clive Emson**: live; 1 lots (Cheltenham 1); tags Auction 1. Public catalogue pages read. Commercial lots are included and tagged. Spot-check found "GL51 9QN" on https://www.cliveemson.co.uk/properties/268/88/
 - **Pugh**: live; 99 lots (Manchester 96, Glasgow 1, Cheltenham 2); tags Auction 99. Public catalogue pages read. Commercial lots are included and tagged. Spot-check found "WN3 4TJ" on https://www.pugh-auctions.com/property/202601231232sq_gm55
