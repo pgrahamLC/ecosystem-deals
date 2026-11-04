@@ -604,6 +604,7 @@
     });
     relabel(body);
     foldNiy();
+    if (window.lcRentScenarios) window.lcRentScenarios.mount();
     showStep(dealStep);
   }
 
@@ -625,6 +626,7 @@
       parkExtras();
       foldNiy();
       refreshResult();
+      if (window.lcRentScenarios) window.lcRentScenarios.mount();
     }
     const dealView = document.getElementById('deal_view');
     if (dealView && !dealView.classList.contains('hidden')) {

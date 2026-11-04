@@ -1,0 +1,36 @@
+{
+  "lha": {
+    "period": "2026/27",
+    "valid_from": "2026-04-01",
+    "valid_to": "2027-03-31",
+    "unit": "GBP per calendar month",
+    "checked": "2026-11-04",
+    "publication": "https://www.gov.uk/government/publications/universal-credit-local-housing-allowance-rates-2026-to-2027",
+    "note": "Monthly Universal Credit Local Housing Allowance. England figures are the VOA rates in the DWP England table. Lothian and Greater Glasgow are the DWP Scotland table for those Broad Rental Market Areas. A rate is not a provider rent offer.",
+    "sources": {
+      "England": "https://assets.publishing.service.gov.uk/media/69d654a2e1430e837a86f64a/england-rates-2026-to-2027.csv",
+      "Scotland": "https://assets.publishing.service.gov.uk/media/69d657392ea7bc150a394ae5/scotland-rates-2026-to-2027.csv"
+    },
+    "areas": {
+      "Bristol": {"brma": "Bristol", "country": "England", "monthly": {"shared": 511.33, "1": 900, "2": 1095, "3": 1300, "4": 1850}},
+      "Edinburgh": {"brma": "Lothian", "country": "Scotland", "monthly": {"shared": 475, "1": 750, "2": 970, "3": 1375, "4": 2180}},
+      "Manchester": {"brma": "Central Greater Manchester", "country": "England", "monthly": {"shared": 411.58, "1": 775, "2": 875, "3": 950, "4": 1350}},
+      "Cheltenham": {"brma": "Cheltenham", "country": "England", "monthly": {"shared": 436.5, "1": 625, "2": 800, "3": 1000, "4": 1470}},
+      "Glasgow": {"brma": "Greater Glasgow", "country": "Scotland", "monthly": {"shared": 450, "1": 695, "2": 850, "3": 970, "4": 1800}}
+    }
+  },
+  "omr": {
+    "source": "ONS Price Index of Private Rents, released 16 September 2026",
+    "url": "https://www.ons.gov.uk/economy/inflationandpriceindices/datasets/priceindexofprivaterentsukmonthlypricestatistics",
+    "month": "Aug 2026",
+    "unit": "GBP per calendar month",
+    "note": "England figures are achieved rents for the local authority. The Edinburgh figure is the Lothian Broad Rental Market Area, mainly advertised new lets. No 4-bedroom or shared-room average is in this series. Glasgow is not in the loaded series.",
+    "areas": {
+      "Bristol": {"name": "Bristol, City of", "code": "E06000023", "monthly": {"1": 1225, "2": 1544, "3": 1759}},
+      "Edinburgh": {"name": "Lothian", "code": "S33000011", "monthly": {"1": 1035, "2": 1324, "3": 1703}},
+      "Manchester": {"name": "Manchester", "code": "E08000003", "monthly": {"1": 1003, "2": 1233, "3": 1433}},
+      "Cheltenham": {"name": "Cheltenham", "code": "E07000078", "monthly": {"1": 869, "2": 1096, "3": 1354}},
+      "Glasgow": null
+    }
+  }
+}
