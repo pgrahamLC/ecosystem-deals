@@ -315,6 +315,13 @@ body.ios-deal input[type="radio"],body.ios-deal input[type="checkbox"]{min-heigh
 .ios-scenario .ios-figure{font-size:28px;font-weight:600;margin:0;letter-spacing:0}
 .ios-scenario p{margin:4px 0;font-size:15px;color:#3d4c59}
 .ios-scenario-wrap .ios-source{display:block;margin:8px 0 0;font-size:13px;line-height:1.4;color:#3d4c59}
+.ios-gaps{display:grid;grid-template-columns:1fr;gap:12px;margin:16px 0}
+.ios-gap{background:#fff;border-radius:16px;padding:16px 18px}
+.ios-gap h2{font-size:20px;margin:4px 0 8px;font-weight:600}
+.ios-gap .ios-figure{font-size:28px;font-weight:600;margin:0}
+.ios-gap p{margin:4px 0;font-size:15px;color:#3d4c59}
+.ios-disc ul{margin:8px 0 0;padding-left:18px}
+.ios-disc li{margin:4px 0;font-size:15px;color:#3d4c59}
 .ios-scenario b{color:#021726}
 @media (max-width:700px){.ios-scenarios{grid-template-columns:1fr}}
 .ios-step .card{border:0;border-radius:16px;padding:20px;margin:16px 0;background:#fff}
