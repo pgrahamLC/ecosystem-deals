@@ -66,7 +66,7 @@ function subtype(primary,evidence=''){
  }
  return null;
 }
-const commercial=s=>/\bcommercial\b|\bretail\b|\boffice(?:s)?\b|\bwarehouse\b|\bindustrial\b|\brestaurant\b|\bpublic house\b|\bpub\b|\bshop\b/i.test(s)&&!/\bresidential\b|\bflat(?:s)?\b|\bapartment(?:s)?\b|\bHMO\b|\bdwelling\b|\bmixed[ -]use\b|\bconversion\b|\bdevelopment\b/i.test(s);
+const commercial=s=>/\bcommercial\b|\bretail\b|\boffice(?:s)?\b|\bwarehouse\b|\bindustrial\b|\brestaurant\b|\bpublic house\b|\bpub\b|\bshop\b|\bgarage\b|\bparking\b/i.test(s)&&!/\bresidential\b|\bflat(?:s)?\b|\bapartment(?:s)?\b|\bHMO\b|\bdwelling\b|\bmixed[ -]use\b|\bconversion\b|\bdevelopment\b/i.test(s);
 const money=s=>{const m=String(s).match(/£\s*([\d,]+(?:\.\d{1,2})?)/);return m?Number(m[1].replace(/,/g,'')):null;};
 function labelledMoney(nodes,label){for(const n of nodes){const t=text(n).replace(/^Status\s*:\s*/i,'');if(t.length>220)continue;const a=t.match(new RegExp('^(?:'+label+')\\s*[:*=-]?\\s*(£\\s*[\\d,]+(?:\\.\\d{1,2})?)','i'));const b=t.match(new RegExp('^(£\\s*[\\d,]+(?:\\.\\d{1,2})?)\\s*(?:'+label+')','i'));if(a||b)return {value:money((a||b)[1]),label:clean((a||b)[0])};}return {value:null,label:null};}
 function dateOnly(s){
@@ -112,7 +112,7 @@ function fields(root,id){
  const statusText=labelled('Status');
  const stateNodes=small.filter(n=>/^(?:Auction has|Auction is|Sold\b|Withdrawn\b|Postponed\b|Unsold\b|Bidding not|BIDDING OPENS|BIDDING OPEN)/i.test(text(n))||/^(?:Available|For Sale|Under Offer|Sale Agreed|Sold STC)$/i.test(text(n)));
  const states=[statusText,...stateNodes.map(text)].filter(Boolean).join(' | ');
- return {title,address,classification,type,pureCommercial:commercial(classification),opening,guide,result,date,startDate,states};
+ return {title,address,classification,type,pureCommercial:commercial(classification),opening,guide,result,date,startDate,states,page_text:description?text(description):''};
 }
 function statusOf(f,now){const s=f.states;if(/\bwithdrawn\b/i.test(s))return 'withdrawn';if(/\bpostponed\b/i.test(s))return 'postponed';if(/\bunsold\b/i.test(s))return 'unsold';if(/sold stc|sale agreed|under offer/i.test(s))return 'under_offer';if(/\bsold\b/i.test(s)||f.result.value!==null)return 'sold';if(/not (?:been )?started|not yet open|BIDDING OPENS/i.test(s)&&(f.startDate||f.date)&&(f.startDate||f.date)>now.slice(0,10))return 'upcoming';if(/\bavailable\b|\bfor sale\b/i.test(s))return 'available';if(/bidding open now|auction is live/i.test(s))return 'live';return 'unknown';}
 function links(root,base){return all(root,n=>n.tag==='a'&&n.a.href).map(n=>{try{return {n,url:new URL(n.a.href,base),label:text(n)};}catch{return null;}}).filter(Boolean);}
@@ -151,9 +151,9 @@ export async function collect({get,source,now}){
   if(details>=detailLimit){out.errors.push('Detail limit reached; collection incomplete.');break;}details++;
   const root=await read(c.url);if(!root)continue;const f=fields(root,source.id);
   const address=f.address||c.address;const town=addressTown(address);if(!town)continue;
-  if(f.pureCommercial){out.commercial_excluded++;continue;}if(!f.type){out.errors.push(c.url+': unclassified property type; omitted.');continue;}
+  const lotType=f.pureCommercial?'Commercial':(f.type||'Unclassified');
   const status=statusOf(f,stamp);
-  out.lots.push({title:f.title||address,address,town,postcode:postcode(address),lot_type:f.type,residential_subtype:f.type,guide_price:f.guide.value,guide_price_text:f.guide.label,opening_bid:f.opening.value,auction_date:f.date,auction_start_date:f.startDate,status,sold_price:status==='sold'?f.result.value:null,source_url:c.url,source:source.name||source.id,scraped_at:stamp,grade:'',grade_evidence:[]});
+  out.lots.push({title:f.title||address,address,town,postcode:postcode(address),lot_type:lotType,residential_subtype:lotType,guide_price:f.guide.value,guide_price_text:f.guide.label,opening_bid:f.opening.value,auction_date:f.date,auction_start_date:f.startDate,status,sold_price:status==='sold'?f.result.value:null,source_url:c.url,source:source.name||source.id,scraped_at:stamp,grade:'',grade_evidence:[],page_text:f.page_text||''});
  }
  return out;
 }

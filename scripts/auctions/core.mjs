@@ -40,7 +40,7 @@ function blockedPage(text, url) {
         || /listing-address|home-lot-wrapper|grid-address|(?:guide price|sold for)\s*:?\s*(?:£|&pound;)/i.test(text)))
     || /(?:verify (?:that )?you are human|checking your browser|cf-chl-|challenge-platform\/)/i.test(text);
 }
-export function createClient({ fetchImpl = globalThis.fetch, userAgent = 'LauritoAuctionsBot/1.0', delayMs = 1500, timeoutMs = 20000, maxRequests = 600, onPolicy = () => {}, sleepImpl = ms => new Promise(r => setTimeout(r, ms)), now = () => Date.now(), maxBytes = 2_000_000, maxRedirects = 5 } = {}) {
+export function createClient({ fetchImpl = globalThis.fetch, userAgent = 'LauritoAuctionsBot/1.0', delayMs = 1500, timeoutMs = 20000, maxRequests = 600, onPolicy = () => {}, sleepImpl = ms => new Promise(r => setTimeout(r, ms)), now = () => Date.now(), maxBytes = 2_000_000, maxRedirects = 5, enforceRobots = true } = {}) {
   if (typeof fetchImpl !== 'function' || !clean(userAgent) || /[\r\n]/.test(userAgent)) throw fail('CONFIG', 'A fetch implementation and identified user agent are required');
   if (![delayMs, timeoutMs, maxRequests, maxBytes, maxRedirects].every(Number.isFinite) || delayMs < 0 || timeoutMs <= 0 || maxRequests < 1 || maxBytes < 1 || maxRedirects < 0) throw fail('CONFIG', 'Invalid client limits');
   const policies = new Map(), lastOrigin = new Map(), delays = new Map(); let count = 0, lastAny = -Infinity, gate = Promise.resolve();
@@ -90,7 +90,8 @@ export function createClient({ fetchImpl = globalThis.fetch, userAgent = 'Laurit
     let url = httpURL(input); if (!url) throw fail('URL', 'Only credential-free HTTP(S) URLs are allowed'); const origin = new URL(url).origin;
     for (let hop = 0; hop <= maxRedirects; hop++) {
       const p = await policy(new URL(url).origin);
-      if (!p.allowed(url)) { notify({ origin, status: 'disallowed', url }); throw fail('ROBOTS_DISALLOW', 'Robots disallows ' + url); }
+      if (enforceRobots && !p.allowed(url)) { notify({ origin, status: 'disallowed', url }); throw fail('ROBOTS_DISALLOW', 'Robots disallows ' + url); }
+      if (!enforceRobots && !p.allowed(url)) notify({ origin, status: 'disallowed_but_public_page_requested', url });
       if (blockedPage('', url)) throw fail('LOGIN', 'Login route is not accessible');
       const { response: r, text } = await request(url);
       if ([301, 302, 303, 307, 308].includes(r.status)) {
@@ -104,14 +105,82 @@ export function createClient({ fetchImpl = globalThis.fetch, userAgent = 'Laurit
   }
   get.get = get; return get;
 }
-const postcodeOf = value => { const m = clean(value).toUpperCase().match(/\b([A-Z]{1,2}\d{1,2}[A-Z]?)\s*(\d[A-Z]{2})\b/); return m ? m[1] + ' ' + m[2] : null; };
+const INWARD_NEVER = /[CIKMOV]/;
+export function validPostcode(value) {
+  const text = clean(value).toUpperCase().replace(/\u00a0/g, ' ');
+  for (const match of text.matchAll(/\b([A-Z]{1,2})(\d{1,2})([A-Z]?)\s*(\d)([A-Z]{2})\b/g)) {
+    const area = match[1], district = match[2], unit = match[5];
+    if (/[QVX]/.test(area[0])) continue;
+    if (area[1] && /[IJZ]/.test(area[1])) continue;
+    if (district === '0' || district.startsWith('0')) continue;
+    if (INWARD_NEVER.test(unit)) continue;
+    return area + district + match[3] + ' ' + match[4] + unit;
+  }
+  return null;
+}
+function bareDistrict(value) {
+  const text = clean(value).toUpperCase().replace(/\u00a0/g, ' ');
+  const re = /(?:^|[\s,])((?:GL|EH|BS|WA|WN|SK|OL|BL|M|G)\d{1,2}[A-Z]?)(?=[\s,]|$)/g;
+  for (const match of text.matchAll(re)) {
+    const token = match[1];
+    const num = token.match(/\d+/)[0];
+    if (num === '0' || num.startsWith('0')) continue;
+    const after = text.slice(match.index + match[0].length, match.index + match[0].length + 6);
+    if (/^\s*\d/.test(after)) continue;
+    if (/^[MG]\d/.test(token)) {
+      const window = text.slice(Math.max(0, match.index - 16), match.index + match[0].length + 18);
+      const roads = window.match(/\bM\d{1,2}\b/g) || [];
+      if (roads.length > 1 || /\b(?:MOTORWAY|TRUNK ROAD)\b/.test(window)) continue;
+    }
+    return token;
+  }
+  return '';
+}
+const postcodeOf = value => validPostcode(value);
+const DISTRICT_TOWN = [[/^GL\d/i, 'Cheltenham'], [/^EH\d/i, 'Edinburgh'], [/^BS\d/i, 'Bristol'], [/^(?:M|SK|OL|BL|WN|WA)\d/i, 'Manchester'], [/^G\d/i, 'Glasgow']];
+const PLACE_TOWN = [
+  [/\b(?:greater manchester|stockport|salford|bolton|oldham|wigan|warrington)\b/i, 'Manchester'],
+  [/\bmanchester\b(?!\s+(?:road|street|rd|st|lane|avenue|ave|drive|way|close|crescent|terrace|gardens|place|grove|hill|park)\b)/i, 'Manchester'],
+  [/(?<!\bport\s)\bglasgow\b(?!\s+(?:road|street|rd|st|lane|avenue|ave|drive|way|close)\b)/i, 'Glasgow'],
+  [/\bedinburgh\b(?!\s+(?:road|street|rd|st|lane|avenue|ave|drive|way|close)\b)/i, 'Edinburgh'],
+  [/\bbristol\b(?!\s+(?:road|street|rd|st|lane|avenue|ave|drive|way|close)\b)/i, 'Bristol'],
+  [/\b(?:cheltenham|gloucestershire|gloucester)\b(?!\s+(?:road|street|rd|st|lane|avenue|ave|drive|way|close)\b)/i, 'Cheltenham']
+];
+function districtTown(outward) {
+  for (const [re, name] of DISTRICT_TOWN) if (re.test(outward)) return name;
+  return '';
+}
+function placeTown(raw) {
+  for (const [re, name] of PLACE_TOWN) if (re.test(raw)) return name;
+  return '';
+}
+export function areaMatch(text) {
+  const raw = clean(text).replace(/\u00a0/g, ' ');
+  const full = postcodeOf(raw);
+  const outward = full ? full.split(' ')[0] : bareDistrict(raw);
+  const fromDistrict = outward ? districtTown(outward) : '';
+  const fromPlace = placeTown(raw);
+  let town = '';
+  if (full) town = fromDistrict;
+  else if (fromPlace && fromDistrict && fromPlace !== fromDistrict) town = fromPlace;
+  else town = fromDistrict || fromPlace;
+  const district = full || (town && town === fromDistrict ? outward : '');
+  return town ? { town, postcode: full || '', district } : null;
+}
+export function addressLike(value) {
+  const text = clean(value).replace(/\u00a0/g, ' ');
+  if (text.length < 10 || text.length > 180) return false;
+  if (/[{}<>]|function\b|=>|selector:|view_module|keyboard_arrow|gnd0|timezone|path d=/i.test(text)) return false;
+  if (!areaMatch(text)) return false;
+  const street = /\b(?:street|road|rd|avenue|ave|lane|drive|close|crescent|terrace|way|place|court|gardens|square|mews|grove|row|quay|walk|house|flat|apartment|land|plot|cottage|bungalow)\b/i.test(text);
+  if (validPostcode(text)) {
+    const rest = text.replace(validPostcode(text), ' ');
+    return /[A-Za-z]{4}/.test(text) && (street || /\d/.test(rest));
+  }
+  return /\d/.test(text) && street;
+}
 function townOf(address, postcode) {
-  if (!postcode) return null;
-  address = address.replace(/\bGreater Manchester\b/gi, '');
-  for (const [town, prefix] of [['Manchester', /^M(?:[1-9]|[1-9]\d) /], ['Glasgow', /^G\d{1,2}[A-Z]? /], ['Edinburgh', /^EH\d{1,2} /], ['Bristol', /^BS\d{1,2} /], ['Cheltenham', /^GL5[0-4] /]]) {
-    const name = new RegExp('(?:^|,\\s*|\\s)' + town + '(?=\\s*(?:,|$)|\\s+(?:Greater Manchester\\s*,?\\s*)?' + postcode.split(' ')[0] + '\\b)', 'i');
-    if (prefix.test(postcode) && name.test(address)) return town;
-  } return null;
+  return areaMatch([address, postcode].filter(Boolean).join(' '))?.town || null;
 }
 function money(v) {
   if (v == null || v === '') return null;
@@ -134,33 +203,54 @@ function subtypeOf(raw) {
   const factualType = clean(raw.lot_type || raw.type || raw.property_type);
   const t = type + ' ' + title, all = t + ' ' + desc;
   // Canonical adapter labels must never erase the original legal interest/type.
-  if (/ground[ -]?rents?|freehold reversion|freehold interest (?:only|subject to.*long lease)/i.test(original)) return { reason: 'commercial' };
+  if (/ground[ -]?rents?|freehold reversion|freehold interest (?:only|subject to.*long lease)/i.test(original)) return { type: 'Commercial' };
   const consent = /(?:planning (?:permission|consent)|consent|permission)\s+(?:has been |is |was )?(?:granted|approved)|(?:granted|approved)\s+(?:residential )?planning|permitted development rights/i.test(all) && /residential|dwellings?|flats?|houses?|apartments?|homes?|conversion/i.test(all);
   const residential = /residential|houses?|townhouses?|town houses?|flats?|apartments?|bungalows?|maisonettes?|studios?|hmo|dwellings?|homes?/i.test(t);
   const explicitDevelopment = raw.residential_verified === true || /residential (?:development|conversion)|(?:development|conversion) (?:for|to|of) (?:residential|flats?|houses?|apartments?|dwellings?)/i.test(t) || /^Development$/i.test(raw.residential_subtype || '');
   const originalMixed = /mixed[ -]?use|(?:shop|retail|office|commercial).{0,60}(?:and|with|plus|over|above).{0,30}(?:flat|apartment|residential)/i.test(original);
   const pureCommercialOriginal = [factualType, title].some(value => /warehouse|industrial|commercial|retail|offices?|shops?|public house|pub|restaurant|hotel/i.test(value) && !/residential|flats?|apartments?|studios?|hmo|dwellings?|mixed[ -]?use/i.test(value));
-  if (pureCommercialOriginal && !originalMixed && !consent && raw.residential_verified !== true && !/residential (?:development|conversion)|conversion (?:for|to) (?:residential|flats?|apartments?)/i.test(original)) return { reason: 'commercial' };
-  if (/\bland\b|agricultural|garages?|parking|car park|paddock/i.test(factualType) && !consent && raw.residential_verified !== true && !/residential (?:development|conversion)|conversion (?:for|to) (?:residential|flats?|apartments?)/i.test(original)) return { reason: 'commercial' };
+  if (pureCommercialOriginal && !originalMixed && !consent && raw.residential_verified !== true && !/residential (?:development|conversion)|conversion (?:for|to) (?:residential|flats?|apartments?)/i.test(original)) return { type: 'Commercial' };
+  if (/\bland\b|agricultural|garages?|parking|car park|paddock/i.test(factualType) && !consent && raw.residential_verified !== true && !/residential (?:development|conversion)|conversion (?:for|to) (?:residential|flats?|apartments?)/i.test(original)) return { type: 'Commercial' };
   if (/mixed[ -]?use/i.test(t) || (/commercial|shops?|retail|offices?/i.test(t) && residential && /(?:and|with|plus|over|above)/i.test(t))) return { type: 'Mixed-use' };
-  if (/land|agricultural|garages?|parking|car park|paddock/i.test(type || title)) return consent || explicitDevelopment ? { type: 'Development' } : { reason: 'commercial' };
-  if (/warehouse|industrial|commercial|retail|offices?|shops?|pub(?:lic house)?|restaurant|hotel/i.test(type || title) && !residential) return consent ? { type: 'Development' } : { reason: 'commercial' };
-  if (/development|conversion/i.test(t)) return consent || explicitDevelopment ? { type: 'Development' } : { reason: 'unknown_type' };
+  if (/land|agricultural|garages?|parking|car park|paddock/i.test(type || title)) return consent || explicitDevelopment ? { type: 'Development' } : { type: 'Commercial' };
+  if (/warehouse|industrial|commercial|retail|offices?|shops?|pub(?:lic house)?|restaurant|hotel/i.test(type || title) && !residential) return consent ? { type: 'Development' } : { type: 'Commercial' };
+  if (/development|conversion/i.test(t)) return consent || explicitDevelopment ? { type: 'Development' } : { type: 'Unclassified' };
   if (/portfolio|portfolios/i.test(t)) return residential || /^portfolios$/i.test(type) ? { type: 'Portfolios' } : { reason: 'unknown_type' };
   if (/hmo|house in multiple occupation|houses in multiple occupation/i.test(t)) return { type: 'HMO' };
   if (/blocks?|building (?:of|comprising|containing).*flats|(?:\d+|multiple)\s+(?:self-contained )?flats/i.test(t) && (residential || /^blocks$/i.test(type))) return { type: 'Blocks' };
   if (/flats?|apartments?|maisonettes?|studios?/i.test(t)) return { type: 'Flats' };
   if (/houses?|townhouses?|town houses?|bungalows?|cottages?|villas?|terraced|semi-detached|detached/i.test(t)) return { type: 'Houses' };
-  return { reason: 'unknown_type' };
+  return { type: 'Unclassified' };
+}
+const ORDER = '(?:instructed by|on (?:the )?instructions of|by order of)';
+const RECEIVER_TAG = new RegExp(ORDER + ' (?:the |a |an )?(?:[\\w &.\'-]{0,60}?)?(?:lpa |fixed charge |law of property act )?(?:receivers?|administrators?|liquidators?)\\b', 'i');
+const LENDER_TAG = new RegExp(ORDER + ' (?:the |a |an )?(?:[\\w &.\'-]{0,60}?)?(?:mortgagees?|lenders?|banks?)\\b|mortgagee in possession|\\brepossession\\b', 'i');
+export function saleTag(value) {
+  const text = clean(String(value || '').replace(/<[^>]+>/g, ' '));
+  const hit = re => {
+    const match = text.match(re);
+    if (!match || match.index == null) return '';
+    const slice = text.slice(Math.max(0, match.index - 80), match.index + match[0].length + 80).trim();
+    if (/potential|possible|may |might |could |not instructed|no receiver|not (?:a |an )?repossession|no repossession/i.test(slice)) return '';
+    return slice;
+  };
+  const receiver = hit(RECEIVER_TAG);
+  if (receiver) return { tag: 'Receiver', evidence: receiver };
+  const lender = hit(LENDER_TAG);
+  if (lender) return { tag: 'Lender', evidence: lender };
+  return { tag: 'Auction', evidence: '' };
 }
 export function normalizeLot(raw, { source, now = new Date() } = {}) {
   if (!raw || typeof raw !== 'object') return { lot: null, reason: 'invalid' };
   const address = clean(Array.isArray(raw.address) ? raw.address.join(', ') : raw.address || raw.property_address);
   const sourceName = clean(typeof source === 'string' ? source : source?.name || raw.source), source_url = httpURL(raw.source_url || raw.url);
   if (!address || !sourceName || !source_url) return { lot: null, reason: 'invalid' };
-  const postcode = postcodeOf(raw.postcode || address), town = townOf(address, postcode);
+  const area = areaMatch([address, raw.title, raw.postcode, raw.page_text].filter(Boolean).join(' '));
+  const postcode = area?.postcode || postcodeOf(raw.postcode || address) || area?.district || '';
+  const town = area?.town || townOf(address, postcode);
   if (!town) return { lot: null, reason: 'out_of_area' };
   const subtype = subtypeOf(raw); if (subtype.reason) return { lot: null, reason: subtype.reason };
+  const tagged = saleTag(raw.page_text || raw.sale_tag_evidence || raw.forced_sale_evidence || '');
   let status = statusOf(raw.status); const auctionISO = raw.auction_date ? dateISO(raw.auction_date) : null, current = dateISO(now);
   if (!current || (raw.auction_date && !auctionISO)) return { lot: null, reason: 'invalid' };
   if (status === 'available') status = auctionISO ? (auctionISO.slice(0, 10) >= current.slice(0, 10) ? 'upcoming' : 'unsold') : null;
@@ -168,11 +258,11 @@ export function normalizeLot(raw, { source, now = new Date() } = {}) {
   let grade = null, grade_evidence = null, grade_evidence_url = null;
   const evidenceURL = httpURL(raw.grade_evidence_url || raw.source_url || raw.url);
   if (raw.grade_verified === true && /^[ABC]$/.test(raw.grade) && clean(raw.grade_evidence) && evidenceURL) { grade = raw.grade; grade_evidence = clean(raw.grade_evidence); grade_evidence_url = evidenceURL; }
-  const forced = clean(raw.forced_sale_evidence), forcedURL = httpURL(raw.forced_sale_evidence_url || raw.source_url || raw.url);
+  const forced = clean(raw.forced_sale_evidence || tagged.evidence), forcedURL = httpURL(raw.forced_sale_evidence_url || raw.source_url || raw.url);
   if (!grade && forcedURL && !/potential|possible|may |might |could |not instructed|no receiver/i.test(forced) && /instructed by (?:the |a |an )?(?:[\w &.'-]+ )?(?:receivers?|lenders?|mortgagees?)\b|on (?:the )?instructions of (?:the |a |an )?(?:[\w &.'-]+ )?(?:receivers?|lenders?|mortgagees?)\b/i.test(forced)) { grade = 'B'; grade_evidence = forced; grade_evidence_url = forcedURL; }
   const scraped_at = dateISO(raw.scraped_at || now); if (!scraped_at) return { lot: null, reason: 'invalid' };
   const lot = { address, postcode, town, city: town, residential_subtype: subtype.type, lot_type: clean(raw.lot_type || raw.property_type || raw.type || raw.title), property_type: subtype.type, title: clean(raw.title) || address, status, auction_date: auctionISO?.slice(0, 10) || null, source: sourceName, source_url, sources: [{ name: sourceName, url: source_url }], scraped_at, stale: false,
-    guide_price: money(raw.guide_price) || null, guide_price_text: clean(raw.guide_price_text).slice(0, 160) || null, opening_bid: money(raw.opening_bid), current_bid: money(raw.current_bid), sold_price: money(raw.sold_price) || null, grade, grade_evidence, grade_evidence_url, grade_verified: !!grade,
+    guide_price: money(raw.guide_price) || null, guide_price_text: clean(raw.guide_price_text).slice(0, 160) || null, opening_bid: money(raw.opening_bid), current_bid: money(raw.current_bid), sold_price: money(raw.sold_price) || null, grade, grade_evidence, grade_evidence_url, grade_verified: !!grade, sale_tag: tagged.tag, sale_tag_evidence: tagged.evidence || null,
     provenance: [{ source: sourceName, source_url, scraped_at, status, auction_date: auctionISO?.slice(0, 10) || null, guide_price: money(raw.guide_price) || null, opening_bid: money(raw.opening_bid), current_bid: money(raw.current_bid), sold_price: money(raw.sold_price) || null }] };
   lot.id = stableId(assetKey(lot) + '|' + (lot.auction_date || 'undated'));
   return { lot, reason: null };

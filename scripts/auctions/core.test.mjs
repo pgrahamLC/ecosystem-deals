@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createClient, normalizeLot, dedupeLots, mergePrevious, sortLotsByGrade } from './core.mjs';
+import { createClient, normalizeLot, dedupeLots, mergePrevious, sortLotsByGrade, areaMatch, saleTag, addressLike } from './core.mjs';
 const NOW = '2026-11-03T10:00:00Z';
 const raw = extra => ({ address: 'Flat 1, 10 Example Street, Manchester, M1 2AB', title: 'Flat 1', property_type: 'Flat', status: 'Upcoming', auction_date: '2026-11-20', source_url: 'https://example.test/lot/1', ...extra });
 const norm = extra => normalizeLot(raw(extra), { source: 'Test', now: NOW });
@@ -79,17 +79,33 @@ test('target cities require explicit property posttown and matching complete pos
   for (const [town, postcode] of [['Manchester', 'M1 2AB'], ['Glasgow', 'G1 1AA'], ['Edinburgh', 'EH1 1AA'], ['Bristol', 'BS1 1AA'], ['Cheltenham', 'GL50 1AA']]) {
     assert.equal(norm({ address: '10 Example Road, ' + town + ', ' + postcode }).lot.town, town);
   }
-  for (const address of ['10 Manchester Road, Middleton, M24 1AA', '50 Edinburgh Road, Chatham, ME4 5BZ', '10 Example Road, Gloucester, GL1 1AA', '10 Example Road, M1 2AB', '10 Example Road, Cheltenham, GL1 1AA']) assert.equal(norm({ address, header: 'Manchester Glasgow Edinburgh Bristol Cheltenham' }).reason, 'out_of_area');
+  assert.equal(norm({ address: '10 Manchester Road, Middleton, M24 1AA' }).lot.town, 'Manchester');
+  assert.equal(norm({ address: 'Flat 2, Stockport, SK1 1AA' }).lot.town, 'Manchester');
+  assert.equal(norm({ address: '10 Example Road, Gloucester, GL1 1AA' }).lot.town, 'Cheltenham');
+  assert.equal(norm({ address: '10 Example Road, Cheltenham, GL1 1AA' }).lot.town, 'Cheltenham');
+  assert.equal(norm({ address: '50 Edinburgh Road, Chatham, ME4 5BZ' }).reason, 'out_of_area');
+  assert.equal(norm({ address: '10 Manchester Road, Chatham, ME4 5BZ' }).reason, 'out_of_area');
   assert.equal(norm({ address: '10 Example Street Manchester M99 1AA' }).lot.town, 'Manchester');
+  assert.equal(areaMatch('M15 20 L30 4.2'), null);
+  assert.equal(areaMatch('WN0 1FB Europe/London'), null);
+  assert.equal(areaMatch('M44 5ZM'), null);
+  assert.equal(areaMatch('Port Glasgow, PA14 5PF'), null);
+  assert.equal(areaMatch('12 High Street, Manchester M16').town, 'Manchester');
+  assert.equal(areaMatch('access from the M8, M77 and M74, Glasgow').town, 'Glasgow');
+  assert.equal(addressLike('M15 20 L30'), false);
+  assert.equal(addressLike('11 Armadale Close, Davenport, Stockport, SK3 8RZ'), true);
+  assert.equal(saleTag('By order of the Joint LPA Receivers').tag, 'Receiver');
+  assert.equal(saleTag('By order of Lloyds Bank plc').tag, 'Lender');
+  assert.equal(saleTag('A vacant freehold house').tag, 'Auction');
 });
 test('all residential classes and exclusions are conservative', () => {
   const types = { 'Townhouse': 'Houses', 'Apartment': 'Flats', 'Block of flats': 'Blocks', HMO: 'HMO', 'Residential portfolio': 'Portfolios', 'Mixed-use': 'Mixed-use', 'Residential development': 'Development' };
   for (const [property_type, expected] of Object.entries(types)) {
     const n = norm({ title: 'Example', property_type, description: 'Planning permission granted for 3 residential dwellings' }); assert.equal(n.lot?.residential_subtype, expected, property_type);
   }
-  for (const property_type of ['Retail shop', 'Office', 'Agricultural land', 'Garage', 'Parking', 'Ground rents over flats']) assert.equal(norm({ title: property_type, property_type }).reason, 'commercial');
-  assert.equal(norm({ title: 'Unknown opportunity', property_type: 'Other' }).reason, 'unknown_type');
-  assert.equal(norm({ title: 'Land', property_type: 'Land', description: 'Potential for residential planning' }).reason, 'commercial');
+  for (const property_type of ['Retail shop', 'Office', 'Agricultural land', 'Garage', 'Parking', 'Ground rents over flats']) assert.equal(norm({ title: property_type, property_type }).lot.residential_subtype, 'Commercial');
+  assert.equal(norm({ title: 'Unknown opportunity', property_type: 'Other' }).lot.residential_subtype, 'Unclassified');
+  assert.equal(norm({ title: 'Land', property_type: 'Land', description: 'Potential for residential planning' }).lot.residential_subtype, 'Commercial');
   assert.equal(norm({ title: 'Land', property_type: 'Land', description: 'Planning permission granted for residential flats' }).lot.residential_subtype, 'Development');
 });
 test('unknown and stale upcoming statuses never fabricated, prices stay separate', () => {
@@ -155,7 +171,7 @@ test('studios and explicit residential development/conversion require no guessed
   assert.equal(norm({ title: 'Residential development site', property_type: 'Land' }).lot.residential_subtype, 'Development');
   assert.equal(norm({ title: 'Conversion to residential', property_type: 'Development' }).lot.residential_subtype, 'Development');
   assert.equal(norm({ title: 'Building plot', property_type: 'Land', residential_verified: true }).lot.residential_subtype, 'Development');
-  assert.equal(norm({ title: 'Commercial development', property_type: 'Development' }).reason, 'commercial');
+  assert.equal(norm({ title: 'Commercial development', property_type: 'Development' }).lot.residential_subtype, 'Commercial');
 });
 test('metadata whitelist excludes descriptions/images and IDs are stable per asset/event', () => {
   const first = lot({ description: 'Private copied paragraph', images: ['photo.jpg'], arbitrary: 'untrusted' });
@@ -187,13 +203,13 @@ test('public lot page with auth modal allowed, login wall still blocked', async 
 
 test('original ground-rent and commercial interests override inferred residential labels', () => {
   for (const residential_subtype of ['Blocks', 'Flats', 'Houses']) {
-    assert.equal(norm({ title: '10 Example Street', lot_type: 'Freehold ground rents over 2 flats', residential_subtype }).reason, 'commercial');
-    assert.equal(norm({ title: 'Named block: Example House', lot_type: 'Ground rent only interest', residential_subtype }).reason, 'commercial');
-    assert.equal(norm({ title: '10 Example Street', lot_type: 'Commercial office', residential_subtype }).reason, 'commercial');
-    assert.equal(norm({ title: 'Commercial office', lot_type: 'Houses', residential_subtype }).reason, 'commercial');
-    assert.equal(norm({ title: '10 Example Street', lot_type: 'Agricultural land', residential_subtype }).reason, 'commercial');
+    assert.equal(norm({ title: '10 Example Street', lot_type: 'Freehold ground rents over 2 flats', residential_subtype }).lot.residential_subtype, 'Commercial');
+    assert.equal(norm({ title: 'Named block: Example House', lot_type: 'Ground rent only interest', residential_subtype }).lot.residential_subtype, 'Commercial');
+    assert.equal(norm({ title: '10 Example Street', lot_type: 'Commercial office', residential_subtype }).lot.residential_subtype, 'Commercial');
+    assert.equal(norm({ title: 'Commercial office', lot_type: 'Houses', residential_subtype }).lot.residential_subtype, 'Commercial');
+    assert.equal(norm({ title: '10 Example Street', lot_type: 'Agricultural land', residential_subtype }).lot.residential_subtype, 'Commercial');
   }
-  assert.equal(norm({ title: 'Freehold ground rents over a named block', lot_type: 'Blocks', residential_subtype: 'Blocks' }).reason, 'commercial');
+  assert.equal(norm({ title: 'Freehold ground rents over a named block', lot_type: 'Blocks', residential_subtype: 'Blocks' }).lot.residential_subtype, 'Commercial');
   assert.equal(norm({ title: 'Whole block of 2 flats', lot_type: 'Block of flats', residential_subtype: 'Blocks' }).lot.residential_subtype, 'Blocks');
 });
 test('explicit title unit identifiers distinguish same-building lots and stable IDs', () => {

@@ -58,7 +58,7 @@ for (const [expected, heading] of [
   });
 }
 test('pure commercial is counted and excluded', async () => {
-  const r = await braveRun(bravePage('Commercial retail shop', '')); assert.equal(r.lots.length, 0); assert.equal(r.commercial_excluded, 1);
+  const r = await braveRun(bravePage('Commercial retail shop', '')); assert.equal(r.lots.length, 1); assert.equal(r.lots[0].residential_subtype, 'Commercial'); assert.equal(r.commercial_excluded, 0);
 });
 
 // Regression cases from the read-only audit: short parent containers must not
@@ -73,7 +73,7 @@ test('short summary with supplementary sold status does not mark the current lot
 });
 test('related development heading cannot classify a garage as residential development', async () => {
   const html = '<h1 class="product_title">Garage, 999 Synthetic Test Street, Glasgow, G1 1AA</h1><h2>Garage</h2><p>Status: Available</p><section class="related products"><h2>Residential development site</h2></section>';
-  const r = await braveRun(html); assert.equal(r.lots.length, 0);
+  const r = await braveRun(html); assert.equal(r.lots.length, 1); assert.equal(r.lots[0].residential_subtype, 'Commercial');
 });
 test('verified ending date takes precedence over starting date', async () => {
   const html = '<h1 class="product_title">999 Synthetic Test Street, Glasgow, G1 1AA</h1><h2>Detached house</h2><p>Auction has not been started yet.</p><p>Start On: November 4, 2026 10:00 am</p><p>Ending On: November 9, 2026 2:00 pm</p>';

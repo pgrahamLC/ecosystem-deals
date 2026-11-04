@@ -2,15 +2,15 @@
 (function () {
   'use strict';
   const TOWNS = ['Manchester', 'Glasgow', 'Edinburgh', 'Bristol', 'Cheltenham'];
-  const TYPES = ['All', 'Blocks', 'Houses', 'Flats', 'HMO', 'Portfolios', 'Mixed-use', 'Development'];
+  const TYPES = ['Residential', 'All', 'Commercial', 'Blocks', 'Houses', 'Flats', 'HMO', 'Portfolios', 'Mixed-use', 'Development', 'Unclassified'];
   const STATUSES = ['upcoming', 'sold', 'unsold', 'withdrawn'];
   const MAX_AGE = 48 * 60 * 60 * 1000;
-  const state = { town: '', type: 'All', status: 'upcoming', sort: 'grade', lots: null, coverage: null, error: '', coverageError: '', loading: false };
+  const state = { town: '', type: 'Residential', status: 'upcoming', sort: 'grade', lots: null, coverage: null, error: '', coverageError: '', loading: false };
   const escape = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   function url(v) { try { const u = new URL(v); return /^https?:$/.test(u.protocol) ? u.href : ''; } catch (_) { return ''; } }
   function link(u, label) { const safe = url(u); return safe ? '<a href="'+escape(safe)+'" target="_blank" rel="noopener noreferrer">'+escape(label)+'</a>' : '<span>'+escape(label)+' (link unavailable)</span>'; }
   function town(v) { return /^(city of bristol|bristol, city of)$/i.test(v || '') ? 'Bristol' : /^(city of edinburgh|edinburgh, city of)$/i.test(v || '') ? 'Edinburgh' : TOWNS.find(t => t.toLowerCase() === String(v || '').trim().toLowerCase()) || ''; }
-  function type(v) { const s = String(v || '').toLowerCase().replace(/[_ ]/g, '-'); return ({block:'Blocks',blocks:'Blocks',house:'Houses',houses:'Houses',flat:'Flats',flats:'Flats',hmo:'HMO',portfolio:'Portfolios',portfolios:'Portfolios','mixed-use':'Mixed-use',mixed:'Mixed-use',development:'Development','development-site':'Development'})[s] || ''; }
+  function type(v) { const s = String(v || '').toLowerCase().replace(/[_ ]/g, '-'); return ({block:'Blocks',blocks:'Blocks',house:'Houses',houses:'Houses',flat:'Flats',flats:'Flats',hmo:'HMO',portfolio:'Portfolios',portfolios:'Portfolios','mixed-use':'Mixed-use',mixed:'Mixed-use',development:'Development','development-site':'Development',commercial:'Commercial',office:'Commercial',retail:'Commercial',unclassified:'Unclassified'})[s] || ''; }
   function stamp(v) { const n = Date.parse(v || ''); return Number.isFinite(n) ? n : null; }
   function date(v, time) { const n = stamp(v); return n === null ? 'Not recorded' : new Date(n).toLocaleString('en-GB', { timeZone: 'Europe/London', day:'numeric', month:'short', year:'numeric', ...(time ? {hour:'2-digit',minute:'2-digit'} : {}) }); }
   function money(v) { return typeof v === 'number' && Number.isFinite(v) && v >= 0 ? new Intl.NumberFormat('en-GB', {style:'currency',currency:'GBP',maximumFractionDigits:0}).format(v) : null; }
@@ -20,7 +20,11 @@
   function old(v) { const n = stamp(v); return n === null || Date.now() - n > MAX_AGE; }
   function stale(l) { return l.stale === true || old(l.scraped_at); }
   function filtered(lots, s) {
-    const out = lots.filter(l => town(l.town) && (!s.town || town(l.town) === s.town) && (s.type === 'All' || type(l.residential_subtype || l.property_type || l.lot_type) === s.type) && (s.status === 'all' || l.status === s.status));
+    const out = lots.filter(l => {
+      const kind = type(l.residential_subtype || l.property_type || l.lot_type);
+      const typeOk = s.type === 'All' || (s.type === 'Residential' ? kind !== 'Commercial' : kind === s.type);
+      return town(l.town) && (!s.town || town(l.town) === s.town) && typeOk && (s.status === 'all' || l.status === s.status);
+    });
     const number = (v, fallback) => typeof v === 'number' && Number.isFinite(v) ? v : fallback;
     return out.sort((a,b) => {
       let d = 0;
@@ -78,7 +82,7 @@
   const api = {start, refresh:load, town, type, grade, filtered, stale}; window.lcAuctions=api;
   function boot() {
     const root=document.getElementById('auctions_body');if(!root)return;
-    root.addEventListener('click', e => {const b=e.target.closest('button');if(!b)return;if(b.dataset.aqStatus){state.status=b.dataset.aqStatus;render();}if(b.dataset.aqAction === 'refresh')load();if(b.dataset.aqAction === 'reset'){Object.assign(state,{town:'',type:'All',status:'all',sort:'grade'});render();}});
+    root.addEventListener('click', e => {const b=e.target.closest('button');if(!b)return;if(b.dataset.aqStatus){state.status=b.dataset.aqStatus;render();}if(b.dataset.aqAction === 'refresh')load();if(b.dataset.aqAction === 'reset'){Object.assign(state,{town:'',type:'Residential',status:'all',sort:'grade'});render();}});
     root.addEventListener('change',e => {const key=e.target.dataset.aqFilter;if(key && e.target.value !== ''){state[key]=e.target.value;render();}else if(key === 'town'){state.town='';render();}});
     // Laurito's shared chrome contains old parked copy. Correct only that exact dated copy, not other modules.
     const footer=document.querySelector('footer.lc-note');if(footer)footer.innerHTML=footer.innerHTML.replace('Edinburgh is parked.','Edinburgh is included where source data is loaded; missing data is not zero.').replace('Focus: Manchester, Cheltenham, Bristol, and','Focus: Manchester, Cheltenham, Bristol and Edinburgh, and');
