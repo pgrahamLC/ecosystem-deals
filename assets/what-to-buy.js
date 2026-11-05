@@ -5,16 +5,12 @@
   const SCOPE = {
     Manchester: 'Manchester',
     'City Of Bristol': 'Bristol',
-    Cheltenham: 'Cheltenham',
-    Edinburgh: 'Edinburgh',
-    Glasgow: 'Glasgow'
+    Cheltenham: 'Cheltenham'
   };
   const LABEL = {
     Manchester: 'Manchester',
     Bristol: 'Bristol',
-    Cheltenham: 'Cheltenham',
-    Edinburgh: 'Edinburgh',
-    Glasgow: 'Glasgow'
+    Cheltenham: 'Cheltenham'
   };
   let prices = null;
   let book = null;
@@ -195,8 +191,12 @@
     if (!host) return;
     const scope = window.DM && DM.scope;
     const area = SCOPE[scope];
+    if (scope === 'Edinburgh' || scope === 'Glasgow') {
+      host.innerHTML = '<section class="ios-buy"><p class="lc-kicker">What to buy</p><h2>' + esc(scope) + '</h2><p>The buy note covers Manchester, Bristol and Cheltenham.</p></section>';
+      return;
+    }
     if (!area) {
-      host.innerHTML = '<section class="ios-buy"><p class="lc-kicker">What to buy</p><h2>Pick a town</h2><p>Choose Manchester, Bristol, Cheltenham, Glasgow or Edinburgh.</p></section>';
+      host.innerHTML = '<section class="ios-buy"><p class="lc-kicker">What to buy</p><h2>Pick a town</h2><p>Choose Manchester, Bristol or Cheltenham.</p></section>';
       return;
     }
     if (!prices || !book || !window.lcRentGap) {
