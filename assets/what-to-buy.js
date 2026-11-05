@@ -1,4 +1,4 @@
-/* What to buy: one recommendation per town, from figures already on the site. */
+/* Agent view: rank current leads in three towns from published figures only. */
 (function () {
   'use strict';
 
@@ -7,11 +7,7 @@
     'City Of Bristol': 'Bristol',
     Cheltenham: 'Cheltenham'
   };
-  const LABEL = {
-    Manchester: 'Manchester',
-    Bristol: 'Bristol',
-    Cheltenham: 'Cheltenham'
-  };
+  const LABEL = { Manchester: 'Manchester', Bristol: 'Bristol', Cheltenham: 'Cheltenham' };
   let prices = null;
   let book = null;
 
@@ -31,10 +27,7 @@
   }
   function pct(n) {
     if (n == null || !isFinite(+n)) return '—';
-    return (n * 100).toFixed(1) + '%';
-  }
-  function count(n) {
-    return Number(n).toLocaleString('en-GB');
+    return (Math.abs(n) * 100).toFixed(1) + '%';
   }
   function textOf(site) {
     return [
@@ -75,116 +68,132 @@
     return (site && (site.addr || site.address || (site.l && site.l.address))) || 'Address not recorded';
   }
   function leadsFor(scope) {
-    const sites = (window.DM && DM.sites) || [];
-    return sites.filter(function (site) { return site && site.city === scope; });
+    return ((window.DM && DM.sites) || []).filter(function (site) { return site && site.city === scope; });
   }
 
-  function advise(scope) {
-    const area = SCOPE[scope];
-    const median = prices && prices.areas ? prices.areas[area] : null;
-    const table = window.lcRentGap && book ? lcRentGap.build(book) : { ranked: [], missing: [] };
-    const rows = table.ranked.filter(function (row) { return row.area === area; }).slice().sort(function (a, b) { return a.gap - b.gap || a.pct - b.pct; });
-    const missing = table.missing.filter(function (row) { return row.area === area; });
-    const leads = leadsFor(scope);
-    const measured = [];
-    const gapped = [];
-    const stated = [];
-    leads.forEach(function (site) {
-      const beds = bedsOf(site);
-      const price = leadPrice(site);
-      const sqft = floorSqft(site);
-      const all = median && median.all;
-      if (sqft && price && all && all.median_gbp_per_sqft != null && all.n >= 5) {
-        const pps = price / sqft;
-        measured.push({ site: site, price: price, sqft: sqft, pps: pps, median: all.median_gbp_per_sqft, discount: (all.median_gbp_per_sqft - pps) / all.median_gbp_per_sqft });
-      }
-      const gap = window.lcRentGap ? lcRentGap.forLead(site) : null;
-      if (gap && gap.gap != null) gapped.push({ site: site, gap: gap, price: price, beds: beds || gap.beds });
-      else if (beds) stated.push({ site: site, beds: beds, price: price, why: gap && gap.label ? gap.label : 'Bedrooms are stated, and this series has no gap for them.' });
-    });
-    measured.sort(function (a, b) { return b.discount - a.discount; });
-    gapped.sort(function (a, b) { return a.gap.gap - b.gap.gap || String(addressOf(a.site)).localeCompare(String(addressOf(b.site))); });
-    return { area: area, median: median, rows: rows, missing: missing, measured: measured, gapped: gapped, stated: stated };
-  }
-
-  function priceLine(median) {
-    if (!median || !median.all || median.all.median_gbp_per_sqft == null || !(median.all.n >= 5)) {
-      return 'There is no floor-area data for this area, so there is no £/sq ft median and no measured discount.';
-    }
-    let line = 'Matched Land Registry sales median ' + sqftMoney(median.all.median_gbp_per_sqft) + '/sq ft, from ' + count(median.all.n) + ' sales.';
-    if (median.houses && median.houses.n >= 5) line += ' Houses ' + sqftMoney(median.houses.median_gbp_per_sqft) + '/sq ft, n=' + count(median.houses.n) + '.';
-    if (median.flats && median.flats.n >= 5) line += ' Flats ' + sqftMoney(median.flats.median_gbp_per_sqft) + '/sq ft, n=' + count(median.flats.n) + '.';
-    return line;
-  }
-
-  function discountLine(info) {
-    if (!info.median || !info.median.all || info.median.all.median_gbp_per_sqft == null) {
-      return 'No current lead is given a discount. ' + priceLine(info.median);
-    }
-    if (!info.measured.length) {
-      return 'No current lead has both a floor area and a guide, asking or sold price, so none is marked as a discount against the ' + sqftMoney(info.median.all.median_gbp_per_sqft) + '/sq ft median.';
-    }
-    const below = info.measured.filter(function (row) { return row.discount > 0; });
-    if (!below.length) {
-      const nearest = info.measured[0];
-      return 'Leads with a floor area and a price are at or above the ' + sqftMoney(nearest.median) + '/sq ft median. None is a discount. The nearest is ' + esc(addressOf(nearest.site)) + ' at ' + sqftMoney(nearest.pps) + '/sq ft.';
-    }
-    const best = below[0];
-    return 'The largest measured discount is ' + esc(addressOf(best.site)) + ': ' + sqftMoney(best.pps) + '/sq ft against ' + sqftMoney(best.median) + '/sq ft, ' + pct(best.discount) + ' below the median, on ' + money(best.price) + ' and ' + Math.round(best.sqft).toLocaleString('en-GB') + ' sq ft.';
-  }
-
-  function focusCopy(info) {
-    if (!info.rows.length) {
-      return 'There is no published open-market rent for ' + LABEL[info.area] + ', so there is no allowance gap to rank. Do not treat a missing gap as a small one.';
-    }
-    const best = info.rows[0];
-    const size = best.bedLabel.toLowerCase().replace(' ', '-');
-    const same = info.gapped.filter(function (row) { return String(row.beds) === String(best.beds) || String(row.gap.beds) === String(best.beds); });
-    let line = 'Buy a ' + size + '. The allowance is ' + money(best.lha) + ' against a market rent of ' + money(best.omr) + ', a gap of ' + money(best.gap) + ' a month (' + pct(best.pct) + '). That is the smallest published gap in ' + LABEL[info.area] + '.';
-    if (same.length) {
-      line += ' ' + same.length + ' current lead' + (same.length === 1 ? '' : 's') + ' state' + (same.length === 1 ? 's' : '') + ' that size.';
+  function scoreLead(site, area, median, smallestGap) {
+    const price = leadPrice(site);
+    const sqft = floorSqft(site);
+    const beds = bedsOf(site);
+    const gapInfo = window.lcRentGap ? lcRentGap.forLead(site) : null;
+    const gap = gapInfo && gapInfo.gap != null ? gapInfo.gap : null;
+    let discount = null;
+    let priceLine = 'No floor area and no price.';
+    if (sqft && !price) priceLine = 'Floor area is on the lead, but there is no price.';
+    else if (!sqft && price) priceLine = 'No floor area, so no £/sq ft discount. Price ' + money(price) + '.';
+    else if (sqft && price && median != null) {
+      const pps = price / sqft;
+      discount = (median - pps) / median;
+      priceLine = sqftMoney(pps) + '/sq ft against the ' + sqftMoney(median) + '/sq ft median, ' + (discount > 0 ? pct(discount) + ' below' : pct(discount) + ' above') + '.';
+    } else if (sqft && price) priceLine = 'Price and floor area are on the lead, but this area has no £/sq ft median.';
+    let gapLine = 'Bedrooms are not stated, so there is no allowance gap.';
+    if (beds && gap == null) gapLine = (gapInfo && gapInfo.label) || 'No allowance gap for this bedroom count.';
+    else if (gap != null) gapLine = gapInfo.label;
+    const strong = discount != null && discount >= 0.1;
+    const below = discount != null && discount > 0;
+    const smallGap = gap != null && smallestGap != null && gap <= smallestGap + 0.5;
+    const wideGap = gap != null && smallestGap != null && gap > smallestGap + 0.5;
+    let stance = 'skip';
+    let why = '';
+    if (strong && smallGap) {
+      stance = 'buy';
+      why = 'Below the local median by ' + pct(discount) + ', and on the closest allowance gap.';
+    } else if (strong) {
+      stance = 'buy';
+      why = 'A measured discount against the local median. ' + (wideGap ? 'The allowance gap is wider than the closest size.' : gapLine);
+    } else if (smallGap && below) {
+      stance = 'buy';
+      why = 'On the closest allowance gap, and the price per sq ft is under the median.';
+    } else if (smallGap) {
+      stance = 'buy';
+      why = 'On the closest allowance gap. ' + priceLine;
+    } else if (below) {
+      stance = 'buy';
+      why = 'Under the local median. ' + gapLine;
+    } else if (wideGap) {
+      why = 'The allowance gap is wider than the closest size in ' + LABEL[area] + '. ' + priceLine;
+    } else if (discount != null && discount <= 0) {
+      why = 'Not below the local median. ' + gapLine;
+    } else if (!sqft && !price && !beds) {
+      why = 'No floor area, no price, and bedrooms are not stated.';
     } else {
-      line += ' No current lead states that size.';
+      why = priceLine + ' ' + gapLine;
     }
-    return line;
+    return {
+      site: site,
+      address: addressOf(site),
+      price: price,
+      sqft: sqft,
+      beds: beds,
+      discount: discount,
+      gap: gap,
+      strong: strong,
+      smallGap: smallGap,
+      wideGap: wideGap,
+      stance: stance,
+      why: why,
+      priceLine: priceLine,
+      gapLine: gapLine
+    };
   }
 
-  function leadItem(row) {
-    const price = row.price ? ', guide or price ' + money(row.price) : '';
-    return '<li><b>' + esc(addressOf(row.site)) + '</b> — ' + esc(row.gap.label) + price + '.</li>';
+  function review(scope) {
+    const area = SCOPE[scope];
+    const block = prices && prices.areas ? prices.areas[area] : null;
+    const median = block && block.all && block.all.n >= 5 ? block.all.median_gbp_per_sqft : null;
+    const table = window.lcRentGap && book ? lcRentGap.build(book) : { ranked: [] };
+    const rows = table.ranked.filter(function (row) { return row.area === area; }).slice().sort(function (a, b) { return a.gap - b.gap; });
+    const smallest = rows[0] || null;
+    const scored = leadsFor(scope).map(function (site) { return scoreLead(site, area, median, smallest && smallest.gap); });
+    const buys = scored.filter(function (row) { return row.stance === 'buy'; }).sort(function (a, b) {
+      if (a.strong !== b.strong) return a.strong ? -1 : 1;
+      if (a.smallGap !== b.smallGap) return a.smallGap ? -1 : 1;
+      return (b.discount || -1) - (a.discount || -1) || (a.gap == null ? 1 : a.gap) - (b.gap == null ? 1 : b.gap);
+    });
+    const skips = scored.filter(function (row) { return row.stance !== 'buy'; });
+    const quiet = skips.filter(function (row) { return !row.price && !row.sqft && !row.beds && row.gap == null; });
+    const named = skips.filter(function (row) { return quiet.indexOf(row) < 0; });
+    return { area: area, median: median, medianN: block && block.all ? block.all.n : null, smallest: smallest, buys: buys, named: named, quiet: quiet.length, total: scored.length };
+  }
+
+  function verdict(info) {
+    const name = LABEL[info.area];
+    if (!info.smallest) return 'There is no published allowance gap for ' + name + ', so nothing is ranked on rent.';
+    const both = info.buys.filter(function (row) { return row.strong && row.smallGap; });
+    const strong = info.buys.filter(function (row) { return row.strong; });
+    const close = info.buys.filter(function (row) { return row.smallGap; });
+    let line = 'The closest allowance fit in ' + name + ' is a ' + info.smallest.bedLabel.toLowerCase() + ': market rent ' + money(info.smallest.omr) + ', allowance ' + money(info.smallest.lha) + ', gap ' + money(info.smallest.gap) + ' a month.';
+    if (!info.median) line += ' There is no £/sq ft median here, so no discount is calculated.';
+    else line += ' The matched-sales median is ' + sqftMoney(info.median) + '/sq ft.';
+    if (both.length) return line + ' Buy where both show up: a discount of 10% or more and that closest gap.';
+    if (strong.length) return line + ' Buy on the measured discount. Nothing also sits on that closest gap.';
+    if (close.length) return line + ' No lead is 10% or more under the median. Look at the leads on that closest gap.';
+    if (info.buys.length) return line + ' A few leads are under the median, but not by 10%, and none is on the closest gap.';
+    return line + ' No current lead is both under the median and on that closest gap.';
+  }
+
+  function card(row) {
+    return '<article class="ios-agent"><p class="lc-kicker">' + esc(row.stance === 'buy' ? 'Look at' : 'Skip') + '</p><h3>' + esc(row.address) + '</h3><p>' + esc(row.why) + '</p></article>';
   }
 
   function render(scope) {
-    const info = advise(scope);
+    const info = review(scope);
     const name = LABEL[info.area];
-    const rentRows = info.rows.map(function (row) {
-      return '<li>' + esc(row.bedLabel) + ': market ' + money(row.omr) + ', allowance ' + money(row.lha) + ', gap ' + money(row.gap) + ' (' + pct(row.pct) + ').</li>';
+    const nearest = info.named.filter(function (row) { return row.gap != null || row.discount != null || row.price; }).sort(function (a, b) {
+      return (a.gap == null ? 1 : 0) - (b.gap == null ? 1 : 0) || (a.gap || 0) - (b.gap || 0);
+    });
+    const buyCards = info.buys.slice(0, 8).map(card).join('');
+    const skipCards = info.named.slice(0, 12).map(card).join('');
+    const nearestCards = info.buys.length ? '' : nearest.slice(0, 3).map(card).join('');
+    const moreBuys = info.buys.length > 8 ? '<p>' + (info.buys.length - 8) + ' more leads are under the median or on the closest gap.</p>' : '';
+    const quiet = info.quiet ? '<p>' + info.quiet.toLocaleString('en-GB') + ' other leads have no floor area, no price and no stated bedrooms, so they are not ranked.</p>' : '';
+    const full = info.buys.concat(info.named).map(function (row) {
+      return '<li><b>' + esc(row.address) + '</b> — ' + esc(row.priceLine) + ' ' + esc(row.gapLine) + '</li>';
     }).join('');
-    const missingRows = info.missing.map(function (row) {
-      return '<li>' + esc(row.bedLabel) + ': ' + esc(row.reason) + '.</li>';
-    }).join('');
-    const gapItems = info.gapped.map(leadItem).join('');
-    const statedItems = info.stated.map(function (row) {
-      const price = row.price ? ', price ' + money(row.price) : '';
-      return '<li><b>' + esc(addressOf(row.site)) + '</b> — ' + esc(row.beds) + '-bed' + price + '. ' + esc(row.why) + '</li>';
-    }).join('');
-    const discountItems = info.measured.map(function (row) {
-      const word = row.discount > 0 ? pct(row.discount) + ' below' : pct(-row.discount) + ' above';
-      return '<li><b>' + esc(addressOf(row.site)) + '</b> — ' + sqftMoney(row.pps) + '/sq ft, ' + word + ' the ' + sqftMoney(row.median) + ' median, on ' + money(row.price) + '.</li>';
-    }).join('');
-    const nearest = info.gapped[0];
-    const nearestLine = nearest ? 'Closest current lead on the allowance gap: ' + addressOf(nearest.site) + ', ' + nearest.gap.label + (nearest.price ? ', price ' + money(nearest.price) : '') + '.' : 'No current lead has both a stated bedroom count and a published gap.';
-    return '<section class="ios-buy"><p class="lc-kicker">What to buy</p><h2>' + esc(name) + '</h2><p>' + esc(focusCopy(info)) + '</p><p>' + esc(nearestLine) + '</p>' +
-      '<details class="ios-disc"><summary>Price per square foot</summary><p>' + esc(discountLine(info)) + '</p><p>' + esc(priceLine(info.median)) + '</p>' +
-      (discountItems ? '<ul>' + discountItems + '</ul>' : '<p>A discount is shown only where the lead itself states a floor area and a guide, asking or sold price.</p>') +
-      '</details>' +
-      '<details class="ios-disc"><summary>Allowance and market rent</summary><p>A smaller gap is the better fit where the tenant relies on the allowance. A larger gap is the downside in that case. ONS private rents, ' + esc(book.omr.month) + '. DWP Local Housing Allowance, ' + esc(book.lha.valid_from) + ' to ' + esc(book.lha.valid_to) + '.</p>' +
-      (rentRows ? '<ul>' + rentRows + '</ul>' : '') +
-      (missingRows ? '<p>Not ranked, because a figure is missing:</p><ul>' + missingRows + '</ul>' : '') +
-      '</details>' +
-      '<details class="ios-disc"><summary>Current leads</summary><p>' + (gapItems ? 'Smallest allowance gap first. The gap is the area series for the bedrooms stated on the lead, not that building\'s own rent.</p><ul>' + gapItems + '</ul>' : 'No current lead has a published allowance gap.</p>') +
-      (statedItems ? '<p>Stated bedrooms, with no published gap for that lead:</p><ul>' + statedItems + '</ul>' : '') +
-      '</details></section>';
+    return '<section class="ios-buy"><p class="lc-kicker">Agent view</p><h2>' + esc(name) + '</h2><p>' + esc(verdict(info)) + '</p>' +
+      (buyCards ? buyCards + moreBuys : '<p>None of the current leads is a buy on these tests.</p>' + nearestCards) +
+      '<details class="ios-disc"><summary>Skip, and why</summary>' + (skipCards || '<p>No named skip.</p>') + quiet + '</details>' +
+      '<details class="ios-disc"><summary>How each scored lead was read</summary><p>A discount needs both a floor area and a price on that lead. A gap needs the bedrooms stated on that lead, and an ONS rent for this local authority. Neither is guessed.</p><ul>' + (full || '<li>No lead had a price, a floor area, or stated bedrooms.</li>') + '</ul></details></section>';
   }
 
   function paint(host) {
@@ -192,15 +201,15 @@
     const scope = window.DM && DM.scope;
     const area = SCOPE[scope];
     if (scope === 'Edinburgh' || scope === 'Glasgow') {
-      host.innerHTML = '<section class="ios-buy"><p class="lc-kicker">What to buy</p><h2>' + esc(scope) + '</h2><p>The buy note covers Manchester, Bristol and Cheltenham.</p></section>';
+      host.innerHTML = '<section class="ios-buy"><p class="lc-kicker">Agent view</p><h2>' + esc(scope) + '</h2><p>This note covers Manchester, Bristol and Cheltenham.</p></section>';
       return;
     }
     if (!area) {
-      host.innerHTML = '<section class="ios-buy"><p class="lc-kicker">What to buy</p><h2>Pick a town</h2><p>Choose Manchester, Bristol or Cheltenham.</p></section>';
+      host.innerHTML = '<section class="ios-buy"><p class="lc-kicker">Agent view</p><h2>Pick a town</h2><p>Choose Manchester, Bristol or Cheltenham.</p></section>';
       return;
     }
     if (!prices || !book || !window.lcRentGap) {
-      host.innerHTML = '<section class="ios-buy"><p class="lc-kicker">What to buy</p><h2>' + esc(LABEL[area]) + '</h2><p>Loading the published figures.</p></section>';
+      host.innerHTML = '<section class="ios-buy"><p class="lc-kicker">Agent view</p><h2>' + esc(LABEL[area]) + '</h2><p>Loading the published figures.</p></section>';
       return;
     }
     host.innerHTML = render(scope);
@@ -220,6 +229,6 @@
     });
   }
 
-  window.lcWhatToBuy = { paint: paint, advise: advise, load: load };
+  window.lcWhatToBuy = { paint: paint, review: review, load: load };
   load();
 })();

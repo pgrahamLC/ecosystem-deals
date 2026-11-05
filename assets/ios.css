@@ -261,7 +261,9 @@ details>summary::-webkit-details-marker{display:none}
 .dm-nolot{margin:8px 0 0;color:#5c6b78;font-size:13px}
 .ios-buy{background:#fff;border-radius:16px;padding:18px 20px;margin:12px 0}
 .ios-buy h2{font-size:28px;line-height:1.15;margin:4px 0 8px;font-weight:600}
+.ios-buy h3{font-size:17px;margin:4px 0;font-weight:600}
 .ios-buy p{font-size:17px;line-height:1.4;margin:8px 0}
+.ios-agent{background:#f4f7f8;border-radius:14px;padding:12px 14px;margin:10px 0}
 .dm-kpi{border:0!important;border-radius:16px!important;padding:16px!important}
 .ios-city{border:0;box-shadow:none}
 #auctions_view{background:var(--bg);color:var(--ink);font-family:var(--sans)}
