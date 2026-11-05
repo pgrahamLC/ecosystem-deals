@@ -39,6 +39,27 @@ test('the example rent compounds to a 15% yearly return', () => {
   console.log('EXAMPLE monthly', Math.round(result.monthlyRent), 'annual', Math.round(result.annualRent), 'noi', Math.round(result.noi));
 });
 
+test('the example rent implies the same £650,000 sale the rent was solved from', () => {
+  const rent = example(0.15);
+  const back = api.requiredExit({
+    buy: 500000,
+    exit: 0,
+    ltv: 0.70,
+    interest: 0.07,
+    opex: 0.25,
+    years: 5,
+    homes: 1,
+    acqFee: 0.036,
+    saleCost: 0.03,
+    exitLump: 0,
+    debtFee: 0.01,
+    tax: 'england-extra'
+  }, 0.15, rent.annualRent);
+  assert.ok(Math.abs(back.exit - 650000) < 1);
+  assert.ok(Math.abs(back.irr - 0.15) < 0.00005);
+  console.log('EXIT', Math.round(back.exit), 'rent month', Math.round(rent.monthlyRent));
+});
+
 test('a higher target return needs more rent', () => {
   const low = example(0.12).monthlyRent;
   const mid = example(0.15).monthlyRent;
