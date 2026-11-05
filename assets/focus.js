@@ -435,6 +435,10 @@
     const dealView = document.getElementById('deal_view');
     if (dealView && !dealView.classList.contains('hidden')) paintDealChrome();
     if (dealStep === 3) refreshResult();
+    if (dealStep === 4 && window.lcReverse) {
+      const node = document.getElementById('reverse_irr');
+      if (node) window.lcReverse.mount(node);
+    }
     window.scrollTo(0, 0);
   }
 
@@ -579,7 +583,7 @@
       pane(1, 'Rent roll', 'Upload the schedule, or type the rent.'),
       pane(2, 'Assumptions', 'The yield you want to buy at, costs, loan and interest.'),
       pane(3, 'Your bid', 'What you could pay, and what it earns.'),
-      pane(4, 'Required rent', 'The rent that earns the return you want, at a price you choose.')
+      pane(4, 'Required rent', 'The rent this deal needs, and the sale price its rent needs, for the return you set.')
     ];
     const bodies = steps.map(function (step) { return step.querySelector('.ios-step-body'); });
     if (property) bodies[0].appendChild(property);
@@ -641,6 +645,8 @@
       foldNiy();
       refreshResult();
       if (window.lcRentScenarios) window.lcRentScenarios.mount();
+      const reverse = document.getElementById('reverse_irr');
+      if (reverse && window.lcReverse) window.lcReverse.mount(reverse);
     }
     const dealView = document.getElementById('deal_view');
     if (dealView && !dealView.classList.contains('hidden')) {
