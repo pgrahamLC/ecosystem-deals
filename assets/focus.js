@@ -5,13 +5,11 @@
   const PRIMARY = [
     ['assets', 'Find'],
     ['distress', 'Leads'],
-    ['auctions', 'Auctions'],
     ['deal', 'Deal'],
     ['comps', 'Comps']
   ];
   const MORE = [
     ['map', 'Map'],
-    ['sales', 'For sale now'],
     ['valuation', 'Local OMV / LHA'],
     ['accom', 'Demand'],
     ['pipeline', 'Pipeline'],
@@ -22,7 +20,6 @@
   const COPY = {
     assets: ['Find', 'Where to look', 'Manchester, Cheltenham, Bristol and Edinburgh. Open a town, then a lead, then a deal.'],
     distress: ['Leads', 'Who has to sell', 'A is a live insolvency. B is a lender or receiver sale. C is a watchlist, not a forced sale.'],
-    sales: ['More', 'For sale now', 'The live residential auction feed. An empty list is not proof that nothing is for sale.'],
     deal: ['Deal', 'The decision', 'Rent, operating income, the NIY you are using, the maximum bid, and the return.'],
     comps: ['Comps', 'What sold nearby', 'Land Registry prices for this town. A yield is shown only when the same lot states rent and price.'],
     map: ['Find', 'Map', 'One town at a time. Colour is a screen, not a valuation.'],
@@ -310,7 +307,7 @@
   function clipLong(root) {
     if (!root) return;
     root.querySelectorAll('p, .foot').forEach(function (p) {
-      if (p.dataset.clipped || p.closest('.lc-decision, .lc-screen, details, table, .lc-stats')) return;
+      if (p.dataset.clipped || p.closest('.lc-decision, .lc-screen, details, table, .lc-stats, .ios-buy')) return;
       if (p.querySelector('button, input, select, table')) return;
       const plain = p.textContent.replace(/\s+/g, ' ').trim();
       if (plain.length < 170) return;
@@ -685,7 +682,8 @@
   if (typeof viewMode === 'function' && !viewMode._focus) {
     const prev = viewMode;
     const wrapped = function (mode) {
-      const out = prev.apply(this, arguments);
+      if (mode === 'sales') mode = 'distress';
+      const out = prev.call(this, mode);
       if (mode === 'auctions' && location.hash !== '#auctions') history.replaceState(null, '', '#auctions');
       const run = function () { tidy(mode); };
       if (out && typeof out.then === 'function') return out.then(function (v) { run(); return v; });

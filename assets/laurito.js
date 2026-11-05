@@ -345,7 +345,7 @@
         }
         const rows = window.LC_BEST || [];
         if (!rows.length) {
-          host.innerHTML = '<p class="foot">No A or B leads in Manchester, Cheltenham or Bristol in this load. Open the A/B/C map or For sale now. An empty list is not evidence that nothing is for sale.</p>';
+          host.innerHTML = '<p class="foot">No A or B leads in Manchester, Cheltenham or Bristol in this load. Open Leads. An empty list is not evidence that nothing is for sale.</p>';
           return;
         }
         host.innerHTML = '<p class="foot">Select a row for the deal card. A and B are listed before C. The rank does not use titles owned or LHA.</p>';

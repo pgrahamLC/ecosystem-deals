@@ -256,6 +256,12 @@ details>summary::-webkit-details-marker{display:none}
 .pc{padding:12px 14px;margin-bottom:10px}
 .pc select{min-height:44px;width:100%;margin-top:8px;font-size:17px;border:0;border-radius:12px;background-color:var(--fill)}
 #map_canvas,#dm_map{border:0!important;border-radius:16px!important;overflow:hidden}
+#dm_map.leaflet-container{overflow:visible!important}
+.dm-lotlink{display:flex;align-items:center;justify-content:center;min-height:44px;margin-top:8px;padding:10px 14px;border-radius:12px;background:#021726;color:#fff!important;text-decoration:none;font-weight:600}
+.dm-nolot{margin:8px 0 0;color:#5c6b78;font-size:13px}
+.ios-buy{background:#fff;border-radius:16px;padding:18px 20px;margin:12px 0}
+.ios-buy h2{font-size:28px;line-height:1.15;margin:4px 0 8px;font-weight:600}
+.ios-buy p{font-size:17px;line-height:1.4;margin:8px 0}
 .dm-kpi{border:0!important;border-radius:16px!important;padding:16px!important}
 .ios-city{border:0;box-shadow:none}
 #auctions_view{background:var(--bg);color:var(--ink);font-family:var(--sans)}
