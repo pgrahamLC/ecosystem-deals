@@ -35,6 +35,14 @@ test('the largest gaps are the published Manchester, Bristol and Lothian bedroom
   assert.equal(table.ranked[0].omr, 1433);
   assert.equal(table.ranked[0].lha, 950);
   assert.ok(Math.abs(table.ranked[0].pct - 483 / 1433) < 1e-12);
+  const small = table.ranked.slice().reverse().slice(0, 5).map(row => row.area + ' ' + row.beds + ' ' + Math.round(row.gap));
+  assert.equal(small.join(', '), [
+    'Manchester 1 228',
+    'Cheltenham 1 244',
+    'Edinburgh 1 285',
+    'Cheltenham 2 296',
+    'Bristol 1 325'
+  ].join(', '));
 });
 
 test('a lead uses a stated bedroom and does not invent one', () => {
