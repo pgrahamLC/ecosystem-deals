@@ -439,7 +439,7 @@
   }
 
   function paintDealChrome() {
-    const names = ['Property', 'Rent roll', 'Assumptions', 'Your bid'];
+    const names = ['Property', 'Rent roll', 'Assumptions', 'Your bid', 'Required rent'];
     const host = screenHost();
     host.innerHTML = '<div class="ios-progress" role="tablist">' + names.map(function (name, i) {
       return '<button type="button" data-step="' + i + '"' + (i === dealStep ? ' class="on"' : '') + '>' + (i + 1) + ' ' + name + '</button>';
@@ -578,7 +578,8 @@
       pane(0, 'Property', 'Name the building and the town.'),
       pane(1, 'Rent roll', 'Upload the schedule, or type the rent.'),
       pane(2, 'Assumptions', 'The yield you want to buy at, costs, loan and interest.'),
-      pane(3, 'Your bid', 'What you could pay, and what it earns.')
+      pane(3, 'Your bid', 'What you could pay, and what it earns.'),
+      pane(4, 'Required rent', 'The rent that earns the return you want, at a price you choose.')
     ];
     const bodies = steps.map(function (step) { return step.querySelector('.ios-step-body'); });
     if (property) bodies[0].appendChild(property);
@@ -597,13 +598,17 @@
     if (tools) bodies[3].appendChild(tools);
     if (saved) bodies[3].appendChild(saved);
     if (calc) { calc.classList.add('ios-hide'); bodies[3].appendChild(calc); }
+    const reverse = document.createElement('div');
+    reverse.id = 'reverse_irr';
+    bodies[4].appendChild(reverse);
+    if (window.lcReverse) window.lcReverse.mount(reverse);
 
     const wrap = document.createElement('div');
     wrap.className = 'ios-steps';
     steps.forEach(function (step, i) {
       const nav = step.querySelector('.ios-nav');
       if (i > 0) nav.innerHTML += '<button type="button" class="ios-text" data-back>Back</button>';
-      if (i < 3) nav.innerHTML += '<button type="button" class="btn ios-next" data-next>' + (i === 2 ? 'See your bid' : 'Next') + '</button>';
+      if (i < steps.length - 1) nav.innerHTML += '<button type="button" class="btn ios-next" data-next>' + (i === 3 ? 'Required rent' : i === 2 ? 'See your bid' : 'Next') + '</button>';
       wrap.appendChild(step);
     });
     body.appendChild(wrap);
