@@ -107,20 +107,39 @@
     };
   }
 
+  function spanLabel(iso) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const parts = String(iso || '').split('-');
+    const month = months[(+parts[1] || 1) - 1] || '';
+    return month && parts[0] ? month + ' ' + parts[0] : String(iso || '');
+  }
+
+  function rowCard(row, i) {
+    const lhaSpan = spanLabel(book.lha.valid_from) + '–' + spanLabel(book.lha.valid_to);
+    return '<article class="ios-gap"><p class="lc-kicker">' + (i + 1) + ' · ' + esc(row.area) + '</p><h2>' + esc(row.bedLabel) + '</h2><p class="ios-figure">' + money(row.gap) + '</p><p>' + pct(row.pct) + ' of market rent</p><p>Open-market rent ' + money(row.omr) + ' · ONS PIPR ' + esc(book.omr.month) + '</p><p>Local Housing Allowance ' + money(row.lha) + ' · DWP ' + esc(lhaSpan) + '</p><p>' + esc(placeLine(row)) + '</p><p>Sources: <a href="' + esc(book.omr.url) + '" target="_blank" rel="noopener">ONS private rent series</a> · <a href="' + esc(book.lha.publication) + '" target="_blank" rel="noopener">DWP LHA rates 2026/27</a></p></article>';
+  }
+
+  function section(title, rows) {
+    return '<h2 class="ios-h">' + esc(title) + '</h2><div class="ios-gaps">' + rows.map(rowCard).join('') + '</div>';
+  }
+
   function paint(host) {
     if (!host) return;
     if (!book) {
       host.innerHTML = '<p class="lc-kicker">More</p><h1>LHA vs market rent</h1><p>Loading the published rents.</p>';
       return;
     }
-    const rows = table.ranked.map(function (row, i) {
-      return '<article class="ios-gap"><p class="lc-kicker">' + (i + 1) + ' · ' + esc(row.area) + '</p><h2>' + esc(row.bedLabel) + '</h2><p class="ios-figure">' + money(row.gap) + '</p><p>' + pct(row.pct) + ' of market rent · market ' + money(row.omr) + ' · allowance ' + money(row.lha) + '</p><p>' + esc(placeLine(row)) + '</p><p>ONS ' + esc(book.omr.month) + ' · LHA ' + esc(book.lha.period) + '</p></article>';
-    }).join('');
+    const biggest = table.ranked;
+    const smallest = table.ranked.slice().reverse();
     const absent = table.missing.map(function (row) {
       return '<li>' + esc(row.area) + ', ' + esc(row.bedLabel.toLowerCase()) + ': ' + esc(row.reason) + '.</li>';
     }).join('');
-    host.innerHTML = '<p class="lc-kicker">More</p><h1>LHA vs market rent</h1><p class="lc-purpose">Market rent minus the Local Housing Allowance, largest gap first. ' + table.ranked.length + ' published comparisons. Nothing here is estimated.</p>' +
-      '<div class="ios-gaps">' + rows + '</div>' +
+    const top = biggest[0];
+    const low = smallest[0];
+    host.innerHTML = '<p class="lc-kicker">More</p><h1>LHA vs market rent</h1><p class="lc-purpose">Open-market rent minus the Local Housing Allowance. ' + table.ranked.length + ' published comparisons, shown largest first and smallest first. Nothing here is estimated.</p>' +
+      (top && low ? '<p>Biggest is ' + esc(top.area) + ' ' + esc(top.bedLabel.toLowerCase()) + ', ' + money(top.gap) + ' a month. Smallest is ' + esc(low.area) + ' ' + esc(low.bedLabel.toLowerCase()) + ', ' + money(low.gap) + ' a month.</p>' : '') +
+      section('Biggest gaps', biggest) +
+      section('Smallest gaps', smallest) +
       '<details class="ios-disc"><summary>Sizes with no market rent (' + table.missing.length + ')</summary><p>These are every other area and bedroom size. They are not given a gap.</p><ul>' + absent + '</ul><p>Open-market rent in this series is not published for a postcode district, a shared room, or a 4-bedroom home. Glasgow has no series here. A Manchester, Bristol or Cheltenham figure is the local authority, not the whole allowance area, except Lothian, where both figures are the same rental area.</p></details>' +
       '<details class="ios-disc"><summary>Sources and dates</summary><p>' + esc(book.omr.source) + '. Month: ' + esc(book.omr.month) + '.</p><p><a href="' + esc(book.omr.url) + '" target="_blank" rel="noopener">ONS private rent series</a></p><p>' + esc(book.lha.note) + ' In force ' + esc(book.lha.valid_from) + ' to ' + esc(book.lha.valid_to) + '. Checked ' + esc(book.lha.checked) + '.</p><p><a href="' + esc(book.lha.publication) + '" target="_blank" rel="noopener">DWP LHA rates 2026/27</a></p><p><a href="' + esc(book.lha.sources.England) + '" target="_blank" rel="noopener">England rate table</a> · <a href="' + esc(book.lha.sources.Scotland) + '" target="_blank" rel="noopener">Scotland rate table</a></p><p>The percentage is the monthly gap divided by the open-market rent.</p></details>';
   }
