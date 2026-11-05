@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  const AREAS = ['Manchester', 'Bristol', 'Cheltenham', 'Edinburgh', 'Glasgow'];
+  const AREAS = ['Manchester', 'Bristol', 'Cheltenham'];
   const BEDS = [
     ['shared', 'Shared room'],
     ['1', '1 bedroom'],
@@ -97,6 +97,7 @@
       lead && lead.auction && lead.auction.type
     ].filter(Boolean).join(' '));
     if (!beds) return { gap: null, label: 'Rent gap: bedrooms not stated' };
+    if (AREAS.indexOf(area) < 0) return { gap: null, label: '' };
     const row = table.ranked.find(function (item) { return item.area === area && item.beds === beds; });
     if (!row) return { gap: null, label: 'Rent gap: no market rent for ' + area + ' ' + beds + '-bed' };
     return {
@@ -136,11 +137,11 @@
     }).join('');
     const top = biggest[0];
     const low = smallest[0];
-    host.innerHTML = '<p class="lc-kicker">More</p><h1>LHA vs market rent</h1><p class="lc-purpose">Open-market rent minus the Local Housing Allowance. ' + table.ranked.length + ' published comparisons, each shown under biggest and under smallest. Nothing here is estimated.</p>' +
+    host.innerHTML = '<p class="lc-kicker">More</p><h1>LHA vs market rent</h1><p class="lc-purpose">Open-market rent minus the Local Housing Allowance for Manchester, Bristol and Cheltenham. ' + table.ranked.length + ' published comparisons, each shown under biggest and under smallest. Nothing here is estimated.</p>' +
       (top && low ? '<p>Biggest is ' + esc(top.area) + ' ' + esc(top.bedLabel.toLowerCase()) + ', ' + money(top.gap) + ' a month. Smallest is ' + esc(low.area) + ' ' + esc(low.bedLabel.toLowerCase()) + ', ' + money(low.gap) + ' a month.</p>' : '') +
       section('Biggest gaps', 'Largest gap first. A wide gap is the downside if the tenant relies on the allowance.', biggest) +
       section('Smallest gaps', 'Smallest gap first. This is where the allowance is closest to the open-market rent.', smallest) +
-      '<details class="ios-disc"><summary>Sizes with no market rent (' + table.missing.length + ')</summary><p>These are every other area and bedroom size. They are not given a gap.</p><ul>' + absent + '</ul><p>Open-market rent in this series is not published for a postcode district, a shared room, or a 4-bedroom home. Glasgow has no series here. A Manchester, Bristol or Cheltenham figure is the local authority. Edinburgh uses the Lothian rental area for both figures.</p></details>' +
+      '<details class="ios-disc"><summary>Sizes with no market rent (' + table.missing.length + ')</summary><p>Shared rooms and 4-bedroom homes in these three towns are not given a gap.</p><ul>' + absent + '</ul><p>Open-market rent in this series is not published for a postcode district, a shared room, or a 4-bedroom home. Each figure is the local authority. Edinburgh and Glasgow are not in this comparison.</p></details>' +
       '<details class="ios-disc"><summary>Sources and dates</summary><p>' + esc(book.omr.source) + '. Month: ' + esc(book.omr.month) + '.</p><p><a href="' + esc(book.omr.url) + '" target="_blank" rel="noopener">ONS private rent series</a></p><p>' + esc(book.lha.note) + ' In force ' + esc(book.lha.valid_from) + ' to ' + esc(book.lha.valid_to) + '. Checked ' + esc(book.lha.checked) + '.</p><p><a href="' + esc(book.lha.publication) + '" target="_blank" rel="noopener">DWP LHA rates 2026/27</a></p><p><a href="' + esc(book.lha.sources.England) + '" target="_blank" rel="noopener">England rate table</a> · <a href="' + esc(book.lha.sources.Scotland) + '" target="_blank" rel="noopener">Scotland rate table</a></p><p>The percentage is the monthly gap divided by the open-market rent.</p></details>';
   }
 
