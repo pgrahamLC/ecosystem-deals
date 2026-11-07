@@ -1,6 +1,6 @@
 /* Rendered catalogue reader. Uses the site's own HTML after JavaScript runs, plus JSON responses the page requests. No login bypass. */
 import { chromium } from 'playwright';
-import { addressLike, areaMatch, saleTag } from './core.mjs';
+import { addressLike, areaMatch, cleanAddress, saleTag } from './core.mjs';
 
 const PLACES = ['Manchester', 'Glasgow', 'Edinburgh', 'Bristol', 'Cheltenham', 'Gloucester'];
 let browserPromise;
@@ -29,8 +29,8 @@ function windows(text) {
   const found = [];
   const hint = /.{0,110}(?:\b(?:greater manchester|stockport|salford|bolton|oldham|wigan|warrington|manchester|glasgow|edinburgh|bristol|cheltenham|gloucestershire|gloucester)\b|\b(?:GL|EH|BS|WA|WN|SK|OL|BL|M|G)\d{1,2}[A-Z]?\s*\d[A-Z]{2})/gi;
   for (const match of String(text).matchAll(hint)) {
-    const slice = match[0].replace(/\s+/g, ' ').trim();
-    if (!addressLike(slice)) continue;
+    const slice = cleanAddress(match[0].replace(/\s+/g, ' ').trim());
+    if (!slice || !addressLike(slice)) continue;
     const area = areaMatch(slice);
     found.push({ text: slice, postcode: area.postcode, town: area.town });
   }

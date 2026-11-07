@@ -167,8 +167,21 @@ export function areaMatch(text) {
   const district = full || (town && town === fromDistrict ? outward : '');
   return town ? { town, postcode: full || '', district } : null;
 }
+const CHROME = /\b(?:faqs?|pre-auction marketing|show\s*\/\s*hide|legal pack|register to bid|auction updates|favicon\.ico)\b/i;
+export function cleanAddress(value) {
+  let text = clean(value).replace(/\u00a0/g, ' ');
+  const afterDate = text.match(/\bauction date:\s*\d{1,2}(?:st|nd|rd|th)?\s+[A-Za-z]+\s+20\d{2}\s+(.+)$/i);
+  if (afterDate) text = afterDate[1].trim();
+  if (CHROME.test(text)) {
+    const re = /((?:lot\s+\d+\s+)?(?:\d+\s+bed\s+[\w'-]+\s+)?[\w'.-]+\s+(?:road|street|lane|avenue|close|gardens|drive|way|place|terrace|grove|court|crescent)\b(?:\s*,\s*(?![A-Z]{1,2}\d)[^,]{1,40}){0,5}\s*,?\s*[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2})/ig;
+    const all = [...text.matchAll(re)];
+    text = all.length ? all[all.length - 1][1].replace(/\s+/g, ' ').trim() : '';
+  }
+  return addressLike(text) ? text : '';
+}
 export function addressLike(value) {
   const text = clean(value).replace(/\u00a0/g, ' ');
+  if (CHROME.test(text)) return false;
   if (text.length < 10 || text.length > 180) return false;
   if (/[{}<>]|function\b|=>|selector:|view_module|keyboard_arrow|gnd0|timezone|path d=/i.test(text)) return false;
   if (!areaMatch(text)) return false;
@@ -254,14 +267,22 @@ export function normalizeLot(raw, { source, now = new Date() } = {}) {
   let status = statusOf(raw.status); const auctionISO = raw.auction_date ? dateISO(raw.auction_date) : null, current = dateISO(now);
   if (!current || (raw.auction_date && !auctionISO)) return { lot: null, reason: 'invalid' };
   if (status === 'available') status = auctionISO ? (auctionISO.slice(0, 10) >= current.slice(0, 10) ? 'upcoming' : 'unsold') : null;
-  if (!status || (status === 'upcoming' && auctionISO && auctionISO.slice(0, 10) < current.slice(0, 10))) return { lot: null, reason: 'unknown_status' }; 
+  let outcome_unverified = false;
+  if (status === 'upcoming' && auctionISO && auctionISO.slice(0, 10) < current.slice(0, 10)) {
+    status = 'passed';
+    outcome_unverified = true;
+  }
+  if (!status) return { lot: null, reason: 'unknown_status' }; 
   let grade = null, grade_evidence = null, grade_evidence_url = null;
   const evidenceURL = httpURL(raw.grade_evidence_url || raw.source_url || raw.url);
   if (raw.grade_verified === true && /^[ABC]$/.test(raw.grade) && clean(raw.grade_evidence) && evidenceURL) { grade = raw.grade; grade_evidence = clean(raw.grade_evidence); grade_evidence_url = evidenceURL; }
   const forced = clean(raw.forced_sale_evidence || tagged.evidence), forcedURL = httpURL(raw.forced_sale_evidence_url || raw.source_url || raw.url);
   if (!grade && forcedURL && !/potential|possible|may |might |could |not instructed|no receiver/i.test(forced) && /instructed by (?:the |a |an )?(?:[\w &.'-]+ )?(?:receivers?|lenders?|mortgagees?)\b|on (?:the )?instructions of (?:the |a |an )?(?:[\w &.'-]+ )?(?:receivers?|lenders?|mortgagees?)\b/i.test(forced)) { grade = 'B'; grade_evidence = forced; grade_evidence_url = forcedURL; }
   const scraped_at = dateISO(raw.scraped_at || now); if (!scraped_at) return { lot: null, reason: 'invalid' };
-  const lot = { address, postcode, town, city: town, residential_subtype: subtype.type, lot_type: clean(raw.lot_type || raw.property_type || raw.type || raw.title), property_type: subtype.type, title: clean(raw.title) || address, status, auction_date: auctionISO?.slice(0, 10) || null, source: sourceName, source_url, sources: [{ name: sourceName, url: source_url }], scraped_at, stale: false,
+  const lotPage = !/favicon\.ico|\/wp-json(?:\/|$)|\/oembed\/|\/search\?/i.test(source_url) && !/\/\?s=/i.test(source_url);
+  const detail_verified = raw.detail_verified === false ? false : lotPage && !outcome_unverified;
+  const verification_note = clean(raw.verification_note) || (outcome_unverified ? 'Auction date has passed. The source did not state sold or withdrawn, so this is not shown as upcoming. Outcome not verified.' : (!lotPage ? 'The stored link is not a lot or catalogue page. Details taken from scraped text are not verified.' : ''));
+  const lot = { address, postcode, town, city: town, residential_subtype: subtype.type, lot_type: clean(raw.lot_type || raw.property_type || raw.type || raw.title), property_type: subtype.type, title: clean(raw.title) || address, status, auction_date: auctionISO?.slice(0, 10) || null, source: sourceName, source_url, sources: [{ name: sourceName, url: source_url }], scraped_at, stale: false, detail_verified, verification_note: verification_note || null, outcome_unverified,
     guide_price: money(raw.guide_price) || null, guide_price_text: clean(raw.guide_price_text).slice(0, 160) || null, opening_bid: money(raw.opening_bid), current_bid: money(raw.current_bid), sold_price: money(raw.sold_price) || null, grade, grade_evidence, grade_evidence_url, grade_verified: !!grade, sale_tag: tagged.tag, sale_tag_evidence: tagged.evidence || null,
     provenance: [{ source: sourceName, source_url, scraped_at, status, auction_date: auctionISO?.slice(0, 10) || null, guide_price: money(raw.guide_price) || null, opening_bid: money(raw.opening_bid), current_bid: money(raw.current_bid), sold_price: money(raw.sold_price) || null }] };
   lot.id = stableId(assetKey(lot) + '|' + (lot.auction_date || 'undated'));

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createClient, normalizeLot, dedupeLots, mergePrevious, sortLotsByGrade, areaMatch, saleTag, addressLike } from './core.mjs';
+import { createClient, normalizeLot, dedupeLots, mergePrevious, sortLotsByGrade, areaMatch, saleTag, addressLike, cleanAddress } from './core.mjs';
 const NOW = '2026-11-03T10:00:00Z';
 const raw = extra => ({ address: 'Flat 1, 10 Example Street, Manchester, M1 2AB', title: 'Flat 1', property_type: 'Flat', status: 'Upcoming', auction_date: '2026-11-20', source_url: 'https://example.test/lot/1', ...extra });
 const norm = extra => normalizeLot(raw(extra), { source: 'Test', now: NOW });
@@ -110,7 +110,11 @@ test('all residential classes and exclusions are conservative', () => {
 });
 test('unknown and stale upcoming statuses never fabricated, prices stay separate', () => {
   assert.equal(norm({ status: 'Guide price' }).reason, 'unknown_status');
-  assert.equal(norm({ status: 'Upcoming', auction_date: '2026-10-20' }).reason, 'unknown_status');
+  const passed = norm({ status: 'Upcoming', auction_date: '2026-10-20' });
+  assert.equal(passed.reason, null);
+  assert.equal(passed.lot.status, 'passed');
+  assert.equal(passed.lot.outcome_unverified, true);
+  assert.notEqual(passed.lot.status, 'upcoming');
   assert.equal(norm({ status: 'Upcoming', auction_date: null }).lot.status, 'upcoming');
   assert.equal(norm({ status: 'sold', auction_date: '2026-10-20' }).lot.status, 'sold');
   const l = lot({ guide_price: '£100,000+', opening_bid: 90000, current_bid: 101000, price: 999999, sold_price: null });
@@ -270,4 +274,11 @@ test('mergePrevious correction identity never crosses event dates or source owne
   assert.equal(mergePrevious([fresh], [old], { Test: 'live' }, NOW).length, 2);
   const differentSource = { ...old, auction_date: fresh.auction_date, source: 'Other', sources: [{ name: 'Other', url: fresh.source_url }] };
   assert.equal(mergePrevious([fresh], [differentSource], {}, NOW).length, 2);
+});
+test('scraped chrome is not an address, and a real street inside it is kept', () => {
+  assert.equal(addressLike('our FAQs section. Pre-auction Marketing 7 Modern Method Freehold 4 bed Chalet Glendevon Road, Bristol, Avon, BS14 0HT'), false);
+  assert.equal(cleanAddress('our FAQs section. Pre-auction Marketing 7 Modern Method Freehold 4 bed Chalet Glendevon Road, Bristol , Avon, BS14 0HT'), '4 bed Chalet Glendevon Road, Bristol , Avon, BS14 0HT');
+  assert.equal(cleanAddress('l Auction Date: 24th September 2026 Land Adj Jemaro, Hyde Lane, Swindon Village, Cheltenham, Gloucestershire, GL51 9QN'), 'Land Adj Jemaro, Hyde Lane, Swindon Village, Cheltenham, Gloucestershire, GL51 9QN');
+  assert.equal(cleanAddress('rch Show / Hide Map Legal pack Auction Updates Register to bid Auction Dates Lot 1 Green Gardens, Brockworth, GL3 4NJ'), 'Lot 1 Green Gardens, Brockworth, GL3 4NJ');
+  assert.equal(cleanAddress('section. Pre-auction Marketing 12 Modern Method Leasehold 2 bed Terraced Tottington Road, BURY , Lancashire, BL8 1ST'), '2 bed Terraced Tottington Road, BURY , Lancashire, BL8 1ST');
 });

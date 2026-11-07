@@ -5,7 +5,7 @@
   const FEE = 0.018;
   const AREAS = ['Manchester', 'Cheltenham', 'Bristol', 'Glasgow', 'Edinburgh'];
   const CLASSES = ['Resi block', 'Houses', 'Flats', 'HMO', 'Mixed-use', 'Office', 'Development'];
-  const RESIDENTIAL = ['Resi block', 'Houses', 'Flats', 'HMO', 'Mixed-use'];
+  const RESIDENTIAL = ['Resi block', 'Houses', 'Flats', 'HMO'];
   const FLOOR = 40000;
 
   function round2(n) {
@@ -32,7 +32,20 @@
   }
 
   function sdltNonResidential(price) {
+    // GOV.UK non-residential and mixed property, freehold, unchanged since 17 March 2016. Checked 7 Nov 2026.
     return bands(price, [[150000, 0], [250000, 0.02], [Infinity, 0.05]]);
+  }
+
+  function lbttNonResidential(price) {
+    // Revenue Scotland non-residential LBTT. Mixed property uses these rates and not the additional dwelling supplement.
+    return bands(price, [[150000, 0], [250000, 0.01], [Infinity, 0.05]]);
+  }
+
+  function mixedOrCommercial(type) {
+    const t = String(type || '');
+    if (/mixed/i.test(t)) return true;
+    const homes = /flat|apartment|house|hmo|residential|dwelling|maisonette|studio/i.test(t);
+    return /office|retail|\bshop\b|public house|\bpub\b|restaurant|industrial|warehouse/i.test(t) && !homes;
   }
 
   function lbttWithAds(price) {
@@ -96,11 +109,13 @@
     }
     const count = dwellingCount(type);
     const many = count != null && count >= 6;
+    if (mixedOrCommercial(type) || many) {
+      if (scotland(city)) return { tax: lbttNonResidential(price), label: 'LBTT at non-residential rates. Mixed-use, commercial, and six or more dwellings are not charged the additional dwelling supplement.' };
+      const why = mixedOrCommercial(type) ? 'this is mixed-use or commercial property' : 'the lot is six or more dwellings';
+      return { tax: sdltNonResidential(price), label: 'SDLT at non-residential rates, because ' + why + '. Bands: 0% to £150,000, 2% to £250,000, 5% above.' };
+    }
     if (scotland(city)) {
       return { tax: lbttWithAds(price), label: 'LBTT plus 8% additional dwelling supplement' };
-    }
-    if (many) {
-      return { tax: sdltNonResidential(price), label: 'SDLT at non-residential rates, because the lot is six or more dwellings' };
     }
     return { tax: sdltAdditional(price), label: 'SDLT at the higher rates for an additional dwelling (from 31 October 2024)' };
   }
@@ -186,10 +201,11 @@
     const review = outlier(d.pct);
     const qualified = passing && basisPrice === 'sold';
     const verified = row.verified === true && qualified;
-    const commercial = klass === 'Office' || klass === 'Retail';
-    const average = !commercial && qualified && (!review || verified);
+    const keptOut = klass === 'Office' || klass === 'Retail' || klass === 'Mixed-use';
+    const average = !keptOut && qualified && (!review || verified);
     let why = '';
-    if (commercial) why = 'Kept out. Office and retail comps are not in the residential averages.';
+    if (klass === 'Mixed-use') why = 'Kept out of the residential averages. Mixed-use is its own classification and is taxed at non-residential rates. The individual comp is retained.';
+    else if (keptOut) why = 'Kept out. Office and retail comps are not in the residential averages.';
     else if (!qualified) why = 'Unverified. An average uses only passing rent and a completed sold price.';
     else if (review && !verified) why = 'Review. The derived NIY is outside 3% to 12% and has not been verified, so it is kept out of the average.';
     return Object.assign(base, {
@@ -229,10 +245,11 @@
       const review = outlier(Number(row.yield_pct));
       const conflict = /disagree|not used in an average|not averaged|counted twice|left out of the average/i.test(row.notes || '');
       const verified = row.verified === true && sold;
-      const commercial = klass === 'Office' || klass === 'Retail';
-      const average = !commercial && row.in_average !== false && sold && !conflict && (!review || verified);
+      const keptOut = klass === 'Office' || klass === 'Retail' || klass === 'Mixed-use';
+      const average = !keptOut && row.in_average !== false && sold && !conflict && (!review || verified);
       let why = '';
-      if (commercial) why = 'Kept out. Office and retail comps are not in the residential averages.';
+      if (klass === 'Mixed-use') why = 'Kept out of the residential averages. Mixed-use stays as its own comp and is not folded into houses, flats or blocks.';
+      else if (keptOut) why = 'Kept out. Office and retail comps are not in the residential averages.';
       else if (!sold) why = 'Unverified. The figure is an asking quote, not a completed sale.';
       else if (conflict) why = 'Kept out. The notes say this figure double-counts a building or disagrees with another source.';
       else if (review && !verified) why = 'Review. Published NIY is outside 3% to 12% and is not verified for the average.';
