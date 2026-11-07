@@ -42,8 +42,9 @@ test('Auctions and every inline application script parse',()=>{
   new vm.Script(source);
   for(const match of index.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi))if(match[1].trim())new vm.Script(match[1]);
 });
-test('public Auctions entry has main navigation, deep link and startup race guard',()=>{
-  for(const text of ['data-g="auctions"','id="auctions_view"','<div id="app">',"window.lcAuctionsActive=active==='auctions'",'location.hash === "#auctions"'])assert.ok(index.includes(text),text);
+test('public Auctions entry stays reachable without a main-nav tab',()=>{
+  assert.ok(!index.includes('data-g="auctions"'), 'the main nav must not offer an Auctions tab');
+  for(const text of ['id="auctions_view"','<div id="app">',"window.lcAuctionsActive=active==='auctions'",'location.hash === "#auctions"','data/auctions/lots.json'])assert.ok(index.includes(text),text);
 });
 test('all five towns and canonical Bristol/Edinburgh aliases are recognized',()=>{
   const {api}=harness();
@@ -137,9 +138,10 @@ test('shared grade labels and colors are used for evidenced feed grades',async()
 });
 
 // Full-page QA caught the redesign's separate navigation and descriptive lot types.
-test('redesign keeps Auctions in its actual primary navigation',()=>{
+test('redesign hides Auctions from primary navigation and keeps the deep link',()=>{
   const focus=readFileSync(new URL('../../assets/focus.js',import.meta.url),'utf8');
-  assert.ok(focus.includes("['auctions', 'Auctions']"));
+  assert.ok(!focus.includes("['auctions', 'Auctions']"), 'Auctions is not a primary tab');
+  assert.ok(focus.includes("['distress', 'Leads']"));
   assert.ok(focus.includes("screenHost().hidden = mode === 'auctions'"));
   assert.ok(focus.includes("viewMode(location.hash === '#auctions' || window.lcAuctionsActive ? 'auctions' : 'assets')"));
   new vm.Script(focus);

@@ -1,5 +1,5 @@
 /* Public catalogue readers. HTML the site serves, and the JSON those pages request. No login or captcha bypass. */
-import { addressLike, areaMatch, saleTag } from './core.mjs';
+import { addressLike, areaMatch, cleanAddress, saleTag } from './core.mjs';
 import { collect as renderCollect } from './render.mjs';
 
 const STREET = /\b(?:street|road|rd|avenue|ave|lane|drive|close|crescent|terrace|way|place|court|gardens|square|mews|grove|row|quay|walk|house|flat|apartment|land|plot|cottage|bungalow)\b/i;
@@ -50,7 +50,7 @@ function commercialType(text) {
 function nearestLink(html, index, base) {
   const around = html.slice(Math.max(0, index - 900), index + 900);
   const links = [...around.matchAll(/href="([^"]+)"/gi)].map(match => abs(match[1], base)).filter(Boolean);
-  return links.find(href => /\/(?:lot|property|properties|product)\b|property_details|property-details/i.test(href)) || links.find(href => !/logo|facebook|linkedin|twitter|mailto:|javascript:/i.test(href)) || '';
+  return links.find(href => /\/(?:lot|property|properties|product)\b|property_details|property-details/i.test(href) && !/favicon|\/wp-json|\/oembed\//i.test(href)) || links.find(href => !/logo|facebook|linkedin|twitter|mailto:|javascript:|favicon|\/wp-json|\/oembed\//i.test(href)) || '';
 }
 
 export function cardsFromHtml(html, pageUrl) {
@@ -58,14 +58,14 @@ export function cardsFromHtml(html, pageUrl) {
   const found = [];
   const seen = new Set();
   function add(address, index, extra = '') {
-    const text = strip(address);
-    if (!addressLike(text)) return;
+    const text = cleanAddress(strip(address));
+    if (!text || !addressLike(text)) return;
     const area = areaMatch(text);
     const key = (area.postcode || area.town) + '|' + text.toLowerCase().slice(0, 90);
     if (seen.has(key)) return;
     if (/340 deansgate/i.test(text)) return;
     seen.add(key);
-    const around = strip(decoded.slice(Math.max(0, index - 500), index + 500));
+    const around = strip(decoded.slice(Math.max(0, index - 1800), index + 1800));
     const guide = around.match(/£\s*[\d,]+(?:\s*[-–]\s*£?\s*[\d,]+)?\+?/);
     const href = nearestLink(decoded, index, pageUrl);
     const type = commercialType(text + ' ' + around);
