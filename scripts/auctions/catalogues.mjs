@@ -1,6 +1,5 @@
 /* Public catalogue readers. HTML the site serves, and the JSON those pages request. No login or captcha bypass. */
 import { addressLike, areaMatch, cleanAddress, saleTag } from './core.mjs';
-import { collect as renderCollect } from './render.mjs';
 
 const STREET = /\b(?:street|road|rd|avenue|ave|lane|drive|close|crescent|terrace|way|place|court|gardens|square|mews|grove|row|quay|walk|house|flat|apartment|land|plot|cottage|bungalow)\b/i;
 const MONTHS = { jan: '01', feb: '02', mar: '03', apr: '04', may: '05', jun: '06', jul: '07', aug: '08', sep: '09', oct: '10', nov: '11', dec: '12' };
@@ -410,6 +409,7 @@ export async function collect({ get, source, now }) {
     result.errors.push(String(error.message || error));
   }
   if (!result.lots.length) {
+    const { collect: renderCollect } = await import('./render.mjs');
     const rendered = await renderCollect({ source, now });
     result.pages += rendered.pages || 0;
     result.successful_pages += rendered.successful_pages || 0;
