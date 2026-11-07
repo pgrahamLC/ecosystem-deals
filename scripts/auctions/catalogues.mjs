@@ -57,7 +57,7 @@ export function cardsFromHtml(html, pageUrl) {
   const decoded = decode(html);
   const found = [];
   const seen = new Set();
-  function add(address, index, extra = '') {
+  function add(address, index, extra = '', plainContext = null) {
     const text = cleanAddress(strip(address));
     if (!text || !addressLike(text)) return;
     const area = areaMatch(text);
@@ -65,9 +65,11 @@ export function cardsFromHtml(html, pageUrl) {
     if (seen.has(key)) return;
     if (/340 deansgate/i.test(text)) return;
     seen.add(key);
-    const around = strip(decoded.slice(Math.max(0, index - 1800), index + 1800));
+    // A postcode found in stripped text does not have an HTML offset. Reading HTML at that number
+    // lands in the page head and misses a date or "SOLD PRIOR" printed beside the address.
+    const around = plainContext != null ? plainContext : strip(decoded.slice(Math.max(0, index - 1800), index + 1800));
     const guide = around.match(/£\s*[\d,]+(?:\s*[-–]\s*£?\s*[\d,]+)?\+?/);
-    const href = nearestLink(decoded, index, pageUrl);
+    const href = plainContext != null ? '' : nearestLink(decoded, index, pageUrl);
     const type = commercialType(text + ' ' + around);
     found.push({
       title: text,
@@ -95,9 +97,9 @@ export function cardsFromHtml(html, pageUrl) {
     for (const match of plain.matchAll(/\b([A-Z]{1,2}\d{1,2}[A-Z]?)\s+(\d[A-Z]{2})\b/g)) {
       const start = Math.max(0, match.index - 110);
       const slice = plain.slice(start, match.index + match[0].length);
-      const around = plain.slice(Math.max(0, match.index - 160), match.index + 80);
-      if (!/guide|£|\blot\b|auction|bed(?:room)?|for sale/i.test(around)) continue;
-      add(slice, start);
+      const around = plain.slice(Math.max(0, match.index - 400), Math.min(plain.length, match.index + 120));
+      if (!/guide|£|\blot\b|auction|bed(?:room)?|for sale|\bsold\b/i.test(around)) continue;
+      add(slice, start, '', around);
     }
   }
   return found;

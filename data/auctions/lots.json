@@ -143856,56 +143856,6 @@
       "town": "Cheltenham",
       "city": "Cheltenham",
       "residential_subtype": "Commercial",
-      "lot_type": "Land Adj Jemaro, Hyde Lane, Swindon Village, Cheltenham, Gloucestershire, GL51 9QN",
-      "property_type": "Commercial",
-      "title": "Land Adj Jemaro, Hyde Lane, Swindon Village, Cheltenham, Gloucestershire, GL51 9QN",
-      "status": "upcoming",
-      "auction_date": null,
-      "source": "Clive Emson",
-      "source_url": "https://www.cliveemson.co.uk/properties/268/88/",
-      "sources": [
-        {
-          "name": "Clive Emson",
-          "url": "https://www.cliveemson.co.uk/properties/268/88/"
-        }
-      ],
-      "scraped_at": "2026-11-07T13:39:05.307Z",
-      "stale": false,
-      "detail_verified": true,
-      "verification_note": null,
-      "outcome_unverified": false,
-      "guide_price": null,
-      "guide_price_text": null,
-      "opening_bid": null,
-      "current_bid": null,
-      "sold_price": null,
-      "grade": null,
-      "grade_evidence": null,
-      "grade_evidence_url": null,
-      "grade_verified": false,
-      "sale_tag": "Auction",
-      "sale_tag_evidence": null,
-      "provenance": [
-        {
-          "source": "Clive Emson",
-          "source_url": "https://www.cliveemson.co.uk/properties/268/88/",
-          "scraped_at": "2026-11-07T13:39:05.307Z",
-          "status": "upcoming",
-          "auction_date": null,
-          "guide_price": null,
-          "opening_bid": null,
-          "current_bid": null,
-          "sold_price": null
-        }
-      ],
-      "id": "lot-443acee6638f474f"
-    },
-    {
-      "address": "Land Adj Jemaro, Hyde Lane, Swindon Village, Cheltenham, Gloucestershire, GL51 9QN",
-      "postcode": "GL51 9QN",
-      "town": "Cheltenham",
-      "city": "Cheltenham",
-      "residential_subtype": "Commercial",
       "lot_type": "Land",
       "property_type": "Commercial",
       "title": "Land Adj Jemaro, Hyde Lane, Swindon Village, Cheltenham, Gloucestershire, GL51 9QN",
