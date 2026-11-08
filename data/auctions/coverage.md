@@ -1,6 +1,6 @@
 # Auction collection
 
-Checked: 2026-11-07T21:56:05.859Z
+Checked: 2026-11-08T06:10:41.088Z
 
 Fresh: 406; stale: 2709; commercial lots are kept and tagged, not dropped.
 
