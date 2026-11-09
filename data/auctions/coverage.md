@@ -1,18 +1,18 @@
 # Auction collection
 
-Checked: 2026-11-09T06:44:49.232Z
+Checked: 2026-11-09T22:27:19.749Z
 
-Fresh: 405; stale: 2710; commercial lots are kept and tagged, not dropped.
+Fresh: 404; stale: 2713; commercial lots are kept and tagged, not dropped.
 
 ## Town counts (fresh, deduplicated)
-- Manchester: 199
+- Manchester: 198
 - Glasgow: 95
 - Edinburgh: 20
 - Bristol: 39
 - Cheltenham: 52
 
 ## Source coverage
-- **Auction House Manchester**: live; 46 lots (Manchester 46); tags Auction 46. Public catalogue pages read. Commercial lots are included and tagged. 
+- **Auction House Manchester**: live; 47 lots (Manchester 47); tags Auction 47. Public catalogue pages read. Commercial lots are included and tagged. 
 - **Auction House South West (Bristol and Gloucestershire)**: live; 36 lots (Cheltenham 13, Bristol 23); tags Auction 36. Public catalogue pages read. Commercial lots are included and tagged. Detail date differs from historical result https://online.auctionhouse.co.uk/lot/redirect/367468; result event date/amount retained.
 - **Auction House Scotland**: live; 16 lots (Glasgow 10, Edinburgh 6); tags Auction 16. Public catalogue pages read. Commercial lots are included and tagged. 
 - **Future Property Auctions**: live; 86 lots (Glasgow 65, Edinburgh 13, Manchester 6, Bristol 2); tags Auction 86. Public catalogue pages read. Commercial lots are included and tagged. https://www.futurepropertyauctions.co.uk/auctions.asp: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.; https://www.futurepropertyauctions.co.uk/catalogue_viewall_auction_map.asp?id=10706&: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.; Catalogue page limit reached; collection incomplete.
@@ -23,11 +23,11 @@ Fresh: 405; stale: 2710; commercial lots are kept and tagged, not dropped.
 - **Pugh**: live; 99 lots (Manchester 96, Glasgow 1, Cheltenham 2); tags Auction 99. Public catalogue pages read. Commercial lots are included and tagged. Spot-check found "WN3 4TJ" on https://www.pugh-auctions.com/property/202601231232sq_gm55
 - **SDL**: failed; 0 lots (none); tags none. HTTP 403: https://www.sdlauctions.co.uk/property-auctions/past-auctions/; Login or captcha at https://www.sdlauctions.co.uk/property-auctions/past-auctions/ (page 1)
 - **Bond Wolfe**: live; 0 lots (none); tags none. Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them. Login or bot challenge refused
-- **Barnard Marcus**: live; 24 lots (Bristol 5, Manchester 13, Cheltenham 6); tags Auction 24. Public catalogue pages read. Commercial lots are included and tagged. Spot-check failed: This operation was aborted
-- **Mark Jenkinson**: live; 3 lots (Manchester 3); tags Auction 3. Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them.
+- **Barnard Marcus**: live; 24 lots (Bristol 5, Manchester 13, Cheltenham 6); tags Auction 24. Public catalogue pages read. Commercial lots are included and tagged. Spot-check failed: Login or bot challenge refused
+- **Mark Jenkinson**: live; 3 lots (Manchester 3); tags Auction 3. Public catalogue pages read. Commercial lots are included and tagged. 
 - **Strettons**: live; 0 lots (none); tags none. Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them. Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (page 1); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Manchester); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Glasgow); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Edinburgh); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Bristol); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Cheltenham); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Gloucester)
 - **Network Auctions**: live; 0 lots (none); tags none. Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them. Login or bot challenge refused
-- **iamsold**: live; 2 lots (Manchester 2); tags Auction 2. Public catalogue pages read. Commercial lots are included and tagged. Spot-check found "SK9 1BZ" on https://www.iamsold.co.uk/available-properties/
+- **iamsold**: live; 0 lots (none); tags none. Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them.
 - **EIG**: live; 0 lots (none); tags none. Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them.
 - **Countrywide Property Auctions**: live; 2 lots (Manchester 2); tags Auction 2. Public catalogue pages read. Commercial lots are included and tagged. Spot-check did not find "WA8 8UH" on https://www.countrywidepropertyauctions.co.uk/property_details.php?auction_date=current&auction_location=SK&id=374486
 - **Town And Country**: live; 14 lots (Glasgow 5, Manchester 6, Cheltenham 2, Bristol 1); tags Auction 14. Public catalogue pages read. Commercial lots are included and tagged. Spot-check found "M45 7HH" on https://www.townandcountrypropertyauctions.co.uk/search?auctionOpen=true
