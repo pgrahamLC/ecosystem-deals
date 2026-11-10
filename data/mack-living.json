@@ -1,0 +1,70 @@
+{
+  "updated": "2026-11-10",
+  "status": "placeholder to confirm",
+  "note": "Patrick has not supplied the priority regions or the contract list. The rows below are seeded from the towns and routes already on this site. Anything marked placeholder to confirm is not an agreed Mack Living priority.",
+  "meeting": {
+    "name": "Monday morning Mack Living and Laurito Capital discussion",
+    "when": "Monday morning",
+    "status": "placeholder to confirm",
+    "note": "The time and the standing agenda are not confirmed. Use the shortcuts below as a starting order only."
+  },
+  "regions": [
+    {
+      "id": "Manchester",
+      "scope": "Manchester",
+      "name": "Greater Manchester",
+      "why": "Already a target town in the Laurito book, including auction coverage.",
+      "status": "placeholder to confirm"
+    },
+    {
+      "id": "Glasgow",
+      "scope": "Glasgow",
+      "name": "Glasgow",
+      "why": "Already covered by the auction feed. Demand figures for Glasgow are not in the loaded demand file.",
+      "status": "placeholder to confirm"
+    },
+    {
+      "id": "Edinburgh",
+      "scope": "Edinburgh",
+      "name": "Edinburgh",
+      "why": "Already a target town where source data is loaded.",
+      "status": "placeholder to confirm"
+    },
+    {
+      "id": "Bristol",
+      "scope": "City Of Bristol",
+      "name": "Bristol",
+      "why": "Already a target town in the Laurito book.",
+      "status": "placeholder to confirm"
+    },
+    {
+      "id": "Cheltenham",
+      "scope": "Cheltenham",
+      "name": "Cheltenham",
+      "why": "Already a target town in the Laurito book.",
+      "status": "placeholder to confirm"
+    }
+  ],
+  "agenda": [
+    {
+      "id": "regions",
+      "title": "Priority regions",
+      "note": "Open each seeded town on Leads. Confirm with Patrick before treating the list as agreed."
+    },
+    {
+      "id": "shortlist",
+      "title": "Market Screen shortlist",
+      "note": "The highest proposed scores for this week. The weights are not agreed with Luke and Liza."
+    },
+    {
+      "id": "contracts",
+      "title": "Open contract opportunities",
+      "note": "Includes the Manchester CAS row, which is to verify with Chris. No bid detail has been added."
+    },
+    {
+      "id": "notes",
+      "title": "Agenda notes",
+      "note": "Notes typed on this screen stay in this browser. They are not a shared minute."
+    }
+  ]
+}
