@@ -3,9 +3,6 @@
   'use strict';
 
   const PRIMARY = [
-    ['mack', 'Mack Living'],
-    ['market', 'Market Screen'],
-    ['analysis', 'Analysis'],
     ['assets', 'Find'],
     ['distress', 'Leads'],
     ['deal', 'Deal'],
@@ -21,9 +18,6 @@
     ['rentgap', 'Rent gap']
   ];
   const COPY = {
-    mack: ['Mack Living', 'Monday discussion', 'Shortcuts for the joint Mack Living and Laurito Capital meeting.'],
-    market: ['Market Screen', 'Partner screening', 'A proposed score beside the existing pass or fail gate.'],
-    analysis: ['Analysis', 'Analysis Dashboard', 'Regional evidence, Local Housing Allowance and open benchmark slots.'],
     assets: ['Find', 'Where to look', 'Manchester, Cheltenham, Bristol and Edinburgh. Open a town, then a lead, then a deal.'],
     distress: ['Leads', 'Who has to sell', 'A is a live insolvency. B is a lender or receiver sale. C is a watchlist, not a forced sale.'],
     deal: ['Deal', 'The decision', 'Rent, operating income, the NIY you are using, the maximum bid, and the return.'],
@@ -64,7 +58,7 @@
       MORE.map(function (pair) {
         return '<button type="button" data-v="' + pair[0] + '">' + pair[1] + '</button>';
       }).join('') +
-      '<a href="' + esc(partnerHref) + '" target="_blank" rel="noopener">Earlier partner research</a></div></div>';
+      '<a href="' + esc(partnerHref) + '" target="_blank" rel="noopener">Partner site</a></div></div>';
     bar.addEventListener('click', function (e) {
       const btn = e.target.closest('[data-v]');
       if (!btn || !bar.contains(btn)) return;
@@ -272,14 +266,6 @@
   function paintScreen(mode) {
     screenHost().hidden = mode === 'auctions';
     if (mode === 'auctions') { document.body.classList.remove('ios-find', 'ios-deal'); markNav(mode); return; }
-    if (mode === 'mack' || mode === 'market' || mode === 'analysis') {
-      document.body.classList.remove('ios-find', 'ios-deal');
-      markNav(mode);
-      const host = screenHost();
-      if (window.lcGroup) window.lcGroup.paint(mode, host);
-      else host.innerHTML = '<p class="lc-kicker">Mack Living and Laurito Capital</p><h1>Loading</h1>';
-      return;
-    }
     if (mode === 'assets') return paintFind();
     if (mode === 'rentgap') {
       document.body.classList.remove('ios-find', 'ios-deal');
