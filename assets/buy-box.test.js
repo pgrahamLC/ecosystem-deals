@@ -1,0 +1,58 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+
+await import('./buy-box.js');
+const Box = globalThis.BuyBox;
+const book = JSON.parse(readFileSync(new URL('../data/market-entry/buy-box.json', import.meta.url)));
+Box.use(book);
+
+const areas = ['Manchester', 'Glasgow', 'Edinburgh', 'Bristol', 'Cheltenham', 'Liverpool', 'Cheshire', 'Birmingham'];
+areas.forEach((area) => {
+  const rule = Box.ruleFor(area);
+  const copy = JSON.stringify(rule);
+  assert.equal(copy.includes(';'), false, area);
+  assert.equal(copy.includes('\u2014'), false, area);
+  assert.equal(copy.toLowerCase().includes('outlook'), false);
+  assert.equal(copy.includes('@'), false);
+});
+
+assert.equal(Box.ruleFor('Edinburgh').status, 'Evidenced');
+assert.equal(Box.ukDate('2026-11-04'), '4 Nov 2026');
+assert.equal(Box.ruleFor('Manchester').status, 'Awaiting response');
+assert.equal(Box.ruleFor('Manchester').openFields.includes('Eligible wards'), true);
+assert.equal(Box.ruleFor('Birmingham').note.includes('30 Nov 2026'), true);
+assert.equal(Box.ruleFor('Glasgow').note, 'No RFI yet.');
+assert.equal(Box.ruleFor('Glasgow').priorityBeds.join(','), '3,4');
+
+const ediMatch = Box.classify('Edinburgh', {title: '1 bedroom flat', address: '10 Leith Walk', lot_type: 'Flat'});
+assert.equal(ediMatch.tag, 'match');
+const ediLower = Box.classify('Edinburgh', {title: '2 bedroom flat', address: '12 Leith Walk', lot_type: 'Flat'});
+assert.equal(ediLower.tag, 'partial');
+const ediHmo = Box.classify('Edinburgh', {title: '6 bedroom HMO', address: '4 Marchmont', lot_type: 'HMO'});
+assert.equal(ediHmo.tag, 'no');
+const ediSupported = Box.classify('Edinburgh', {title: '14 bedroom HMO', address: '1 Gorgie', lot_type: 'HMO'});
+assert.equal(ediSupported.tag, 'partial');
+const ediOut = Box.classify('Edinburgh', {title: '3 bedroom house', address: '1 High Street, East Lothian', lot_type: 'House'});
+assert.equal(ediOut.tag, 'no');
+const ediReserved = Box.classify('Edinburgh', {title: '3 bedroom house. Reserved matters have been discharged.', address: '8 Clerk Street', lot_type: 'House'});
+assert.equal(ediReserved.tag, 'match');
+
+const manPartial = Box.classify('Manchester', {title: '3 bedroom house', address: '1 Oldham Road', lot_type: 'House'});
+assert.equal(manPartial.tag, 'partial');
+const manMatch = Box.classify('Manchester', {title: '4 bedroom house. Reserved matters have been discharged.', address: '2 Oldham Road', lot_type: 'House'});
+assert.equal(manMatch.tag, 'match');
+const manNo = Box.classify('Manchester', {title: '2 bedroom flat', address: '3 Oldham Road', lot_type: 'Flat'});
+assert.equal(manNo.tag, 'no');
+const manBlank = Box.classify('Manchester', {title: 'House', address: '4 Oldham Road', lot_type: 'House'});
+assert.equal(manBlank.tag, 'partial');
+
+const html = Box.cardHtml('Edinburgh', {match: 2, partial: 1, no: 4});
+assert.equal(html.includes('Evidenced'), true);
+assert.equal(html.includes('Edinburgh TA RFI'), true);
+assert.equal(html.includes('4 Nov 2026'), true);
+assert.equal(html.includes('Not specified'), true);
+assert.equal(html.includes(';'), false);
+assert.equal(html.includes('\u2014'), false);
+assert.equal(Box.cardHtml('Manchester', {match: 0, partial: 0, no: 0}).includes('Awaiting response'), true);
+
+console.log('buy box tests passed');

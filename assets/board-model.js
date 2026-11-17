@@ -175,7 +175,16 @@
   function build(input) {
     const today = input && input.today || londonDay();
     const area = AREAS.includes(input && input.area) ? input.area : 'Manchester';
-    const lots = ((input && input.lots) || []).filter((lot) => currentLot(lot, today) && townOf(lot.town || lot.city) === area).map(shapeLot);
+    const lots = ((input && input.lots) || []).filter((lot) => currentLot(lot, today) && townOf(lot.town || lot.city) === area).map((lot) => {
+      const shaped = shapeLot(lot);
+      if (root.BuyBox) {
+        const tag = root.BuyBox.classify(area, lot, input && input.buyBox);
+        shaped.buy = tag.tag;
+        shaped.buyLabel = tag.label;
+        shaped.buyReason = tag.reason;
+      }
+      return shaped;
+    });
     const guides = lots.map((lot) => lot.guide).filter((value) => value != null);
     const typeCounts = countBy(lots, 'type');
     const bedCountsMap = countBy(lots, 'beds');
@@ -217,7 +226,8 @@
       rents,
       comps,
       onsMonth: (input && input.rents && input.rents.omr && input.rents.omr.month) || '',
-      takeaways: takeaways.slice(0, 3)
+      takeaways: takeaways.slice(0, 3),
+      buyCounts: lots.reduce((sum, lot) => { if (lot.buy) sum[lot.buy] += 1; return sum; }, {match: 0, partial: 0, no: 0})
     };
   }
   function matches(screen, drill) {
@@ -227,6 +237,7 @@
       if (drill.kind === 'beds') return lot.beds === drill.id;
       if (drill.kind === 'price') return lot.band === drill.id;
       if (drill.kind === 'month') return lot.month === drill.id;
+      if (drill.kind === 'buy') return lot.buy === drill.id;
       return true;
     });
   }

@@ -11,6 +11,19 @@
 .bd-kpis>:nth-child(4n+1):nth-last-child(3),.bd-kpis>:nth-child(4n+2):nth-last-child(2),.bd-kpis>:nth-child(4n+3):nth-last-child(1),
 .bd-charts>:nth-child(4n+1):nth-last-child(3),.bd-charts>:nth-child(4n+2):nth-last-child(2),.bd-charts>:nth-child(4n+3):nth-last-child(1){grid-column:span 4}
 .bd-span{grid-column:1 / -1}
+.bd-buy{grid-column:1 / -1}
+.bd-buy-h{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.bd-buy-h h2{margin:0}
+.bd-badge{border-radius:999px;padding:3px 8px;font-size:12px;font-weight:650;white-space:nowrap}
+.bd-badge.evidenced{background:#edf5f0;color:#1f5c45}
+.bd-badge.waiting{background:#fff8ee;color:#b26a00}
+.bd-badge.none{background:#f4f6f8;color:#5c6b78}
+.bd-buy-counts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
+.bd-buy-tag{margin:8px 0 0;font-size:12px;font-weight:650}
+.bd-buy-tag.match{color:#1f5c45}
+.bd-buy-tag.partial{color:#1d4e89}
+.bd-buy-tag.no{color:#8b97a3}
+.bd-auc button.on{background:#0f1a2e;color:#fff}
 .bd-tile,.bd-chart{background:#fff;border-radius:16px;padding:12px 14px;min-width:0}
 .bd-tile{border:0;text-align:left;cursor:pointer;font:inherit;color:inherit}
 .bd-tile b,.bd-chart h2{display:block}

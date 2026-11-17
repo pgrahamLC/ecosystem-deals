@@ -1,0 +1,65 @@
+{
+  "updated": "2026-11-17",
+  "howToUpdate": "When an RFI response arrives, set status to Evidenced, add the dated wants, set the bed rules, and clear openFields. Publish only the buy box. Do not add rates, names, emails, or contract terms.",
+  "base": {
+    "summary": "Sites with planning permission where reserved matters have been discharged, and 3 to 4 bed homes.",
+    "bedsMin": 3,
+    "bedsMax": 4,
+    "priorityBeds": [3, 4],
+    "lowerBeds": [],
+    "requireReserved": true,
+    "excludeShared": false
+  },
+  "areas": {
+    "Edinburgh": {
+      "status": "Evidenced",
+      "source": "Edinburgh TA RFI",
+      "evidenceDate": "2026-11-04",
+      "issued": "",
+      "due": "",
+      "bedsMin": 1,
+      "bedsMax": 4,
+      "priorityBeds": [1, 3, 4],
+      "lowerBeds": [2],
+      "requireReserved": false,
+      "excludeShared": true,
+      "supportedMin": 12,
+      "supportedMax": 16,
+      "excludePlaces": ["Midlothian", "East Lothian", "West Lothian", "Fife", "Scottish Borders"],
+      "wants": [
+        "Self-contained homes for one household, 1 to 4 bed, inside the City of Edinburgh boundary only. Outside the boundary is excluded.",
+        "Strongest demand is 1, 3 and 4 bed. 2 bed is lower priority, because the council appears to have more 2 bed supply.",
+        "Within 1.5 miles of a grocery shop and public transport.",
+        "More than 2 temporary accommodation properties in one stair, or more than 20% in one street, needs a management strategy. Clustering should be flagged.",
+        "Larger buildings and conversions are considered case by case. The council is seeking 12 to 16 bed supported accommodation that is HMO compliant, with en-suite rooms and staff space.",
+        "Home Share and Shared House intake is currently suspended, so no HMO or shared houses for this route.",
+        "The home must be capable of full compliance before call-off. That covers insurance, certification and licences."
+      ],
+      "notSpecified": ["Minimum EPC", "Floor area or space standards", "Accessibility standard"],
+      "openFields": []
+    },
+    "Manchester": {
+      "status": "Awaiting response",
+      "source": "MCC Private Sector Leasing RFI",
+      "evidenceDate": "",
+      "issued": "2026-11-16",
+      "due": "2026-11-30",
+      "note": "Buy box awaiting RFI response, due 30 Nov 2026.",
+      "openFields": ["Eligible wards", "Property types", "Bedroom mix", "Sizes", "EPC", "Licensing", "Accessibility", "Condition", "Furnishing", "Exclusions"]
+    },
+    "Birmingham": {
+      "status": "Awaiting response",
+      "source": "BCC Long Income RFI",
+      "evidenceDate": "",
+      "issued": "2026-11-16",
+      "due": "2026-11-30",
+      "note": "Buy box awaiting RFI response, due 30 Nov 2026.",
+      "openFields": ["Eligible locations", "Property types", "Bedroom mix", "Condition", "Furnishing", "EPC", "Accessibility", "Compliance", "Demand by geography", "Demand by bedroom"]
+    },
+    "Glasgow": {"status": "No RFI yet", "source": "Laurito base criteria", "note": "No RFI yet."},
+    "Liverpool": {"status": "No RFI yet", "source": "Laurito base criteria", "note": "No RFI yet."},
+    "Cheltenham": {"status": "No RFI yet", "source": "Laurito base criteria", "note": "No RFI yet."},
+    "Cheshire": {"status": "No RFI yet", "source": "Laurito base criteria", "note": "No RFI yet."},
+    "Bristol": {"status": "No RFI yet", "source": "Laurito base criteria", "note": "No RFI yet."}
+  }
+}

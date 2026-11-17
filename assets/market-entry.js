@@ -221,16 +221,17 @@
     else if (matches) {
       const full = matches.filter((item) => item.flag.full);
       const partial = matches.filter((item) => item.flag.partial);
-      const line = (item) => {
+      const lineBuy = (item) => {
         const lot = item.lot;
         const href = M.cleanUrl(lot.source_url);
-        return '<tr class="' + (item.flag.full ? 'full' : '') + '"><td>' + esc(lot.address || lot.title || 'Untitled lot') + '</td><td>' + esc(item.flag.beds.join(', ') || 'Not stated') + '</td><td>' + esc(item.flag.planning) + '</td><td>' + esc(money(lot.guide_price)) + '</td><td>' + (href ? '<a href="' + esc(href) + '" target="_blank" rel="noopener">' + esc(lot.source || 'Source') + '</a>' : esc(lot.source || '')) + '</td></tr>';
+        return '<tr><td>' + esc(item.flag.buyLabel || (item.flag.full ? 'Matches buy box' : 'Partial')) + '</td><td>' + esc(lot.address || lot.title || 'Untitled lot') + '</td><td>' + esc(item.flag.reason || item.flag.planning) + '</td><td>' + (href ? '<a href="' + esc(href) + '" target="_blank" rel="noopener">' + esc(lot.source || 'Source') + '</a>' : esc(lot.source || '')) + '</td></tr>';
       };
-      result = '<p><b>' + full.length + '</b> full matches. <b>' + partial.length + '</b> current lots state a bed count in range, with planning not confirmed. ' + (ui.lotCount == null ? '' : esc(String(ui.lotCount)) + ' current lots in ' + esc(state.area) + '.') + '</p>'
-        + (full.length ? '<h3>Full matches</h3><div class="scroll"><table><thead><tr><th>Address</th><th>Beds stated</th><th>Planning from the listing</th><th>Guide</th><th>Source</th></tr></thead><tbody>' + full.map(line).join('') + '</tbody></table></div>' : '<p>No current lot in this area says both. None of the loaded text states that reserved matters have been discharged unless a row below says so.</p>')
-        + (partial.length ? '<h3>Bed count matches, planning not stated</h3><div class="scroll"><table><thead><tr><th>Address</th><th>Beds stated</th><th>Planning from the listing</th><th>Guide</th><th>Source</th></tr></thead><tbody>' + partial.slice(0, 40).map(line).join('') + '</tbody></table></div>' + (partial.length > 40 ? '<p class="foot">Showing 40 of ' + partial.length + '.</p>' : '') : '');
+      result = '<p><b>' + full.length + '</b> match the buy box. <b>' + partial.length + '</b> are partial. ' + (ui.lotCount == null ? '' : esc(String(ui.lotCount)) + ' current lots in ' + esc(state.area) + '.') + '</p>'
+        + (full.length ? '<h3>Matches buy box</h3><div class="scroll"><table><thead><tr><th>Tag</th><th>Address</th><th>Why</th><th>Source</th></tr></thead><tbody>' + full.map(lineBuy).join('') + '</tbody></table></div>' : '<p>No current lot matches the buy box.</p>')
+        + (partial.length ? '<h3>Partial</h3><div class="scroll"><table><thead><tr><th>Tag</th><th>Address</th><th>Why</th><th>Source</th></tr></thead><tbody>' + partial.slice(0, 40).map(lineBuy).join('') + '</tbody></table></div>' + (partial.length > 40 ? '<p class="foot">Showing 40 of ' + partial.length + '.</p>' : '') : '');
     }
-    return '<section class="card"><h2>What we want in ' + esc(state.area) + '</h2><p class="lead">The starting brief is sites with planning where reserved matters have been discharged, and 3 to 4 bed homes. Edit it for this area. The auction feed has no planning field, so a lot is never marked discharged unless its own text says so.</p>'
+    const buy = window.BuyBox ? window.BuyBox.cardHtml(state.area, buyCounts(state.area)) : '';
+    return buy + '<section class="card"><h2>Notes for this browser</h2><p class="lead">The buy box above is the published brief for ' + esc(state.area) + '. These notes stay in this browser. The auction feed has no planning field, so reserved matters count only when the listing text says they have been discharged.</p>'
       + '<form class="me-form" id="me-criteria" data-act="criteria">'
       + '<label class="wide">Summary <textarea name="summary" data-act="criteria-field">' + esc(row.summary) + '</textarea></label>'
       + '<label>Beds from <input name="bedsMin" type="number" min="0" max="20" step="1" value="' + esc(row.bedsMin) + '" data-act="criteria-field"></label>'
@@ -472,7 +473,12 @@
       const criteria = state.criteria[area];
       const inArea = lots.filter((lot) => M.townOf(lot.town || lot.city) === area && isCurrent(lot));
       ui.lotCount = inArea.length;
-      ui.matches = inArea.map((lot) => ({lot, flag: M.classifyLot(lot, criteria)})).filter((item) => item.flag.full || item.flag.partial);
+      ui.matches = inArea.map((lot) => {
+        const flag = M.classifyLot(lot, criteria);
+        const buy = window.BuyBox ? window.BuyBox.classify(area, lot) : null;
+        if (buy) { flag.buy = buy.tag; flag.buyLabel = buy.label; flag.reason = buy.reason; flag.full = buy.tag === 'match'; flag.partial = buy.tag === 'partial'; }
+        return {lot, flag};
+      }).filter((item) => item.flag.full || item.flag.partial);
       ui.matches.sort((a, b) => Number(b.flag.full) - Number(a.flag.full) || String(a.lot.address || '').localeCompare(String(b.lot.address || '')));
     } catch (error) {
       ui.lotsError = error.message || 'The feed failed.';
@@ -497,9 +503,16 @@
     }).then((data) => {
       lotRows = Array.isArray(data.lots) ? data.lots : [];
       decorate(document.getElementById('auctions_body'));
+      if (state && state.section === 'criteria') render();
     }).catch(() => { lotPromise = null; });
   }
+  function buyCounts(area) {
+    if (!window.BuyBox || !lotRows) return {match: 0, partial: 0, no: 0};
+    const rows = lotRows.filter((lot) => M.townOf(lot.town || lot.city) === area && isCurrent(lot));
+    return window.BuyBox.counts(area, rows);
+  }
   function flagCopy(flag, town) {
+    if (flag.buyLabel) return flag.buyLabel + ' in ' + (town || 'this area') + '. ' + (flag.reason || '');
     if (flag.full) return 'Matches what we want in ' + (town || 'this area') + '. The listing states the bed count and says reserved matters have been discharged.';
     const beds = flag.beds.length ? flag.beds.join(' and ') : 'a matching';
     return 'Listing text states ' + beds + ' bed. Planning status is not stated, so this is not a full match.';
@@ -537,6 +550,20 @@
     if (!root || !state) return;
     const cache = {};
     root.querySelectorAll('.aq-lot').forEach((card) => {
+      if (window.BuyBox) {
+        const eye = card.querySelector('.aq-eyebrow');
+        const town = M.townOf(eye ? eye.textContent.split('·')[0] : '');
+        if (town) {
+          const heading = card.querySelector('h2, h3, .aq-address');
+          const tag = window.BuyBox.classify(town, {title: card.textContent, address: heading ? heading.textContent : '', lot_type: eye ? eye.textContent : ''});
+          card.dataset.buy = tag.tag;
+          let badge = card.querySelector('.bd-buy-tag');
+          if (!badge) { badge = document.createElement('p'); card.appendChild(badge); }
+          badge.className = 'bd-buy-tag ' + tag.tag;
+          badge.textContent = tag.label;
+          badge.title = tag.reason;
+        }
+      }
       const existing = card.querySelector('.me-flag');
       if (!state.highlight) {
         if (existing) existing.remove();
@@ -620,12 +647,13 @@
       }
     });
 
-    const files = ['checklist', 'agents', 'stakeholders', 'criteria', 'intake'];
+    const files = ['checklist', 'agents', 'stakeholders', 'criteria', 'intake', 'buy-box'];
     Promise.all(files.map((name) => fetch('data/market-entry/' + name + '.json?v=20261117-entry', {cache: 'no-store'}).then((response) => {
       if (!response.ok) throw new Error(name + '.json returned HTTP ' + response.status);
       return response.json();
     }))).then((rows) => {
       seeds = {checklist: rows[0], agents: rows[1], stakeholders: rows[2], criteria: rows[3], intake: rows[4]};
+      if (window.BuyBox) window.BuyBox.use(rows[5]);
       const fresh = M.build(seeds);
       let stored = null;
       try { stored = localStorage.getItem(KEY); } catch (error) {}
@@ -637,6 +665,7 @@
       } else state = fresh;
       if (/^#(entry|go-no-go)/.test(location.hash)) openEntry();
       else render();
+      loadLotRows();
       decorate(document.getElementById('auctions_body'));
     }).catch((error) => {
       const host = document.getElementById('entry_body');

@@ -25,7 +25,7 @@
   function drillLots(rows) {
     const shown = rows.slice(0, 8);
     const rest = rows.slice(8);
-    const line = (lot) => '<article class="bd-lot"><b>' + esc(lot.address) + '</b><p>' + esc(lot.type) + ' · ' + esc(lot.beds === 'Not stated' ? 'Beds not stated' : lot.beds + ' bed') + ' · ' + (lot.guide ? esc(M.money(lot.guide)) : 'Guide not published') + ' · ' + esc(lot.date || 'Date not published') + '</p>' + (lot.url ? '<a href="' + esc(lot.url) + '" target="_blank" rel="noopener">Open the lot</a>' : '') + '</article>';
+    const line = (lot) => '<article class="bd-lot"><b>' + esc(lot.address) + '</b><p>' + esc(lot.buyLabel || 'No') + '. ' + esc(lot.type) + '. ' + esc(lot.beds === 'Not stated' ? 'Beds not stated' : lot.beds + ' bed') + '. ' + (lot.guide ? esc(M.money(lot.guide)) : 'No guide') + '. ' + esc(lot.date || 'No date') + (lot.buyReason ? '. ' + esc(lot.buyReason) : '') + '</p>' + (lot.url ? '<a href="' + esc(lot.url) + '" target="_blank" rel="noopener">Open the lot</a>' : '') + '</article>';
     return '<div class="bd-list">' + shown.map(line).join('') + '</div>' + (rest.length ? '<details class="bd-fold"><summary>Show detail (' + rest.length + ' more)</summary><div class="bd-list">' + rest.map(line).join('') + '</div></details>' : '');
   }
   function rentPairs(screen) {
@@ -83,6 +83,7 @@
       + '<button type="button" class="bd-tile" data-kind="rent" data-id="3"><span>3 bed rent gap</span><b>' + esc(gapText) + '</b><span>' + (screen.onsMonth ? esc(screen.onsMonth) + ' ONS minus the allowance' : 'ONS minus the allowance') + '</span></button>'
       + '<button type="button" class="bd-tile" data-kind="comps" data-id=""><span>District medians</span><b>' + esc(compsText) + '</b><span>' + (screen.comps.rows.length ? 'Middle of ' + screen.comps.rows.length + ' districts, ' + esc(screen.comps.year) : 'Land Registry') + '</span></button>'
       + '</div>'
+      + (window.BuyBox ? window.BuyBox.cardHtml(screen.area, screen.buyCounts) : '')
       + '<div class="bd-charts">'
       + '<article class="bd-chart"><h2>Lots by type</h2>' + bars(screen.types, 'type') + '</article>'
       + '<article class="bd-chart"><h2>Lots by beds</h2>' + bars(screen.beds, 'beds') + '</article>'
@@ -114,7 +115,7 @@
       host.innerHTML = '<div class="bd"><h1>The board did not load</h1><p>' + esc(state.error) + '</p></div>';
       return;
     }
-    state.screen = M.build({lots: cache.lots, today: M.londonDay(), area: state.area, rents: cache.rents, comps: cache.comps});
+    state.screen = M.build({lots: cache.lots, today: M.londonDay(), area: state.area, rents: cache.rents, comps: cache.comps, buyBox: cache.buyBox});
     host.innerHTML = html(state.screen);
     const select = host.querySelector('#bd-area');
     if (select) select.onchange = () => { state.area = select.value; state.drill = null; paint(host); };
@@ -172,11 +173,12 @@
     if (cache) return Promise.resolve(cache);
     if (pending) return pending;
     state.loading = true;
-    pending = Promise.all(['data/auctions/lots.json', 'data/rent-scenarios.json', 'comps/summary.json', 'data/market-entry/agents.json', 'data/market-entry/checklist.json'].map((file) => fetch(file + '?v=20261117-fill', {cache: 'no-store'}).then((response) => {
+    pending = Promise.all(['data/auctions/lots.json', 'data/rent-scenarios.json', 'comps/summary.json', 'data/market-entry/agents.json', 'data/market-entry/checklist.json', 'data/market-entry/buy-box.json'].map((file) => fetch(file + '?v=20261117-buy', {cache: 'no-store'}).then((response) => {
       if (!response.ok) throw new Error(file + ' returned HTTP ' + response.status);
       return response.json();
     }))).then((rows) => {
-      cache = {lots: rows[0].lots || [], rents: rows[1], comps: rows[2], agents: rows[3], checklist: rows[4]};
+      if (window.BuyBox) window.BuyBox.use(rows[5]);
+      cache = {lots: rows[0].lots || [], rents: rows[1], comps: rows[2], agents: rows[3], checklist: rows[4], buyBox: rows[5]};
       state.loading = false;
       state.error = '';
       pending = null;
@@ -203,11 +205,34 @@
       details.appendChild(table);
     });
   }
+  function tagAuctionCards(rootEl) {
+    if (!window.BuyBox || !rootEl) return;
+    rootEl.querySelectorAll('.aq-lot').forEach((card) => {
+      const eye = card.querySelector('.aq-eyebrow');
+      const town = M.townOf(eye ? eye.textContent.split('·')[0] : '');
+      if (!town) return;
+      const heading = card.querySelector('h2, h3, .aq-address');
+      const type = eye ? eye.textContent.split('·').slice(1).join('·') : '';
+      const tag = window.BuyBox.classify(town, {title: card.textContent, address: heading ? heading.textContent : '', lot_type: type});
+      card.dataset.buy = tag.tag;
+      let badge = card.querySelector('.bd-buy-tag');
+      if (!badge) {
+        badge = document.createElement('p');
+        badge.className = 'bd-buy-tag ' + tag.tag;
+        card.appendChild(badge);
+      }
+      badge.className = 'bd-buy-tag ' + tag.tag;
+      badge.textContent = tag.label;
+      badge.title = tag.reason;
+    });
+  }
   function auctionSummary() {
-    const root = document.getElementById('auctions_body');
-    if (!root || root.querySelector('.bd-auc')) return;
-    const cards = root.querySelectorAll('.aq-lot');
+    const rootEl = document.getElementById('auctions_body');
+    if (!rootEl) return;
+    const cards = rootEl.querySelectorAll('.aq-lot');
     if (!cards.length) return;
+    tagAuctionCards(rootEl);
+    if (rootEl.querySelector('.bd-auc')) return;
     const counts = new Map();
     cards.forEach((card) => {
       const eye = card.querySelector('.aq-eyebrow');
@@ -216,9 +241,12 @@
     });
     const bar = document.createElement('div');
     bar.className = 'bd-auc';
-    bar.innerHTML = '<b>' + cards.length + ' current</b>' + Array.from(counts.entries()).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([label, count]) => '<button type="button" data-aq-type="' + esc(label) + '">' + esc(label) + ' ' + count + '</button>').join('');
-    root.insertBefore(bar, root.firstChild);
-    const grid = root.querySelector('.aq-lots');
+    const buyCounts = {match: 0, partial: 0, no: 0};
+    cards.forEach((card) => { if (buyCounts[card.dataset.buy] != null) buyCounts[card.dataset.buy] += 1; });
+    bar.innerHTML = '<b>' + cards.length + ' current</b>' + Array.from(counts.entries()).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([label, count]) => '<button type="button" data-aq-type="' + esc(label) + '">' + esc(label) + ' ' + count + '</button>').join('')
+      + '<button type="button" data-buy-filter="match">Matches buy box ' + buyCounts.match + '</button><button type="button" data-buy-filter="partial">Partial ' + buyCounts.partial + '</button><button type="button" data-buy-filter="no">No ' + buyCounts.no + '</button>';
+    rootEl.insertBefore(bar, rootEl.firstChild);
+    const grid = rootEl.querySelector('.aq-lots');
     if (grid && !grid.closest('details')) {
       const details = document.createElement('details');
       details.className = 'bd-fold';
@@ -229,12 +257,19 @@
       details.appendChild(grid);
     }
     bar.querySelectorAll('[data-aq-type]').forEach((button) => button.onclick = () => {
-      const sel = root.querySelector('[data-aq-filter="type"]');
+      const sel = rootEl.querySelector('[data-aq-filter="type"]');
       if (!sel) return;
       const option = Array.from(sel.options).find((item) => item.value === button.dataset.aqType || item.textContent === button.dataset.aqType);
       if (!option) return;
       sel.value = option.value;
       sel.dispatchEvent(new Event('change', {bubbles: true}));
+    });
+    bar.querySelectorAll('[data-buy-filter]').forEach((button) => button.onclick = () => {
+      const on = button.classList.toggle('on');
+      bar.querySelectorAll('[data-buy-filter]').forEach((other) => { if (other !== button) other.classList.remove('on'); });
+      rootEl.querySelectorAll('.aq-lot').forEach((card) => { card.style.display = !on || card.dataset.buy === button.dataset.buyFilter ? '' : 'none'; });
+      const fold = rootEl.querySelector('details.bd-fold');
+      if (fold) fold.open = true;
     });
   }
 
