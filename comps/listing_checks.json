@@ -2,26 +2,6 @@
   "retrieved": "2026-11-01",
   "rows": [
     {
-      "url": "https://www.allsop.co.uk/lot-overview/leasehold-self-contained-fourth-floor-flat-in-manchester/r261022-115",
-      "address": "Apartment 407, 6 Oldham Road, Manchester, Greater Manchester, M4 5DB",
-      "city": "Manchester",
-      "status_on_file": "Advertised for sale",
-      "checked_at": "2026-11-01",
-      "http": 200,
-      "final_url": "https://www.allsop.co.uk/lot-overview/leasehold-self-contained-fourth-floor-flat-in-manchester/r261022-115",
-      "note": "HTTP check only. A 200 does not prove the lot is still for sale."
-    },
-    {
-      "url": "https://www.allsop.co.uk/lot-overview/investment-vacant-freehold-grade-ii-listed-mid-terrace-building-in-cheltenham/r261022-177",
-      "address": "20 Lansdown Place, Cheltenham, Gloucestershire, GL50 2HX",
-      "city": "Cheltenham",
-      "status_on_file": "Sold prior",
-      "checked_at": "2026-11-01",
-      "http": 200,
-      "final_url": "https://www.allsop.co.uk/lot-overview/investment-vacant-freehold-grade-ii-listed-mid-terrace-building-in-cheltenham/r261022-177",
-      "note": "HTTP check only. A 200 does not prove the lot is still for sale."
-    },
-    {
       "url": "https://www.auctionhouse.co.uk/northwest/auction/lot/153321",
       "address": "Land at Waterside Gardens, east side of Waters Meeting Road, Bolton, Greater Manchester BL1 8WD",
       "city": "Bolton",
@@ -33,7 +13,7 @@
     },
     {
       "url": "https://www.philipjames.co.uk/property-for-sale/didsbury/an-ideal-investment-opportunity-in-prime-didsbury-village-location/",
-      "address": "41\u201343 Moorland Road, Didsbury, Manchester",
+      "address": "41–43 Moorland Road, Didsbury, Manchester",
       "city": "Manchester",
       "status_on_file": "Advertised for sale",
       "checked_at": "2026-11-01",
@@ -72,56 +52,6 @@
       "note": "HTTP check only. A 200 does not prove the lot is still for sale."
     },
     {
-      "url": "https://www.allsop.co.uk/lot-overview/investment-freehold-mixed-use-mid-terrace-building-in-london/r261022-154",
-      "address": "395 Harrow Road, Maida Hill, London, W9 3NF",
-      "city": "Other",
-      "status_on_file": "Advertised for sale",
-      "checked_at": "2026-11-01",
-      "http": 200,
-      "final_url": "https://www.allsop.co.uk/lot-overview/investment-freehold-mixed-use-mid-terrace-building-in-london/r261022-154",
-      "note": "HTTP check only. A 200 does not prove the lot is still for sale."
-    },
-    {
-      "url": "https://www.allsop.co.uk/lot-overview/investment-vacant-freehold-student-investment-opportunity-in-southampton/r261022-137",
-      "address": "17-18 St. Marys Place, Southampton, Hampshire, SO14 3HY",
-      "city": "Other",
-      "status_on_file": "Advertised for sale",
-      "checked_at": "2026-11-01",
-      "http": 200,
-      "final_url": "https://www.allsop.co.uk/lot-overview/investment-vacant-freehold-student-investment-opportunity-in-southampton/r261022-137",
-      "note": "HTTP check only. A 200 does not prove the lot is still for sale."
-    },
-    {
-      "url": "https://www.allsop.co.uk/lot-overview/freehold-mid-terrace-building-in-plymouth/r261022-113",
-      "address": "8 Paradise Place, Paradise Road, Plymouth, Devon, PL1 5QU",
-      "city": "Other",
-      "status_on_file": "Advertised for sale",
-      "checked_at": "2026-11-01",
-      "http": 200,
-      "final_url": "https://www.allsop.co.uk/lot-overview/freehold-mid-terrace-building-in-plymouth/r261022-113",
-      "note": "HTTP check only. A 200 does not prove the lot is still for sale."
-    },
-    {
-      "url": "https://www.allsop.co.uk/lot-overview/freehold-mid-terrace-building-in-plymouth/r261022-114",
-      "address": "9 Paradise Place, Paradise Road, Plymouth, Devon, PL1 5QU",
-      "city": "Other",
-      "status_on_file": "Advertised for sale",
-      "checked_at": "2026-11-01",
-      "http": 200,
-      "final_url": "https://www.allsop.co.uk/lot-overview/freehold-mid-terrace-building-in-plymouth/r261022-114",
-      "note": "HTTP check only. A 200 does not prove the lot is still for sale."
-    },
-    {
-      "url": "https://www.allsop.co.uk/lot-overview/vacant-freehold-block-of-flats-in-houghton-le-spring/r261022-258",
-      "address": "Flat 1- 4 The Waterhouse, Front Street, Houghton Le Spring, Tyne & Wear, DH5 9JQ",
-      "city": "Other",
-      "status_on_file": "Advertised for sale",
-      "checked_at": "2026-11-01",
-      "http": 200,
-      "final_url": "https://www.allsop.co.uk/lot-overview/vacant-freehold-block-of-flats-in-houghton-le-spring/r261022-258",
-      "note": "HTTP check only. A 200 does not prove the lot is still for sale."
-    },
-    {
       "url": "https://www.btgeddisonspropertyauctions.com/properties/202609281529sq_lbn6-281026/for-auction-rotherham",
       "address": "11 Lindum Terrace, Doncaster Road, Rotherham, South Yorkshire S65 1NJ",
       "city": "Other",
@@ -129,26 +59,6 @@
       "checked_at": "2026-11-01",
       "http": 200,
       "final_url": "https://www.btgeddisonspropertyauctions.com/properties/202609281529sq_lbn6-281026/for-auction-rotherham",
-      "note": "HTTP check only. A 200 does not prove the lot is still for sale."
-    },
-    {
-      "url": "https://www.allsop.co.uk/lot-overview/freehold-mid-terrace-building-in-croydon/r261022-226",
-      "address": "82 Sumner Road, Croydon, Greater London, CR0 3LJ",
-      "city": "Other",
-      "status_on_file": "Withdrawn",
-      "checked_at": "2026-11-01",
-      "http": 200,
-      "final_url": "https://www.allsop.co.uk/lot-overview/freehold-mid-terrace-building-in-croydon/r261022-226",
-      "note": "HTTP check only. A 200 does not prove the lot is still for sale."
-    },
-    {
-      "url": "https://www.allsop.co.uk/lot-overview/investment-leasehold-mid-terrace-building-in-lytham-st-annes/r261022-200",
-      "address": "51 St. Andrews Road South, Lytham St. Annes, Lancashire, FY8 1PZ",
-      "city": "Other",
-      "status_on_file": "Sold prior",
-      "checked_at": "2026-11-01",
-      "http": 200,
-      "final_url": "https://www.allsop.co.uk/lot-overview/investment-leasehold-mid-terrace-building-in-lytham-st-annes/r261022-200",
       "note": "HTTP check only. A 200 does not prove the lot is still for sale."
     },
     {
@@ -183,7 +93,7 @@
     },
     {
       "url": "https://edwardmellor.co.uk/property-for-sale/10171111/",
-      "address": "20a\u201320d Glegside Road and 47a\u201347e Simonswood Lane, Northwood, Kirkby, Liverpool",
+      "address": "20a–20d Glegside Road and 47a–47e Simonswood Lane, Northwood, Kirkby, Liverpool",
       "city": "Other",
       "status_on_file": "Advertised for sale",
       "checked_at": "2026-11-01",
@@ -269,26 +179,6 @@
       "checked_at": "2026-11-01",
       "http": 200,
       "final_url": "https://www.cliveemson.co.uk/properties/269/155/",
-      "note": "HTTP check only. A 200 does not prove the lot is still for sale."
-    },
-    {
-      "url": "https://www.allsop.co.uk/lot-overview/investmentvacant-eleven-leasehold-selfcontained-one-bedroom-flats-in-halifax/r261118-070",
-      "address": "Flats 1-12 (excluding Flat 10), Arcade Royale Apartments, 28 Commercial Street, Halifax, West Yorkshire, HX1 1TD",
-      "city": "Other",
-      "status_on_file": "Advertised for sale",
-      "checked_at": "2026-11-01",
-      "http": 200,
-      "final_url": "https://www.allsop.co.uk/lot-overview/investmentvacant-eleven-leasehold-selfcontained-one-bedroom-flats-in-halifax/r261118-070",
-      "note": "HTTP check only. A 200 does not prove the lot is still for sale."
-    },
-    {
-      "url": "https://www.allsop.co.uk/lot-overview/freehold-shop-and-residential-investment-in-london/c261111-016",
-      "address": "131-133 Whitecross Street, Islington, London, EC1Y 8JL",
-      "city": "Other",
-      "status_on_file": "Advertised for sale",
-      "checked_at": "2026-11-01",
-      "http": 200,
-      "final_url": "https://www.allsop.co.uk/lot-overview/freehold-shop-and-residential-investment-in-london/c261111-016",
       "note": "HTTP check only. A 200 does not prove the lot is still for sale."
     },
     {

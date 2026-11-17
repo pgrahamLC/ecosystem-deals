@@ -47,15 +47,6 @@
       "url": "https://find-and-update.company-information.service.gov.uk/"
     },
     {
-      "name": "Auction catalogues",
-      "gives": "Lots sold by receivers, lenders, administrators",
-      "period": "Catalogues seen 13 Oct 2026",
-      "refreshed": "2026-10-13",
-      "cadence_days": 7,
-      "routine": "Weekly run (Mon 7am)",
-      "url": "https://www.allsop.co.uk/"
-    },
-    {
       "name": "Gazette insolvency notices",
       "gives": "New winding-up petitions and administrations",
       "period": "Not yet run",

@@ -28,6 +28,7 @@ export async function run({ root = path.resolve(path.dirname(fileURLToPath(impor
       lot_count: 0, commercial_excluded: 0, out_of_area_excluded: 0, unknown_excluded: 0, pages: 0,
       policy: source.policy, errors: [] };
     sources.push(row);
+    if (source.enabled === false) { row.status = 'skipped'; row.reason = source.reason || 'Source disabled. Not collected.'; continue; }
     if (!source.url) { row.status = 'failed'; row.reason = source.reason || 'No public catalogue URL. Nothing was invented.'; row.errors.push(row.reason); continue; }
     console.log('Collecting '+source.name+' at '+new Date().toISOString());
     try {
@@ -59,7 +60,12 @@ export async function run({ root = path.resolve(path.dirname(fileURLToPath(impor
   await closeBrowser().catch(() => {});
   const unique = dedupeLots(fresh);
   const retained = mergePrevious(unique, previous.lots || [], { sources }, now);
-  const lots = sortLotsByGrade(dedupeLots(Array.isArray(retained) ? retained : retained.lots || []));
+  const kept = (Array.isArray(retained) ? retained : retained.lots || []).filter(lot => {
+    const names = [lot.source, ...(lot.sources || []).map(item => item.name)].join(' ');
+    const urls = [lot.source_url, ...(lot.sources || []).map(item => item.url)].join(' ');
+    return !/allsop/i.test(names + ' ' + urls);
+  });
+  const lots = sortLotsByGrade(dedupeLots(kept));
   const success = sources.some(s => s.status === 'live' || s.status === 'partial');
   const lastSuccess = success ? now : previous.updated_at || null;
   const counts = Object.fromEntries(config.towns.map(town => [town, lots.filter(l => l.town === town && !l.stale).length]));

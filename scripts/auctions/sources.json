@@ -182,11 +182,13 @@
       "id": "allsop",
       "name": "Allsop",
       "url": "https://www.allsop.co.uk/auctions/residential-auctions/",
-      "enabled": true,
+      "enabled": false,
+      "coverage_status": "skipped",
+      "reason": "Removed on 17 Nov 2026. Allsop catalogues are old and are not collected. Do not turn this source back on.",
       "policy": {
         "reviewed_at": "2026-11-04",
         "status": "public_catalogue",
-        "note": "Upcoming catalogues are read from the public search the Allsop website uses. This is an internal non-commercial tool. Commercial lots are kept and tagged Commercial. Requests are one at a time, with no login.",
+        "note": "Disabled on 17 Nov 2026. Do not read the Allsop catalogue. Old Allsop lots are not retained.",
         "terms_url": "https://www.allsop.co.uk/auctions/residential-auctions/"
       },
       "adapter": "allsop",

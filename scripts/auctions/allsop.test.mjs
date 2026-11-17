@@ -1,3 +1,4 @@
+/* Parser guard only. The refresh does not call this adapter. Allsop is disabled in sources.json. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { collect } from './allsop.mjs';

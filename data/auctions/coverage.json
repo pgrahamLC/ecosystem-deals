@@ -725,43 +725,6 @@
       "by_tag": {}
     },
     {
-      "id": "allsop",
-      "name": "Allsop",
-      "url": "https://www.allsop.co.uk/auctions/residential-auctions/",
-      "checked_at": "2026-11-17T10:26:13.062Z",
-      "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check: Flat 41 St. Johns Court, New Road, Manchester, Lancashire, M26 1NH from the public Allsop catalogue, page https://www.allsop.co.uk/lot-overview/ee4d0270-debb-11f1-b95c-0242ac110002",
-      "lot_count": 42,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 31,
-      "policy": {
-        "reviewed_at": "2026-11-04",
-        "status": "public_catalogue",
-        "note": "Upcoming catalogues are read from the public search the Allsop website uses. This is an internal non-commercial tool. Commercial lots are kept and tagged Commercial. Requests are one at a time, with no login.",
-        "terms_url": "https://www.allsop.co.uk/auctions/residential-auctions/"
-      },
-      "errors": [],
-      "successful_pages": 31,
-      "warnings": [
-        "Upcoming Allsop catalogues read from the public search. In-area upcoming lots: Manchester 19, Bristol 1, Cheltenham 1, Glasgow 0, Edinburgh 0, Liverpool 1, Cheshire 3, Birmingham 5.",
-        "Spot-check: Flat 41 St. Johns Court, New Road, Manchester, Lancashire, M26 1NH from the public Allsop catalogue, page https://www.allsop.co.uk/lot-overview/ee4d0270-debb-11f1-b95c-0242ac110002"
-      ],
-      "by_town": {
-        "Manchester": 23,
-        "Birmingham": 8,
-        "Cheshire": 4,
-        "Glasgow": 2,
-        "Bristol": 2,
-        "Cheltenham": 2,
-        "Liverpool": 1
-      },
-      "by_tag": {
-        "Auction": 42
-      }
-    },
-    {
       "id": "savills_auctions",
       "name": "Savills auctions",
       "url": "https://auctions.savills.co.uk/upcoming-auctions",
@@ -1632,67 +1595,75 @@
     }
   ],
   "counts_by_town": {
-    "Manchester": 289,
-    "Glasgow": 85,
+    "Manchester": 266,
+    "Glasgow": 83,
     "Edinburgh": 20,
-    "Bristol": 40,
-    "Cheltenham": 49,
-    "Liverpool": 168,
-    "Cheshire": 75,
-    "Birmingham": 100
+    "Bristol": 38,
+    "Cheltenham": 47,
+    "Liverpool": 167,
+    "Cheshire": 71,
+    "Birmingham": 92
   },
   "counts_by_town_and_status": {
     "Manchester": {
-      "upcoming": 137,
+      "upcoming": 118,
       "sold": 117,
-      "unsold": 21,
-      "withdrawn": 11
+      "unsold": 20,
+      "withdrawn": 11,
+      "passed": 0
     },
     "Glasgow": {
       "upcoming": 80,
       "sold": 3,
       "unsold": 0,
-      "withdrawn": 0
+      "withdrawn": 0,
+      "passed": 0
     },
     "Edinburgh": {
       "upcoming": 19,
       "sold": 1,
       "unsold": 0,
-      "withdrawn": 0
+      "withdrawn": 0,
+      "passed": 0
     },
     "Bristol": {
-      "upcoming": 18,
+      "upcoming": 17,
       "sold": 19,
       "unsold": 1,
-      "withdrawn": 1
+      "withdrawn": 1,
+      "passed": 0
     },
     "Cheltenham": {
-      "upcoming": 34,
+      "upcoming": 33,
       "sold": 14,
       "unsold": 0,
-      "withdrawn": 0
+      "withdrawn": 0,
+      "passed": 0
     },
     "Liverpool": {
-      "upcoming": 63,
+      "upcoming": 62,
       "sold": 90,
       "unsold": 14,
-      "withdrawn": 0
+      "withdrawn": 0,
+      "passed": 1
     },
     "Cheshire": {
-      "upcoming": 24,
+      "upcoming": 21,
       "sold": 43,
-      "unsold": 5,
-      "withdrawn": 3
+      "unsold": 4,
+      "withdrawn": 3,
+      "passed": 0
     },
     "Birmingham": {
-      "upcoming": 30,
+      "upcoming": 25,
       "sold": 47,
       "unsold": 17,
-      "withdrawn": 3
+      "withdrawn": 3,
+      "passed": 0
     }
   },
-  "total_fresh": 826,
-  "total_stale": 2798,
+  "total_fresh": 784,
+  "total_stale": 165,
   "commercial_excluded": 0,
   "duplicates_removed": 110
 }
