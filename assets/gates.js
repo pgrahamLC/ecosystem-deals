@@ -131,7 +131,7 @@
   }
   function bar(row) {
     const width = row.status === 'pass' ? 100 : (row.status === 'fail' ? 70 : 36);
-    const head = row.unit === 'x' ? row.headroom + 'x' : (row.unit === 'bp' && row.headroom != null ? (row.headroom > 0 ? '+' : '') + row.headroom + 'bp' : '');
+    const head = row.headroom == null || !row.unit ? '' : (row.unit === 'x' ? row.headroom + 'x' : (row.headroom > 0 ? '+' : '') + row.headroom + 'bp');
     return '<button type="button" class="bd-bar ' + row.status + '" data-gate="' + row.n + '"><span>' + row.n + ' ' + esc(row.name) + '</span><i><b style="width:' + width + '%"></b></i><em>' + esc(head || row.valueText) + '</em></button>';
   }
   function html(result) {
