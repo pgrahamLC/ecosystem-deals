@@ -59,7 +59,7 @@
   window.lcPpdLine = function (pc) {
     if (!state.summary || !pc) return '';
     const city = cityForPc(pc);
-    if (!city) return 'This postcode is not in a loaded Price Paid extract. Manchester, Cheltenham and Bristol have extracts. Liverpool, Cheshire and Birmingham do not, so no local history is attached.';
+    if (!city) return 'This postcode is not in a loaded Price Paid extract. Manchester, Cheltenham, Bristol, Liverpool, Cheshire and Birmingham have extracts.';
     const place = state.summary.places[city];
     const sec = sectorOf(pc);
     const dist = String(pc).toUpperCase().split(/\s+/)[0];
@@ -84,7 +84,7 @@
     sec.id = 'comps_view';
     sec.className = 'hidden';
     sec.style.margin = '16px 24px';
-    sec.innerHTML = '<div class="card"><h2>Comps: what did homes sell for, and what is the rent evidence?</h2><p class="lead">Manchester, Cheltenham and Bristol have HM Land Registry Price Paid extracts from 2016, standard existing homes. Liverpool, Cheshire and Birmingham are listed and have no extract in this copy. Rents are the ONS local-authority average, not a street comp. A yield is shown only where one public auction lot states both a price and a rent. £/sq ft is the sale price divided by the floor area on a matched domestic EPC, and is blank when that certificate is missing.</p><div id="comps_meta" class="foot">Loading Price Paid summary…</div><div class="ctl" style="margin-top:10px"><label>Place <select id="comp_city"></select></label><label>Cut <select id="comp_level"><option value="la">Whole local authority</option><option value="district">Postcode district</option><option value="sector">Postcode sector</option></select></label><label>Area <select id="comp_area"></select></label><label>Type <select id="comp_type"></select></label><label>From <select id="comp_from"></select></label><label>To <select id="comp_to"></select></label><input id="comp_q" placeholder="Filter area list" style="width:160px"></div><div id="comp_table"></div><div id="comp_ppsqft"></div><div class="ctl"><button class="btn" id="comp_load" type="button">Load individual sales</button><button class="btn sec" id="comp_csv" type="button">Download this filter (CSV)</button><span class="foot" id="comp_sales_note"></span></div><div id="comp_sales"></div></div><div class="card" id="comp_area_yields"><p class="foot">Loading yields by place…</p></div><div class="g2"><div class="card" id="comp_rents"></div><div class="card" id="comp_yields"></div></div>';
+    sec.innerHTML = '<div class="card"><h2>Comps: what did homes sell for, and what is the rent evidence?</h2><p class="lead">HM Land Registry Price Paid extracts from 2016 cover Manchester, Cheltenham, Bristol, Liverpool, Cheshire and Birmingham. The three newer extracts use the same postcode split as the auctions. Rents are the ONS local-authority average for September 2026, not a street comp. A yield is shown only where one public auction lot states both a price and a rent. £/sq ft needs a matched EPC and stays blank where that certificate is missing. Liverpool, Cheshire and Birmingham show the 2025 median sale instead.</p><div id="comps_meta" class="foot">Loading Price Paid summary…</div><div class="ctl" style="margin-top:10px"><label>Place <select id="comp_city"></select></label><label>Cut <select id="comp_level"><option value="la">Whole local authority</option><option value="district">Postcode district</option><option value="sector">Postcode sector</option></select></label><label>Area <select id="comp_area"></select></label><label>Type <select id="comp_type"></select></label><label>From <select id="comp_from"></select></label><label>To <select id="comp_to"></select></label><input id="comp_q" placeholder="Filter area list" style="width:160px"></div><div id="comp_table"></div><div id="comp_ppsqft"></div><div class="ctl"><button class="btn" id="comp_load" type="button">Load individual sales</button><button class="btn sec" id="comp_csv" type="button">Download this filter (CSV)</button><span class="foot" id="comp_sales_note"></span></div><div id="comp_sales"></div></div><div class="card" id="comp_area_yields"><p class="foot">Loading yields by place…</p></div><div class="g2"><div class="card" id="comp_rents"></div><div class="card" id="comp_yields"></div></div>';
     (document.getElementById('app') || document.body).appendChild(sec);
     sec.querySelector('#comp_city').onchange = function (e) { state.city = e.target.value; state.area = ''; state.lastFilter = null; fillAreas(); draw(); drawPpsqft(null); drawRents(); drawYields(); if (window.lcDrawAreaYields) window.lcDrawAreaYields(); };
     function refreshLoadedSales() {
@@ -344,19 +344,59 @@
     a.click();
   }
 
+  function rentNames(city) {
+    const groups = {
+      Manchester: ['Manchester'],
+      Cheltenham: ['Cheltenham'],
+      Bristol: ['Bristol, City of'],
+      Liverpool: ['Liverpool', 'Wirral', 'Knowsley', 'Sefton', 'St. Helens', 'West Lancashire'],
+      Cheshire: ['Cheshire East', 'Cheshire West and Chester', 'Warrington', 'Halton'],
+      Birmingham: ['Birmingham', 'Solihull', 'Sandwell', 'Dudley', 'Walsall', 'Bromsgrove', 'Redditch', 'Tamworth', 'Lichfield', 'North Warwickshire', 'Stratford-on-Avon']
+    };
+    return groups[city] || [];
+  }
+  function lhaNote(city) {
+    const notes = {
+      Liverpool: 'Southport is listed because the Sefton borough contains both the Greater Liverpool allowance and the Southport allowance. The ONS rent is the whole borough, so it is not paired with one rate.',
+      Cheshire: 'Cheshire is not given one allowance. East, South, West and North Cheshire are all published. Wirral is listed because Neston (CH64) is in the Wirral allowance.',
+      Birmingham: 'Black Country is the named allowance shown beside Sandwell, Dudley and Walsall. Bromsgrove, Redditch, Tamworth, Lichfield, North Warwickshire and Stratford-on-Avon are not given an allowance here.'
+    };
+    return notes[city] || '';
+  }
+  function lhaNames(city) {
+    const groups = {
+      Manchester: ['Central Greater Manchester', 'Southern Greater Manchester'],
+      Cheltenham: ['Cheltenham'],
+      Bristol: ['Bristol'],
+      Liverpool: ['Greater Liverpool', 'Wirral', 'St Helens', 'Southport'],
+      Cheshire: ['East Cheshire', 'South Cheshire', 'West Cheshire', 'North Cheshire', 'Wirral'],
+      Birmingham: ['Birmingham', 'Solihull', 'Black Country']
+    };
+    return groups[city] || [];
+  }
+  function lhaAmount(rate, key) {
+    if (!rate) return null;
+    if (rate.monthly && rate.monthly[key] != null) return rate.monthly[key];
+    if (key === 'shared') return rate.SAR != null ? rate.SAR : null;
+    return rate[key] != null ? rate[key] : null;
+  }
   function drawRents() {
     const host = document.getElementById('comp_rents');
     if (!host || !state.rents) return;
-    const map = {Manchester: 'Manchester', Cheltenham: 'Cheltenham', Bristol: 'Bristol, City of'};
-    const area = state.rents.areas[map[state.city]];
-    const brma = {Manchester: ['Central Greater Manchester', 'Southern Greater Manchester'], Cheltenham: ['Cheltenham'], Bristol: ['Bristol']};
-    const rates = (state.lha && state.lha.rates || []).filter(function (r) { return (brma[state.city] || []).indexOf(r.name) >= 0; });
-    host.innerHTML = '<h3>Rent benchmarks, not a rent for this street</h3><p class="foot">' + esc(state.rents.source) + '. ' + esc(state.rents.note) + ' Geography is the local authority. There is no official postcode-district private rent in this dataset.</p>' +
-      (area ? '<table><thead><tr><th>ONS measure</th><th>£ / month</th></tr></thead><tbody><tr><td>All private rents</td><td>' + money(area.all) + '</td></tr><tr><td>1 bedroom</td><td>' + money(area.b1) + '</td></tr><tr><td>2 bedroom</td><td>' + money(area.b2) + '</td></tr><tr><td>3 bedroom</td><td>' + money(area.b3) + '</td></tr></tbody></table><p class="foot">Month: ' + esc(area.month) + '. 2-bed annual change ' + (area.b2_annual_change == null ? 'Unknown' : area.b2_annual_change + '%') + '. This is not a comparable for one building.</p>' : '<p>No ONS figure loaded.</p>') +
-      '<h3>LHA is a benefit cap</h3><p class="foot">Local Housing Allowance, ' + esc(state.lha && state.lha.period || '') + ', by broad rental market area. It is not bankable rent and not an ONS rent. Confirm the postcode on LHA Direct before using a rate.</p>' +
+    const names = rentNames(state.city);
+    const areas = names.map(function (name) { return { name: name, area: state.rents.areas[name] }; });
+    const rates = (state.lha && state.lha.rates || []).filter(function (r) { return lhaNames(state.city).indexOf(r.name) >= 0; });
+    const rows = areas.map(function (item) {
+      const area = item.area;
+      if (!area) return '<tr><td>' + esc(item.name) + '</td><td colspan="6">Not in the 21 October 2026 ONS release loaded here.</td></tr>';
+      const yoy = area.annual_change == null ? 'Unknown' : Number(area.annual_change).toFixed(1) + '%';
+      return '<tr><td>' + esc(item.name) + '</td><td>' + money(area.all) + '</td><td>' + money(area.b1) + '</td><td>' + money(area.b2) + '</td><td>' + money(area.b3) + '</td><td>' + money(area.b4) + '</td><td>' + yoy + '</td></tr>';
+    }).join('');
+    host.innerHTML = '<h3>Rent benchmarks, not a rent for this street</h3><p class="foot">' + esc(state.rents.source) + '. ' + esc(state.rents.note) + ' Geography is the local authority. There is no official postcode-district private rent in this dataset. The last rent column is four or more bedrooms, not a pure 4-bedroom rent.</p>' +
+      (rows ? '<table><thead><tr><th>Council</th><th>All</th><th>1 bed</th><th>2 bed</th><th>3 bed</th><th>4 or more</th><th>Overall YoY</th></tr></thead><tbody>' + rows + '</tbody></table>' : '<p>No ONS figure loaded for this place.</p>') +
+      '<h3>LHA is a benefit cap</h3><p class="foot">Local Housing Allowance, ' + esc(state.lha && state.lha.period || '') + ', by broad rental market area. It is not bankable rent and not an ONS rent. Confirm the postcode on LHA Direct before using a rate. ' + esc(lhaNote(state.city)) + '</p>' +
       rates.map(function (r) {
-        const m = r.monthly || {};
-        return '<p><b>' + esc(r.name) + '</b> £/month: shared ' + (m.shared == null ? 'Unknown' : money(m.shared)) + ', 1-bed ' + money(m['1']) + ', 2-bed ' + money(m['2']) + ', 3-bed ' + money(m['3']) + ', 4-bed ' + money(m['4']) + '.</p>';
+        return '<p><b>' + esc(r.name) + '</b> £/month: shared ' + money(lhaAmount(r, 'shared')) + ', 1-bed ' + money(lhaAmount(r, '1')) + ', 2-bed ' + money(lhaAmount(r, '2')) + ', 3-bed ' + money(lhaAmount(r, '3')) + ', 4-bed ' + money(lhaAmount(r, '4')) + '.</p>';
       }).join('');
   }
 

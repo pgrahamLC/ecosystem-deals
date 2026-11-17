@@ -1,24 +1,84 @@
 {
   "schema": 1,
   "source": "comps/ppsqft.json",
-  "method": "Median £ per sq ft of HM Land Registry standard sales matched to an EPC floor area. Houses pool detached, semi-detached and terraced sales. A median is shown only when at least 5 sales match. Glasgow and Edinburgh are not on the England and Wales EPC register.",
+  "method": "Median \u00a3 per sq ft of HM Land Registry standard sales matched to an EPC floor area. Houses pool detached, semi-detached and terraced sales. A median is shown only when at least 5 sales match. Glasgow and Edinburgh are not on the England and Wales EPC register. Liverpool, Cheshire and Birmingham use the 2025 median recorded sale price for the postcode split. No EPC floor area is matched, so they are not given a \u00a3 per sq ft figure.",
   "areas": {
     "Manchester": {
-      "all": {"n": 42151, "median_gbp_per_sqft": 244.16},
-      "houses": {"n": 33509, "median_gbp_per_sqft": 234.38},
-      "flats": {"n": 8642, "median_gbp_per_sqft": 278.7}
+      "all": {
+        "n": 42151,
+        "median_gbp_per_sqft": 244.16
+      },
+      "houses": {
+        "n": 33509,
+        "median_gbp_per_sqft": 234.38
+      },
+      "flats": {
+        "n": 8642,
+        "median_gbp_per_sqft": 278.7
+      }
     },
     "Bristol": {
-      "all": {"n": 51774, "median_gbp_per_sqft": 342.67},
-      "houses": {"n": 44269, "median_gbp_per_sqft": 339.9},
-      "flats": {"n": 7505, "median_gbp_per_sqft": 362.32}
+      "all": {
+        "n": 51774,
+        "median_gbp_per_sqft": 342.67
+      },
+      "houses": {
+        "n": 44269,
+        "median_gbp_per_sqft": 339.9
+      },
+      "flats": {
+        "n": 7505,
+        "median_gbp_per_sqft": 362.32
+      }
     },
     "Cheltenham": {
-      "all": {"n": 16642, "median_gbp_per_sqft": 335.0},
-      "houses": {"n": 14352, "median_gbp_per_sqft": 343.05},
-      "flats": {"n": 2290, "median_gbp_per_sqft": 281.43}
+      "all": {
+        "n": 16642,
+        "median_gbp_per_sqft": 335.0
+      },
+      "houses": {
+        "n": 14352,
+        "median_gbp_per_sqft": 343.05
+      },
+      "flats": {
+        "n": 2290,
+        "median_gbp_per_sqft": 281.43
+      }
     },
     "Glasgow": null,
-    "Edinburgh": null
+    "Edinburgh": null,
+    "Liverpool": {
+      "floor": false,
+      "price_paid": {
+        "year": "2025",
+        "median_gbp": 205000,
+        "n": 16370,
+        "p25": 148778,
+        "p75": 285000,
+        "source": "HM Land Registry Price Paid Data, standard category A sales of existing homes in calendar 2025. Nominal recorded prices. Not a floor-area rate."
+      }
+    },
+    "Cheshire": {
+      "floor": false,
+      "price_paid": {
+        "year": "2025",
+        "median_gbp": 260000,
+        "n": 16362,
+        "p25": 182000,
+        "p75": 384000,
+        "source": "HM Land Registry Price Paid Data, standard category A sales of existing homes in calendar 2025. Nominal recorded prices. Not a floor-area rate."
+      }
+    },
+    "Birmingham": {
+      "floor": false,
+      "price_paid": {
+        "year": "2025",
+        "median_gbp": 255000,
+        "n": 20490,
+        "p25": 195000,
+        "p75": 345000,
+        "source": "HM Land Registry Price Paid Data, standard category A sales of existing homes in calendar 2025. Nominal recorded prices. Not a floor-area rate."
+      }
+    }
   }
 }

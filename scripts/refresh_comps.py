@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Refresh open comps for Manchester, Cheltenham and Bristol.
+"""Refresh open comps for Manchester, Cheltenham, Bristol, Liverpool, Cheshire and Birmingham.
 
 Streams HM Land Registry Price Paid yearly files (Open Government Licence).
 Writes summaries and slim sale files under comps/. Also copies the auction
@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import re
 import urllib.error
 import urllib.request
 from collections import defaultdict
@@ -32,7 +33,18 @@ DISTRICTS = {
     "CHELTENHAM": "Cheltenham",
     "CITY OF BRISTOL": "Bristol",
 }
+# Same postcode split as scripts/auctions/core.mjs. These markets are not a single council.
+# A Manchester, Cheltenham or Bristol local-authority row is kept on that council and is not claimed again here.
+MARKETS = (
+    ("Manchester", "manchester"),
+    ("Cheltenham", "cheltenham"),
+    ("Bristol", "bristol"),
+    ("Liverpool", "liverpool"),
+    ("Cheshire", "cheshire"),
+    ("Birmingham", "birmingham"),
+)
 TYPES = {"D": "Detached", "S": "Semi-detached", "T": "Terraced", "F": "Flat"}
+OUTWARD_RE = re.compile(r"^([A-Z]{1,2})(\d{1,2})")
 UA = "LauritoCapital-comps/1.0 (public Price Paid refresh; OGL)"
 
 
@@ -46,6 +58,35 @@ def sector_of(pc: str) -> str:
 def district_of(pc: str) -> str:
     parts = (pc or "").upper().strip().split()
     return parts[0] if parts else ""
+
+
+def postcode_market(pc: str) -> str:
+    """Liverpool, Cheshire or Birmingham from the auction postcode split. Empty if neither."""
+    outward = district_of(pc)
+    match = OUTWARD_RE.match(outward)
+    if not match:
+        return ""
+    area, num = match.group(1), int(match.group(2))
+    if area == "L":
+        return "Liverpool"
+    if area == "B":
+        return "Birmingham"
+    if area == "CW":
+        return "Cheshire"
+    if area == "CH":
+        if 1 <= num <= 4 or 64 <= num <= 66:
+            return "Cheshire"
+        if (41 <= num <= 49) or (60 <= num <= 63):
+            return "Liverpool"
+        return ""
+    if area == "SK" and 9 <= num <= 12:
+        return "Cheshire"
+    if area == "WA":
+        if 9 <= num <= 12:
+            return "Liverpool"
+        if num in (1, 2, 4, 5, 6, 7, 8, 13, 16):
+            return "Cheshire"
+    return ""
 
 
 def quantile(sorted_prices, p):
@@ -176,15 +217,18 @@ def main():
     counts = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
     writers = {}
     files = {}
-    for city, slug in (("Manchester", "manchester"), ("Cheltenham", "cheltenham"), ("Bristol", "bristol")):
-        path = OUT / f"sales_{slug}.csv"
+    paths = {}
+    for city, slug in MARKETS:
+        path = OUT / f"sales_{slug}.csv.new"
         fh = path.open("w", newline="", encoding="utf-8")
         w = csv.writer(fh)
         w.writerow(["id", "date", "price", "postcode", "sector", "type", "tenure", "paon", "saon", "street", "local_authority"])
         writers[city] = w
         files[city] = fh
+        paths[city] = path
 
     years = []
+    completed = False
     try:
         for year in range(args.from_year, args.to_year + 1):
             path = download(year)
@@ -194,7 +238,7 @@ def main():
                 for row in csv.reader(fh):
                     if len(row) < 15:
                         continue
-                    la = DISTRICTS.get(row[12].upper())
+                    la = DISTRICTS.get(row[12].upper()) or postcode_market(row[3])
                     if not la:
                         continue
                     cat = row[14]
@@ -231,15 +275,25 @@ def main():
                         prices[la]["sector"][sec][y]["all"].append(price)
                         prices[la]["sector"][sec][y][ptype].append(price)
                     tid = row[0].strip("{}")
-                    writers[la].writerow([tid, day, price, pc, sec, ptype, tenure, row[7], row[8], row[9], la])
+                    council = row[12].strip()
+                    writers[la].writerow([tid, day, price, pc, sec, ptype, tenure, row[7], row[8], row[9], council or la])
                     kept += 1
             print(f"{year} kept {kept}", flush=True)
+        completed = True
     finally:
         for fh in files.values():
             fh.close()
 
+    if not completed:
+        for path in paths.values():
+            path.unlink(missing_ok=True)
+        raise SystemExit("Price Paid refresh did not finish. Existing sale files were left unchanged.")
+    for city, slug in MARKETS:
+        final = OUT / f"sales_{slug}.csv"
+        paths[city].replace(final)
+
     places = {}
-    for la in DISTRICTS.values():
+    for la, _slug in MARKETS:
         place = {"local_authority": {}, "postcode_districts": {}, "postcode_sectors": {}, "excluded": counts[la]}
         for year, types in prices[la]["la"][""].items():
             place["local_authority"][year] = {t: summarise(v) for t, v in types.items() if v}

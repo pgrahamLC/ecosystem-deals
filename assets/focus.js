@@ -196,6 +196,10 @@
   function priceHtml(city) {
     const row = PPS[city];
     if (row === '…') return '…';
+    const paid = row && row.price_paid;
+    if (paid && paid.median_gbp != null && paid.n >= 5 && !(row.all && row.all.median_gbp_per_sqft != null)) {
+      return '<b>' + moneySqft(paid.median_gbp) + '</b> median sale ' + esc(paid.year) + ' · n=' + saleCount(paid.n);
+    }
     if (!row || row.floor === false) return 'no floor-area data';
     const all = row.all;
     if (!all || all.median_gbp_per_sqft == null || !(all.n >= 5)) return 'no floor-area data';
@@ -246,7 +250,7 @@
   function paintFind() {
     const towns = [['Manchester', 'Manchester'], ['Liverpool', 'Liverpool'], ['Cheshire', 'Cheshire'], ['Birmingham', 'Birmingham'], ['City Of Bristol', 'Bristol'], ['Cheltenham', 'Cheltenham'], ['Glasgow', 'Glasgow'], ['Edinburgh', 'Edinburgh']];
     const host = screenHost();
-    host.innerHTML = '<p class="lc-kicker">Find</p><h1>Choose an area</h1><p class="lc-purpose">Tap an area to see who has to sell there. The price is the median of matched Land Registry sales. Liverpool, Cheshire and Birmingham have no floor-area file yet, so that line stays blank.</p><div class="ios-cities">' +
+    host.innerHTML = '<p class="lc-kicker">Find</p><h1>Choose an area</h1><p class="lc-purpose">Tap an area to see who has to sell there. Where a floor area is matched, the price is £ per sq ft. Liverpool, Cheshire and Birmingham show the 2025 median recorded sale, because no floor area is matched.</p><div class="ios-cities">' +
       towns.map(function (t) {
         const n = leadCount(t[0]);
         const label = t[1] === 'Manchester' ? 'Greater Manchester' : t[1];

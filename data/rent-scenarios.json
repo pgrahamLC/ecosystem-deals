@@ -6,44 +6,601 @@
     "unit": "GBP per calendar month",
     "checked": "2026-11-17",
     "publication": "https://www.gov.uk/government/publications/universal-credit-local-housing-allowance-rates-2026-to-2027",
-    "note": "Monthly Universal Credit Local Housing Allowance. England figures are the VOA rates in the DWP England table. Lothian and Greater Glasgow are the DWP Scotland table for those Broad Rental Market Areas. Liverpool uses Greater Liverpool. Birmingham uses Birmingham. Wirral, Solihull and the Black Country are separate published areas and are not substituted. Cheshire is not given one rate, because East, North, South and West Cheshire are separate Broad Rental Market Areas. A rate is not a provider rent offer.",
+    "note": "Monthly Universal Credit Local Housing Allowance for 2026/27, from the DWP England and Scotland tables. A council is given one allowance only where the published Broad Rental Market Area description covers that council. Cheshire East and Cheshire West and Chester contain more than one allowance area, so no single rate is applied. A rate is not a provider rent offer.",
     "sources": {
       "England": "https://assets.publishing.service.gov.uk/media/69d654a2e1430e837a86f64a/england-rates-2026-to-2027.csv",
       "Scotland": "https://assets.publishing.service.gov.uk/media/69d657392ea7bc150a394ae5/scotland-rates-2026-to-2027.csv"
     },
     "areas": {
-      "Bristol": {"brma": "Bristol", "country": "England", "monthly": {"shared": 511.33, "1": 900, "2": 1095, "3": 1300, "4": 1850}},
-      "Edinburgh": {"brma": "Lothian", "country": "Scotland", "monthly": {"shared": 475, "1": 750, "2": 970, "3": 1375, "4": 2180}},
-      "Manchester": {"brma": "Central Greater Manchester", "country": "England", "monthly": {"shared": 411.58, "1": 775, "2": 875, "3": 950, "4": 1350}},
-      "Cheltenham": {"brma": "Cheltenham", "country": "England", "monthly": {"shared": 436.5, "1": 625, "2": 800, "3": 1000, "4": 1470}},
-      "Glasgow": {"brma": "Greater Glasgow", "country": "Scotland", "monthly": {"shared": 450, "1": 695, "2": 850, "3": 970, "4": 1800}},
-      "Liverpool": {"brma": "Greater Liverpool", "country": "England", "monthly": {"shared": 344.36, "1": 500, "2": 595, "3": 650, "4": 875}},
-      "Birmingham": {"brma": "Birmingham", "country": "England", "monthly": {"shared": 341.58, "1": 695, "2": 750, "3": 825, "4": 1100}},
-      "Cheshire": null
+      "Bristol": {
+        "brma": "Bristol",
+        "country": "England",
+        "monthly": {
+          "shared": 511.33,
+          "1": 900,
+          "2": 1095,
+          "3": 1300,
+          "4": 1850
+        }
+      },
+      "Edinburgh": {
+        "brma": "Lothian",
+        "country": "Scotland",
+        "monthly": {
+          "shared": 475,
+          "1": 750,
+          "2": 970,
+          "3": 1375,
+          "4": 2180
+        }
+      },
+      "Manchester": {
+        "brma": "Central Greater Manchester",
+        "country": "England",
+        "monthly": {
+          "shared": 411.58,
+          "1": 775,
+          "2": 875,
+          "3": 950,
+          "4": 1350
+        }
+      },
+      "Cheltenham": {
+        "brma": "Cheltenham",
+        "country": "England",
+        "monthly": {
+          "shared": 436.5,
+          "1": 625,
+          "2": 800,
+          "3": 1000,
+          "4": 1470
+        }
+      },
+      "Glasgow": {
+        "brma": "Greater Glasgow",
+        "country": "Scotland",
+        "monthly": {
+          "shared": 450,
+          "1": 695,
+          "2": 850,
+          "3": 970,
+          "4": 1800
+        }
+      },
+      "Liverpool": {
+        "brma": "Greater Liverpool",
+        "country": "England",
+        "monthly": {
+          "shared": 344.36,
+          "1": 500,
+          "2": 595,
+          "3": 650,
+          "4": 875
+        }
+      },
+      "Birmingham": {
+        "brma": "Birmingham",
+        "country": "England",
+        "monthly": {
+          "shared": 341.58,
+          "1": 695,
+          "2": 750,
+          "3": 825,
+          "4": 1100
+        }
+      },
+      "Cheshire": null,
+      "Halton": {
+        "brma": "North Cheshire",
+        "country": "England",
+        "monthly": {
+          "shared": 341.5,
+          "1": 475,
+          "2": 590,
+          "3": 695,
+          "4": 1000
+        }
+      },
+      "Warrington": {
+        "brma": "North Cheshire",
+        "country": "England",
+        "monthly": {
+          "shared": 341.5,
+          "1": 475,
+          "2": 590,
+          "3": 695,
+          "4": 1000
+        }
+      },
+      "Cheshire East": {
+        "brma": null,
+        "country": "England",
+        "note": "More than one allowance area. East Cheshire and South Cheshire are both published. No single rate is applied.",
+        "choices": [
+          {
+            "brma": "East Cheshire",
+            "monthly": {
+              "shared": 421.5,
+              "1": 550,
+              "2": 725,
+              "3": 995,
+              "4": 1750
+            }
+          },
+          {
+            "brma": "South Cheshire",
+            "monthly": {
+              "shared": 325,
+              "1": 475,
+              "2": 575,
+              "3": 680,
+              "4": 995
+            }
+          }
+        ]
+      },
+      "Cheshire West and Chester": {
+        "brma": null,
+        "country": "England",
+        "note": "More than one allowance area. West Cheshire and Wirral are both published. No single rate is applied.",
+        "choices": [
+          {
+            "brma": "West Cheshire",
+            "monthly": {
+              "shared": 375.86,
+              "1": 550,
+              "2": 675,
+              "3": 795,
+              "4": 1224
+            }
+          },
+          {
+            "brma": "Wirral",
+            "monthly": {
+              "shared": 318.71,
+              "1": 425,
+              "2": 525,
+              "3": 650,
+              "4": 825
+            }
+          }
+        ]
+      },
+      "Knowsley": {
+        "brma": "Greater Liverpool",
+        "country": "England",
+        "monthly": {
+          "shared": 344.36,
+          "1": 500,
+          "2": 595,
+          "3": 650,
+          "4": 875
+        }
+      },
+      "St. Helens": {
+        "brma": "St Helens",
+        "country": "England",
+        "monthly": {
+          "shared": 324.75,
+          "1": 425,
+          "2": 525,
+          "3": 625,
+          "4": 800
+        }
+      },
+      "Wirral": {
+        "brma": "Wirral",
+        "country": "England",
+        "monthly": {
+          "shared": 318.71,
+          "1": 425,
+          "2": 525,
+          "3": 650,
+          "4": 825
+        }
+      },
+      "Dudley": {
+        "brma": "Black Country",
+        "country": "England",
+        "monthly": {
+          "shared": 320,
+          "1": 495,
+          "2": 625,
+          "3": 750,
+          "4": 925
+        }
+      },
+      "Sandwell": {
+        "brma": "Black Country",
+        "country": "England",
+        "monthly": {
+          "shared": 320,
+          "1": 495,
+          "2": 625,
+          "3": 750,
+          "4": 925
+        }
+      },
+      "Solihull": {
+        "brma": "Solihull",
+        "country": "England",
+        "monthly": {
+          "shared": 412.5,
+          "1": 700,
+          "2": 825,
+          "3": 1000,
+          "4": 1375
+        }
+      },
+      "Walsall": {
+        "brma": "Black Country",
+        "country": "England",
+        "monthly": {
+          "shared": 320,
+          "1": 495,
+          "2": 625,
+          "3": 750,
+          "4": 925
+        }
+      },
+      "Sefton": {
+        "brma": null,
+        "country": "England",
+        "note": "L postcodes in Sefton are in the Greater Liverpool allowance area. Southport has its own allowance and is outside those postcodes. The ONS figure is the whole borough, so no single allowance is applied to it.",
+        "choices": [
+          {
+            "brma": "Greater Liverpool",
+            "monthly": {
+              "shared": 344.36,
+              "1": 500,
+              "2": 595,
+              "3": 650,
+              "4": 875
+            }
+          },
+          {
+            "brma": "Southport",
+            "monthly": {
+              "shared": 369.35,
+              "1": 475,
+              "2": 600,
+              "3": 775,
+              "4": 925
+            }
+          }
+        ]
+      }
     },
     "cheshire_brmas": {
-      "note": "Published monthly Universal Credit rates for the four Cheshire Broad Rental Market Areas. They are not averaged and not applied as a county rate.",
-      "East Cheshire": {"shared": 421.5, "1": 550, "2": 725, "3": 995, "4": 1750},
-      "North Cheshire": {"shared": 341.5, "1": 475, "2": 590, "3": 695, "4": 1000},
-      "South Cheshire": {"shared": 325, "1": 475, "2": 575, "3": 680, "4": 995},
-      "West Cheshire": {"shared": 375.86, "1": 550, "2": 675, "3": 795, "4": 1224}
+      "note": "Published 2026/27 monthly rates. They are not averaged.",
+      "North Cheshire": {
+        "shared": 341.5,
+        "1": 475,
+        "2": 590,
+        "3": 695,
+        "4": 1000
+      },
+      "East Cheshire": {
+        "shared": 421.5,
+        "1": 550,
+        "2": 725,
+        "3": 995,
+        "4": 1750
+      },
+      "South Cheshire": {
+        "shared": 325,
+        "1": 475,
+        "2": 575,
+        "3": 680,
+        "4": 995
+      },
+      "West Cheshire": {
+        "shared": 375.86,
+        "1": 550,
+        "2": 675,
+        "3": 795,
+        "4": 1224
+      }
     }
   },
   "omr": {
-    "source": "ONS Price Index of Private Rents, released 16 September 2026",
+    "source": "ONS Price Index of Private Rents, released 21 October 2026",
     "url": "https://www.ons.gov.uk/economy/inflationandpriceindices/datasets/priceindexofprivaterentsukmonthlypricestatistics",
-    "month": "Aug 2026",
+    "month": "Sep 2026",
     "unit": "GBP per calendar month",
-    "note": "England figures are achieved rents for the local authority. The Edinburgh figure is the Lothian Broad Rental Market Area, mainly advertised new lets. No 4-bedroom or shared-room average is in this series. Glasgow, Liverpool, Cheshire and Birmingham are not in the loaded series.",
+    "note": "September 2026. England figures are achieved rents for the local authority. Lothian and Greater Glasgow are Broad Rental Market Areas. The 4-or-more figure is not used as a 4-bedroom rent. No shared-room average is in this series.",
     "areas": {
-      "Bristol": {"name": "Bristol, City of", "code": "E06000023", "monthly": {"1": 1225, "2": 1544, "3": 1759}},
-      "Edinburgh": {"name": "Lothian", "code": "S33000011", "monthly": {"1": 1035, "2": 1324, "3": 1703}},
-      "Manchester": {"name": "Manchester", "code": "E08000003", "monthly": {"1": 1003, "2": 1233, "3": 1433}},
-      "Cheltenham": {"name": "Cheltenham", "code": "E07000078", "monthly": {"1": 869, "2": 1096, "3": 1354}},
-      "Glasgow": null,
-      "Liverpool": null,
+      "Bristol": {
+        "name": "Bristol, City of",
+        "code": "E06000023",
+        "monthly": {
+          "1": 1230,
+          "2": 1551,
+          "3": 1769,
+          "4plus": 2558
+        }
+      },
+      "Edinburgh": {
+        "name": "Lothian",
+        "code": "S33000011",
+        "monthly": {
+          "1": 1036,
+          "2": 1324,
+          "3": 1700,
+          "4plus": 2769
+        }
+      },
+      "Manchester": {
+        "name": "Manchester",
+        "code": "E08000003",
+        "monthly": {
+          "1": 1007,
+          "2": 1239,
+          "3": 1441,
+          "4plus": 2024
+        }
+      },
+      "Cheltenham": {
+        "name": "Cheltenham",
+        "code": "E07000078",
+        "monthly": {
+          "1": 875,
+          "2": 1103,
+          "3": 1364,
+          "4plus": 1920
+        }
+      },
+      "Glasgow": {
+        "name": "Greater Glasgow",
+        "code": "S33000009",
+        "monthly": {
+          "1": 845,
+          "2": 1091,
+          "3": 1340,
+          "4plus": 2284
+        }
+      },
+      "Liverpool": {
+        "name": "Liverpool",
+        "code": "E08000012",
+        "monthly": {
+          "1": 688,
+          "2": 840,
+          "3": 967,
+          "4plus": 1298
+        }
+      },
       "Cheshire": null,
-      "Birmingham": null
+      "Birmingham": {
+        "name": "Birmingham",
+        "code": "E08000025",
+        "monthly": {
+          "1": 834,
+          "2": 1009,
+          "3": 1141,
+          "4plus": 1587
+        }
+      },
+      "Halton": {
+        "name": "Halton",
+        "code": "E06000006",
+        "monthly": {
+          "1": 549,
+          "2": 690,
+          "3": 832,
+          "4plus": 1169
+        }
+      },
+      "Warrington": {
+        "name": "Warrington",
+        "code": "E06000007",
+        "monthly": {
+          "1": 676,
+          "2": 839,
+          "3": 1022,
+          "4plus": 1462
+        }
+      },
+      "Bristol, City of": {
+        "name": "Bristol, City of",
+        "code": "E06000023",
+        "monthly": {
+          "1": 1230,
+          "2": 1551,
+          "3": 1769,
+          "4plus": 2558
+        }
+      },
+      "Cheshire East": {
+        "name": "Cheshire East",
+        "code": "E06000049",
+        "monthly": {
+          "1": 701,
+          "2": 905,
+          "3": 1115,
+          "4plus": 1622
+        }
+      },
+      "Cheshire West and Chester": {
+        "name": "Cheshire West and Chester",
+        "code": "E06000050",
+        "monthly": {
+          "1": 731,
+          "2": 922,
+          "3": 1132,
+          "4plus": 1627
+        }
+      },
+      "West Lancashire": {
+        "name": "West Lancashire",
+        "code": "E07000127",
+        "monthly": {
+          "1": 588,
+          "2": 731,
+          "3": 845,
+          "4plus": 1232
+        }
+      },
+      "Lichfield": {
+        "name": "Lichfield",
+        "code": "E07000194",
+        "monthly": {
+          "1": 738,
+          "2": 965,
+          "3": 1156,
+          "4plus": 1692
+        }
+      },
+      "Tamworth": {
+        "name": "Tamworth",
+        "code": "E07000199",
+        "monthly": {
+          "1": 678,
+          "2": 832,
+          "3": 1012,
+          "4plus": 1445
+        }
+      },
+      "North Warwickshire": {
+        "name": "North Warwickshire",
+        "code": "E07000218",
+        "monthly": {
+          "1": 721,
+          "2": 884,
+          "3": 1061,
+          "4plus": 1602
+        }
+      },
+      "Stratford-on-Avon": {
+        "name": "Stratford-on-Avon",
+        "code": "E07000221",
+        "monthly": {
+          "1": 816,
+          "2": 1021,
+          "3": 1269,
+          "4plus": 1816
+        }
+      },
+      "Bromsgrove": {
+        "name": "Bromsgrove",
+        "code": "E07000234",
+        "monthly": {
+          "1": 721,
+          "2": 904,
+          "3": 1098,
+          "4plus": 1613
+        }
+      },
+      "Redditch": {
+        "name": "Redditch",
+        "code": "E07000236",
+        "monthly": {
+          "1": 685,
+          "2": 887,
+          "3": 1061,
+          "4plus": 1455
+        }
+      },
+      "Knowsley": {
+        "name": "Knowsley",
+        "code": "E08000011",
+        "monthly": {
+          "1": 602,
+          "2": 769,
+          "3": 932,
+          "4plus": 1329
+        }
+      },
+      "St. Helens": {
+        "name": "St. Helens",
+        "code": "E08000013",
+        "monthly": {
+          "1": 596,
+          "2": 742,
+          "3": 907,
+          "4plus": 1307
+        }
+      },
+      "Sefton": {
+        "name": "Sefton",
+        "code": "E08000014",
+        "monthly": {
+          "1": 623,
+          "2": 815,
+          "3": 995,
+          "4plus": 1414
+        }
+      },
+      "Wirral": {
+        "name": "Wirral",
+        "code": "E08000015",
+        "monthly": {
+          "1": 574,
+          "2": 743,
+          "3": 909,
+          "4plus": 1255
+        }
+      },
+      "Dudley": {
+        "name": "Dudley",
+        "code": "E08000027",
+        "monthly": {
+          "1": 609,
+          "2": 780,
+          "3": 940,
+          "4plus": 1245
+        }
+      },
+      "Sandwell": {
+        "name": "Sandwell",
+        "code": "E08000028",
+        "monthly": {
+          "1": 680,
+          "2": 851,
+          "3": 1015,
+          "4plus": 1405
+        }
+      },
+      "Solihull": {
+        "name": "Solihull",
+        "code": "E08000029",
+        "monthly": {
+          "1": 861,
+          "2": 1069,
+          "3": 1268,
+          "4plus": 1885
+        }
+      },
+      "Walsall": {
+        "name": "Walsall",
+        "code": "E08000030",
+        "monthly": {
+          "1": 657,
+          "2": 802,
+          "3": 960,
+          "4plus": 1334
+        }
+      },
+      "Greater Glasgow": {
+        "name": "Greater Glasgow",
+        "code": "S33000009",
+        "monthly": {
+          "1": 845,
+          "2": 1091,
+          "3": 1340,
+          "4plus": 2284
+        }
+      },
+      "Lothian": {
+        "name": "Lothian",
+        "code": "S33000011",
+        "monthly": {
+          "1": 1036,
+          "2": 1324,
+          "3": 1700,
+          "4plus": 2769
+        }
+      }
     }
   }
 }

@@ -36,17 +36,20 @@ test('Edinburgh and Bristol resolve from the town or postcode', () => {
   assert.equal(api.areaOf({ pc: 'BS11 9TD' }), 'Bristol');
 });
 
-test('Liverpool, Cheshire and Birmingham stay separate from Manchester', () => {
+test('Liverpool, Cheshire and Birmingham resolve to the council, not Manchester', () => {
   assert.equal(api.areaOf({ city: 'Liverpool' }), 'Liverpool');
   assert.equal(api.areaOf({ pc: 'L1 4DE' }), 'Liverpool');
-  assert.equal(api.areaOf({ pc: 'CH42 4DF' }), 'Liverpool');
-  assert.equal(api.areaOf({ pc: 'WA10 3PW' }), 'Liverpool');
+  assert.equal(api.areaOf({ pc: 'CH42 4DF' }), 'Wirral');
+  assert.equal(api.areaOf({ pc: 'WA10 3PW' }), 'St. Helens');
   assert.equal(api.areaOf({ city: 'Cheshire' }), 'Cheshire');
-  assert.equal(api.areaOf({ pc: 'CH1 3AG' }), 'Cheshire');
-  assert.equal(api.areaOf({ pc: 'CW1 4PN' }), 'Cheshire');
-  assert.equal(api.areaOf({ pc: 'SK9 1AA' }), 'Cheshire');
-  assert.equal(api.areaOf({ pc: 'WA16 0AA' }), 'Cheshire');
+  assert.equal(api.areaOf({ pc: 'CH1 3AG' }), 'Cheshire West and Chester');
+  assert.equal(api.areaOf({ pc: 'CW1 4PN' }), 'Cheshire East');
+  assert.equal(api.areaOf({ pc: 'SK9 1AA' }), 'Cheshire East');
+  assert.equal(api.areaOf({ pc: 'WA16 0AA' }), 'Cheshire East');
+  assert.equal(api.areaOf({ pc: 'WA7 1AA' }), 'Halton');
+  assert.equal(api.areaOf({ pc: 'WA1 1AA' }), 'Warrington');
   assert.equal(api.areaOf({ pc: 'B15 2HG' }), 'Birmingham');
+  assert.equal(api.areaOf({ pc: 'B91 1AA' }), 'Solihull');
   assert.equal(api.areaOf({ pc: 'SK1 1AA' }), 'Manchester');
   assert.equal(api.areaOf({ pc: 'WA14 1AA' }), 'Manchester');
   assert.equal(api.areaOf({ pc: 'M1 1AA' }), 'Manchester');
@@ -68,7 +71,20 @@ test('stored Bristol and Lothian rates match the official monthly tables', () =>
   const book = JSON.parse(fs.readFileSync('data/rent-scenarios.json', 'utf8'));
   assert.deepEqual(book.lha.areas.Bristol.monthly, { shared: 511.33, 1: 900, 2: 1095, 3: 1300, 4: 1850 });
   assert.deepEqual(book.lha.areas.Edinburgh.monthly, { shared: 475, 1: 750, 2: 970, 3: 1375, 4: 2180 });
-  assert.equal(book.omr.areas.Bristol.monthly[2], 1544);
+  assert.equal(book.omr.areas.Bristol.monthly[2], 1551);
   assert.equal(book.omr.areas.Edinburgh.monthly[2], 1324);
-  assert.equal(book.omr.areas.Glasgow, null);
+  assert.equal(book.omr.areas.Glasgow.monthly[2], 1091);
+  assert.equal(book.omr.areas.Liverpool.monthly[2], 840);
+  assert.equal(book.omr.areas.Wirral.monthly[1], 574);
+  assert.equal(book.omr.areas['Cheshire East'].monthly[2], 905);
+  assert.equal(book.omr.areas['Cheshire West and Chester'].monthly[3], 1132);
+  assert.equal(book.omr.areas.Warrington.monthly[2], 839);
+  assert.equal(book.omr.areas.Halton.monthly[2], 690);
+  assert.equal(book.omr.areas.Birmingham.monthly[2], 1009);
+  assert.equal(book.omr.month, 'Sep 2026');
+  assert.equal(book.lha.areas.Liverpool.monthly[2], 595);
+  assert.equal(book.lha.areas.Birmingham.monthly[2], 750);
+  assert.equal(book.lha.areas.Warrington.brma, 'North Cheshire');
+  assert.equal(book.lha.areas['Cheshire East'].monthly, undefined);
+  assert.equal(book.omr.areas.Cheshire, null);
 });

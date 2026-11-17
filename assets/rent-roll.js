@@ -923,7 +923,7 @@
     const card = document.createElement('div');
     card.id = 'rr_card';
     card.className = 'card';
-    card.innerHTML = '<h2>Tenancy schedule</h2><p class="lead">Drop the rent roll you already keep. Those rents become the rental revenue for this deal. ONS averages are not used. The file stays in this browser.</p>' +
+    card.innerHTML = '<h2>Tenancy schedule</h2><p class="lead">Drop the rent roll you already keep. Those rents become the rental revenue for this deal. The file stays in this browser.</p><p class="foot" id="rr_ons"></p>' +
       '<div class="ctl"><label class="btn">Upload Excel or CSV<input id="rr_file" type="file" accept=".xlsx,.xls,.csv,application/vnd.ms-excel,text/csv" hidden></label>' +
       '<button class="btn sec" id="rr_tpl_csv" type="button">Download template (CSV)</button>' +
       '<button class="btn sec" id="rr_tpl_xlsx" type="button">Download template (Excel)</button></div>' +
@@ -941,6 +941,33 @@
       });
     };
     if (typeof UW !== 'undefined' && UW.rentRoll) drawBridge();
+    onsBench();
+  }
+  function onsBench() {
+    const host = document.getElementById('rr_ons');
+    const api = window.lcRentScenarios;
+    const data = api && api.current && api.current();
+    if (!host) return;
+    if (!api || !data || !data.omr) {
+      host.textContent = 'The schedule rent is the deal rent. An ONS average is only a benchmark and is not written into the schedule.';
+      return;
+    }
+    const state = (typeof UW !== 'undefined' && UW.state) || {};
+    const area = api.areaOf(state);
+    if (!area) {
+      host.textContent = 'Choose the area on the deal to see the September 2026 ONS benchmark. It is not written into the schedule.';
+      return;
+    }
+    if (area === 'Cheshire') {
+      host.textContent = 'Cheshire is more than one council. East, West, Warrington and Halton each have a September 2026 average on the rent scenario. None of them is written into this schedule.';
+      return;
+    }
+    const beds = api.chosenBeds(state) || '2';
+    const row = data.omr.areas && data.omr.areas[area];
+    const rent = row && row.monthly && beds !== '4' && beds !== 'shared' ? row.monthly[beds] : null;
+    host.textContent = rent > 0
+      ? 'ONS ' + area + ' ' + beds + '-bed average is £' + Math.round(rent).toLocaleString('en-GB') + ' a month (' + (data.omr.month || 'Sep 2026') + '). That figure is a benchmark. The schedule, or the rent you type, stays the deal rent.'
+      : area + ' is in the September 2026 series. No average is written into this schedule.';
   }
 
   if (typeof uwUpdate === 'function' && !uwUpdate._rr) {
@@ -955,6 +982,7 @@
       }
       const out = prevUpdate();
       if (typeof UW !== 'undefined' && UW.rentRoll) drawBridge();
+      onsBench();
       return out;
     };
     wrapped._rr = true;
@@ -970,6 +998,7 @@
   }
 
   installLeaseHook();
+  window.lcRentRollBench = onsBench;
   const api = { parseCsv: parseCsv, detectMap: detectMap, headerRowIndex: headerRowIndex, analyse: analyse, buildRoll: buildRoll, summarise: summarise, parseMoney: parseMoney, isVoid: isVoid, toAnnual: toAnnual, looksLikeNote: looksLikeNote, unknownRentText: unknownRentText, parseLeaseText: parseLeaseText, cashflowYears: cashflowYears, monthSlice: monthSlice, parseDate: parseDate };
   if (typeof globalThis !== 'undefined') globalThis.RR = api;
   if (typeof document !== 'undefined' && document.getElementById('deal_body') && document.getElementById('deal_body').childElementCount) mount();

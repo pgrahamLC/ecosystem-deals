@@ -255,6 +255,19 @@
   function column(kicker, figure, lines) {
     return '<section class="ios-scenario"><p class="lc-kicker">' + kicker + '</p><p class="ios-figure">' + figure + '</p>' + lines.map(function (line) { return '<p>' + line + '</p>'; }).join('') + '</section>';
   }
+  function onsBenchmark() {
+    const state = (typeof UW !== 'undefined' && UW.state) || {};
+    const api = window.lcRentScenarios;
+    const data = api && api.current && api.current();
+    if (!api || !data || !data.omr) return '<p>The return uses the rent on this deal. It does not substitute an ONS average.</p>';
+    const area = api.areaOf(state);
+    if (area === 'Cheshire') return '<p>Cheshire is more than one council, so no single ONS rent is applied. The return uses the rent on this deal.</p>';
+    const row = area && data.omr.areas && data.omr.areas[area];
+    const beds = api.chosenBeds(state);
+    const rent = row && row.monthly && beds && beds !== '4' && beds !== 'shared' ? row.monthly[beds] : null;
+    if (!(rent > 0)) return '<p>The return uses the rent on this deal. It does not substitute an ONS average.</p>';
+    return '<p>ONS ' + area + ' ' + beds + '-bed average is £' + Math.round(rent).toLocaleString('en-GB') + ' a month, ' + (data.omr.month || 'September 2026') + '. The return uses the rent on this deal, not that average.</p>';
+  }
   function resultsHtml(deal) {
     if (!deal || !(deal.buy > 0)) {
       return '<p>Enter a buy price on the assumptions step. This step uses that deal; it does not ask for it again.</p>';
@@ -303,7 +316,9 @@
     html += '<p>' + (deal.opex == null ? 'Running costs are not on the deal yet, so this step uses the figure in the box. It starts at 25% of the gross rent.' : 'Running costs are the deal’s ' + deal.opex + '% of gross rent, unless you change the box.') + ' The return in the box is for this step. The deal’s entry yield is the price yield, not this return. The hold starts as the deal’s hold.</p>';
     html += '<p>Sale price used for the required rent: ' + (deal.exitValue > 0 ? money(deal.exitValue) + ', the bid model’s sale value.' : 'not available yet.') + ' Passing rent used for the required exit: ' + (deal.annualRent > 0 ? money(deal.annualRent) + ' a year from the rent roll.' : 'not entered.') + '</p>';
     if (shared) html += '<p>Purchase tax ' + money(shared.tax) + '. Purchase fees ' + money(shared.acqFees) + '. Loan arrangement fee ' + money(shared.debtFee) + '.</p>';
-    html += '<p>Each month you receive the rent, pay the running-cost percentage of that rent, and pay one twelfth of the year’s interest. The loan stays the same until the sale. At the start you pay the price, tax, fees and loan fee, minus the loan. At the end you receive the sale price, pay the selling costs, and repay the loan. Rent is flat. The 4% yearly step on the bid model is not used here.</p></details>';
+    html += '<p>Each month you receive the rent, pay the running-cost percentage of that rent, and pay one twelfth of the year’s interest. The loan stays the same until the sale. At the start you pay the price, tax, fees and loan fee, minus the loan. At the end you receive the sale price, pay the selling costs, and repay the loan. Rent is flat. The 4% yearly step on the bid model is not used here.</p>';
+    html += onsBenchmark();
+    html += '</details>';
     return html;
   }
   function paint(root) {

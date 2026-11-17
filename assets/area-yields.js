@@ -186,7 +186,7 @@
       '<p class="foot">In this evidence file: ' + (counts.published || 0) + ' published, ' + (counts.derived || 0) + ' derived from passing rent and a sold price, ' + (counts.unverified || 0) + ' unverified (kept out), ' + (counts.unavailable || 0) + ' unavailable, ' + (counts.review || 0) + ' flagged because the NIY is outside 3% to 12%. ' + (counts.inAverage || 0) + ' comps go into an average. Averages with fewer than 3 comps are marked low sample and are not in the deal picker.</p>' +
       averageTable(avgs) +
       '<h3>' + esc(key) + ' comps</h3>' +
-      (lines ? '<div class="scroll"><table><thead><tr><th class="l">Comp</th><th class="l">Asset</th><th>NIY</th><th>Basis</th><th>Date</th><th class="l">Source</th></tr></thead><tbody>' + lines + '</tbody></table></div>' : '<p>No comp loaded for ' + esc(key) + '.</p>') +
+      (lines ? '<div class="scroll"><table><thead><tr><th class="l">Comp</th><th class="l">Asset</th><th>NIY</th><th>Basis</th><th>Date</th><th class="l">Source</th></tr></thead><tbody>' + lines + '</tbody></table></div>' : '<p>No auction lot in this file states both a rent and a sold price for ' + esc(key) + '. The September 2026 ONS rents and the Price Paid median are on this page. No NIY is inferred from them.</p>') +
       '<p class="foot">Agent market views are shown with their published figure and are not in the averages. Land Registry sales have no rent, so their NIY is unavailable and they are not in this table.</p>';
   }
 
