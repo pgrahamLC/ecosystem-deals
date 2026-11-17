@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-17T10:25:23.522Z",
-  "last_successful_refresh": "2026-11-17T08:00:35.498Z",
+  "updated_at": "2026-11-17T10:26:13.062Z",
+  "last_successful_refresh": "2026-11-17T10:26:13.062Z",
   "scope": "Target post towns only, not all properties in surrounding auction regions. Counts are fresh, deduplicated residential lots actually read; not a census. Exclusions refer to inspected records, not site-wide totals.",
   "metadata_only": true,
   "sources": [
@@ -9,7 +9,7 @@
       "id": "auction_house_manchester",
       "name": "Auction House Manchester",
       "url": "https://www.auctionhouse.co.uk/manchester",
-      "checked_at": "2026-11-17T08:00:35.498Z",
+      "checked_at": "2026-11-17T10:26:13.062Z",
       "status": "live",
       "reason": "Public catalogue pages read. Commercial lots are included and tagged. Detail failed https://online.auctionhouse.co.uk/lot/redirect/375976: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/378196: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/371182: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/366821: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/366824: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/364248: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/352269: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/351369: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/346474: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/343889: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/342976: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/338315: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/335623: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/322218: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/322219: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/320327: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/317630: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/307692: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/307592: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/307496: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/301815: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/301832: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/302646: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/300388: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/295575: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/295605: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/294039: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/289760: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/274976: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/270444: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/269248: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/268990: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/268758: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/268759: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/269091: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/262567: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/242958: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/237367: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/220737: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/97840: This operation was aborted",
       "lot_count": 51,
@@ -75,7 +75,8 @@
         "4 records had an unverified field and were still kept when an address and status were present."
       ],
       "by_town": {
-        "Manchester": 51
+        "Cheshire": 1,
+        "Manchester": 50
       },
       "by_tag": {
         "Auction": 51
@@ -85,10 +86,10 @@
       "id": "auction_house_southwest",
       "name": "Auction House South West (Bristol and Gloucestershire)",
       "url": "https://www.auctionhouse.co.uk/southwest",
-      "checked_at": "2026-11-17T08:00:35.498Z",
+      "checked_at": "2026-11-17T10:26:13.062Z",
       "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Detail failed https://online.auctionhouse.co.uk/lot/redirect/376573: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/376056: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/375871: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/374299: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/374715: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/379212: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/373081: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/370826: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/367468: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/364499: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/362314: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/359870: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/361233: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/357888: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/359581: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/357081: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/356021: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/353297: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/346916: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/335195: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/327578: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/323169: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/321749: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/317224: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/305085: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/306882: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/300851: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/300391: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/281428: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/278731: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/274743: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/271041: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/247513: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/208578: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/203338: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/199831: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/190674: This operation was aborted",
-      "lot_count": 35,
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Detail failed https://online.auctionhouse.co.uk/lot/redirect/376573: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/376056: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/375871: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/374299: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/374715: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/379212: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/373081: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/370826: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/367468: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/364499: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/362314: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/359870: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/361233: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/357888: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/359581: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/357081: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/356021: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/353297: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/346916: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/336798: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/335195: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/327578: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/323169: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/321749: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/317224: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/305085: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/306882: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/300851: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/300391: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/281428: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/278731: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/274743: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/271041: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/247513: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/208578: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/203338: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/199831: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/190674: This operation was aborted",
+      "lot_count": 36,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
       "unknown_excluded": 8,
@@ -121,6 +122,7 @@
         "Detail failed https://online.auctionhouse.co.uk/lot/redirect/356021: This operation was aborted",
         "Detail failed https://online.auctionhouse.co.uk/lot/redirect/353297: This operation was aborted",
         "Detail failed https://online.auctionhouse.co.uk/lot/redirect/346916: This operation was aborted",
+        "Detail failed https://online.auctionhouse.co.uk/lot/redirect/336798: This operation was aborted",
         "Detail failed https://online.auctionhouse.co.uk/lot/redirect/335195: This operation was aborted",
         "Detail failed https://online.auctionhouse.co.uk/lot/redirect/327578: This operation was aborted",
         "Detail failed https://online.auctionhouse.co.uk/lot/redirect/323169: This operation was aborted",
@@ -153,17 +155,18 @@
       ],
       "by_town": {
         "Cheltenham": 12,
-        "Bristol": 23
+        "Bristol": 23,
+        "Birmingham": 1
       },
       "by_tag": {
-        "Auction": 35
+        "Auction": 36
       }
     },
     {
       "id": "auction_house_scotland",
       "name": "Auction House Scotland",
       "url": "https://www.auctionhouse.co.uk/scotland",
-      "checked_at": "2026-11-17T08:00:35.498Z",
+      "checked_at": "2026-11-17T10:26:13.062Z",
       "status": "live",
       "reason": "Public catalogue pages read. Commercial lots are included and tagged. Detail failed https://online.auctionhouse.co.uk/lot/redirect/373474: This operation was aborted",
       "lot_count": 25,
@@ -196,822 +199,12 @@
       }
     },
     {
-      "id": "future",
-      "name": "Future Property Auctions",
-      "url": "https://www.futurepropertyauctions.co.uk/",
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. https://www.futurepropertyauctions.co.uk/auctions.asp: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.; https://www.futurepropertyauctions.co.uk/catalogue_viewall_auction_map.asp?id=10700&: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.; Catalogue page limit reached; collection incomplete.",
-      "lot_count": 86,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 116,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "review_due": "2027-02-01",
-        "status": "public_metadata_only",
-        "note": "Public pages; no published automation restriction found in inspected terms. Not an open-data licence. Only factual lot metadata is retained, no descriptions, images, documents or legal packs. Robots is checked every run. New restrictions fail closed.",
-        "terms_url": "https://www.futurepropertyauctions.co.uk/buying_terms.asp"
-      },
-      "errors": [
-        "https://www.futurepropertyauctions.co.uk/auctions.asp: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.",
-        "https://www.futurepropertyauctions.co.uk/catalogue_viewall_auction_map.asp?id=10700&: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.",
-        "Catalogue page limit reached; collection incomplete."
-      ],
-      "successful_pages": 116,
-      "warnings": [
-        "Policy caveat: no open reuse licence established; metadata only; recheck terms and robots before each run."
-      ],
-      "by_town": {
-        "Glasgow": 65,
-        "Edinburgh": 13,
-        "Manchester": 6,
-        "Bristol": 2
-      },
-      "by_tag": {
-        "Auction": 86
-      }
-    },
-    {
-      "id": "braveheart",
-      "name": "Braveheart Auctions (Edinburgh and Glasgow)",
-      "url": "https://braveheartauctions.co.uk/",
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check found \"13 Bath Street, Full Fir\" on https://braveheartauctions.co.uk/product/13-bath-street-full-first-floor-glasgow-city-centre/",
-      "lot_count": 0,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 3,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "review_due": "2027-02-01",
-        "status": "public_metadata_only",
-        "note": "Public pages; no published automation restriction found in inspected terms. Not an open-data licence. Only factual lot metadata is retained, no descriptions, images, documents or legal packs. Robots is checked every run. New restrictions fail closed.",
-        "terms_url": "https://braveheartauctions.co.uk/terms-conditions/"
-      },
-      "errors": [],
-      "successful_pages": 3,
-      "warnings": [
-        "Spot-check found \"13 Bath Street, Full Fir\" on https://braveheartauctions.co.uk/product/13-bath-street-full-first-floor-glasgow-city-centre/"
-      ],
-      "by_town": {},
-      "by_tag": {}
-    },
-    {
-      "id": "allsop",
-      "name": "Allsop",
-      "url": "https://www.allsop.co.uk/auctions/residential-auctions/",
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check: Flat 41 St. Johns Court, New Road, Manchester, Lancashire, M26 1NH from the public Allsop catalogue, page https://www.allsop.co.uk/lot-overview/ee4d0270-debb-11f1-b95c-0242ac110002",
-      "lot_count": 30,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 31,
-      "policy": {
-        "reviewed_at": "2026-11-04",
-        "status": "public_catalogue",
-        "note": "Upcoming catalogues are read from the public search the Allsop website uses. This is an internal non-commercial tool. Commercial lots are kept and tagged Commercial. Requests are one at a time, with no login.",
-        "terms_url": "https://www.allsop.co.uk/auctions/residential-auctions/"
-      },
-      "errors": [],
-      "successful_pages": 31,
-      "warnings": [
-        "Upcoming Allsop catalogues read from the public search. In-area upcoming lots: Manchester 19, Bristol 1, Cheltenham 1, Glasgow 0, Edinburgh 0.",
-        "Spot-check: Flat 41 St. Johns Court, New Road, Manchester, Lancashire, M26 1NH from the public Allsop catalogue, page https://www.allsop.co.uk/lot-overview/ee4d0270-debb-11f1-b95c-0242ac110002"
-      ],
-      "by_town": {
-        "Manchester": 24,
-        "Glasgow": 2,
-        "Bristol": 2,
-        "Cheltenham": 2
-      },
-      "by_tag": {
-        "Auction": 30
-      }
-    },
-    {
-      "id": "savills_auctions",
-      "name": "Savills auctions",
-      "url": "https://auctions.savills.co.uk/upcoming-auctions",
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check found \"Flats 1 - 10, 316 Queensbrid\" on https://auctions.savills.co.uk/auctions/26-january-2027-256/flats-1-10-316-queensbridge-road-london-e8-3nh-25350 Spot-check found \"Old Fire Station Apartments,\" on https://auctions.savills.co.uk/auctions/26-january-2027-256/old-fire-station-apartments-2-tunnel-avenue-london-se10-0us-25351",
-      "lot_count": 0,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 25,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "permission_required_reuse",
-        "terms_url": "https://www.savills.co.uk/footer/terms-and-conditions.aspx",
-        "evidence": [
-          "You may not make a permanent copy of or reproduce this website or any of its contents in any form.",
-          "You may only print or cache temporary copies of the content for your own personal non-commercial use."
-        ],
-        "robots_url": "https://auctions.savills.co.uk/robots.txt"
-      },
-      "errors": [],
-      "successful_pages": 25,
-      "warnings": [
-        "Read 4 lots from 1 upcoming Savills catalogues and each catalogue location search. 0 were in Manchester, Glasgow, Edinburgh, Bristol or Cheltenham. 26 January 2027 is on the calendar with no catalogue link.",
-        "Spot-check found \"Flats 1 - 10, 316 Queensbrid\" on https://auctions.savills.co.uk/auctions/26-january-2027-256/flats-1-10-316-queensbridge-road-london-e8-3nh-25350",
-        "Spot-check found \"Old Fire Station Apartments,\" on https://auctions.savills.co.uk/auctions/26-january-2027-256/old-fire-station-apartments-2-tunnel-avenue-london-se10-0us-25351",
-        "Spot-check found \"80 Inverness Terrace, London\" on https://auctions.savills.co.uk/auctions/26-january-2027-256/80-inverness-terrace-london-w2-3ld-25353"
-      ],
-      "by_town": {},
-      "by_tag": {}
-    },
-    {
-      "id": "clive_emson",
-      "name": "Clive Emson",
-      "url": "https://www.cliveemson.co.uk/properties/",
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check found \"GL51 9QN\" on https://www.cliveemson.co.uk/properties/268/88/",
-      "lot_count": 1,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 14,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "public_access_rights_unresolved",
-        "terms_url": "https://www.cliveemson.co.uk/about-us/privacy-policy/",
-        "evidence": [
-          "Website footer copyright retained. General website scraping/reuse terms not located; privacy policy is not a reuse licence."
-        ],
-        "robots_url": "https://www.cliveemson.co.uk/robots.txt"
-      },
-      "errors": [],
-      "successful_pages": 14,
-      "warnings": [
-        "Spot-check found \"GL51 9QN\" on https://www.cliveemson.co.uk/properties/268/88/"
-      ],
-      "by_town": {
-        "Cheltenham": 1
-      },
-      "by_tag": {
-        "Auction": 1
-      }
-    },
-    {
-      "id": "pugh",
-      "name": "Pugh",
-      "url": "https://www.pugh-auctions.com/property-search",
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check found \"WN3 4TJ\" on https://www.pugh-auctions.com/property/202601231232sq_gm55",
-      "lot_count": 99,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 15,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "public_access_commercial_consent_required",
-        "terms_url": "https://www.pugh-auctions.com/terms-of-use",
-        "evidence": [
-          "You are permitted to display ... and to download and print a hard copy for your personal use",
-          "use any of the materials on this website for commercial exploitation without our prior written consent",
-          "establish a link to this website ... without ... prior written consent"
-        ],
-        "robots_url": "https://www.pugh-auctions.com/robots.txt"
-      },
-      "errors": [],
-      "successful_pages": 15,
-      "warnings": [
-        "Spot-check found \"WN3 4TJ\" on https://www.pugh-auctions.com/property/202601231232sq_gm55"
-      ],
-      "by_town": {
-        "Manchester": 96,
-        "Glasgow": 1,
-        "Cheltenham": 2
-      },
-      "by_tag": {
-        "Auction": 99
-      }
-    },
-    {
-      "id": "sdl",
-      "name": "SDL",
-      "url": "https://www.sdlauctions.co.uk/property-auctions/past-auctions/",
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "failed",
-      "reason": "HTTP 403: https://www.sdlauctions.co.uk/property-auctions/past-auctions/; Login or captcha at https://www.sdlauctions.co.uk/property-auctions/past-auctions/ (page 1)",
-      "lot_count": 0,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 2,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "public_access_rights_unresolved",
-        "terms_url": null,
-        "evidence": [
-          "No general website terms/reuse link found in homepage footer. Bidder terms are auction-sale terms, not a scraping licence.",
-          "Homepage says now part of BTG Eddisons Property Auctions."
-        ],
-        "robots_url": "https://www.sdlauctions.co.uk/robots.txt"
-      },
-      "errors": [
-        "HTTP 403: https://www.sdlauctions.co.uk/property-auctions/past-auctions/",
-        "Login or captcha at https://www.sdlauctions.co.uk/property-auctions/past-auctions/ (page 1)"
-      ],
-      "successful_pages": 0,
-      "warnings": [],
-      "by_town": {},
-      "by_tag": {}
-    },
-    {
-      "id": "bond_wolfe",
-      "name": "Bond Wolfe",
-      "url": "https://www.bondwolfe.com/auctions/properties/",
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them. Login or bot challenge refused",
-      "lot_count": 0,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 3,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "public_access_reuse_restricted",
-        "terms_url": "https://www.bondwolfe.com/website-terms-of-use/",
-        "evidence": [
-          "2.2 The copying or incorporation into any other work ... is strictly prohibited save ... personal use",
-          "2.2.2 ... individual third parties for their personal information ... acknowledge Bond Wolfe",
-          "4.3 You must not create a link to the Website without ... prior written consent."
-        ],
-        "robots_url": "https://www.bondwolfe.com/robots.txt"
-      },
-      "errors": [
-        "Login or bot challenge refused"
-      ],
-      "successful_pages": 2,
-      "warnings": [
-        "Rendered pages were read. No Manchester, Glasgow, Edinburgh, Bristol or Cheltenham/Gloucestershire lot was found in the visible text or the JSON those pages requested.",
-        "Public pages were read. No in-area lot with a street address or full postcode was on them."
-      ],
-      "by_town": {},
-      "by_tag": {}
-    },
-    {
-      "id": "barnard_marcus",
-      "name": "Barnard Marcus",
-      "url": "https://www.barnardmarcusauctions.co.uk/auctions/current/",
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check failed: Login or bot challenge refused",
-      "lot_count": 25,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 27,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "manual_only_no_automation",
-        "terms_url": "https://www.barnardmarcusauctions.co.uk/terms-and-conditions/",
-        "evidence": [
-          "Barnard Marcus Auctions may only be accessed manually. The use of automated agents, robots, or automated software, other than search engine spiders, to view the site is specifically forbidden.",
-          "You may not attempt to build a copy of our data or reverse engineer our processes.",
-          "You may not publish or reproduce any part of the data or work derived from the data without our specific written permission."
-        ],
-        "robots_url": "https://www.barnardmarcusauctions.co.uk/robots.txt"
-      },
-      "errors": [],
-      "successful_pages": 27,
-      "warnings": [
-        "Spot-check failed: Login or bot challenge refused"
-      ],
-      "by_town": {
-        "Bristol": 5,
-        "Manchester": 14,
-        "Cheltenham": 6
-      },
-      "by_tag": {
-        "Auction": 25
-      }
-    },
-    {
-      "id": "mark_jenkinson",
-      "name": "Mark Jenkinson",
-      "url": "https://www.markjenkinson.co.uk/property-search",
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them.",
-      "lot_count": 3,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 9,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "public_access_commercial_consent_required",
-        "terms_url": "https://www.markjenkinson.co.uk/terms-of-use",
-        "evidence": [
-          "use any of the materials on this website for commercial exploitation without our prior written consent",
-          "Terms page currently repeats Eddisons Pugh company terms; preserve source ambiguity rather than assume broader licence."
-        ],
-        "robots_url": "https://www.markjenkinson.co.uk/robots.txt"
-      },
-      "errors": [],
-      "successful_pages": 9,
-      "warnings": [
-        "Rendered pages were read. No Manchester, Glasgow, Edinburgh, Bristol or Cheltenham/Gloucestershire lot was found in the visible text or the JSON those pages requested.",
-        "Public pages were read. No in-area lot with a street address or full postcode was on them."
-      ],
-      "by_town": {
-        "Manchester": 3
-      },
-      "by_tag": {
-        "Auction": 3
-      }
-    },
-    {
-      "id": "strettons",
-      "name": "Strettons",
-      "url": "https://www.strettons.co.uk/auctions/current-catalogue/",
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them. Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (page 1); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Manchester); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Glasgow); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Edinburgh); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Bristol); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Cheltenham); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Gloucester)",
-      "lot_count": 0,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 8,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "public_access_commercial_licence_required",
-        "terms_url": "https://www.strettons.co.uk/terms-and-conditions/",
-        "evidence": [
-          "You may print off one copy, and may download extracts ... for your personal reference",
-          "You must not use any part of the materials on our website for commercial purposes without obtaining a written licence"
-        ],
-        "robots_url": "https://www.strettons.co.uk/robots.txt"
-      },
-      "errors": [
-        "Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (page 1)",
-        "Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Manchester)",
-        "Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Glasgow)",
-        "Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Edinburgh)",
-        "Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Bristol)",
-        "Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Cheltenham)",
-        "Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Gloucester)"
-      ],
-      "successful_pages": 1,
-      "warnings": [
-        "Public pages were read. No in-area lot with a street address or full postcode was on them."
-      ],
-      "by_town": {},
-      "by_tag": {}
-    },
-    {
-      "id": "network_auctions",
-      "name": "Network Auctions",
-      "url": "https://www.btgeddisonspropertyauctions.com/our-acquisitions/network-auctions",
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them. Login or bot challenge refused",
-      "lot_count": 0,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 2,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "migrated_rights_unresolved",
-        "terms_url": null,
-        "evidence": [
-          "networkauctions.co.uk/robots.txt redirects to HTML acquisition page, NOT a valid robots.txt.",
-          "Official destination says Network Auctions joined BTG Eddisons in 2025.",
-          "BTG footer copyright All Rights Reserved; bidder terms and policies links, no general scraping licence verified."
-        ],
-        "robots_url": "https://www.networkauctions.co.uk/robots.txt"
-      },
-      "errors": [
-        "Login or bot challenge refused"
-      ],
-      "successful_pages": 1,
-      "warnings": [
-        "Rendered pages were read. No Manchester, Glasgow, Edinburgh, Bristol or Cheltenham/Gloucestershire lot was found in the visible text or the JSON those pages requested.",
-        "Public pages were read. No in-area lot with a street address or full postcode was on them."
-      ],
-      "by_town": {},
-      "by_tag": {}
-    },
-    {
-      "id": "iamsold",
-      "name": "iamsold",
-      "url": "https://www.iamsold.co.uk/available-properties/",
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them.",
-      "lot_count": 0,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 9,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "robots_lot_access_disallowed",
-        "terms_url": "https://www.iamsold.co.uk/website-terms/",
-        "evidence": [
-          "You must not use any part of the content on our site for commercial purposes without obtaining a licence",
-          "Our site must not be framed ... nor may you create a link to any part ... other than the home page."
-        ],
-        "robots_url": "https://www.iamsold.co.uk/robots.txt"
-      },
-      "errors": [],
-      "successful_pages": 9,
-      "warnings": [
-        "Rendered pages were read. No Manchester, Glasgow, Edinburgh, Bristol or Cheltenham/Gloucestershire lot was found in the visible text or the JSON those pages requested.",
-        "Public pages were read. No in-area lot with a street address or full postcode was on them."
-      ],
-      "by_town": {},
-      "by_tag": {}
-    },
-    {
-      "id": "eig",
-      "name": "EIG",
-      "url": "https://www.eigpropertyauctions.co.uk/",
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them.",
-      "lot_count": 0,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 8,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "licence_only_no_robots",
-        "terms_url": "https://www.eigpropertyauctions.co.uk/legal/terms-conditions",
-        "evidence": [
-          "PDF terms as at07/01/2022, p2 clause3.1: No part ... may be copied ... or reduced to any electronic medium or machine readable form without prior written consent",
-          "clause3.1: ... not permitted to use Robots to trawl the EIG website to search for data.",
-          "2.5 No sell-on/distribution;2.9 subscription-service use requires written permission;2.10 no website publication free or restricted without written permission."
-        ],
-        "robots_url": "https://www.eigpropertyauctions.co.uk/robots.txt"
-      },
-      "errors": [],
-      "successful_pages": 8,
-      "warnings": [
-        "Rendered pages were read. No Manchester, Glasgow, Edinburgh, Bristol or Cheltenham/Gloucestershire lot was found in the visible text or the JSON those pages requested.",
-        "Public pages were read. No in-area lot with a street address or full postcode was on them."
-      ],
-      "by_town": {},
-      "by_tag": {}
-    },
-    {
-      "id": "countrywide_property_auctions",
-      "name": "Countrywide Property Auctions",
-      "url": "https://www.countrywidepropertyauctions.co.uk/results.php",
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check did not find \"WA8 8UH\" on https://www.countrywidepropertyauctions.co.uk/property_details.php?auction_date=current&auction_location=SK&id=374486",
-      "lot_count": 5,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 24,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "permission_required",
-        "terms_url": "https://www.countrywide.co.uk/notices/terms-of-use/",
-        "evidence": [
-          "You must not copy, transmit or store (in whole or in part) the content of this website without our written permission.",
-          "The downloading of material (including all text, graphics, code, files and links) for anything other than private use is strictly prohibited."
-        ]
-      },
-      "errors": [],
-      "successful_pages": 24,
-      "warnings": [
-        "Spot-check did not find \"WA8 8UH\" on https://www.countrywidepropertyauctions.co.uk/property_details.php?auction_date=current&auction_location=SK&id=374486"
-      ],
-      "by_town": {
-        "Manchester": 5
-      },
-      "by_tag": {
-        "Auction": 5
-      }
-    },
-    {
-      "id": "town_and_country",
-      "name": "Town And Country",
-      "url": "https://www.townandcountrypropertyauctions.co.uk/",
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "failed",
-      "reason": "This operation was aborted; page.goto: Timeout 35000ms exceeded.\nCall log:\n  - navigating to \"https://www.townandcountrypropertyauctions.co.uk/\", waiting until \"domcontentloaded\"\n",
-      "lot_count": 0,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 1,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "permission_required",
-        "terms_url": "https://cdn.eigpropertyauctions.co.uk/ams/images/538/oas/WebsiteTermsAndConditions.pdf",
-        "evidence": [
-          "You must not use any part of the content on our site for commercial purposes without obtaining a licence to do so from us or our licensors.",
-          "Our site must not be framed on any other site, nor may you create a link to any part of our site other than the home page.",
-          "You may print off one copy, and may download extracts, of any page(s) from our site for your personal use and you may draw the attention of others within your organisation to content posted on our site."
-        ]
-      },
-      "errors": [
-        "This operation was aborted",
-        "page.goto: Timeout 35000ms exceeded.\nCall log:\n  - navigating to \"https://www.townandcountrypropertyauctions.co.uk/\", waiting until \"domcontentloaded\"\n"
-      ],
-      "successful_pages": 0,
-      "warnings": [],
-      "by_town": {},
-      "by_tag": {}
-    },
-    {
-      "id": "bradleys",
-      "name": "Bradleys",
-      "url": "https://www.bradleys-estate-agents.co.uk/pages/auctions",
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "failed",
-      "reason": "Robots unavailable: 403; Login or captcha at https://www.bradleys-estate-agents.co.uk/pages/auctions (page 1)",
-      "lot_count": 0,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 2,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "access_blocked",
-        "evidence": []
-      },
-      "errors": [
-        "Robots unavailable: 403",
-        "Login or captcha at https://www.bradleys-estate-agents.co.uk/pages/auctions (page 1)"
-      ],
-      "successful_pages": 0,
-      "warnings": [],
-      "by_town": {},
-      "by_tag": {}
-    },
-    {
-      "id": "bruton_knowles",
-      "name": "Bruton Knowles",
-      "url": "https://www.brutonknowles.co.uk/industry-news/property-auction-confirmed-for-3rd-july/",
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. ",
-      "lot_count": 23,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 8,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "permission_required",
-        "terms_url": "https://www.brutonknowles.co.uk/copyright",
-        "evidence": [
-          "Reproduction, distribution or transmission of information in this website by any means without the prior permission of Bruton Knowles Ltd is prohibited."
-        ]
-      },
-      "errors": [],
-      "successful_pages": 8,
-      "warnings": [],
-      "by_town": {
-        "Cheltenham": 22,
-        "Bristol": 1
-      },
-      "by_tag": {
-        "Auction": 23
-      }
-    },
-    {
-      "id": "moore_allen_innocent",
-      "name": "Moore Allen Innocent",
-      "url": "https://www.mooreallen.co.uk/property-auctions",
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "failed",
-      "reason": "HTTP 403: https://www.mooreallen.co.uk/property-auctions; Login or captcha at https://www.mooreallen.co.uk/property-auctions (page 1)",
-      "lot_count": 0,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 2,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "permission_required",
-        "terms_url": "https://www.mooreallen.co.uk/terms",
-        "evidence": [
-          "Permission is granted to electronically copy and print in hard copy portions of our site solely for your personal use.",
-          "Any other use of materials on our site (including reproduction for purposes other than those noted above and alteration, modification, distribution or republication) without our prior written permission is strictly prohibited."
-        ]
-      },
-      "errors": [
-        "HTTP 403: https://www.mooreallen.co.uk/property-auctions",
-        "Login or captcha at https://www.mooreallen.co.uk/property-auctions (page 1)"
-      ],
-      "successful_pages": 0,
-      "warnings": [],
-      "by_town": {},
-      "by_tag": {}
-    },
-    {
-      "id": "hollis_morgan",
-      "name": "Hollis Morgan",
-      "url": "https://www.hollismorgan.co.uk/auctions/",
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check found \"GL3 4NJ\" on https://www.hollismorgan.co.uk/property-details/34976004/gloucestershire/gloucester/green-gardens?bid=11&showstc=on&orderby=lot_no+asc&extra_2%21=501%2C502",
-      "lot_count": 6,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 2,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "permission_required",
-        "terms_url": "https://www.hollismorgan.co.uk/terms-of-use/",
-        "evidence": [
-          "You agree not to adapt, alter or create a derivative work from any of the Content on the Website or to use it for any purpose other than for your personal and non-commercial use.",
-          "Content may not be copied, reproduced, republished, downloaded, posted, broadcast or transmitted in any other way."
-        ]
-      },
-      "errors": [],
-      "successful_pages": 2,
-      "warnings": [
-        "Spot-check found \"GL3 4NJ\" on https://www.hollismorgan.co.uk/property-details/34976004/gloucestershire/gloucester/green-gardens?bid=11&showstc=on&orderby=lot_no+asc&extra_2%21=501%2C502"
-      ],
-      "by_town": {
-        "Bristol": 4,
-        "Cheltenham": 2
-      },
-      "by_tag": {
-        "Auction": 6
-      }
-    },
-    {
-      "id": "maggs_and_allen",
-      "name": "Maggs And Allen",
-      "url": "https://www.maggsandallen.co.uk/auctions/bristol-auctioneers.html",
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them.",
-      "lot_count": 0,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 8,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "permission_required",
-        "terms_url": "https://www.maggsandallen.co.uk/terms-of-use/",
-        "evidence": [
-          "You agree not to adapt, alter or create a derivative work from any of the Content on the Website or to use it for any purpose other than for your personal and non-commercial use.",
-          "Content may not be copied, reproduced, republished, downloaded, posted, broadcast or transmitted in any other way."
-        ]
-      },
-      "errors": [],
-      "successful_pages": 8,
-      "warnings": [
-        "Rendered pages were read. No Manchester, Glasgow, Edinburgh, Bristol or Cheltenham/Gloucestershire lot was found in the visible text or the JSON those pages requested.",
-        "Public pages were read. No in-area lot with a street address or full postcode was on them."
-      ],
-      "by_town": {},
-      "by_tag": {}
-    },
-    {
-      "id": "bristol_property_auctions_identity_unresolved",
-      "name": "Bristol Property Auctions Identity Unresolved",
-      "url": null,
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "failed",
-      "reason": "No distinct official domain established from searches; no invented URL or block bypass.",
-      "lot_count": 0,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 0,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "permission_required",
-        "evidence": []
-      },
-      "errors": [
-        "No distinct official domain established from searches; no invented URL or block bypass."
-      ],
-      "by_town": {},
-      "by_tag": {}
-    },
-    {
-      "id": "opa",
-      "name": "Online Property Auction Group / OPA Scotland",
-      "url": "https://www.opagroup.co.uk/",
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "failed",
-      "reason": "This operation was aborted; page.goto: Timeout 35000ms exceeded.\nCall log:\n  - navigating to \"https://www.opagroup.co.uk/\", waiting until \"domcontentloaded\"\n",
-      "lot_count": 0,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 1,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "not_enabled",
-        "terms_url": "https://www.opagroup.co.uk/pages/site-terms-conditions"
-      },
-      "errors": [
-        "This operation was aborted",
-        "page.goto: Timeout 35000ms exceeded.\nCall log:\n  - navigating to \"https://www.opagroup.co.uk/\", waiting until \"domcontentloaded\"\n"
-      ],
-      "successful_pages": 0,
-      "warnings": [],
-      "by_town": {},
-      "by_tag": {}
-    },
-    {
-      "id": "scotland_property_auction",
-      "name": "Scotland Property Auction",
-      "url": "https://scotlandpropertyauction.co.uk/",
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them.",
-      "lot_count": 0,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 2,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "not_enabled",
-        "terms_url": "https://scotlandpropertyauction.co.uk/terms-conditions/"
-      },
-      "errors": [],
-      "successful_pages": 2,
-      "warnings": [
-        "Rendered pages were read. No Manchester, Glasgow, Edinburgh, Bristol or Cheltenham/Gloucestershire lot was found in the visible text or the JSON those pages requested.",
-        "Public pages were read. No in-area lot with a street address or full postcode was on them."
-      ],
-      "by_town": {},
-      "by_tag": {}
-    },
-    {
-      "id": "scottish_property_auctions",
-      "name": "Scottish Property Auctions (name unresolved)",
-      "url": null,
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "failed",
-      "reason": "No distinct official operator verified; Auction House Scotland, Future and OPA are tracked separately.",
-      "lot_count": 0,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 0,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "not_enabled",
-        "terms_url": null
-      },
-      "errors": [
-        "No distinct official operator verified; Auction House Scotland, Future and OPA are tracked separately."
-      ],
-      "by_town": {},
-      "by_tag": {}
-    },
-    {
-      "id": "sva",
-      "name": "SVA Property Auctions",
-      "url": null,
-      "checked_at": "2026-11-17T08:00:35.498Z",
-      "status": "failed",
-      "reason": "Auction business ceased February 2023. The old website is not linked.",
-      "lot_count": 0,
-      "commercial_excluded": 0,
-      "out_of_area_excluded": 0,
-      "unknown_excluded": 0,
-      "pages": 0,
-      "policy": {
-        "reviewed_at": "2026-11-03",
-        "status": "not_enabled",
-        "terms_url": null
-      },
-      "errors": [
-        "Auction business ceased February 2023. The old website is not linked."
-      ],
-      "by_town": {},
-      "by_tag": {}
-    },
-    {
       "id": "auction_house_northwest",
       "name": "Auction House North West",
       "url": "https://www.auctionhouse.co.uk/northwest",
-      "checked_at": "2026-11-17T10:16:13.394Z",
+      "checked_at": "2026-11-17T10:26:13.062Z",
       "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Policy caveat: public factual metadata only; no published automation-specific/reuse restriction located in audit, but not licensed for reuse. Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/376116",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Detail failed https://online.auctionhouse.co.uk/lot/redirect/376116: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/376837: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/374462: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/378557: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/377815: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/377313: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/377253: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/377916: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/376046: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/375947: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/373945: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/378355: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/379079: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/372243: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/371684: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/374010: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/374790: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/374789: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/373336: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/371534: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/372100: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/370697: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/370517: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/371607: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/373083: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/372195: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/371570: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/369441: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/369428: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/364996: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/368902: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/366997: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/367078: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/364157: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/365435: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/365187: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/367132: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/368031: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/365382: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/365212: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/365721: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/364299: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/364319: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/362671: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/365301: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/362755: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/362356: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/361465: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/364375: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/364293: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/361485: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/363828: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/363780: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/361448: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/359885: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/360005: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/358383: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/360600: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/358272: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/360786: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/360653: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/360784: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/361061: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/359121: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/359111: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/359088: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/357480: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/356101: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/355006: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/353037: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/349526: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/348837: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/352073: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/350008: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/345995: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/346473: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/346859: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/345230: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/343196: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/341948: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/343789: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/345368: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/343255: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/341367: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/338259: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/335281: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/328885: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/333902: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/330614: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/328847: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/329123: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/328839: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/328051: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/328300: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/324040: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/319833: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/315893: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/316848: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/317188: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/317614: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/313411: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/312732: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/312211: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/306032: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/310722: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/308657: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/308460: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/304534: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/304658: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/304565: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/304533: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/304437: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/302006: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/302992: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/303822: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/303790: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/303888: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/301246: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/303452: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/303262: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/300899: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/300121: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/300651: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/299394: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/299914: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/297077: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/293601: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/292744: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/288559: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/289370: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/288782: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/283986: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/282502: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/284267: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/279684: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/275690: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/277149: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/275623: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/275641: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/275052: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/274921: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/275483: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/274309: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/270827: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/268279: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/262116: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/255340: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/255411: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/254657: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/252312: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/251315: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/251335: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/250862: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/251334: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/250834: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/250816: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/248796: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/248828: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/248841: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/248820: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/248835: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/248525: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/244339: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/239847: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/238902: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/240524: This operation was aborted; PARTIAL: max_details=200 reached; 35 residential/unknown candidates not detail-verified.",
       "lot_count": 213,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
@@ -1194,6 +387,7 @@
         "Detail failed https://online.auctionhouse.co.uk/lot/redirect/240524: This operation was aborted",
         "PARTIAL: max_details=200 reached; 35 residential/unknown candidates not detail-verified."
       ],
+      "successful_pages": 16,
       "warnings": [
         "Policy caveat: public factual metadata only; no published automation-specific/reuse restriction located in audit, but not licensed for reuse.",
         "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/376116",
@@ -1208,9 +402,9 @@
         "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/375947",
         "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/373945",
         "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/378355",
-        "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/379079"
+        "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/379079",
+        "22 records had an unverified field and were still kept when an address and status were present."
       ],
-      "successful_pages": 16,
       "by_town": {
         "Manchester": 109,
         "Cheshire": 15,
@@ -1228,9 +422,9 @@
       "id": "auction_house_cheshire",
       "name": "Auction House Cheshire, Staffordshire and Shropshire",
       "url": "https://www.auctionhouse.co.uk/staffordshire",
-      "checked_at": "2026-11-17T10:16:13.394Z",
+      "checked_at": "2026-11-17T10:26:13.062Z",
       "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Policy caveat: public factual metadata only; no published automation-specific/reuse restriction located in audit, but not licensed for reuse. Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/371495",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Detail failed https://online.auctionhouse.co.uk/lot/redirect/371495: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/371258: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/373363: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/377775: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/376634: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/376633: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/376048: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/375165: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/375864: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/376701: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/377709: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/378952: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/372821: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/378417: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/376830: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/378898: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/371437: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/371227: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/371430: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/370224: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/371415: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/364697: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/366761: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/366602: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/366603: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/364536: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/361745: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/358978: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/359804: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/362163: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/359672: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/358975: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/360939: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/358529: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/352873: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/351710: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/351809: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/351522: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/336246: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/335984: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/335370: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/313485: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/313399: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/310809: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/296991: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/297899: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/297416: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/295594: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/285504: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/283013: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/283736: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/281480: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/281639: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/275049: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/271168: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/273566: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/269965: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/270098: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/264720: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/265809: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/266191: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/262736: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/254962: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/251528: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/251132: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/249474: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/248279: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/249895: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/245915: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/245743: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/245334: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/238193: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/236974: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/233583: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/103699: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/101735: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/91380: This operation was aborted",
       "lot_count": 58,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
@@ -1323,6 +517,7 @@
         "Detail failed https://online.auctionhouse.co.uk/lot/redirect/101735: This operation was aborted",
         "Detail failed https://online.auctionhouse.co.uk/lot/redirect/91380: This operation was aborted"
       ],
+      "successful_pages": 7,
       "warnings": [
         "Policy caveat: public factual metadata only; no published automation-specific/reuse restriction located in audit, but not licensed for reuse.",
         "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/371495",
@@ -1340,9 +535,9 @@
         "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/372821",
         "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/378417",
         "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/376830",
-        "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/378898"
+        "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/378898",
+        "20 records had an unverified field and were still kept when an address and status were present."
       ],
-      "successful_pages": 7,
       "by_town": {
         "Cheshire": 32,
         "Liverpool": 22,
@@ -1356,9 +551,9 @@
       "id": "auction_house_birmingham",
       "name": "Auction House Birmingham and Black Country",
       "url": "https://www.auctionhouse.co.uk/birmingham",
-      "checked_at": "2026-11-17T10:16:13.394Z",
+      "checked_at": "2026-11-17T10:26:13.062Z",
       "status": "live",
-      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Policy caveat: public factual metadata only; no published automation-specific/reuse restriction located in audit, but not licensed for reuse. Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/375967",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Detail failed https://online.auctionhouse.co.uk/lot/redirect/375967: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/374308: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/378266: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/378483: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/377250: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/375957: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/378351: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/377001: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/379219: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/372575: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/371873: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/370414: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/370221: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/364313: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/366591: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/368167: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/365668: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/366003: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/365671: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/365186: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/365591: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/363582: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/363671: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/363201: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/360077: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/361372: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/360264: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/360637: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/352043: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/352514: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/353103: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/350982: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/345711: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/346691: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/347252: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/344727: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/338633: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/332520: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/330617: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/328748: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/328364: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/324066: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/323214: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/324441: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/317095: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/317608: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/317479: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/301449: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/301061: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/295591: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/294381: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/295291: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/285897: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/286234: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/277010: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/277671: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/275361: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/275193: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/269722: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/259694: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/243588: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/224775: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/208710: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/196787: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/172378: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/112581: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/98429: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/95573: This operation was aborted; Detail failed https://online.auctionhouse.co.uk/lot/redirect/93221: This operation was aborted",
       "lot_count": 61,
       "commercial_excluded": 0,
       "out_of_area_excluded": 0,
@@ -1443,6 +638,7 @@
         "Detail failed https://online.auctionhouse.co.uk/lot/redirect/95573: This operation was aborted",
         "Detail failed https://online.auctionhouse.co.uk/lot/redirect/93221: This operation was aborted"
       ],
+      "successful_pages": 6,
       "warnings": [
         "Policy caveat: public factual metadata only; no published automation-specific/reuse restriction located in audit, but not licensed for reuse.",
         "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/375967",
@@ -1453,15 +649,846 @@
         "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/375957",
         "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/378351",
         "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/377001",
-        "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/379219"
+        "Current auction date unverified https://online.auctionhouse.co.uk/lot/redirect/379219",
+        "14 records had an unverified field and were still kept when an address and status were present."
       ],
-      "successful_pages": 6,
       "by_town": {
         "Birmingham": 61
       },
       "by_tag": {
         "Auction": 61
       }
+    },
+    {
+      "id": "future",
+      "name": "Future Property Auctions",
+      "url": "https://www.futurepropertyauctions.co.uk/",
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. https://www.futurepropertyauctions.co.uk/auctions.asp: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.; https://www.futurepropertyauctions.co.uk/catalogue_viewall_auction_map.asp?id=10700&: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.; Catalogue page limit reached; collection incomplete.",
+      "lot_count": 85,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 115,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "review_due": "2027-02-01",
+        "status": "public_metadata_only",
+        "note": "Public pages; no published automation restriction found in inspected terms. Not an open-data licence. Only factual lot metadata is retained, no descriptions, images, documents or legal packs. Robots is checked every run. New restrictions fail closed.",
+        "terms_url": "https://www.futurepropertyauctions.co.uk/buying_terms.asp"
+      },
+      "errors": [
+        "https://www.futurepropertyauctions.co.uk/auctions.asp: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.",
+        "https://www.futurepropertyauctions.co.uk/catalogue_viewall_auction_map.asp?id=10700&: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.",
+        "Catalogue page limit reached; collection incomplete."
+      ],
+      "successful_pages": 115,
+      "warnings": [
+        "Policy caveat: no open reuse licence established; metadata only; recheck terms and robots before each run."
+      ],
+      "by_town": {
+        "Glasgow": 64,
+        "Edinburgh": 13,
+        "Manchester": 6,
+        "Bristol": 2
+      },
+      "by_tag": {
+        "Auction": 85
+      }
+    },
+    {
+      "id": "braveheart",
+      "name": "Braveheart Auctions (Edinburgh and Glasgow)",
+      "url": "https://braveheartauctions.co.uk/",
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check found \"13 Bath Street, Full Fir\" on https://braveheartauctions.co.uk/product/13-bath-street-full-first-floor-glasgow-city-centre/",
+      "lot_count": 0,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 3,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "review_due": "2027-02-01",
+        "status": "public_metadata_only",
+        "note": "Public pages; no published automation restriction found in inspected terms. Not an open-data licence. Only factual lot metadata is retained, no descriptions, images, documents or legal packs. Robots is checked every run. New restrictions fail closed.",
+        "terms_url": "https://braveheartauctions.co.uk/terms-conditions/"
+      },
+      "errors": [],
+      "successful_pages": 3,
+      "warnings": [
+        "Spot-check found \"13 Bath Street, Full Fir\" on https://braveheartauctions.co.uk/product/13-bath-street-full-first-floor-glasgow-city-centre/"
+      ],
+      "by_town": {},
+      "by_tag": {}
+    },
+    {
+      "id": "allsop",
+      "name": "Allsop",
+      "url": "https://www.allsop.co.uk/auctions/residential-auctions/",
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check: Flat 41 St. Johns Court, New Road, Manchester, Lancashire, M26 1NH from the public Allsop catalogue, page https://www.allsop.co.uk/lot-overview/ee4d0270-debb-11f1-b95c-0242ac110002",
+      "lot_count": 42,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 31,
+      "policy": {
+        "reviewed_at": "2026-11-04",
+        "status": "public_catalogue",
+        "note": "Upcoming catalogues are read from the public search the Allsop website uses. This is an internal non-commercial tool. Commercial lots are kept and tagged Commercial. Requests are one at a time, with no login.",
+        "terms_url": "https://www.allsop.co.uk/auctions/residential-auctions/"
+      },
+      "errors": [],
+      "successful_pages": 31,
+      "warnings": [
+        "Upcoming Allsop catalogues read from the public search. In-area upcoming lots: Manchester 19, Bristol 1, Cheltenham 1, Glasgow 0, Edinburgh 0, Liverpool 1, Cheshire 3, Birmingham 5.",
+        "Spot-check: Flat 41 St. Johns Court, New Road, Manchester, Lancashire, M26 1NH from the public Allsop catalogue, page https://www.allsop.co.uk/lot-overview/ee4d0270-debb-11f1-b95c-0242ac110002"
+      ],
+      "by_town": {
+        "Manchester": 23,
+        "Birmingham": 8,
+        "Cheshire": 4,
+        "Glasgow": 2,
+        "Bristol": 2,
+        "Cheltenham": 2,
+        "Liverpool": 1
+      },
+      "by_tag": {
+        "Auction": 42
+      }
+    },
+    {
+      "id": "savills_auctions",
+      "name": "Savills auctions",
+      "url": "https://auctions.savills.co.uk/upcoming-auctions",
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check found \"Flats 1 - 10, 316 Queensbrid\" on https://auctions.savills.co.uk/auctions/26-january-2027-256/flats-1-10-316-queensbridge-road-london-e8-3nh-25350 Spot-check found \"Old Fire Station Apartments,\" on https://auctions.savills.co.uk/auctions/26-january-2027-256/old-fire-station-apartments-2-tunnel-avenue-london-se10-0us-25351",
+      "lot_count": 0,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 41,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "status": "permission_required_reuse",
+        "terms_url": "https://www.savills.co.uk/footer/terms-and-conditions.aspx",
+        "evidence": [
+          "You may not make a permanent copy of or reproduce this website or any of its contents in any form.",
+          "You may only print or cache temporary copies of the content for your own personal non-commercial use."
+        ],
+        "robots_url": "https://auctions.savills.co.uk/robots.txt"
+      },
+      "errors": [],
+      "successful_pages": 41,
+      "warnings": [
+        "Read 4 lots from 1 upcoming Savills catalogues and each catalogue location search. 0 were in Manchester, Glasgow, Edinburgh, Bristol, Cheltenham, Liverpool, Cheshire or Birmingham. 26 January 2027 is on the calendar with no catalogue link.",
+        "Spot-check found \"Flats 1 - 10, 316 Queensbrid\" on https://auctions.savills.co.uk/auctions/26-january-2027-256/flats-1-10-316-queensbridge-road-london-e8-3nh-25350",
+        "Spot-check found \"Old Fire Station Apartments,\" on https://auctions.savills.co.uk/auctions/26-january-2027-256/old-fire-station-apartments-2-tunnel-avenue-london-se10-0us-25351",
+        "Spot-check found \"80 Inverness Terrace, London\" on https://auctions.savills.co.uk/auctions/26-january-2027-256/80-inverness-terrace-london-w2-3ld-25353"
+      ],
+      "by_town": {},
+      "by_tag": {}
+    },
+    {
+      "id": "clive_emson",
+      "name": "Clive Emson",
+      "url": "https://www.cliveemson.co.uk/properties/",
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check found \"GL51 9QN\" on https://www.cliveemson.co.uk/properties/268/88/",
+      "lot_count": 1,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 14,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "status": "public_access_rights_unresolved",
+        "terms_url": "https://www.cliveemson.co.uk/about-us/privacy-policy/",
+        "evidence": [
+          "Website footer copyright retained. General website scraping/reuse terms not located; privacy policy is not a reuse licence."
+        ],
+        "robots_url": "https://www.cliveemson.co.uk/robots.txt"
+      },
+      "errors": [],
+      "successful_pages": 14,
+      "warnings": [
+        "Spot-check found \"GL51 9QN\" on https://www.cliveemson.co.uk/properties/268/88/"
+      ],
+      "by_town": {
+        "Cheltenham": 1
+      },
+      "by_tag": {
+        "Auction": 1
+      }
+    },
+    {
+      "id": "pugh",
+      "name": "Pugh",
+      "url": "https://www.pugh-auctions.com/property-search",
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check found \"WN3 4TJ\" on https://www.pugh-auctions.com/property/202601231232sq_gm55",
+      "lot_count": 127,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 15,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "status": "public_access_commercial_consent_required",
+        "terms_url": "https://www.pugh-auctions.com/terms-of-use",
+        "evidence": [
+          "You are permitted to display ... and to download and print a hard copy for your personal use",
+          "use any of the materials on this website for commercial exploitation without our prior written consent",
+          "establish a link to this website ... without ... prior written consent"
+        ],
+        "robots_url": "https://www.pugh-auctions.com/robots.txt"
+      },
+      "errors": [],
+      "successful_pages": 15,
+      "warnings": [
+        "Spot-check found \"WN3 4TJ\" on https://www.pugh-auctions.com/property/202601231232sq_gm55"
+      ],
+      "by_town": {
+        "Manchester": 83,
+        "Cheshire": 17,
+        "Glasgow": 1,
+        "Liverpool": 24,
+        "Cheltenham": 2
+      },
+      "by_tag": {
+        "Auction": 127
+      }
+    },
+    {
+      "id": "sdl",
+      "name": "SDL",
+      "url": "https://www.sdlauctions.co.uk/property-auctions/past-auctions/",
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "failed",
+      "reason": "HTTP 403: https://www.sdlauctions.co.uk/property-auctions/past-auctions/; Login or captcha at https://www.sdlauctions.co.uk/property-auctions/past-auctions/ (page 1)",
+      "lot_count": 0,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 2,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "status": "public_access_rights_unresolved",
+        "terms_url": null,
+        "evidence": [
+          "No general website terms/reuse link found in homepage footer. Bidder terms are auction-sale terms, not a scraping licence.",
+          "Homepage says now part of BTG Eddisons Property Auctions."
+        ],
+        "robots_url": "https://www.sdlauctions.co.uk/robots.txt"
+      },
+      "errors": [
+        "HTTP 403: https://www.sdlauctions.co.uk/property-auctions/past-auctions/",
+        "Login or captcha at https://www.sdlauctions.co.uk/property-auctions/past-auctions/ (page 1)"
+      ],
+      "successful_pages": 0,
+      "warnings": [],
+      "by_town": {},
+      "by_tag": {}
+    },
+    {
+      "id": "bond_wolfe",
+      "name": "Bond Wolfe",
+      "url": "https://www.bondwolfe.com/auctions/properties/",
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check did not find \"Ground Rents at, 111-121 Roo\" on https://www.bondwolfe.com/auctions/properties/ Login or bot challenge refused",
+      "lot_count": 12,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 3,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "status": "public_access_reuse_restricted",
+        "terms_url": "https://www.bondwolfe.com/website-terms-of-use/",
+        "evidence": [
+          "2.2 The copying or incorporation into any other work ... is strictly prohibited save ... personal use",
+          "2.2.2 ... individual third parties for their personal information ... acknowledge Bond Wolfe",
+          "4.3 You must not create a link to the Website without ... prior written consent."
+        ],
+        "robots_url": "https://www.bondwolfe.com/robots.txt"
+      },
+      "errors": [
+        "Login or bot challenge refused"
+      ],
+      "successful_pages": 2,
+      "warnings": [
+        "Spot-check did not find \"Ground Rents at, 111-121 Roo\" on https://www.bondwolfe.com/auctions/properties/"
+      ],
+      "by_town": {
+        "Birmingham": 12
+      },
+      "by_tag": {
+        "Auction": 12
+      }
+    },
+    {
+      "id": "barnard_marcus",
+      "name": "Barnard Marcus",
+      "url": "https://www.barnardmarcusauctions.co.uk/auctions/current/",
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check failed: Login or bot challenge refused",
+      "lot_count": 43,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 27,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "status": "manual_only_no_automation",
+        "terms_url": "https://www.barnardmarcusauctions.co.uk/terms-and-conditions/",
+        "evidence": [
+          "Barnard Marcus Auctions may only be accessed manually. The use of automated agents, robots, or automated software, other than search engine spiders, to view the site is specifically forbidden.",
+          "You may not attempt to build a copy of our data or reverse engineer our processes.",
+          "You may not publish or reproduce any part of the data or work derived from the data without our specific written permission."
+        ],
+        "robots_url": "https://www.barnardmarcusauctions.co.uk/robots.txt"
+      },
+      "errors": [],
+      "successful_pages": 27,
+      "warnings": [
+        "Spot-check failed: Login or bot challenge refused"
+      ],
+      "by_town": {
+        "Bristol": 5,
+        "Liverpool": 8,
+        "Birmingham": 9,
+        "Manchester": 11,
+        "Cheltenham": 6,
+        "Cheshire": 4
+      },
+      "by_tag": {
+        "Auction": 43
+      }
+    },
+    {
+      "id": "mark_jenkinson",
+      "name": "Mark Jenkinson",
+      "url": "https://www.markjenkinson.co.uk/property-search",
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. ",
+      "lot_count": 4,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 14,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "status": "public_access_commercial_consent_required",
+        "terms_url": "https://www.markjenkinson.co.uk/terms-of-use",
+        "evidence": [
+          "use any of the materials on this website for commercial exploitation without our prior written consent",
+          "Terms page currently repeats Eddisons Pugh company terms; preserve source ambiguity rather than assume broader licence."
+        ],
+        "robots_url": "https://www.markjenkinson.co.uk/robots.txt"
+      },
+      "errors": [],
+      "successful_pages": 15,
+      "warnings": [],
+      "by_town": {
+        "Liverpool": 1,
+        "Manchester": 3
+      },
+      "by_tag": {
+        "Auction": 4
+      }
+    },
+    {
+      "id": "strettons",
+      "name": "Strettons",
+      "url": "https://www.strettons.co.uk/auctions/current-catalogue/",
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them. Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (page 1); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Manchester); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Glasgow); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Edinburgh); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Bristol); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Cheltenham); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Gloucester); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Liverpool); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Cheshire); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Chester); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Birmingham); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Wirral)",
+      "lot_count": 0,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 13,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "status": "public_access_commercial_licence_required",
+        "terms_url": "https://www.strettons.co.uk/terms-and-conditions/",
+        "evidence": [
+          "You may print off one copy, and may download extracts ... for your personal reference",
+          "You must not use any part of the materials on our website for commercial purposes without obtaining a written licence"
+        ],
+        "robots_url": "https://www.strettons.co.uk/robots.txt"
+      },
+      "errors": [
+        "Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (page 1)",
+        "Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Manchester)",
+        "Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Glasgow)",
+        "Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Edinburgh)",
+        "Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Bristol)",
+        "Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Cheltenham)",
+        "Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Gloucester)",
+        "Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Liverpool)",
+        "Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Cheshire)",
+        "Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Chester)",
+        "Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Birmingham)",
+        "Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Wirral)"
+      ],
+      "successful_pages": 1,
+      "warnings": [
+        "Public pages were read. No in-area lot with a street address or full postcode was on them."
+      ],
+      "by_town": {},
+      "by_tag": {}
+    },
+    {
+      "id": "network_auctions",
+      "name": "Network Auctions",
+      "url": "https://www.btgeddisonspropertyauctions.com/our-acquisitions/network-auctions",
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them. Login or bot challenge refused",
+      "lot_count": 0,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 2,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "status": "migrated_rights_unresolved",
+        "terms_url": null,
+        "evidence": [
+          "networkauctions.co.uk/robots.txt redirects to HTML acquisition page, NOT a valid robots.txt.",
+          "Official destination says Network Auctions joined BTG Eddisons in 2025.",
+          "BTG footer copyright All Rights Reserved; bidder terms and policies links, no general scraping licence verified."
+        ],
+        "robots_url": "https://www.networkauctions.co.uk/robots.txt"
+      },
+      "errors": [
+        "Login or bot challenge refused"
+      ],
+      "successful_pages": 1,
+      "warnings": [
+        "Rendered pages were read. No Manchester, Glasgow, Edinburgh, Bristol, Cheltenham, Liverpool, Cheshire or Birmingham lot was found in the visible text or the JSON those pages requested.",
+        "Public pages were read. No in-area lot with a street address or full postcode was on them."
+      ],
+      "by_town": {},
+      "by_tag": {}
+    },
+    {
+      "id": "iamsold",
+      "name": "iamsold",
+      "url": "https://www.iamsold.co.uk/available-properties/",
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check found \"BL1 4QD\" on https://www.iamsold.co.uk/available-properties/",
+      "lot_count": 1,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 1,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "status": "robots_lot_access_disallowed",
+        "terms_url": "https://www.iamsold.co.uk/website-terms/",
+        "evidence": [
+          "You must not use any part of the content on our site for commercial purposes without obtaining a licence",
+          "Our site must not be framed ... nor may you create a link to any part ... other than the home page."
+        ],
+        "robots_url": "https://www.iamsold.co.uk/robots.txt"
+      },
+      "errors": [],
+      "successful_pages": 1,
+      "warnings": [
+        "Spot-check found \"BL1 4QD\" on https://www.iamsold.co.uk/available-properties/"
+      ],
+      "by_town": {
+        "Manchester": 1
+      },
+      "by_tag": {
+        "Auction": 1
+      }
+    },
+    {
+      "id": "eig",
+      "name": "EIG",
+      "url": "https://www.eigpropertyauctions.co.uk/",
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them.",
+      "lot_count": 0,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 13,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "status": "licence_only_no_robots",
+        "terms_url": "https://www.eigpropertyauctions.co.uk/legal/terms-conditions",
+        "evidence": [
+          "PDF terms as at07/01/2022, p2 clause3.1: No part ... may be copied ... or reduced to any electronic medium or machine readable form without prior written consent",
+          "clause3.1: ... not permitted to use Robots to trawl the EIG website to search for data.",
+          "2.5 No sell-on/distribution;2.9 subscription-service use requires written permission;2.10 no website publication free or restricted without written permission."
+        ],
+        "robots_url": "https://www.eigpropertyauctions.co.uk/robots.txt"
+      },
+      "errors": [],
+      "successful_pages": 13,
+      "warnings": [
+        "Rendered pages were read. No Manchester, Glasgow, Edinburgh, Bristol, Cheltenham, Liverpool, Cheshire or Birmingham lot was found in the visible text or the JSON those pages requested.",
+        "Public pages were read. No in-area lot with a street address or full postcode was on them."
+      ],
+      "by_town": {},
+      "by_tag": {}
+    },
+    {
+      "id": "countrywide_property_auctions",
+      "name": "Countrywide Property Auctions",
+      "url": "https://www.countrywidepropertyauctions.co.uk/results.php",
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check found \"CH41 9BX\" on https://www.countrywidepropertyauctions.co.uk/property_details.php?auction_date=current&auction_location=SK&id=377300",
+      "lot_count": 37,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 24,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "status": "permission_required",
+        "terms_url": "https://www.countrywide.co.uk/notices/terms-of-use/",
+        "evidence": [
+          "You must not copy, transmit or store (in whole or in part) the content of this website without our written permission.",
+          "The downloading of material (including all text, graphics, code, files and links) for anything other than private use is strictly prohibited."
+        ]
+      },
+      "errors": [],
+      "successful_pages": 24,
+      "warnings": [
+        "Spot-check found \"CH41 9BX\" on https://www.countrywidepropertyauctions.co.uk/property_details.php?auction_date=current&auction_location=SK&id=377300"
+      ],
+      "by_town": {
+        "Liverpool": 33,
+        "Cheshire": 2,
+        "Manchester": 2
+      },
+      "by_tag": {
+        "Auction": 37
+      }
+    },
+    {
+      "id": "town_and_country",
+      "name": "Town And Country",
+      "url": "https://www.townandcountrypropertyauctions.co.uk/",
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "failed",
+      "reason": "This operation was aborted; page.goto: Timeout 35000ms exceeded.\nCall log:\n  - navigating to \"https://www.townandcountrypropertyauctions.co.uk/\", waiting until \"domcontentloaded\"\n",
+      "lot_count": 0,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 1,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "status": "permission_required",
+        "terms_url": "https://cdn.eigpropertyauctions.co.uk/ams/images/538/oas/WebsiteTermsAndConditions.pdf",
+        "evidence": [
+          "You must not use any part of the content on our site for commercial purposes without obtaining a licence to do so from us or our licensors.",
+          "Our site must not be framed on any other site, nor may you create a link to any part of our site other than the home page.",
+          "You may print off one copy, and may download extracts, of any page(s) from our site for your personal use and you may draw the attention of others within your organisation to content posted on our site."
+        ]
+      },
+      "errors": [
+        "This operation was aborted",
+        "page.goto: Timeout 35000ms exceeded.\nCall log:\n  - navigating to \"https://www.townandcountrypropertyauctions.co.uk/\", waiting until \"domcontentloaded\"\n"
+      ],
+      "successful_pages": 0,
+      "warnings": [],
+      "by_town": {},
+      "by_tag": {}
+    },
+    {
+      "id": "bradleys",
+      "name": "Bradleys",
+      "url": "https://www.bradleys-estate-agents.co.uk/pages/auctions",
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "failed",
+      "reason": "Robots unavailable: 403; Login or captcha at https://www.bradleys-estate-agents.co.uk/pages/auctions (page 1)",
+      "lot_count": 0,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 2,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "status": "access_blocked",
+        "evidence": []
+      },
+      "errors": [
+        "Robots unavailable: 403",
+        "Login or captcha at https://www.bradleys-estate-agents.co.uk/pages/auctions (page 1)"
+      ],
+      "successful_pages": 0,
+      "warnings": [],
+      "by_town": {},
+      "by_tag": {}
+    },
+    {
+      "id": "bruton_knowles",
+      "name": "Bruton Knowles",
+      "url": "https://www.brutonknowles.co.uk/industry-news/property-auction-confirmed-for-3rd-july/",
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. ",
+      "lot_count": 27,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 13,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "status": "permission_required",
+        "terms_url": "https://www.brutonknowles.co.uk/copyright",
+        "evidence": [
+          "Reproduction, distribution or transmission of information in this website by any means without the prior permission of Bruton Knowles Ltd is prohibited."
+        ]
+      },
+      "errors": [],
+      "successful_pages": 13,
+      "warnings": [],
+      "by_town": {
+        "Cheltenham": 23,
+        "Birmingham": 3,
+        "Bristol": 1
+      },
+      "by_tag": {
+        "Auction": 27
+      }
+    },
+    {
+      "id": "moore_allen_innocent",
+      "name": "Moore Allen Innocent",
+      "url": "https://www.mooreallen.co.uk/property-auctions",
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "failed",
+      "reason": "HTTP 403: https://www.mooreallen.co.uk/property-auctions; Login or captcha at https://www.mooreallen.co.uk/property-auctions (page 1)",
+      "lot_count": 0,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 2,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "status": "permission_required",
+        "terms_url": "https://www.mooreallen.co.uk/terms",
+        "evidence": [
+          "Permission is granted to electronically copy and print in hard copy portions of our site solely for your personal use.",
+          "Any other use of materials on our site (including reproduction for purposes other than those noted above and alteration, modification, distribution or republication) without our prior written permission is strictly prohibited."
+        ]
+      },
+      "errors": [
+        "HTTP 403: https://www.mooreallen.co.uk/property-auctions",
+        "Login or captcha at https://www.mooreallen.co.uk/property-auctions (page 1)"
+      ],
+      "successful_pages": 0,
+      "warnings": [],
+      "by_town": {},
+      "by_tag": {}
+    },
+    {
+      "id": "hollis_morgan",
+      "name": "Hollis Morgan",
+      "url": "https://www.hollismorgan.co.uk/auctions/",
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Spot-check found \"GL3 4NJ\" on https://www.hollismorgan.co.uk/property-details/34976004/gloucestershire/gloucester/green-gardens?bid=11&showstc=on&orderby=lot_no+asc&extra_2%21=501%2C502",
+      "lot_count": 7,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 2,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "status": "permission_required",
+        "terms_url": "https://www.hollismorgan.co.uk/terms-of-use/",
+        "evidence": [
+          "You agree not to adapt, alter or create a derivative work from any of the Content on the Website or to use it for any purpose other than for your personal and non-commercial use.",
+          "Content may not be copied, reproduced, republished, downloaded, posted, broadcast or transmitted in any other way."
+        ]
+      },
+      "errors": [],
+      "successful_pages": 2,
+      "warnings": [
+        "Spot-check found \"GL3 4NJ\" on https://www.hollismorgan.co.uk/property-details/34976004/gloucestershire/gloucester/green-gardens?bid=11&showstc=on&orderby=lot_no+asc&extra_2%21=501%2C502"
+      ],
+      "by_town": {
+        "Bristol": 4,
+        "Cheltenham": 2,
+        "Birmingham": 1
+      },
+      "by_tag": {
+        "Auction": 7
+      }
+    },
+    {
+      "id": "maggs_and_allen",
+      "name": "Maggs And Allen",
+      "url": "https://www.maggsandallen.co.uk/auctions/bristol-auctioneers.html",
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them.",
+      "lot_count": 0,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 13,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "status": "permission_required",
+        "terms_url": "https://www.maggsandallen.co.uk/terms-of-use/",
+        "evidence": [
+          "You agree not to adapt, alter or create a derivative work from any of the Content on the Website or to use it for any purpose other than for your personal and non-commercial use.",
+          "Content may not be copied, reproduced, republished, downloaded, posted, broadcast or transmitted in any other way."
+        ]
+      },
+      "errors": [],
+      "successful_pages": 13,
+      "warnings": [
+        "Rendered pages were read. No Manchester, Glasgow, Edinburgh, Bristol, Cheltenham, Liverpool, Cheshire or Birmingham lot was found in the visible text or the JSON those pages requested.",
+        "Public pages were read. No in-area lot with a street address or full postcode was on them."
+      ],
+      "by_town": {},
+      "by_tag": {}
+    },
+    {
+      "id": "bristol_property_auctions_identity_unresolved",
+      "name": "Bristol Property Auctions Identity Unresolved",
+      "url": null,
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "failed",
+      "reason": "No distinct official domain established from searches; no invented URL or block bypass.",
+      "lot_count": 0,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 0,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "status": "permission_required",
+        "evidence": []
+      },
+      "errors": [
+        "No distinct official domain established from searches; no invented URL or block bypass."
+      ],
+      "by_town": {},
+      "by_tag": {}
+    },
+    {
+      "id": "opa",
+      "name": "Online Property Auction Group / OPA Scotland",
+      "url": "https://www.opagroup.co.uk/",
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "failed",
+      "reason": "This operation was aborted; page.goto: Timeout 35000ms exceeded.\nCall log:\n  - navigating to \"https://www.opagroup.co.uk/\", waiting until \"domcontentloaded\"\n",
+      "lot_count": 0,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 1,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "status": "not_enabled",
+        "terms_url": "https://www.opagroup.co.uk/pages/site-terms-conditions"
+      },
+      "errors": [
+        "This operation was aborted",
+        "page.goto: Timeout 35000ms exceeded.\nCall log:\n  - navigating to \"https://www.opagroup.co.uk/\", waiting until \"domcontentloaded\"\n"
+      ],
+      "successful_pages": 0,
+      "warnings": [],
+      "by_town": {},
+      "by_tag": {}
+    },
+    {
+      "id": "scotland_property_auction",
+      "name": "Scotland Property Auction",
+      "url": "https://scotlandpropertyauction.co.uk/",
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "live",
+      "reason": "Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them.",
+      "lot_count": 0,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 2,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "status": "not_enabled",
+        "terms_url": "https://scotlandpropertyauction.co.uk/terms-conditions/"
+      },
+      "errors": [],
+      "successful_pages": 2,
+      "warnings": [
+        "Rendered pages were read. No Manchester, Glasgow, Edinburgh, Bristol, Cheltenham, Liverpool, Cheshire or Birmingham lot was found in the visible text or the JSON those pages requested.",
+        "Public pages were read. No in-area lot with a street address or full postcode was on them."
+      ],
+      "by_town": {},
+      "by_tag": {}
+    },
+    {
+      "id": "scottish_property_auctions",
+      "name": "Scottish Property Auctions (name unresolved)",
+      "url": null,
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "failed",
+      "reason": "No distinct official operator verified; Auction House Scotland, Future and OPA are tracked separately.",
+      "lot_count": 0,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 0,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "status": "not_enabled",
+        "terms_url": null
+      },
+      "errors": [
+        "No distinct official operator verified; Auction House Scotland, Future and OPA are tracked separately."
+      ],
+      "by_town": {},
+      "by_tag": {}
+    },
+    {
+      "id": "sva",
+      "name": "SVA Property Auctions",
+      "url": null,
+      "checked_at": "2026-11-17T10:26:13.062Z",
+      "status": "failed",
+      "reason": "Auction business ceased February 2023. The old website is not linked.",
+      "lot_count": 0,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 0,
+      "policy": {
+        "reviewed_at": "2026-11-03",
+        "status": "not_enabled",
+        "terms_url": null
+      },
+      "errors": [
+        "Auction business ceased February 2023. The old website is not linked."
+      ],
+      "by_town": {},
+      "by_tag": {}
     }
   ],
   "robots": [
@@ -1605,24 +1632,24 @@
     }
   ],
   "counts_by_town": {
-    "Manchester": 288,
-    "Glasgow": 86,
+    "Manchester": 289,
+    "Glasgow": 85,
     "Edinburgh": 20,
     "Bristol": 40,
-    "Cheltenham": 48,
-    "Liverpool": 109,
-    "Cheshire": 65,
-    "Birmingham": 74
+    "Cheltenham": 49,
+    "Liverpool": 168,
+    "Cheshire": 75,
+    "Birmingham": 100
   },
   "counts_by_town_and_status": {
     "Manchester": {
-      "upcoming": 138,
-      "sold": 116,
+      "upcoming": 137,
+      "sold": 117,
       "unsold": 21,
-      "withdrawn": 10
+      "withdrawn": 11
     },
     "Glasgow": {
-      "upcoming": 81,
+      "upcoming": 80,
       "sold": 3,
       "unsold": 0,
       "withdrawn": 0
@@ -1640,32 +1667,32 @@
       "withdrawn": 1
     },
     "Cheltenham": {
-      "upcoming": 33,
+      "upcoming": 34,
       "sold": 14,
       "unsold": 0,
       "withdrawn": 0
     },
     "Liverpool": {
-      "upcoming": 9,
-      "sold": 86,
+      "upcoming": 63,
+      "sold": 90,
       "unsold": 14,
       "withdrawn": 0
     },
     "Cheshire": {
-      "upcoming": 14,
+      "upcoming": 24,
       "sold": 43,
       "unsold": 5,
       "withdrawn": 3
     },
     "Birmingham": {
-      "upcoming": 8,
-      "sold": 46,
+      "upcoming": 30,
+      "sold": 47,
       "unsold": 17,
-      "withdrawn": 0
+      "withdrawn": 3
     }
   },
-  "total_fresh": 730,
-  "total_stale": 2797,
+  "total_fresh": 826,
+  "total_stale": 2798,
   "commercial_excluded": 0,
-  "duplicates_removed": 26
+  "duplicates_removed": 110
 }
