@@ -105,7 +105,7 @@ for (const agent of state.agents) {
   assert.equal(M.AREAS.includes(agent.area), true, agent.name);
   assert.equal(agent.contact, '');
   assert.equal(agent.alertStatus, 'not-registered');
-  assert.equal(/^https?:\/\//.test(agent.website), true, agent.name);
+  assert.equal(/^https?:\/\//.test(agent.website || agent.sourceUrl), true, agent.name);
   assert.equal(names.has(agent.id), false, agent.id);
   names.add(agent.id);
 }

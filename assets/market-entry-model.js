@@ -28,7 +28,7 @@
     {id: 'rp', label: 'Registered provider'},
     {id: 'funder', label: 'Funder'}
   ]);
-  const AGENT_TYPES = Object.freeze(['Auction house', 'Estate agent', 'Land agent', 'Local authority contact', 'Registered provider', 'Other']);
+  const AGENT_TYPES = Object.freeze(['Auction house', 'Sales agent', 'Letting agent', 'Sales and letting agent', 'Commercial agent', 'New homes agent', 'Land agent', 'Estate agent', 'Local authority contact', 'Registered provider', 'Other']);
   const INTAKE_STATUSES = Object.freeze(['New', 'Reviewing', 'Go', 'No-go', 'Passed']);
   const PLANNING_CHOICES = Object.freeze(['Not stated', 'Planning granted', 'Reserved matters discharged', 'Reserved matters outstanding', 'No planning']);
   const DEAL_TYPES = Object.freeze(['House', 'Flat', 'Block', 'Site', 'HMO', 'Other']);
@@ -148,14 +148,24 @@
     const type = AGENT_TYPES.includes(raw.type) ? raw.type : 'Other';
     const website = cleanUrl(raw.website);
     if (raw.website && !website) return {error: 'Agent website must be an http or https link.'};
+    const sourceUrl = cleanUrl(raw.sourceUrl) || website;
+    const specialisms = (Array.isArray(raw.specialisms) ? raw.specialisms : []).map((item) => clip(item, 40)).filter(Boolean).slice(0, 8);
     return {
       agent: {
         id: uniqueId(cleanId(raw.id, makeId('agent')), used),
         area,
         name,
+        branch: clip(raw.branch, 80),
+        subArea: clip(raw.subArea, 40),
+        address: clip(raw.address, 200),
         type,
+        specialisms,
         coverage: clip(raw.coverage, 200),
         website,
+        phone: clip(raw.phone, 40),
+        email: clip(raw.email, 80),
+        sourceUrl,
+        scraped: /^\d{4}-\d{2}-\d{2}$/.test(String(raw.scraped || '')) ? String(raw.scraped) : '',
         contact: clip(raw.contact, 240),
         alertStatus: ALERT_IDS.includes(raw.alertStatus) ? raw.alertStatus : 'not-registered',
         alertDate: /^\d{4}-\d{2}-\d{2}$/.test(String(raw.alertDate || '')) ? String(raw.alertDate) : '',
@@ -257,7 +267,7 @@
       criteria[area] = blankCriteria(criteriaSeed);
     });
     const usedAgents = new Set();
-    const agents = takeList(seeds.agents && seeds.agents.agents, 400, normaliseAgent, 'agent', usedAgents);
+    const agents = takeList(seeds.agents && seeds.agents.agents, 6000, normaliseAgent, 'agent', usedAgents);
     if (agents.error) throw new Error(agents.error);
     const usedSh = new Set();
     const stakeholders = takeList(seeds.stakeholders && seeds.stakeholders.stakeholders, 400, normaliseStakeholder, 'stakeholder', usedSh);
@@ -285,7 +295,7 @@
   function normaliseState(data) {
     if (!data || typeof data !== 'object' || Array.isArray(data)) return {error: 'The file is not a market-entry workspace.'};
     const usedAgents = new Set();
-    const agents = takeList(data.agents || [], 400, normaliseAgent, 'agent', usedAgents);
+    const agents = takeList(data.agents || [], 6000, normaliseAgent, 'agent', usedAgents);
     if (agents.error) return agents;
     const usedSh = new Set();
     const stakeholders = takeList(data.stakeholders || [], 400, normaliseStakeholder, 'stakeholder', usedSh);

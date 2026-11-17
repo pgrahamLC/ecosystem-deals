@@ -173,6 +173,16 @@
     bar.className = 'bd-auc';
     bar.innerHTML = '<b>' + cards.length + ' current</b>' + Array.from(counts.entries()).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([label, count]) => '<button type="button" data-aq-type="' + esc(label) + '">' + esc(label) + ' ' + count + '</button>').join('');
     root.insertBefore(bar, root.firstChild);
+    const grid = root.querySelector('.aq-lots');
+    if (grid && !grid.closest('details')) {
+      const details = document.createElement('details');
+      details.className = 'bd-fold';
+      const summary = document.createElement('summary');
+      summary.textContent = 'Show the lots';
+      grid.parentNode.insertBefore(details, grid);
+      details.appendChild(summary);
+      details.appendChild(grid);
+    }
     bar.querySelectorAll('[data-aq-type]').forEach((button) => button.onclick = () => {
       const sel = root.querySelector('[data-aq-filter="type"]');
       if (!sel) return;

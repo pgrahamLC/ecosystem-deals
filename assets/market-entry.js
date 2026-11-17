@@ -14,7 +14,7 @@
 
   let state = null;
   let seeds = null;
-  const ui = {message: '', editing: null, matches: null, lotsError: '', lotsLoading: false, lotCount: null, painting: false};
+  const ui = {message: '', editing: null, matches: null, lotsError: '', lotsLoading: false, lotCount: null, painting: false, agentQ: '', agentType: ''};
 
   function esc(value) {
     return String(value == null ? '' : value).replace(/[&<>"']/g, (c) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -113,18 +113,38 @@
       + '<label class="wide">Notes <textarea name="notes">' + esc(item.notes) + '</textarea></label>'
       + '<div class="wide gn-tools"><button class="btn" type="submit">' + (item.id ? 'Save agent' : 'Add agent') + '</button><button type="button" class="btn sec" data-act="cancel">Cancel</button></div></form>';
   }
+  function agentRows() {
+    const q = ui.agentQ.trim().toLowerCase();
+    return state.agents.filter((row) => row.area === state.area && (!ui.agentType || row.type === ui.agentType) && (!q || (row.name + ' ' + (row.branch || '') + ' ' + (row.address || '') + ' ' + (row.subArea || '')).toLowerCase().includes(q))).slice().sort((a, b) => a.name.localeCompare(b.name));
+  }
+  function agentCard(row) {
+    const phone = row.phone ? esc(row.phone) : 'Not yet recorded';
+    const email = row.email ? esc(row.email) : 'Not yet recorded';
+    const site = row.website ? safeHref(row.website) : 'Not yet recorded';
+    const specs = (row.specialisms || []).join(', ');
+    return '<article class="me-row"><h3>' + esc(row.name) + (row.branch ? ' <span class="foot">' + esc(row.branch) + '</span>' : '') + '</h3><p class="foot">' + esc(row.type) + (row.subArea ? ' · ' + esc(row.subArea) : '') + (specs ? ' · ' + esc(specs) : '') + '</p><p>' + esc(row.address || 'Address not on the list card') + '</p><p>Phone ' + phone + '. Email ' + email + '. Website ' + site + '.</p><p class="foot">Source ' + (row.sourceUrl ? '<a href="' + esc(row.sourceUrl) + '" target="_blank" rel="noopener">public listing</a>' : 'not recorded') + (row.scraped ? ' · scraped ' + esc(row.scraped) : '') + '</p><label class="gn-check"><input type="checkbox" data-act="tick-agent" data-id="' + esc(row.id) + '"' + (row.alertStatus === 'registered' ? ' checked' : '') + '> Registered with</label><div class="gn-tools"><button type="button" class="btn sec" data-act="edit-agent" data-id="' + esc(row.id) + '">Edit</button><button type="button" class="btn sec" data-act="log-agent" data-id="' + esc(row.id) + '">Log a deal</button><button type="button" class="btn sec" data-act="del-agent" data-id="' + esc(row.id) + '">Delete</button></div></article>';
+  }
   function agentsPanel() {
-    const rows = state.agents.filter((row) => row.area === state.area).slice().sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name));
+    const all = state.agents.filter((row) => row.area === state.area);
+    const registered = all.filter((row) => row.alertStatus === 'registered').length;
+    const counts = {};
+    all.forEach((row) => { counts[row.type] = (counts[row.type] || 0) + 1; });
+    const types = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    const max = Math.max(1, ...types.map((row) => row[1]));
+    const bars = types.map(([label, count]) => '<button type="button" class="bd-bar' + (ui.agentType === label ? ' on' : '') + '" data-act="agent-type" data-type="' + esc(label) + '"><span>' + esc(label) + '</span><i><b style="width:' + (count / max * 100) + '%"></b></i><em>' + count + '</em></button>').join('');
+    const rows = agentRows();
+    const shown = rows.slice(0, 20).map(agentCard).join('');
+    const rest = rows.slice(20).map(agentCard).join('');
     const editing = ui.editing && ui.editing.kind === 'agent' ? (state.agents.find((row) => row.id === ui.editing.id) || null) : null;
     const showForm = ui.editing && ui.editing.kind === 'agent';
-    const body = rows.map((row) => '<article class="me-row"><h3>' + esc(row.name) + '</h3><p class="foot">' + esc(row.type) + (row.coverage ? ' · ' + esc(row.coverage) : '') + '</p><p>Deal alerts: <b>' + esc(M.labelOf(M.ALERTS, row.alertStatus)) + '</b>' + (row.alertDate ? ' · ' + esc(row.alertDate) : '') + '</p>'
-      + (row.website ? '<p>' + safeHref(row.website) + '</p>' : '')
-      + (row.contact ? '<p>Contact route: ' + esc(row.contact) + '</p>' : '<p class="foot">No contact name, email or phone stored.</p>')
-      + (row.notes ? '<p class="foot">' + esc(row.notes) + '</p>' : '')
-      + '<div class="gn-tools"><button type="button" class="btn sec" data-act="edit-agent" data-id="' + esc(row.id) + '">Edit</button><button type="button" class="btn sec" data-act="log-agent" data-id="' + esc(row.id) + '">Log a deal</button><button type="button" class="btn sec" data-act="del-agent" data-id="' + esc(row.id) + '">Delete</button></div></article>').join('');
-    return '<section class="card"><h2>Agents and contacts in ' + esc(state.area) + '</h2><p class="lead">Register with the auction houses, estate agents, land agents, council housing teams and registered providers who can bring a deal before it reaches the open market.</p><button type="button" class="btn" data-act="new-agent">Add a contact</button>'
+    const investment = all.filter((row) => (row.specialisms || []).some((item) => /invest|auction|land|new homes|commercial/i.test(item)) || /Auction|Land|Commercial|New homes/.test(row.type)).length;
+    return '<div class="bd-kpis"><div class="bd-tile"><span>Branches</span><b>' + all.length + '</b></div><div class="bd-tile"><span>Registered with</span><b>' + registered + '</b></div><div class="bd-tile"><span>Worth a call first</span><b>' + investment + '</b><span>Auction, land, new homes, commercial or investment</span></div></div>'
+      + '<div class="bd-charts"><article class="bd-chart"><h2>Branches by type</h2>' + (bars || '<p>Not yet recorded</p>') + '</article><article class="bd-chart"><h2>Takeaways</h2><ul class="bd-take"><li>' + all.length + ' public branches are on file for ' + esc(state.area) + '.</li><li>' + registered + ' are marked registered with.</li><li>Phone, email and the firm website stay blank unless a public page showed them.</li></ul></article></div>'
+      + '<section class="card"><h2>Agent register</h2><div class="ctl"><label>Search <input id="me-agent-q" value="' + esc(ui.agentQ) + '" placeholder="Name, branch or postcode" autocomplete="off"></label><button type="button" class="btn sec" data-act="agent-type" data-type="">All types</button><button type="button" class="btn" data-act="new-agent">Add a contact</button></div>'
       + (showForm ? agentForm(editing) : '')
-      + '<details class="bd-fold"' + (ui.editing && ui.editing.kind === 'agent' ? ' open' : '') + '><summary>Show the register (' + rows.length + ')</summary>' + (body || '<p>No contacts for this area yet.</p>') + '</details></section>';
+      + '<p class="foot">' + rows.length + ' match.</p>' + (shown || '<p>No branches match.</p>')
+      + (rest ? '<details class="bd-fold"><summary>Show detail (' + (rows.length - 20) + ' more)</summary>' + rest + '</details>' : '')
+      + '</section>';
   }
 
   function sourceChoices() {
@@ -163,7 +183,7 @@
   function mapCards() {
     const area = state.area;
     const columns = M.CATEGORIES.map((cat) => {
-      const agents = state.agents.filter((row) => row.area === area && M.agentCategory(row.type) === cat.id);
+      const agents = state.agents.filter((row) => row.area === area && M.agentCategory(row.type) === cat.id && !/Sales|Letting|Estate agent/.test(row.type)).slice(0, 8);
       const people = state.stakeholders.filter((row) => row.area === area && row.category === cat.id);
       const agentCards = agents.map((row) => '<article class="me-card"><b>' + esc(row.name) + '</b><p class="foot">' + esc(row.type) + '</p><p>Relationship: ' + esc(M.labelOf(M.RELATIONSHIPS, M.relationshipFromAlert(row.alertStatus))) + '</p><p>Deal alerts: ' + esc(M.labelOf(M.ALERTS, row.alertStatus)) + '</p>' + (row.website ? '<p>' + safeHref(row.website) + '</p>' : '') + '<button type="button" class="btn sec" data-act="edit-agent" data-id="' + esc(row.id) + '">Edit in agents</button></article>').join('');
       const personCards = people.map((row) => '<article class="me-card"><b>' + esc(row.name) + '</b><p>' + esc(row.role || 'Role not stated') + '</p><p>Relationship: ' + esc(M.labelOf(M.RELATIONSHIPS, row.relationship)) + '</p>' + (row.website ? '<p>' + safeHref(row.website) + '</p>' : '') + (row.notes ? '<p class="foot">' + esc(row.notes) + '</p>' : '') + '<div class="gn-tools"><button type="button" class="btn sec" data-act="edit-sh" data-id="' + esc(row.id) + '">Edit</button><button type="button" class="btn sec" data-act="del-sh" data-id="' + esc(row.id) + '">Delete</button></div></article>').join('');
@@ -287,6 +307,7 @@
     if (act === 'import') { const file = document.getElementById('me-file'); if (file) file.click(); return; }
     if (act === 'del-item') { state = M.deleteItem(state, state.area, button.dataset.ws, button.dataset.id).state; save(); render(); return; }
     if (act === 'del-ws') { state = M.deleteWorkstream(state, state.area, button.dataset.ws).state; save(); render(); return; }
+    if (act === 'agent-type') { ui.agentType = button.dataset.type || ''; render(); return; }
     if (act === 'new-agent') { ui.editing = {kind: 'agent', id: ''}; render(); return; }
     if (act === 'edit-agent') { ui.editing = {kind: 'agent', id: button.dataset.id}; state.section = 'agents'; save(); render(); return; }
     if (act === 'del-agent') { state = M.deleteAgent(state, button.dataset.id); ui.editing = null; save(); render(); return; }
@@ -322,6 +343,14 @@
       save();
       render();
     }
+    if (node.dataset.act === 'tick-agent') {
+      const row = state.agents.find((item) => item.id === node.dataset.id);
+      if (row) {
+        const result = M.saveAgent(state, Object.assign({}, row, {alertStatus: node.checked ? 'registered' : 'not-registered', alertDate: node.checked ? today() : ''}));
+        if (!result.error) { state = result.state; save(); }
+      }
+      return;
+    }
     if (node.dataset.act === 'highlight') {
       state.highlight = node.checked;
       save();
@@ -330,6 +359,7 @@
   }
   function handleInput(event) {
     const node = event.target;
+    if (node.id === 'me-agent-q') { ui.agentQ = node.value; const list = document.getElementById('me-panel'); if (state && state.section === 'agents') { const start = node.selectionStart; render(); const again = document.getElementById('me-agent-q'); if (again) { again.focus(); again.selectionStart = again.selectionEnd = start; } } return; }
     if (node.dataset.act === 'owner' || node.dataset.act === 'notes') {
       state = M.setField(state, state.area, node.dataset.ws, node.dataset.id, node.dataset.act === 'owner' ? 'owner' : 'notes', node.value);
       save();

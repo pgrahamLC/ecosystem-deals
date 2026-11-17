@@ -61,6 +61,7 @@
   }
   function bedsOf(lot) {
     const text = ['title', 'address', 'lot_type', 'property_type', 'residential_subtype', 'grade_evidence'].map((key) => lot && lot[key] ? String(lot[key]) : '').join(' ');
+    lot._text = text;
     const found = bedCounts(text);
     if (!found.length) return 'Not stated';
     if (found.length > 1) return 'Mixed';
@@ -167,7 +168,8 @@
       band: bandOf(guide),
       date: /^\d{4}-\d{2}-\d{2}$/.test(String(lot.auction_date || '').slice(0, 10)) ? String(lot.auction_date).slice(0, 10) : '',
       month: monthOf(lot.auction_date) || 'unpublished',
-      url: /^https?:\/\//.test(String(lot.source_url || '')) ? lot.source_url : ''
+      url: /^https?:\/\//.test(String(lot.source_url || '')) ? lot.source_url : '',
+      reserved: /reserved matters[\s\S]{0,80}discharg|discharg[\s\S]{0,80}reserved matters/i.test(lot._text || '')
     };
   }
   function build(input) {
@@ -189,6 +191,7 @@
     const three = rents.find((row) => row.id === '3') || null;
     const stated = lots.filter((lot) => lot.beds === '3' || lot.beds === '4').length;
     const unstated = lots.filter((lot) => lot.beds === 'Not stated').length;
+    const reserved = lots.filter((lot) => lot.reserved).length;
     const takeaways = [];
     takeaways.push(lots.length
       ? lots.length + ' current lot' + (lots.length === 1 ? '' : 's') + ' in ' + area + '. ' + (guides.length ? 'Median published guide ' + money(median(guides)) + ' across ' + guides.length + ' lot' + (guides.length === 1 ? '' : 's') + '.' : 'No guide price is published.')
@@ -196,10 +199,10 @@
     if (area === 'Cheshire') takeaways.push('Cheshire has more than one allowance area, so no single rent gap is shown.');
     else if (three && three.gap != null) takeaways.push('ONS 3 bed rent is ' + money(three.ons) + ' a month. The allowance is ' + money(three.lha) + '. The gap is ' + money(three.gap) + ' a month.');
     else takeaways.push('The 3 bed rent gap is not yet recorded.');
-    if (!comps.rows.length) takeaways.push('Land Registry sold prices are not in the file for ' + area + '.');
-    else takeaways.push(stated
-      ? stated + ' current lot' + (stated === 1 ? '' : 's') + ' state 3 or 4 bed. ' + unstated + ' do not state a bed count.'
-      : 'No current lot states a 3 or 4 bed count.');
+    const fit = (stated ? stated + ' current lot' + (stated === 1 ? '' : 's') + ' state 3 or 4 bed. ' : 'No current lot states a 3 or 4 bed count. ')
+      + (reserved ? reserved + ' state that reserved matters have been discharged.' : 'None state that reserved matters have been discharged.')
+      + (comps.rows.length ? '' : ' Land Registry sold prices are not in the file for ' + area + '.');
+    takeaways.push(fit);
     return {
       today,
       area,
