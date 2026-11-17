@@ -91,9 +91,10 @@
           + '</article>';
       }).join('');
       return '<section class="card" id="gn-' + esc(ws.id) + '"><div class="gn-ws-h"><h2>' + esc(ws.title) + '</h2><p class="foot">' + count.done + ' of ' + count.total + ' done</p></div><div class="gn-bar" aria-hidden="true"><span style="width:' + count.percent + '%"></span></div>'
+        + '<details class="bd-fold"' + (ui.editing ? ' open' : '') + '><summary>Show the questions</summary>'
         + items
         + '<form class="gn-add" data-act="add-item" data-ws="' + esc(ws.id) + '"><input name="text" placeholder="New checklist item" aria-label="New item in ' + esc(ws.title) + '" autocomplete="off"><button class="btn" type="submit">Add item</button></form>'
-        + '<details><summary class="foot">Remove this workstream</summary><button type="button" class="btn sec" data-act="del-ws" data-ws="' + esc(ws.id) + '">Delete workstream</button></details></section>';
+        + '<details><summary class="foot">Remove this workstream</summary><button type="button" class="btn sec" data-act="del-ws" data-ws="' + esc(ws.id) + '">Delete workstream</button></details></details></section>';
     }).join('');
     return sections + '<section class="card"><h2>Add a workstream</h2><form class="gn-add" data-act="add-ws"><input name="title" placeholder="New workstream name" aria-label="New workstream name" autocomplete="off"><button class="btn" type="submit">Add workstream</button></form><p class="foot">This checklist is for ' + esc(area) + ' only. Switch area to see the others. Manchester starts with Yes on the market question.</p></section>';
   }
@@ -123,7 +124,7 @@
       + '<div class="gn-tools"><button type="button" class="btn sec" data-act="edit-agent" data-id="' + esc(row.id) + '">Edit</button><button type="button" class="btn sec" data-act="log-agent" data-id="' + esc(row.id) + '">Log a deal</button><button type="button" class="btn sec" data-act="del-agent" data-id="' + esc(row.id) + '">Delete</button></div></article>').join('');
     return '<section class="card"><h2>Agents and contacts in ' + esc(state.area) + '</h2><p class="lead">Register with the auction houses, estate agents, land agents, council housing teams and registered providers who can bring a deal before it reaches the open market.</p><button type="button" class="btn" data-act="new-agent">Add a contact</button>'
       + (showForm ? agentForm(editing) : '')
-      + (body || '<p>No contacts for this area yet.</p>') + '</section>';
+      + '<details class="bd-fold"' + (ui.editing && ui.editing.kind === 'agent' ? ' open' : '') + '><summary>Show the register (' + rows.length + ')</summary>' + (body || '<p>No contacts for this area yet.</p>') + '</details></section>';
   }
 
   function sourceChoices() {
@@ -156,7 +157,7 @@
     const body = rows.map((row) => '<article class="me-row"><h3>' + esc(row.address || 'Address not stated') + (row.postcode ? ', ' + esc(row.postcode) : '') + '</h3><p class="foot">' + esc(row.date || 'No date') + ' · ' + esc(row.type) + (row.beds ? ' · ' + esc(row.beds) + ' bed' : '') + ' · ' + esc(row.status) + '</p><p>Source: <b>' + esc(row.sourceName || 'Not linked') + '</b></p><p>Planning: ' + esc(row.planning) + (row.guide ? ' · Guide £' + esc(Number(row.guide).toLocaleString('en-GB')) : '') + '</p>' + (row.notes ? '<p class="foot">' + esc(row.notes) + '</p>' : '') + '<div class="gn-tools"><button type="button" class="btn sec" data-act="edit-intake" data-id="' + esc(row.id) + '">Edit</button><button type="button" class="btn sec" data-act="del-intake" data-id="' + esc(row.id) + '">Delete</button></div></article>').join('');
     return '<section class="card"><h2>Off-market deals in ' + esc(state.area) + '</h2><p class="lead">Deals that come from an agent or stakeholder often never reach the open market. Log them here. Planning status is what you were told. Not stated means it was not given. Do not guess.</p><button type="button" class="btn" data-act="new-intake">Add a deal</button>'
       + (showForm ? intakeForm(editing) : '')
-      + (body || '<p>No off-market deals logged for this area.</p>') + '</section>';
+      + '<details class="bd-fold"' + (showForm ? ' open' : '') + '><summary>Show the log (' + rows.length + ')</summary>' + (body || '<p>No off-market deals logged for this area.</p>') + '</details></section>';
   }
 
   function mapCards() {

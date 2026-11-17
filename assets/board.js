@@ -1,0 +1,195 @@
+/* One-screen board for the selected area. Detail opens from a tile or a bar. */
+(function () {
+  'use strict';
+  const M = window.BoardModel;
+  if (!M) return;
+
+  const state = {area: 'Manchester', drill: null, screen: null, error: '', loading: false};
+  let cache = null;
+  let pending = null;
+
+  function esc(value) {
+    return String(value == null ? '' : value).replace(/[&<>"']/g, (ch) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[ch]));
+  }
+  function bars(rows, kind) {
+    const max = Math.max(1, ...rows.map((row) => row.count || row.median || 0));
+    if (!rows.length) return '<p>Not yet recorded</p>';
+    return rows.slice(0, 8).map((row) => {
+      const size = row.count != null ? row.count : row.median;
+      const on = state.drill && state.drill.kind === kind && state.drill.id === row.id;
+      const label = row.count != null ? row.count : M.money(row.median);
+      return '<button type="button" class="bd-bar' + (on ? ' on' : '') + '" data-kind="' + esc(kind) + '" data-id="' + esc(row.id) + '"><span>' + esc(row.label) + '</span><i><b style="width:' + Math.max(4, (size / max) * 100) + '%"></b></i><em>' + esc(label) + '</em></button>';
+    }).join('');
+  }
+  function drillLots(rows) {
+    const shown = rows.slice(0, 8);
+    const rest = rows.slice(8);
+    const line = (lot) => '<article class="bd-lot"><b>' + esc(lot.address) + '</b><p>' + esc(lot.type) + ' · ' + esc(lot.beds === 'Not stated' ? 'Beds not stated' : lot.beds + ' bed') + ' · ' + (lot.guide ? esc(M.money(lot.guide)) : 'Guide not published') + ' · ' + esc(lot.date || 'Date not published') + '</p>' + (lot.url ? '<a href="' + esc(lot.url) + '" target="_blank" rel="noopener">Open the lot</a>' : '') + '</article>';
+    return '<div class="bd-list">' + shown.map(line).join('') + '</div>' + (rest.length ? '<details class="bd-fold"><summary>Show detail (' + rest.length + ' more)</summary><div class="bd-list">' + rest.map(line).join('') + '</div></details>' : '');
+  }
+  function html(screen) {
+    const rent = screen.rents.find((row) => row.id === '3');
+    const gapText = screen.area === 'Cheshire' ? 'Not yet recorded' : (rent && rent.gap != null ? M.money(rent.gap) : 'Not yet recorded');
+    const compsText = screen.comps.rows.length ? M.money(M.median(screen.comps.rows.map((row) => row.median))) : 'Not yet recorded';
+    const drill = state.drill;
+    const matched = drill && drill.kind !== 'rent' && drill.kind !== 'comps' && drill.kind !== 'map' ? M.matches(screen, drill) : [];
+    const drillTitle = !drill ? '' : drill.kind === 'rent' ? 'Rents' : drill.kind === 'comps' ? 'Sold prices' : drill.kind === 'map' ? 'Map' : (drill.label || drill.id);
+    return '<div class="bd"><div class="bd-top"><div><p class="bd-kicker">Board</p><h1>' + esc(screen.area) + '</h1></div><label>Area <select id="bd-area">' + M.AREAS.map((area) => '<option' + (area === screen.area ? ' selected' : '') + '>' + esc(area) + '</option>').join('') + '</select></label></div>'
+      + '<div class="bd-kpis">'
+      + '<button type="button" class="bd-tile" data-kind="all" data-id="all"><span>Current lots</span><b>' + screen.lots.length + '</b></button>'
+      + '<button type="button" class="bd-tile" data-kind="price" data-id=""><span>Median guide</span><b>' + esc(M.money(screen.medianGuide)) + '</b><span>' + screen.guideCount + ' published</span></button>'
+      + '<button type="button" class="bd-tile" data-kind="rent" data-id="3"><span>3 bed rent gap</span><b>' + esc(gapText) + '</b><span>' + (screen.onsMonth ? esc(screen.onsMonth) + ' ONS minus the allowance' : 'ONS minus the allowance') + '</span></button>'
+      + '<button type="button" class="bd-tile" data-kind="comps" data-id=""><span>District medians</span><b>' + esc(compsText) + '</b><span>' + (screen.comps.rows.length ? 'Middle of ' + screen.comps.rows.length + ' districts, ' + esc(screen.comps.year) : 'Land Registry') + '</span></button>'
+      + '</div>'
+      + '<div class="bd-charts">'
+      + '<article class="bd-chart"><h2>Lots by type</h2>' + bars(screen.types, 'type') + '</article>'
+      + '<article class="bd-chart"><h2>Lots by beds</h2>' + bars(screen.beds, 'beds') + '</article>'
+      + '<article class="bd-chart"><h2>Guide prices</h2>' + bars(screen.prices, 'price') + '</article>'
+      + '<article class="bd-chart"><h2>Auction dates</h2>' + bars(screen.calendar, 'month') + '</article>'
+      + '<article class="bd-chart"><h2>Open market and allowance</h2>' + (screen.rents.length ? screen.rents.map((row) => '<button type="button" class="bd-bar" data-kind="rent" data-id="' + esc(row.id) + '"><span>' + esc(row.label) + '</span><i><b style="width:100%"></b></i><em>' + esc(row.gap != null ? M.money(row.gap) : ((row.ons != null || row.ons3 != null) ? 'ONS ' + M.money(row.ons != null ? row.ons : row.ons3) : 'Not yet recorded')) + '</em></button>').join('') : '<p>Not yet recorded</p>') + '<p class="bd-src">A 4 bed gap is not shown. The ONS figure is 4 or more bedrooms.</p></article>'
+      + '<article class="bd-chart"><h2>Land Registry district medians</h2>' + bars(screen.comps.rows, 'comps') + '<p class="bd-src">' + (screen.comps.year ? 'Price Paid, ' + esc(screen.comps.year) + '. A district is shown when it has at least 5 sales.' : 'Not yet recorded') + '</p><button type="button" class="btn sec" data-go="map">Open the map</button></article>'
+      + '</div>'
+      + '<article class="bd-chart"><h2>Takeaways</h2><ul class="bd-take">' + screen.takeaways.map((line) => '<li>' + esc(line) + '</li>').join('') + '</ul></article>'
+      + (drill ? '<section class="bd-drill"><p class="bd-kicker">Board / ' + esc(screen.area) + ' / ' + esc(drillTitle) + '</p><button type="button" class="btn sec" id="bd-back">Back to the board</button><h2>' + esc(drillTitle) + '</h2>'
+        + (drill.kind === 'rent' ? '<ul class="bd-take">' + screen.rents.map((row) => '<li>' + esc(row.label) + ': ONS ' + esc(row.ons != null ? M.money(row.ons) : (row.ons3 != null ? M.money(row.ons3) : 'Not yet recorded')) + '. Allowance ' + esc(row.lha != null ? M.money(row.lha) : 'Not yet recorded') + '.' + (row.note ? ' ' + esc(row.note) : '') + '</li>').join('') + '</ul><button type="button" class="btn sec" data-go="rentgap">Open the rent comparison</button>' : '')
+        + (drill.kind === 'comps' ? '<p>' + (screen.comps.rows.length ? esc(screen.comps.rows.length) + ' districts in ' + esc(screen.comps.year) + '.' : 'Not yet recorded') + '</p><button type="button" class="btn sec" data-go="comps">Open comps</button>' : '')
+        + (drill.kind === 'map' ? '<p>The map uses the existing town view. It is not redrawn from these lots.</p>' : '')
+        + (matched.length ? '<p>' + matched.length + ' current lot' + (matched.length === 1 ? '' : 's') + '.</p>' + drillLots(matched) + '<button type="button" class="btn" data-go="auctions">Open these in Auctions</button>' : (drill.kind === 'type' || drill.kind === 'beds' || drill.kind === 'price' || drill.kind === 'month' ? '<p>No current lot is in this cut.</p>' : ''))
+        + '</section>' : '')
+      + '</div>';
+  }
+
+  function paint(host) {
+    if (!host) return;
+    if (!cache) {
+      host.innerHTML = '<div class="bd"><p class="bd-kicker">Board</p><h1>Reading the current lots</h1></div>';
+      load().then((data) => { if (!data) return; if (location.hash && location.hash !== '#board') return; paint(host); });
+      return;
+    }
+    if (state.error) {
+      host.innerHTML = '<div class="bd"><h1>The board did not load</h1><p>' + esc(state.error) + '</p></div>';
+      return;
+    }
+    state.screen = M.build({lots: cache.lots, today: M.londonDay(), area: state.area, rents: cache.rents, comps: cache.comps});
+    host.innerHTML = html(state.screen);
+    const select = host.querySelector('#bd-area');
+    if (select) select.onchange = () => { state.area = select.value; state.drill = null; paint(host); };
+    host.querySelectorAll('[data-kind]').forEach((button) => button.onclick = () => {
+      const kind = button.dataset.kind;
+      const id = button.dataset.id;
+      state.drill = state.drill && state.drill.kind === kind && state.drill.id === id ? null : {kind, id, label: button.querySelector('span') ? button.querySelector('span').textContent : id};
+      paint(host);
+      const drill = host.querySelector('.bd-drill');
+      if (drill) drill.scrollIntoView({block: 'nearest'});
+    });
+    const back = host.querySelector('#bd-back');
+    if (back) back.onclick = () => { state.drill = null; paint(host); };
+    host.querySelectorAll('[data-go]').forEach((button) => button.onclick = () => open(button.dataset.go));
+    if (location.hash !== '#board') history.replaceState(null, '', '#board');
+  }
+
+  function open(mode) {
+    if (mode === 'auctions') {
+      if (typeof viewMode === 'function') viewMode('auctions');
+      const apply = (tries) => {
+        const sel = document.querySelector('#auctions_body [data-aq-filter="town"]');
+        if (sel) { sel.value = state.area; sel.dispatchEvent(new Event('change', {bubbles: true})); return; }
+        if (tries < 8) setTimeout(() => apply(tries + 1), 400);
+      };
+      setTimeout(() => apply(0), 300);
+      return;
+    }
+    if (mode === 'map') {
+      if (typeof viewMode === 'function') viewMode('map');
+      setTimeout(() => {
+        const sel = document.getElementById('map_city');
+        if (!sel) return;
+        const option = Array.from(sel.options).find((item) => item.value === state.area || item.textContent.indexOf(state.area) >= 0);
+        if (option) { sel.value = option.value; sel.dispatchEvent(new Event('change', {bubbles: true})); }
+      }, 400);
+      return;
+    }
+    if (mode === 'comps') {
+      if (typeof viewMode === 'function') viewMode('comps');
+      setTimeout(() => {
+        const sel = document.getElementById('comp_city');
+        if (sel && Array.from(sel.options).some((item) => item.value === state.area)) {
+          sel.value = state.area;
+          sel.dispatchEvent(new Event('change', {bubbles: true}));
+        }
+      }, 400);
+      return;
+    }
+    if (typeof viewMode === 'function') viewMode(mode);
+  }
+
+  function load() {
+    if (cache) return Promise.resolve(cache);
+    if (pending) return pending;
+    state.loading = true;
+    pending = Promise.all(['data/auctions/lots.json', 'data/rent-scenarios.json', 'comps/summary.json'].map((file) => fetch(file + '?v=20261117-board', {cache: 'no-store'}).then((response) => {
+      if (!response.ok) throw new Error(file + ' returned HTTP ' + response.status);
+      return response.json();
+    }))).then((rows) => {
+      cache = {lots: rows[0].lots || [], rents: rows[1], comps: rows[2]};
+      state.loading = false;
+      state.error = '';
+      pending = null;
+      return cache;
+    }).catch((error) => {
+      state.loading = false;
+      pending = null;
+      state.error = error.message || 'The files did not load.';
+      return null;
+    });
+    return pending;
+  }
+
+  function fold(root) {
+    if (!root) return;
+    root.querySelectorAll('table').forEach((table) => {
+      if (table.closest('details') || table.rows.length < 8) return;
+      const details = document.createElement('details');
+      details.className = 'bd-fold';
+      const summary = document.createElement('summary');
+      summary.textContent = 'Show detail';
+      table.parentNode.insertBefore(details, table);
+      details.appendChild(summary);
+      details.appendChild(table);
+    });
+  }
+  function auctionSummary() {
+    const root = document.getElementById('auctions_body');
+    if (!root || root.querySelector('.bd-auc')) return;
+    const cards = root.querySelectorAll('.aq-lot');
+    if (!cards.length) return;
+    const counts = new Map();
+    cards.forEach((card) => {
+      const eye = card.querySelector('.aq-eyebrow');
+      const type = eye ? eye.textContent.split('·').slice(1).join('·').trim() : 'Not stated';
+      counts.set(type || 'Not stated', (counts.get(type || 'Not stated') || 0) + 1);
+    });
+    const bar = document.createElement('div');
+    bar.className = 'bd-auc';
+    bar.innerHTML = '<b>' + cards.length + ' current</b>' + Array.from(counts.entries()).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([label, count]) => '<button type="button" data-aq-type="' + esc(label) + '">' + esc(label) + ' ' + count + '</button>').join('');
+    root.insertBefore(bar, root.firstChild);
+    bar.querySelectorAll('[data-aq-type]').forEach((button) => button.onclick = () => {
+      const sel = root.querySelector('[data-aq-filter="type"]');
+      if (!sel) return;
+      const option = Array.from(sel.options).find((item) => item.value === button.dataset.aqType || item.textContent === button.dataset.aqType);
+      if (!option) return;
+      sel.value = option.value;
+      sel.dispatchEvent(new Event('change', {bubbles: true}));
+    });
+  }
+
+  const auctions = document.getElementById('auctions_body');
+  if (auctions && window.MutationObserver) {
+    const observer = new MutationObserver(() => auctionSummary());
+    observer.observe(auctions, {childList: true});
+  }
+  window.addEventListener('hashchange', () => {
+    if (location.hash === '#board' && typeof viewMode === 'function') viewMode('board');
+  });
+  window.lcBoard = {paint, fold, open, state};
+})();

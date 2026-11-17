@@ -1,0 +1,33 @@
+.bd{display:grid;gap:14px;max-width:100%;min-width:0}
+.bd-top{display:flex;justify-content:space-between;gap:12px;align-items:end;flex-wrap:wrap}
+.bd-top h1{margin:0;font-size:clamp(28px,4vw,40px);line-height:1.1}
+.bd-kicker{margin:0;font-size:13px;font-weight:600;color:var(--mut)}
+.bd-kpis,.bd-charts{display:grid;gap:10px;min-width:0}
+.bd-kpis{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.bd-charts{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.bd-tile,.bd-chart{background:#fff;border-radius:16px;padding:12px 14px;min-width:0}
+.bd-tile{border:0;text-align:left;cursor:pointer;font:inherit;color:inherit}
+.bd-tile b,.bd-chart h2{display:block}
+.bd-tile b{font-size:26px;line-height:1.1}
+.bd-tile span,.bd-src{color:var(--mut);font-size:13px}
+.bd-chart h2{margin:0 0 8px;font-size:16px}
+.bd-bar,.bd-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto;gap:8px;align-items:center;width:100%;border:0;background:transparent;padding:4px 0;cursor:pointer;font:inherit;color:inherit;text-align:left}
+.bd-bar i,.bd-row i{display:block;height:10px;background:#eef1f5;border-radius:6px;overflow:hidden}
+.bd-bar b,.bd-row b{display:block;height:10px;background:#021726;border-radius:6px}
+.bd-bar.on b,.bd-row.on b{background:#1d4e89}
+.bd-take{margin:0;padding-left:18px}
+.bd-take li{margin:4px 0}
+.bd-drill{background:#fff;border-radius:16px;padding:14px}
+.bd-list{display:grid;gap:8px;margin-top:8px}
+.bd-lot{border-top:1px solid var(--line);padding-top:8px}
+.bd-fold{margin:8px 0;max-width:100%}
+.bd-fold>summary{cursor:pointer;font-weight:600}
+.bd-fold, .scroll, .me-map, .board{max-width:100%;overflow-x:auto}
+.bd-auc{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 12px}
+.bd-auc button{border:1px solid var(--line);background:#fff;border-radius:16px;padding:6px 10px;cursor:pointer;font:inherit}
+@media(max-width:480px){
+  .mainnav{overflow-x:auto !important;flex-wrap:nowrap !important}
+  .mainnav .mainb{flex:0 0 auto !important;min-width:max-content}
+  .bd-bar,.bd-row{grid-template-columns:minmax(0,1fr) auto}
+  .bd-bar i,.bd-row i{display:none}
+}

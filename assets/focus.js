@@ -3,6 +3,7 @@
   'use strict';
 
   const PRIMARY = [
+    ['board', 'Board'],
     ['assets', 'Find'],
     ['distress', 'Leads'],
     ['deal', 'Deal'],
@@ -274,6 +275,15 @@
   function paintScreen(mode) {
     screenHost().hidden = mode === 'auctions';
     if (mode === 'auctions') { document.body.classList.remove('ios-find', 'ios-deal'); markNav(mode); return; }
+    if (mode === 'board') {
+      document.body.classList.remove('ios-find', 'ios-deal');
+      markNav('board');
+      const host = screenHost();
+      host.hidden = false;
+      if (window.lcBoard) window.lcBoard.paint(host);
+      else host.innerHTML = '<p class="lc-kicker">Board</p><h1>The board is loading.</h1>';
+      return;
+    }
     if (mode === 'assets') return paintFind();
     if (mode === 'rentgap') {
       document.body.classList.remove('ios-find', 'ios-deal');
@@ -669,6 +679,7 @@
     if (mode === 'distress') foldLeads();
     if (mode === 'deal') shapeDeal();
     if (mode === 'assets') foldStatic();
+    if (mode !== 'auctions' && mode !== 'board' && window.lcBoard) window.lcBoard.fold(document.getElementById(mode + '_view'));
     if (mode !== 'auctions') clipLong(document.getElementById(mode + '_view'));
   }
 
@@ -739,7 +750,8 @@
       if (view) view.classList.add('hidden');
       if (find) find.classList.remove('hidden');
     }
-    viewMode(location.hash === '#auctions' || window.lcAuctionsActive ? 'auctions' : 'assets');
+    const opening = location.hash === '#auctions' || window.lcAuctionsActive ? 'auctions' : (location.hash.indexOf('#entry') === 0 ? 'entry' : 'board');
+    viewMode(opening);
   }, 0);
   let tries = 0;
   const waitSites = setInterval(function () {
