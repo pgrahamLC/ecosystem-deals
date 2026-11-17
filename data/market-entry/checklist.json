@@ -1,0 +1,146 @@
+{
+  "updated": "2026-11-17",
+  "file": "checklist.json",
+  "title": "Go / No-Go Checklist",
+  "purpose": "Decide whether we can operate in an area. Tick an item when it is done and add a short answer where you have one. Manchester is already answered Yes.",
+  "storageNote": "Ticks, notes, owners, the agent register, the stakeholder map, acquisition criteria and the off-market log stay in this browser. Export JSON to share them. The starting items are in the market-entry JSON files.",
+  "answers": {
+    "Manchester": {
+      "manchester": {
+        "done": true,
+        "notes": "Yes",
+        "owner": "",
+        "status": "done"
+      }
+    }
+  },
+  "workstreams": [
+    {
+      "id": "la-lease",
+      "title": "Local Authority 10-year Lease Agreements",
+      "items": [
+        {
+          "id": "offer",
+          "text": "Understand what is on offer?",
+          "done": false,
+          "notes": "",
+          "owner": "",
+          "status": "not-started",
+          "links": [
+            {"label": "Mack Living lease terms", "href": "https://pgraham974.github.io/ecosystem-partners/#mack/manchester-long-term-ta", "only": "Manchester"},
+            {"label": "Manchester City Council record", "href": "https://pgraham974.github.io/ecosystem-partners/#analysis/opportunities/GM-035", "only": "Manchester"},
+            {"label": "Market Screen", "href": "https://pgraham974.github.io/ecosystem-partners/#market"}
+          ]
+        },
+        {
+          "id": "engage-decision",
+          "text": "Do we want to engage with it?",
+          "done": false,
+          "notes": "",
+          "owner": "",
+          "status": "not-started",
+          "links": [
+            {"label": "Market Screen", "href": "https://pgraham974.github.io/ecosystem-partners/#market"},
+            {"label": "Market Screen shortlist", "href": "https://pgraham974.github.io/ecosystem-partners/#market/shortlist"}
+          ]
+        },
+        {
+          "id": "how-engage",
+          "text": "How do we engage?",
+          "done": false,
+          "notes": "",
+          "owner": "",
+          "status": "not-started",
+          "links": [
+            {"label": "Mack Living next step", "href": "https://pgraham974.github.io/ecosystem-partners/#mack/manchester-long-term-ta", "only": "Manchester"},
+            {"label": "Framework records", "href": "https://pgraham974.github.io/ecosystem-partners/#analysis/frameworks"}
+          ]
+        },
+        {
+          "id": "complete",
+          "text": "How do we complete an engagement and activate deal flow?",
+          "done": false,
+          "notes": "",
+          "owner": "",
+          "status": "not-started",
+          "links": [
+            {"label": "Opportunity records", "href": "https://pgraham974.github.io/ecosystem-partners/#analysis/opportunities"},
+            {"label": "Return check", "href": "https://pgraham974.github.io/ecosystem-partners/#analysis/return"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portfolio",
+      "title": "Assembling A Portfolio",
+      "items": [
+        {
+          "id": "manchester",
+          "text": "Is Manchester a good market for you?",
+          "done": false,
+          "notes": "",
+          "owner": "",
+          "status": "not-started",
+          "links": [
+            {"label": "Analysis Dashboard Manchester evidence", "href": "https://pgraham974.github.io/ecosystem-partners/#analysis/regions", "only": "Manchester"},
+            {"label": "Greater Manchester LHA rates", "href": "https://pgraham974.github.io/ecosystem-partners/#analysis/lha", "only": "Manchester"},
+            {"label": "Greater Manchester benchmarks", "href": "https://pgraham974.github.io/ecosystem-partners/#analysis/region/GM", "only": "Manchester"},
+            {"label": "Market Screen", "href": "https://pgraham974.github.io/ecosystem-partners/#market"}
+          ]
+        },
+        {
+          "id": "property-type",
+          "text": "What type of property is needed to fulfil this requirement?",
+          "done": false,
+          "notes": "",
+          "owner": "",
+          "status": "not-started",
+          "links": [
+            {"label": "Demand on the Manchester City Council record", "href": "https://pgraham974.github.io/ecosystem-partners/#analysis/opportunities/GM-035", "only": "Manchester"},
+            {"label": "What we want in this area", "hash": "entry/criteria"}
+          ]
+        },
+        {
+          "id": "volume",
+          "text": "Can we realistically access a sufficient volume?",
+          "done": false,
+          "notes": "",
+          "owner": "",
+          "status": "not-started",
+          "links": [
+            {"label": "Manchester City Council scale and demand", "href": "https://pgraham974.github.io/ecosystem-partners/#analysis/opportunities/GM-035", "only": "Manchester"},
+            {"label": "Recorded routes", "href": "https://pgraham974.github.io/ecosystem-partners/#analysis/contracts"},
+            {"label": "Agents in this area", "hash": "entry/agents"}
+          ]
+        },
+        {
+          "id": "gates",
+          "text": "Can we be competitive at a level that meets our acquisition gates?",
+          "done": false,
+          "notes": "",
+          "owner": "",
+          "status": "not-started",
+          "links": [
+            {"label": "Acquisition gates", "href": "https://pgraham974.github.io/ecosystem-partners/#analysis/opportunities"},
+            {"label": "Market Screen tests", "href": "https://pgraham974.github.io/ecosystem-partners/#market"},
+            {"label": "Return check", "href": "https://pgraham974.github.io/ecosystem-partners/#analysis/return"}
+          ]
+        },
+        {
+          "id": "pathways",
+          "text": "What specific pathways will we use to identify stock?",
+          "done": false,
+          "notes": "",
+          "owner": "",
+          "status": "not-started",
+          "links": [
+            {"label": "Recorded stock routes", "href": "https://pgraham974.github.io/ecosystem-partners/#analysis/contracts"},
+            {"label": "Mack Living", "href": "https://pgraham974.github.io/ecosystem-partners/#mack", "only": "Manchester"},
+            {"label": "Auction lots", "hash": "auctions"},
+            {"label": "Off-market log", "hash": "entry/intake"}
+          ]
+        }
+      ]
+    }
+  ]
+}

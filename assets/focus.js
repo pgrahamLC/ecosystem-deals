@@ -6,6 +6,7 @@
     ['assets', 'Find'],
     ['distress', 'Leads'],
     ['deal', 'Deal'],
+    ['entry', 'Go / No-Go'],
     ['comps', 'Comps']
   ];
   const MORE = [

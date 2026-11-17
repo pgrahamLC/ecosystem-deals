@@ -1,0 +1,139 @@
+{
+  "updated": "2026-11-17",
+  "file": "stakeholders.json",
+  "note": "Charities and funders with a public website. Agents, councils and registered providers are seeded in agents.json and shown on the map from that register. No person, email or phone is stored.",
+  "stakeholders": [
+    {
+      "id": "ch-stepping-stone-manchester",
+      "area": "Manchester",
+      "name": "Stepping Stone Projects",
+      "category": "charity",
+      "role": "Homelessness accommodation and support charity in Greater Manchester and Lancashire.",
+      "relationship": "not-contacted",
+      "website": "https://www.stepping-stone.org.uk/contact/",
+      "notes": "Public contact page only. No person, email or phone is stored.",
+      "source": "rp_charities.json"
+    },
+    {
+      "id": "ch-1625-bristol",
+      "area": "Bristol",
+      "name": "1625 Independent People",
+      "category": "charity",
+      "role": "Youth homelessness and care-leaver housing charity in Bristol and South Gloucestershire.",
+      "relationship": "not-contacted",
+      "website": "https://www.1625ip.co.uk/",
+      "notes": "Public website only. No person, email or phone is stored.",
+      "source": "rp_charities.json"
+    },
+    {
+      "id": "ch-second-step-bristol",
+      "area": "Bristol",
+      "name": "Second Step",
+      "category": "charity",
+      "role": "Mental-health and homelessness charity. Housing First is published for the West of England.",
+      "relationship": "not-contacted",
+      "website": "https://www.second-step.co.uk/",
+      "notes": "Public website only. No person, email or phone is stored.",
+      "source": "rp_charities.json"
+    },
+    {
+      "id": "ch-ccp-cheltenham",
+      "area": "Cheltenham",
+      "name": "CCP",
+      "category": "charity",
+      "role": "Supported accommodation and homelessness charity based in Cheltenham, covering Gloucestershire.",
+      "relationship": "not-contacted",
+      "website": "https://www.ccp.org.uk/",
+      "notes": "Public website only. Registered-provider status is not treated as confirmed here. No person, email or phone is stored.",
+      "source": "rp_charities.json"
+    },
+    {
+      "id": "fd-homes-england-manchester",
+      "area": "Manchester",
+      "name": "Homes England",
+      "category": "funder",
+      "role": "National housing and regeneration funder for England.",
+      "relationship": "not-contacted",
+      "website": "https://www.gov.uk/government/organisations/homes-england",
+      "notes": "Official organisation page. No named contact is stored.",
+      "source": "gov.uk"
+    },
+    {
+      "id": "fd-homes-england-bristol",
+      "area": "Bristol",
+      "name": "Homes England",
+      "category": "funder",
+      "role": "National housing and regeneration funder for England.",
+      "relationship": "not-contacted",
+      "website": "https://www.gov.uk/government/organisations/homes-england",
+      "notes": "Official organisation page. No named contact is stored.",
+      "source": "gov.uk"
+    },
+    {
+      "id": "fd-homes-england-cheltenham",
+      "area": "Cheltenham",
+      "name": "Homes England",
+      "category": "funder",
+      "role": "National housing and regeneration funder for England.",
+      "relationship": "not-contacted",
+      "website": "https://www.gov.uk/government/organisations/homes-england",
+      "notes": "Official organisation page. No named contact is stored.",
+      "source": "gov.uk"
+    },
+    {
+      "id": "fd-homes-england-liverpool",
+      "area": "Liverpool",
+      "name": "Homes England",
+      "category": "funder",
+      "role": "National housing and regeneration funder for England.",
+      "relationship": "not-contacted",
+      "website": "https://www.gov.uk/government/organisations/homes-england",
+      "notes": "Official organisation page. No named contact is stored.",
+      "source": "gov.uk"
+    },
+    {
+      "id": "fd-homes-england-cheshire",
+      "area": "Cheshire",
+      "name": "Homes England",
+      "category": "funder",
+      "role": "National housing and regeneration funder for England.",
+      "relationship": "not-contacted",
+      "website": "https://www.gov.uk/government/organisations/homes-england",
+      "notes": "Official organisation page. No named contact is stored.",
+      "source": "gov.uk"
+    },
+    {
+      "id": "fd-homes-england-birmingham",
+      "area": "Birmingham",
+      "name": "Homes England",
+      "category": "funder",
+      "role": "National housing and regeneration funder for England.",
+      "relationship": "not-contacted",
+      "website": "https://www.gov.uk/government/organisations/homes-england",
+      "notes": "Official organisation page. No named contact is stored.",
+      "source": "gov.uk"
+    },
+    {
+      "id": "fd-scotland-glasgow",
+      "area": "Glasgow",
+      "name": "Scottish Government More Homes",
+      "category": "funder",
+      "role": "Housing supply policy for Scotland, including affordable housing.",
+      "relationship": "not-contacted",
+      "website": "https://www.gov.scot/policies/more-homes/",
+      "notes": "Official policy page. No named contact is stored.",
+      "source": "gov.scot"
+    },
+    {
+      "id": "fd-scotland-edinburgh",
+      "area": "Edinburgh",
+      "name": "Scottish Government More Homes",
+      "category": "funder",
+      "role": "Housing supply policy for Scotland, including affordable housing.",
+      "relationship": "not-contacted",
+      "website": "https://www.gov.scot/policies/more-homes/",
+      "notes": "Official policy page. No named contact is stored.",
+      "source": "gov.scot"
+    }
+  ]
+}

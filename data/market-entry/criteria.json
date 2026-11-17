@@ -1,0 +1,11 @@
+{
+  "updated": "2026-11-17",
+  "file": "criteria.json",
+  "default": {
+    "summary": "Sites with planning where reserved matters have been discharged, and 3 to 4 bed homes.",
+    "bedsMin": 3,
+    "bedsMax": 4,
+    "planning": "Reserved matters discharged",
+    "notes": ""
+  }
+}
