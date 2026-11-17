@@ -3,30 +3,6 @@
   "connection_note": "Catalogue URLs checked 17 Nov 2026. Card counts are the public current-catalogue cards on that page, not a 5-30 home screen. This is scheduled source review, not an API feed.",
   "sources": [
     {
-      "id": "auction-house-northwest",
-      "name": "Auction House North West",
-      "homepage": "https://www.auctionhouse.co.uk/northwest",
-      "catalogue_url": "https://www.auctionhouse.co.uk/northwest",
-      "results_url": "https://www.auctionhouse.co.uk/northwest/auction/past-auctions",
-      "contact_url": "https://www.auctionhouse.co.uk/northwest/company/contact-us",
-      "regions": [
-        "Liverpool",
-        "Merseyside",
-        "North West"
-      ],
-      "refresh_method": "Read the public branch catalogue and past-auction tables. Keep Liverpool and Merseyside lots. Do not treat the branch name as a property match.",
-      "access_status": "Public catalogue returned HTTP 200 and lot cards on 17 Nov 2026.",
-      "last_checked": "2026-11-17",
-      "notes": "111 current lot cards on the branch page. Same Auction House site as the Manchester branch. Manchester lots on this page stay Manchester.",
-      "source_kind": "auction",
-      "connection_mode": "Official catalogue review; no live API feed",
-      "watch": "Existing Monday 07:00 Europe/London watch",
-      "added_this_update": true,
-      "sample_records": 111,
-      "sample_advertised": 111,
-      "sample_5_30": 0
-    },
-    {
       "id": "auction-house-cheshire",
       "name": "Auction House Cheshire, Staffordshire and Shropshire",
       "homepage": "https://www.auctionhouse.co.uk/staffordshire",
@@ -233,17 +209,18 @@
       "results_url": "https://www.auctionhouse.co.uk/northwest/auction/past-auctions",
       "contact_url": "https://www.auctionhouse.co.uk/northwest/company/contact-us",
       "regions": [
+        "Liverpool",
+        "Merseyside",
         "Greater Manchester",
         "Lancashire",
-        "Merseyside",
         "Cheshire",
         "Cumbria",
         "North West"
       ],
       "refresh_method": "Weekly: open https://www.auctionhouse.co.uk/northwest/auction/future-auction-dates and follow actual View Lots link. Current inspected catalogue 11 November 2026, 64 lots. Also inspect https://www.auctionhouse.co.uk/unsold (70 lots on this check) and recent-results page; open each candidate to check current offer and contradiction.",
-      "access_status": "Accessible in browser; future dates, current catalogue, lot page, results and unsold list inspected. Contact and homepage inspected via webfetch.",
-      "last_checked": "2026-10-20",
-      "notes": "No strict 3\u201330 existing residential-unit Greater Manchester block verified. Unsold lists single dwellings separately, including several Dougill Street houses; these are not assumed to be one portfolio. Two non-GM opportunities retained across both sources. Palatine Road consists of holiday apartments, so permanent residential planning/use suitability unverified.",
+      "access_status": "Public catalogue returned HTTP 200 on 17 Nov 2026, with 111 current lot cards. Earlier browser check of future dates, a lot page, results and the unsold list remains on file.",
+      "last_checked": "2026-11-17",
+      "notes": "17 Nov 2026: 111 current lot cards. Liverpool and Merseyside lots are kept. Manchester lots on the same pages stay Manchester. No strict 3-30 existing residential-unit Greater Manchester block was verified in the October pass. Unsold lists single dwellings separately, including several Dougill Street houses. These are not assumed to be one portfolio.",
       "id": "auction-house-north-west",
       "source_kind": "auction",
       "connection_mode": "Official catalogue review; no live API feed",
