@@ -183,6 +183,12 @@
         shaped.buyLabel = tag.label;
         shaped.buyReason = tag.reason;
       }
+      if (root.GatesModel && input && input.gates) {
+        const gate = root.GatesModel.lotScreen(lot, input.gates);
+        shaped.gate = gate.tag;
+        shaped.gateLabel = gate.label;
+        shaped.gateReason = gate.reason;
+      }
       return shaped;
     });
     const guides = lots.map((lot) => lot.guide).filter((value) => value != null);
@@ -227,7 +233,8 @@
       comps,
       onsMonth: (input && input.rents && input.rents.omr && input.rents.omr.month) || '',
       takeaways: takeaways.slice(0, 3),
-      buyCounts: lots.reduce((sum, lot) => { if (lot.buy) sum[lot.buy] += 1; return sum; }, {match: 0, partial: 0, no: 0})
+      buyCounts: lots.reduce((sum, lot) => { if (lot.buy) sum[lot.buy] += 1; return sum; }, {match: 0, partial: 0, no: 0}),
+      gateCounts: lots.reduce((sum, lot) => { if (lot.gate) sum[lot.gate] += 1; return sum; }, {holds: 0, out: 0, untested: 0})
     };
   }
   function matches(screen, drill) {
@@ -238,6 +245,7 @@
       if (drill.kind === 'price') return lot.band === drill.id;
       if (drill.kind === 'month') return lot.month === drill.id;
       if (drill.kind === 'buy') return lot.buy === drill.id;
+      if (drill.kind === 'gate') return lot.gate === drill.id;
       return true;
     });
   }

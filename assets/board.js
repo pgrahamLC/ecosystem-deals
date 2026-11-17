@@ -84,6 +84,7 @@
       + '<button type="button" class="bd-tile" data-kind="comps" data-id=""><span>District medians</span><b>' + esc(compsText) + '</b><span>' + (screen.comps.rows.length ? 'Middle of ' + screen.comps.rows.length + ' districts, ' + esc(screen.comps.year) : 'Land Registry') + '</span></button>'
       + '</div>'
       + (window.BuyBox ? window.BuyBox.cardHtml(screen.area, screen.buyCounts) : '')
+      + (screen.gateCounts ? '<article class="bd-chart"><h2>Gates screen</h2><p class="bd-src">A catalogue lot is never a pass. Where rent is missing it stays not testable yet.</p><div class="bd-buy-counts"><button type="button" class="bd-tile" data-kind="gate" data-id="holds"><span>Price screen holds</span><b>' + screen.gateCounts.holds + '</b></button><button type="button" class="bd-tile" data-kind="gate" data-id="out"><span>Screens out</span><b>' + screen.gateCounts.out + '</b></button><button type="button" class="bd-tile" data-kind="gate" data-id="untested"><span>Not testable yet</span><b>' + screen.gateCounts.untested + '</b></button></div></article>' : '')
       + '<div class="bd-charts">'
       + '<article class="bd-chart"><h2>Lots by type</h2>' + bars(screen.types, 'type') + '</article>'
       + '<article class="bd-chart"><h2>Lots by beds</h2>' + bars(screen.beds, 'beds') + '</article>'
@@ -115,7 +116,7 @@
       host.innerHTML = '<div class="bd"><h1>The board did not load</h1><p>' + esc(state.error) + '</p></div>';
       return;
     }
-    state.screen = M.build({lots: cache.lots, today: M.londonDay(), area: state.area, rents: cache.rents, comps: cache.comps, buyBox: cache.buyBox});
+    state.screen = M.build({lots: cache.lots, today: M.londonDay(), area: state.area, rents: cache.rents, comps: cache.comps, buyBox: cache.buyBox, gates: cache.gates});
     host.innerHTML = html(state.screen);
     const select = host.querySelector('#bd-area');
     if (select) select.onchange = () => { state.area = select.value; state.drill = null; paint(host); };
@@ -173,12 +174,12 @@
     if (cache) return Promise.resolve(cache);
     if (pending) return pending;
     state.loading = true;
-    pending = Promise.all(['data/auctions/lots.json', 'data/rent-scenarios.json', 'comps/summary.json', 'data/market-entry/agents.json', 'data/market-entry/checklist.json', 'data/market-entry/buy-box.json'].map((file) => fetch(file + '?v=20261117-buy', {cache: 'no-store'}).then((response) => {
+    pending = Promise.all(['data/auctions/lots.json', 'data/rent-scenarios.json', 'comps/summary.json', 'data/market-entry/agents.json', 'data/market-entry/checklist.json', 'data/market-entry/buy-box.json', 'data/market-entry/gates.json'].map((file) => fetch(file + '?v=20261117-gates', {cache: 'no-store'}).then((response) => {
       if (!response.ok) throw new Error(file + ' returned HTTP ' + response.status);
       return response.json();
     }))).then((rows) => {
       if (window.BuyBox) window.BuyBox.use(rows[5]);
-      cache = {lots: rows[0].lots || [], rents: rows[1], comps: rows[2], agents: rows[3], checklist: rows[4], buyBox: rows[5]};
+      cache = {lots: rows[0].lots || [], rents: rows[1], comps: rows[2], agents: rows[3], checklist: rows[4], buyBox: rows[5], gates: rows[6]};
       state.loading = false;
       state.error = '';
       pending = null;

@@ -1,0 +1,35 @@
+{
+  "updated": "2026-11-17",
+  "howToUpdate": "Change the anchors and every threshold recalculates. Gilts and the debt cost are implied by the published today figures and are to be confirmed by the CFO. Do not waive a gate here.",
+  "anchors": {
+    "gilt": 0.05,
+    "debtCost": 0.065,
+    "exitYield": 0.06,
+    "holdYears": 3
+  },
+  "spreadsBp": {
+    "unleveredIrr": 550,
+    "yocOverExit": 100,
+    "yocOverDebt": 100,
+    "leveredIrr": 1000,
+    "postTax": 450,
+    "cashOnCash": 200,
+    "leverageSpread": 100,
+    "breakEven": 100,
+    "downsideExit": 50
+  },
+  "downsideRentCut": 0.1,
+  "taxRate": 0.25,
+  "ltvMax": 0.6,
+  "ltcFlag": 0.8,
+  "dscrMin": 1.25,
+  "downsideDscrMin": 1.0,
+  "downsideMultipleMin": 1.0,
+  "operatorCoverMin": 1.25,
+  "concentrationMax": 0.4,
+  "multiples": [
+    {"maxYears": 3, "multiple": 1.5},
+    {"maxYears": 5, "multiple": 1.6},
+    {"maxYears": 99, "multiple": 1.7}
+  ]
+}

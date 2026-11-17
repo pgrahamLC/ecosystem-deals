@@ -35,6 +35,9 @@
 .bd-bar i,.bd-row i{display:block;height:10px;background:#eef1f5;border-radius:6px;overflow:hidden;min-width:0}
 .bd-bar b,.bd-row b{display:block;height:10px;background:#021726;border-radius:6px}
 .bd-bar.muted b{background:#c5ced6}
+.bd-bar.pass b{background:#1a9c5b}
+.bd-bar.fail b{background:#c62828}
+.bd-bar.amber b{background:#d4a017}
 .bd-bar.muted span,.bd-bar.muted em{color:#8b97a3}
 button.bd-pair{width:100%;border:0;background:transparent;font:inherit;color:inherit;cursor:pointer;text-align:left}
 .bd-pair{display:grid;grid-template-columns:4.2em minmax(0,1fr);gap:8px;align-items:center;margin:6px 0}

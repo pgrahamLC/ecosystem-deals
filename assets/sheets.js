@@ -130,7 +130,7 @@
     const summary = document.createElement('summary');
     summary.textContent = 'Show detail';
     fold.appendChild(summary);
-    const kids = [...root.children].filter((node) => node !== headEl);
+    const kids = [...root.children].filter((node) => node !== headEl && !node.classList.contains('sheet-keep'));
     root.appendChild(fold);
     kids.forEach((node) => fold.appendChild(node));
   }
