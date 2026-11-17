@@ -2,7 +2,7 @@
 import { chromium } from 'playwright';
 import { addressLike, areaMatch, cleanAddress, saleTag } from './core.mjs';
 
-const PLACES = ['Manchester', 'Glasgow', 'Edinburgh', 'Bristol', 'Cheltenham', 'Gloucester'];
+const PLACES = ['Manchester', 'Glasgow', 'Edinburgh', 'Bristol', 'Cheltenham', 'Gloucester', 'Liverpool', 'Cheshire', 'Chester', 'Birmingham', 'Wirral'];
 let browserPromise;
 
 async function browser() {
@@ -27,7 +27,7 @@ function strip(html) {
 
 function windows(text) {
   const found = [];
-  const hint = /.{0,110}(?:\b(?:greater manchester|stockport|salford|bolton|oldham|wigan|warrington|manchester|glasgow|edinburgh|bristol|cheltenham|gloucestershire|gloucester)\b|\b(?:GL|EH|BS|WA|WN|SK|OL|BL|M|G)\d{1,2}[A-Z]?\s*\d[A-Z]{2})/gi;
+  const hint = /.{0,110}(?:\b(?:greater manchester|stockport|salford|bolton|oldham|wigan|warrington|manchester|glasgow|edinburgh|bristol|cheltenham|gloucestershire|gloucester|liverpool|birkenhead|wirral|cheshire|chester|crewe|macclesfield|birmingham|solihull)\b|\b(?:GL|EH|BS|WA|WN|SK|OL|BL|CH|CW|M|G|L|B)\d{1,2}[A-Z]?\s*\d[A-Z]{2})/gi;
   for (const match of String(text).matchAll(hint)) {
     const slice = cleanAddress(match[0].replace(/\s+/g, ' ').trim());
     if (!slice || !addressLike(slice)) continue;
@@ -207,6 +207,6 @@ export async function collect({ source, now }) {
     const commercial = /\boffice\b|\bretail\b|\bshop\b|\bwarehouse\b|\bindustrial\b|\bpub\b|\bcommercial\b/i.test(item.address) && !/\bflat\b|\bhouse\b|\bapartment\b|\bhmo\b|\bresidential\b/i.test(item.address);
     return { ...item, lot_type: commercial ? 'Commercial' : '', residential_subtype: commercial ? 'Commercial' : '' };
   });
-  if (!result.lots.length && result.successful_pages) result.warnings.push('Rendered pages were read. No Manchester, Glasgow, Edinburgh, Bristol or Cheltenham/Gloucestershire lot was found in the visible text or the JSON those pages requested.');
+  if (!result.lots.length && result.successful_pages) result.warnings.push('Rendered pages were read. No Manchester, Glasgow, Edinburgh, Bristol, Cheltenham, Liverpool, Cheshire or Birmingham lot was found in the visible text or the JSON those pages requested.');
   return result;
 }

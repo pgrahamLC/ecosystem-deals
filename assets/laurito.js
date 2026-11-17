@@ -288,7 +288,7 @@
     if (document.querySelector('.lc-note')) return;
     const foot = document.createElement('footer');
     foot.className = 'lc-note';
-    foot.innerHTML = '<b>Accuracy.</b> A blank is unknown, not healthy. <details class="lc-inline"><summary>Sources and caveats</summary><p>Screening uses public registers already in this project: Companies House, HM Land Registry company ownership and Price Paid, EPC open data, ONS private rents, VOA / DWP Local Housing Allowance, and checked auction or portal listings. Each figure is a fact, an estimate or unknown. Ownership and officer names come from those published sources; this screen does not add further personal data. ONS rents are local-authority figures (Lothian is a broad rental market area), not district comps. LHA is a benefit cap, not bankable rent. Temporary accommodation or asylum demand is not a lease guarantee. Red, amber and purple mark A, C and B only. Edinburgh is included where source evidence is loaded. Focus: Manchester, Cheltenham, Bristol and Edinburgh, and 5–30 existing homes offered together at one site.</p></details>';
+    foot.innerHTML = '<b>Accuracy.</b> A blank is unknown, not healthy. <details class="lc-inline"><summary>Sources and caveats</summary><p>Screening uses public registers already in this project: Companies House, HM Land Registry company ownership and Price Paid, EPC open data, ONS private rents, VOA / DWP Local Housing Allowance, and checked auction or portal listings. Each figure is a fact, an estimate or unknown. Ownership and officer names come from those published sources; this screen does not add further personal data. ONS rents are local-authority figures (Lothian is a broad rental market area), not district comps. LHA is a benefit cap, not bankable rent. Temporary accommodation or asylum demand is not a lease guarantee. Red, amber and purple mark A, C and B only. Edinburgh is included where source evidence is loaded. Liverpool, Cheshire and Birmingham are included for auctions. Price Paid comps, maps and landlord books are not loaded for those three, so a blank there is unknown. Focus: Manchester, Liverpool, Cheshire, Birmingham, Cheltenham, Bristol and Edinburgh, and 5-30 existing homes offered together at one site.</p></details>';
     document.body.appendChild(foot);
   }
 
@@ -345,7 +345,7 @@
         }
         const rows = window.LC_BEST || [];
         if (!rows.length) {
-          host.innerHTML = '<p class="foot">No A or B leads in Manchester, Cheltenham or Bristol in this load. Open Leads. An empty list is not evidence that nothing is for sale.</p>';
+          host.innerHTML = '<p class="foot">No A or B leads in this load. Open Leads. An empty list is not evidence that nothing is for sale. Liverpool, Cheshire and Birmingham have no landlord book in this copy.</p>';
           return;
         }
         host.innerHTML = '<p class="foot">Select a row for the deal card. A and B are listed before C. The rank does not use titles owned or LHA.</p>';

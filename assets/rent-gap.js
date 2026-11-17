@@ -38,11 +38,23 @@
     const pc = String((lead && (lead.pcShow || lead.pc || lead.postcode)) || '').toUpperCase();
     const where = [city, lead && lead.addr, lead && lead.address].filter(Boolean).join(' ');
     if (OTHER_AUTHORITY.test(where)) return 'other';
-    if (/\bedinburgh\b/i.test(where) || /^EH/.test(pc)) return 'Edinburgh';
-    if (/\bbristol\b/i.test(where) || /bristol/i.test(city) || /^BS/.test(pc)) return 'Bristol';
-    if (/\bcheltenham\b/i.test(where) || /cheltenham/i.test(city)) return 'Cheltenham';
-    if (/\bglasgow\b/i.test(where) || /glasgow/i.test(city) || /^G\d/.test(pc)) return 'Glasgow';
-    if (/\bmanchester\b/i.test(where) || /manchester/i.test(city)) return 'Manchester';
+    const outward = (pc.match(/^([A-Z]{1,2}\d{1,2}[A-Z]?)/) || [])[1] || '';
+    const prefix = outward.replace(/\d.*/, '');
+    const num = +(outward.match(/\d+/) || [])[0];
+    if (/\bedinburgh\b/i.test(where) || prefix === 'EH') return 'Edinburgh';
+    if (/\bbristol\b/i.test(where) || /bristol/i.test(city) || prefix === 'BS') return 'Bristol';
+    if (/\bcheltenham\b/i.test(where) || /cheltenham/i.test(city) || prefix === 'GL') return 'Cheltenham';
+    if (/\bglasgow\b/i.test(where) || /glasgow/i.test(city) || prefix === 'G') return 'Glasgow';
+    if (/\bliverpool\b|wirral|birkenhead/i.test(where) || /liverpool/i.test(city) || prefix === 'L') return 'Liverpool';
+    if (prefix === 'CH' && ((num >= 41 && num <= 49) || (num >= 60 && num <= 63))) return 'Liverpool';
+    if (prefix === 'WA' && num >= 9 && num <= 12) return 'Liverpool';
+    if (/\bcheshire\b|\bchester\b|crewe|macclesfield|warrington/i.test(where) || /cheshire/i.test(city) || prefix === 'CW') return 'Cheshire';
+    if (prefix === 'CH' && ((num >= 1 && num <= 4) || (num >= 64 && num <= 66))) return 'Cheshire';
+    if (prefix === 'SK' && num >= 9 && num <= 12) return 'Cheshire';
+    if (prefix === 'WA' && [1, 2, 4, 5, 6, 7, 8, 13, 16].indexOf(num) >= 0) return 'Cheshire';
+    if (/\bbirmingham\b/i.test(where) || /birmingham/i.test(city) || prefix === 'B') return 'Birmingham';
+    if (/\bmanchester\b/i.test(where) || /manchester/i.test(city) || /^(?:M|OL|BL|WN)$/.test(prefix)) return 'Manchester';
+    if (prefix === 'SK' || (prefix === 'WA' && (num === 3 || num === 14 || num === 15))) return 'Manchester';
     return '';
   }
 
@@ -97,7 +109,10 @@
       lead && lead.auction && lead.auction.type
     ].filter(Boolean).join(' '));
     if (!beds) return { gap: null, label: 'Rent gap: bedrooms not stated' };
-    if (AREAS.indexOf(area) < 0) return { gap: null, label: '' };
+    if (AREAS.indexOf(area) < 0) {
+      if (area === 'Liverpool' || area === 'Cheshire' || area === 'Birmingham') return { gap: null, label: 'Rent gap: no open-market rent is loaded for ' + area };
+      return { gap: null, label: '' };
+    }
     const row = table.ranked.find(function (item) { return item.area === area && item.beds === beds; });
     if (!row) return { gap: null, label: 'Rent gap: no market rent for ' + area + ' ' + beds + '-bed' };
     return {
@@ -141,7 +156,7 @@
       (top && low ? '<p>Biggest is ' + esc(top.area) + ' ' + esc(top.bedLabel.toLowerCase()) + ', ' + money(top.gap) + ' a month. Smallest is ' + esc(low.area) + ' ' + esc(low.bedLabel.toLowerCase()) + ', ' + money(low.gap) + ' a month.</p>' : '') +
       section('Biggest gaps', 'Largest gap first. A wide gap is the downside if the tenant relies on the allowance.', biggest) +
       section('Smallest gaps', 'Smallest gap first. This is where the allowance is closest to the open-market rent.', smallest) +
-      '<details class="ios-disc"><summary>Sizes with no market rent (' + table.missing.length + ')</summary><p>Shared rooms and 4-bedroom homes in these three towns are not given a gap.</p><ul>' + absent + '</ul><p>Open-market rent in this series is not published for a postcode district, a shared room, or a 4-bedroom home. Each figure is the local authority. Edinburgh and Glasgow are not in this comparison.</p></details>' +
+      '<details class="ios-disc"><summary>Sizes with no market rent (' + table.missing.length + ')</summary><p>Shared rooms and 4-bedroom homes in these three towns are not given a gap.</p><ul>' + absent + '</ul><p>Open-market rent in this series is not published for a postcode district, a shared room, or a 4-bedroom home. Each figure is the local authority. Edinburgh and Glasgow are not in this comparison. Liverpool, Cheshire and Birmingham are areas on the site, and no open-market rent is loaded for them, so no gap is shown.</p></details>' +
       '<details class="ios-disc"><summary>Sources and dates</summary><p>' + esc(book.omr.source) + '. Month: ' + esc(book.omr.month) + '.</p><p><a href="' + esc(book.omr.url) + '" target="_blank" rel="noopener">ONS private rent series</a></p><p>' + esc(book.lha.note) + ' In force ' + esc(book.lha.valid_from) + ' to ' + esc(book.lha.valid_to) + '. Checked ' + esc(book.lha.checked) + '.</p><p><a href="' + esc(book.lha.publication) + '" target="_blank" rel="noopener">DWP LHA rates 2026/27</a></p><p><a href="' + esc(book.lha.sources.England) + '" target="_blank" rel="noopener">England rate table</a> · <a href="' + esc(book.lha.sources.Scotland) + '" target="_blank" rel="noopener">Scotland rate table</a></p><p>The percentage is the monthly gap divided by the open-market rent.</p></details>';
   }
 

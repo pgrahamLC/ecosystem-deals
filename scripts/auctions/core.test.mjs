@@ -86,6 +86,31 @@ test('target cities require explicit property posttown and matching complete pos
   assert.equal(norm({ address: '50 Edinburgh Road, Chatham, ME4 5BZ' }).reason, 'out_of_area');
   assert.equal(norm({ address: '10 Manchester Road, Chatham, ME4 5BZ' }).reason, 'out_of_area');
   assert.equal(norm({ address: '10 Example Street Manchester M99 1AA' }).lot.town, 'Manchester');
+  for (const [town, postcode] of [['Liverpool', 'L1 4DE'], ['Cheshire', 'CH1 3AG'], ['Cheshire', 'CW1 4PN'], ['Birmingham', 'B15 2HG']]) {
+    assert.equal(norm({ address: '10 Example Road, ' + town + ', ' + postcode }).lot.town, town);
+  }
+  assert.equal(norm({ address: 'Flat 5, Birkenhead, CH42 4DF' }).lot.town, 'Liverpool');
+  assert.equal(norm({ address: '53 Cross Lane, Bebington, CH63 3AH' }).lot.town, 'Liverpool');
+  assert.equal(norm({ address: '1 Neston Way, Ellesmere Port, CH65 0AA' }).lot.town, 'Cheshire');
+  assert.equal(norm({ address: '10 High Street, Deeside, CH5 1AA' }).reason, 'out_of_area');
+  assert.equal(norm({ address: 'Wilmslow, SK9 1AA' }).lot.town, 'Cheshire');
+  assert.equal(norm({ address: 'Macclesfield, SK11 6NE' }).lot.town, 'Cheshire');
+  assert.equal(norm({ address: 'Poynton, SK12 2DZ' }).lot.town, 'Cheshire');
+  assert.equal(norm({ address: 'Stockport, SK3 9EY' }).lot.town, 'Manchester');
+  assert.equal(norm({ address: 'Altrincham, WA14 1AA' }).lot.town, 'Manchester');
+  assert.equal(norm({ address: 'Hale, WA15 0AA' }).lot.town, 'Manchester');
+  assert.equal(norm({ address: 'Golborne, WA3 6TA' }).lot.town, 'Manchester');
+  assert.equal(norm({ address: 'Knutsford, WA16 0AA' }).lot.town, 'Cheshire');
+  assert.equal(norm({ address: 'Warrington, WA1 1AA' }).lot.town, 'Cheshire');
+  assert.equal(norm({ address: 'Frodsham, WA6 6AA' }).lot.town, 'Cheshire');
+  assert.equal(norm({ address: 'Runcorn, WA7 2EP' }).lot.town, 'Cheshire');
+  assert.equal(norm({ address: 'St Helens, WA10 3PW' }).lot.town, 'Liverpool');
+  assert.equal(norm({ address: '10 Chester Road, Manchester, M1 1AA' }).lot.town, 'Manchester');
+  assert.equal(norm({ address: '10 Liverpool Road, Chester, CH1 1AA' }).lot.town, 'Cheshire');
+  assert.equal(norm({ address: '10 Manchester Road, Liverpool, L1 1AA' }).lot.town, 'Liverpool');
+  assert.equal(areaMatch('12 High Street, Liverpool').town, 'Liverpool');
+  assert.equal(areaMatch('12 High Street, Chester').town, 'Cheshire');
+  assert.equal(areaMatch('12 High Street, Birmingham').town, 'Birmingham');
   assert.equal(areaMatch('M15 20 L30 4.2'), null);
   assert.equal(areaMatch('WN0 1FB Europe/London'), null);
   assert.equal(areaMatch('M44 5ZM'), null);

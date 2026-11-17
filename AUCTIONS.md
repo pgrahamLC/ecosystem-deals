@@ -25,7 +25,7 @@ For enabled sources, every run checks robots.txt with the identified `LauritoAuc
 
 ## Data semantics
 
-- Target post towns: Manchester, Glasgow, Edinburgh, Bristol, Cheltenham. A branch/region name alone never matches a property. Post towns can cross council boundaries; this is not a municipal-boundary filter.
+- Target areas: Manchester, Glasgow, Edinburgh, Bristol, Cheltenham, Liverpool, Cheshire and Birmingham. Cheshire is the county. CH1-CH4 and CH64-CH66, all CW, SK9-SK12, and WA1, WA2, WA4-WA8, WA13 and WA16 are Cheshire. Wirral CH41-CH63, all L, and St Helens WA9-WA12 are Liverpool. WA3, WA14 and WA15 stay Manchester. CH5-CH8 (Wales) is out of area. A branch or region name alone never matches a property. Post towns can cross council boundaries. This is not a municipal-boundary filter.
 - Types: Blocks, Houses, Flats (including studios), HMO, Portfolios, Mixed-use with residential parts, residential Development/conversions, and Commercial. Commercial lots are kept and tagged Commercial. Unknown classification/status is not guessed.
 - Canonical statuses: upcoming, sold, unsold, withdrawn. A postponement without a new date/status is not silently made upcoming or withdrawn. Auction date is null if not published; an auction's bidding-open date is not its end date.
 - A guide is not an opening/starting/current bid, reserve, valuation or hammer price. These are separate fields. Sold consideration is null unless explicitly published. A page's phrase 'auction results' or a 'last bid' alone is not a sale.
@@ -35,7 +35,7 @@ For enabled sources, every run checks robots.txt with the identified `LauritoAuc
 
 ## UI and verification
 
-The Auctions view has five town filters, seven residential subtypes plus All, Upcoming/Sold tabs, outcome access, null-safe sorting, stale/error/empty states, per-lot original links and source coverage. It is independent of Supabase login. Edinburgh is unparked; existing Scottish evidence is shown without pretending missing English EPC/rent/ownership data exists. Glasgow is included for auctions without inventing missing whole-dashboard datasets.
+The Auctions view has eight area filters, seven residential subtypes plus All, Upcoming/Sold tabs, outcome access, null-safe sorting, stale/error/empty states, per-lot original links and source coverage. It is independent of Supabase login. Edinburgh is unparked; existing Scottish evidence is shown without pretending missing English EPC/rent/ownership data exists. Glasgow is included for auctions without inventing missing whole-dashboard datasets.
 
 Offline tests use clearly synthetic fixtures, never demo lots in production JSON. The workflow runs core transport/robots/normalization/dedupe tests, adapter tests and UI state/security/integration tests before collection. Complete collection failure preserves diagnostic files, marks the Action failed and does not replace unknowns with manufactured data.
 

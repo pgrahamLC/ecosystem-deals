@@ -59,7 +59,7 @@
   window.lcPpdLine = function (pc) {
     if (!state.summary || !pc) return '';
     const city = cityForPc(pc);
-    if (!city) return 'This postcode is not in the Manchester, Cheltenham or Bristol Price Paid extract, so no local history is attached.';
+    if (!city) return 'This postcode is not in a loaded Price Paid extract. Manchester, Cheltenham and Bristol have extracts. Liverpool, Cheshire and Birmingham do not, so no local history is attached.';
     const place = state.summary.places[city];
     const sec = sectorOf(pc);
     const dist = String(pc).toUpperCase().split(/\s+/)[0];
@@ -84,7 +84,7 @@
     sec.id = 'comps_view';
     sec.className = 'hidden';
     sec.style.margin = '16px 24px';
-    sec.innerHTML = '<div class="card"><h2>Comps: what did homes sell for, and what is the rent evidence?</h2><p class="lead">Manchester, Cheltenham and Bristol only. Sales are HM Land Registry Price Paid from 2016, standard existing homes. Rents are the ONS local-authority average, not a street comp. A yield is shown only where one public auction lot states both a price and a rent. £/sq ft is the sale price divided by the floor area on a matched domestic EPC, and is blank when that certificate is missing.</p><div id="comps_meta" class="foot">Loading Price Paid summary…</div><div class="ctl" style="margin-top:10px"><label>Place <select id="comp_city"></select></label><label>Cut <select id="comp_level"><option value="la">Whole local authority</option><option value="district">Postcode district</option><option value="sector">Postcode sector</option></select></label><label>Area <select id="comp_area"></select></label><label>Type <select id="comp_type"></select></label><label>From <select id="comp_from"></select></label><label>To <select id="comp_to"></select></label><input id="comp_q" placeholder="Filter area list" style="width:160px"></div><div id="comp_table"></div><div id="comp_ppsqft"></div><div class="ctl"><button class="btn" id="comp_load" type="button">Load individual sales</button><button class="btn sec" id="comp_csv" type="button">Download this filter (CSV)</button><span class="foot" id="comp_sales_note"></span></div><div id="comp_sales"></div></div><div class="card" id="comp_area_yields"><p class="foot">Loading yields by place…</p></div><div class="g2"><div class="card" id="comp_rents"></div><div class="card" id="comp_yields"></div></div>';
+    sec.innerHTML = '<div class="card"><h2>Comps: what did homes sell for, and what is the rent evidence?</h2><p class="lead">Manchester, Cheltenham and Bristol have HM Land Registry Price Paid extracts from 2016, standard existing homes. Liverpool, Cheshire and Birmingham are listed and have no extract in this copy. Rents are the ONS local-authority average, not a street comp. A yield is shown only where one public auction lot states both a price and a rent. £/sq ft is the sale price divided by the floor area on a matched domestic EPC, and is blank when that certificate is missing.</p><div id="comps_meta" class="foot">Loading Price Paid summary…</div><div class="ctl" style="margin-top:10px"><label>Place <select id="comp_city"></select></label><label>Cut <select id="comp_level"><option value="la">Whole local authority</option><option value="district">Postcode district</option><option value="sector">Postcode sector</option></select></label><label>Area <select id="comp_area"></select></label><label>Type <select id="comp_type"></select></label><label>From <select id="comp_from"></select></label><label>To <select id="comp_to"></select></label><input id="comp_q" placeholder="Filter area list" style="width:160px"></div><div id="comp_table"></div><div id="comp_ppsqft"></div><div class="ctl"><button class="btn" id="comp_load" type="button">Load individual sales</button><button class="btn sec" id="comp_csv" type="button">Download this filter (CSV)</button><span class="foot" id="comp_sales_note"></span></div><div id="comp_sales"></div></div><div class="card" id="comp_area_yields"><p class="foot">Loading yields by place…</p></div><div class="g2"><div class="card" id="comp_rents"></div><div class="card" id="comp_yields"></div></div>';
     (document.getElementById('app') || document.body).appendChild(sec);
     sec.querySelector('#comp_city').onchange = function (e) { state.city = e.target.value; state.area = ''; state.lastFilter = null; fillAreas(); draw(); drawPpsqft(null); drawRents(); drawYields(); if (window.lcDrawAreaYields) window.lcDrawAreaYields(); };
     function refreshLoadedSales() {
@@ -165,7 +165,11 @@
   function draw() {
     const host = document.getElementById('comp_table');
     const node = currentNode();
-    if (!host || !node) return;
+    if (!host) return;
+    if (!node) {
+      host.innerHTML = '<h3>' + esc(state.city) + '</h3><p>No HM Land Registry Price Paid extract is loaded for ' + esc(state.city) + '. Nothing has been estimated. Manchester, Cheltenham and Bristol are the extracts in this copy.</p>';
+      return;
+    }
     const years = yearsOf(node.years);
     const max = Math.max.apply(null, years.map(function (y) {
       const s = node.years[y] && node.years[y][state.type];
@@ -394,7 +398,8 @@
       state.rents = rents; state.lha = lha; state.yields = yields;
       state.ppsqft = await fetch('comps/ppsqft.json').then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
       const citySel = document.getElementById('comp_city');
-      Object.keys(state.summary.places).forEach(function (name) {
+      const EXTRA = ['Liverpool', 'Cheshire', 'Birmingham'];
+      Object.keys(state.summary.places).concat(EXTRA.filter(function (name) { return !state.summary.places[name]; })).forEach(function (name) {
         const o = document.createElement('option');
         o.value = name; o.textContent = name === 'Manchester' ? 'Greater Manchester' : name;
         citySel.appendChild(o);

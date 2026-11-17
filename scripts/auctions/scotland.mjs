@@ -3,7 +3,7 @@
  * Public sale terms contained no automation ban when audited 2026-11-03;
  * no open reuse licence was established. Review policy before redistribution.
  */
-const TOWNS=['Manchester','Glasgow','Edinburgh','Bristol','Cheltenham'];
+const TOWNS=['Manchester','Glasgow','Edinburgh','Bristol','Cheltenham','Liverpool','Cheshire','Birmingham'];
 const POLICY='Policy caveat: no open reuse licence established; metadata only; recheck terms and robots before each run.';
 const decode=s=>String(s??'').replace(/&#(x[\da-f]+|\d+);/gi,(_,n)=>{try{return String.fromCodePoint(n[0].toLowerCase()==='x'?parseInt(n.slice(1),16):+n);}catch{return '';}}).replace(/&(nbsp|amp|pound|quot|apos|lt|gt|ndash|mdash);/gi,(_,n)=>({nbsp:' ',amp:'&',pound:'£',quot:'"',apos:"'",lt:'<',gt:'>',ndash:'-',mdash:'-'}[n.toLowerCase()]));
 const clean=s=>decode(s).replace(/\s+/g,' ').trim();

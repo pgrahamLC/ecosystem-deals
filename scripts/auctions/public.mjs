@@ -1,7 +1,7 @@
 /* Public catalogue reader. Same-origin HTML, sitemap and PDF text. No login, no captcha bypass. */
 import { saleTag } from './core.mjs';
 
-const AREA = /\b((?:M|G|EH|BS)\d{1,2}[A-Z]?|GL5[0-4])\s*(\d[A-Z]{2})\b/i;
+const AREA = /\b((?:M|G|EH|BS|L|B|CH|CW|SK|WA|OL|BL|WN)\d{1,2}[A-Z]?|GL5[0-4])\s*(\d[A-Z]{2})\b/i;
 const LOT_HREF = /\/(?:property|properties|lot|auction|catalogue|catalog|results|listing)\//i;
 
 function strip(html) {

@@ -120,7 +120,7 @@ export function validPostcode(value) {
 }
 function bareDistrict(value) {
   const text = clean(value).toUpperCase().replace(/\u00a0/g, ' ');
-  const re = /(?:^|[\s,])((?:GL|EH|BS|WA|WN|SK|OL|BL|M|G)\d{1,2}[A-Z]?)(?=[\s,]|$)/g;
+  const re = /(?:^|[\s,])((?:GL|EH|BS|WA|WN|SK|OL|BL|CH|CW|M|G|L|B)\d{1,2}[A-Z]?)(?=[\s,]|$)/g;
   for (const match of text.matchAll(re)) {
     const token = match[1];
     const num = token.match(/\d+/)[0];
@@ -137,17 +137,50 @@ function bareDistrict(value) {
   return '';
 }
 const postcodeOf = value => validPostcode(value);
-const DISTRICT_TOWN = [[/^GL\d/i, 'Cheltenham'], [/^EH\d/i, 'Edinburgh'], [/^BS\d/i, 'Bristol'], [/^(?:M|SK|OL|BL|WN|WA)\d/i, 'Manchester'], [/^G\d/i, 'Glasgow']];
+// One lot is one area. Cheshire is the county, not Chester-as-a-road-name and not Wirral or Trafford.
+// CH1-CH4 and CH64-CH66 are Cheshire West. CH41-CH63 are Wirral (Liverpool). CH5-CH8 are Wales.
+// SK9-SK12 are Cheshire East. Other SK stays with Manchester, including Stockport.
+// WA14-WA15 are Trafford and WA3 is mainly Wigan, so they stay Manchester. WA9-WA12 are St Helens (Liverpool).
+// WA1, WA2, WA4, WA5, WA6, WA7, WA8, WA13 and WA16 are Warrington, Cheshire West, Halton or Knutsford.
+const NOT_STREET = '(?!\\s+(?:road|street|rd|st|lane|avenue|ave|drive|way|close|crescent|terrace|gardens|place|grove|hill|park)\\b)';
 const PLACE_TOWN = [
-  [/\b(?:greater manchester|stockport|salford|bolton|oldham|wigan|warrington)\b/i, 'Manchester'],
-  [/\bmanchester\b(?!\s+(?:road|street|rd|st|lane|avenue|ave|drive|way|close|crescent|terrace|gardens|place|grove|hill|park)\b)/i, 'Manchester'],
-  [/(?<!\bport\s)\bglasgow\b(?!\s+(?:road|street|rd|st|lane|avenue|ave|drive|way|close)\b)/i, 'Glasgow'],
-  [/\bedinburgh\b(?!\s+(?:road|street|rd|st|lane|avenue|ave|drive|way|close)\b)/i, 'Edinburgh'],
-  [/\bbristol\b(?!\s+(?:road|street|rd|st|lane|avenue|ave|drive|way|close)\b)/i, 'Bristol'],
-  [/\b(?:cheltenham|gloucestershire|gloucester)\b(?!\s+(?:road|street|rd|st|lane|avenue|ave|drive|way|close)\b)/i, 'Cheltenham']
+  [/\b(?:greater manchester|stockport|salford|bolton|oldham|wigan|altrincham|stretford|trafford)\b/i, 'Manchester'],
+  [new RegExp('\\bmanchester\\b' + NOT_STREET, 'i'), 'Manchester'],
+  [new RegExp('\\b(?:liverpool|birkenhead|wirral|bootle|wallasey|crosby|toxteth|wavertree|woolton|st helens)\\b' + NOT_STREET, 'i'), 'Liverpool'],
+  [new RegExp('\\b(?:cheshire|chester|crewe|macclesfield|northwich|winsford|congleton|nantwich|knutsford|wilmslow|ellesmere port|frodsham|sandbach|middlewich|warrington|runcorn|widnes|poynton)\\b' + NOT_STREET, 'i'), 'Cheshire'],
+  [new RegExp('\\b(?:birmingham|solihull|sutton coldfield|edgbaston)\\b' + NOT_STREET, 'i'), 'Birmingham'],
+  [new RegExp('(?<!\\bport\\s)\\bglasgow\\b' + NOT_STREET, 'i'), 'Glasgow'],
+  [new RegExp('\\bedinburgh\\b' + NOT_STREET, 'i'), 'Edinburgh'],
+  [new RegExp('\\bbristol\\b' + NOT_STREET, 'i'), 'Bristol'],
+  [new RegExp('\\b(?:cheltenham|gloucestershire|gloucester)\\b' + NOT_STREET, 'i'), 'Cheltenham']
 ];
-function districtTown(outward) {
-  for (const [re, name] of DISTRICT_TOWN) if (re.test(outward)) return name;
+export function districtTown(outward) {
+  const code = String(outward || '').toUpperCase();
+  const match = code.match(/^([A-Z]{1,2})(\d{1,2})/);
+  if (!match) return '';
+  const area = match[1];
+  const num = Number(match[2]);
+  if (area === 'GL') return 'Cheltenham';
+  if (area === 'EH') return 'Edinburgh';
+  if (area === 'BS') return 'Bristol';
+  if (area === 'G') return 'Glasgow';
+  if (area === 'M' || area === 'OL' || area === 'BL' || area === 'WN') return 'Manchester';
+  if (area === 'L') return 'Liverpool';
+  if (area === 'B') return 'Birmingham';
+  if (area === 'CW') return 'Cheshire';
+  if (area === 'CH') {
+    if (num >= 1 && num <= 4) return 'Cheshire';
+    if ((num >= 41 && num <= 49) || (num >= 60 && num <= 63)) return 'Liverpool';
+    if (num >= 64 && num <= 66) return 'Cheshire';
+    return '';
+  }
+  if (area === 'SK') return num >= 9 && num <= 12 ? 'Cheshire' : 'Manchester';
+  if (area === 'WA') {
+    if (num === 3 || num === 14 || num === 15) return 'Manchester';
+    if (num >= 9 && num <= 12) return 'Liverpool';
+    if ([1, 2, 4, 5, 6, 7, 8, 13, 16].includes(num)) return 'Cheshire';
+    return 'Manchester';
+  }
   return '';
 }
 function placeTown(raw) {
@@ -293,8 +326,8 @@ const canon = v => clean(v).toLowerCase().replace(/\bflat\s*(\d+)/g, 'flat $1').
 function premiseKey(l) {
   let address = clean(l.address).toLowerCase();
   const pc = postcodeOf(l.postcode || address); if (pc) address = address.replace(new RegExp(pc.replace(' ', '\\s*'), 'ig'), '');
-  address = address.replace(/\b(?:greater manchester|city of edinburgh|city of glasgow|gloucestershire|lanarkshire|midlothian|lancashire|avon)\b/gi, ' ');
-  address = address.replace(/\b(?:manchester|glasgow|edinburgh|bristol|cheltenham)\s*[,;\s]*$/i, '').replace(/[,;\s]+$/g, '');
+  address = address.replace(/\b(?:greater manchester|city of edinburgh|city of glasgow|gloucestershire|lanarkshire|midlothian|lancashire|avon|merseyside|west midlands|cheshire)\b/gi, ' ');
+  address = address.replace(/\b(?:manchester|glasgow|edinburgh|bristol|cheltenham|liverpool|birmingham|chester)\s*[,;\s]*$/i, '').replace(/[,;\s]+$/g, '');
   return canon(address);
 }
 function unitKey(l) {

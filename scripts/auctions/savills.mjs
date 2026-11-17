@@ -2,7 +2,7 @@
 import { addressLike, areaMatch, saleTag } from './core.mjs';
 
 const UA = 'Mozilla/5.0 (compatible; LauritoAuctionsBot/1.0; +https://github.com/pgrahamLC/ecosystem-deals)';
-const QUERIES = ['Manchester', 'Glasgow', 'Edinburgh', 'Bristol', 'Cheltenham', 'Gloucester', 'Stockport', 'Salford', 'Bolton', 'Oldham', 'Wigan', 'Warrington', 'M1', 'G1', 'EH1', 'BS1', 'GL50', 'SK1', 'OL1', 'BL1', 'WN1', 'WA1'];
+const QUERIES = ['Manchester', 'Glasgow', 'Edinburgh', 'Bristol', 'Cheltenham', 'Gloucester', 'Stockport', 'Salford', 'Bolton', 'Oldham', 'Wigan', 'Warrington', 'Liverpool', 'Birkenhead', 'Wirral', 'Chester', 'Cheshire', 'Crewe', 'Macclesfield', 'Birmingham', 'Solihull', 'M1', 'G1', 'EH1', 'BS1', 'GL50', 'SK1', 'SK9', 'OL1', 'BL1', 'WN1', 'WA1', 'WA14', 'WA16', 'L1', 'CH1', 'CW1', 'B1'];
 const MONTHS = { january: '01', february: '02', march: '03', april: '04', may: '05', june: '06', july: '07', august: '08', september: '09', october: '10', november: '11', december: '12' };
 
 async function text(url) {
@@ -132,7 +132,7 @@ export async function collect({ source, now, fetchImpl } = {}) {
       forced_sale_evidence: lot.forced_sale_evidence || '',
       forced_sale_evidence_url: lot.forced_sale_evidence_url || ''
     }));
-    result.warnings.unshift('Read ' + seen.size + ' lots from ' + auctions.size + ' upcoming Savills catalogues and each catalogue location search. ' + kept.length + ' were in Manchester, Glasgow, Edinburgh, Bristol or Cheltenham. 26 January 2027 is on the calendar with no catalogue link.');
+    result.warnings.unshift('Read ' + seen.size + ' lots from ' + auctions.size + ' upcoming Savills catalogues and each catalogue location search. ' + kept.length + ' were in Manchester, Glasgow, Edinburgh, Bristol, Cheltenham, Liverpool, Cheshire or Birmingham. 26 January 2027 is on the calendar with no catalogue link.');
   } catch (error) {
     result.errors.push(String(error.message || error));
   }

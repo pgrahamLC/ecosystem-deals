@@ -6,7 +6,10 @@
     "Glasgow",
     "Edinburgh",
     "Bristol",
-    "Cheltenham"
+    "Cheltenham",
+    "Liverpool",
+    "Cheshire",
+    "Birmingham"
   ],
   "sources": [
     {
@@ -70,6 +73,69 @@
         "note": "Public pages; no published automation restriction found in inspected terms. Not an open-data licence. Only factual lot metadata is retained, no descriptions, images, documents or legal packs. Robots is checked every run. New restrictions fail closed.",
         "terms_url": "https://www.auctionhouse.co.uk/",
         "terms_scope": "Inspected site footer and branch pages; no separate website-reuse terms located. Auction transaction conditions are not a reuse licence."
+      }
+    },
+    {
+      "id": "auction_house_northwest",
+      "name": "Auction House North West",
+      "url": "https://www.auctionhouse.co.uk/northwest",
+      "adapter": "auctionhouse",
+      "enabled": true,
+      "entries": [
+        "https://www.auctionhouse.co.uk/northwest",
+        "https://www.auctionhouse.co.uk/northwest/auction/past-auctions"
+      ],
+      "max_pages": 30,
+      "max_details": 200,
+      "policy": {
+        "reviewed_at": "2026-11-17",
+        "review_due": "2027-02-15",
+        "status": "public_metadata_only",
+        "note": "Public North West catalogue. Liverpool and Merseyside lots are kept. Manchester lots on the same pages stay Manchester and are deduplicated with the Manchester branch. Other counties are out of area. Not an open-data licence. Only factual lot metadata is retained. Robots is checked every run.",
+        "terms_url": "https://www.auctionhouse.co.uk/",
+        "terms_scope": "Same Auction House site as the Manchester branch. Inspected branch page on 17 Nov 2026. No separate website-reuse terms located."
+      }
+    },
+    {
+      "id": "auction_house_cheshire",
+      "name": "Auction House Cheshire, Staffordshire and Shropshire",
+      "url": "https://www.auctionhouse.co.uk/staffordshire",
+      "adapter": "auctionhouse",
+      "enabled": true,
+      "entries": [
+        "https://www.auctionhouse.co.uk/staffordshire",
+        "https://www.auctionhouse.co.uk/staffordshire/auction/past-auctions"
+      ],
+      "max_pages": 30,
+      "max_details": 180,
+      "policy": {
+        "reviewed_at": "2026-11-17",
+        "review_due": "2027-02-15",
+        "status": "public_metadata_only",
+        "note": "Public catalogue for the Cheshire office at Stapeley (CW5) and the Staffordshire office. Cheshire postcode districts are kept. Wirral lots are Liverpool. Staffordshire and Shropshire lots are out of area. Not an open-data licence. Only factual lot metadata is retained. Robots is checked every run.",
+        "terms_url": "https://www.auctionhouse.co.uk/",
+        "terms_scope": "Branch page https://www.auctionhouse.co.uk/staffordshire checked 17 Nov 2026. No separate Cheshire hostname. No separate website-reuse terms located."
+      }
+    },
+    {
+      "id": "auction_house_birmingham",
+      "name": "Auction House Birmingham and Black Country",
+      "url": "https://www.auctionhouse.co.uk/birmingham",
+      "adapter": "auctionhouse",
+      "enabled": true,
+      "entries": [
+        "https://www.auctionhouse.co.uk/birmingham",
+        "https://www.auctionhouse.co.uk/birmingham/auction/past-auctions"
+      ],
+      "max_pages": 30,
+      "max_details": 120,
+      "policy": {
+        "reviewed_at": "2026-11-17",
+        "review_due": "2027-02-15",
+        "status": "public_metadata_only",
+        "note": "Public Birmingham catalogue. B postcodes are kept as Birmingham. Black Country postcodes outside B are out of area and are not guessed into Birmingham. Not an open-data licence. Only factual lot metadata is retained. Robots is checked every run.",
+        "terms_url": "https://www.auctionhouse.co.uk/",
+        "terms_scope": "Same Auction House site. Branch page checked 17 Nov 2026. No separate website-reuse terms located."
       }
     },
     {

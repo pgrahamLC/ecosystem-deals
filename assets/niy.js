@@ -3,7 +3,7 @@
   'use strict';
 
   const FEE = 0.018;
-  const AREAS = ['Manchester', 'Cheltenham', 'Bristol', 'Glasgow', 'Edinburgh'];
+  const AREAS = ['Manchester', 'Cheltenham', 'Bristol', 'Glasgow', 'Edinburgh', 'Liverpool', 'Cheshire', 'Birmingham'];
   const CLASSES = ['Resi block', 'Houses', 'Flats', 'HMO', 'Mixed-use', 'Office', 'Development'];
   const RESIDENTIAL = ['Resi block', 'Houses', 'Flats', 'HMO'];
   const FLOOR = 40000;
@@ -60,6 +60,9 @@
     if (/edinburgh/i.test(t)) return 'Edinburgh';
     if (/bristol/i.test(t)) return 'Bristol';
     if (/cheltenham/i.test(t)) return 'Cheltenham';
+    if (/liverpool|wirral|merseyside/i.test(t)) return 'Liverpool';
+    if (/cheshire|\bchester\b/i.test(t)) return 'Cheshire';
+    if (/birmingham/i.test(t)) return 'Birmingham';
     if (/manchester/i.test(t)) return 'Manchester';
     return t;
   }

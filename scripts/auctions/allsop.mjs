@@ -162,7 +162,7 @@ export async function collect({ source, now, fetchImpl = globalThis.fetch, pause
     const sample = upcoming.find(lot => lot.postcode) || upcoming[0];
     result.warnings.push('Spot-check: ' + sample.address.slice(0, 80) + ' from the public Allsop catalogue, page ' + sample.source_url);
   }
-  const towns = ['Manchester', 'Bristol', 'Cheltenham', 'Glasgow', 'Edinburgh'];
+  const towns = ['Manchester', 'Bristol', 'Cheltenham', 'Glasgow', 'Edinburgh', 'Liverpool', 'Cheshire', 'Birmingham'];
   const counts = Object.fromEntries(towns.map(town => [town, 0]));
   for (const lot of upcoming) {
     const area = areaMatch(lot.address + ' ' + lot.postcode);

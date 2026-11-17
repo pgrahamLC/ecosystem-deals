@@ -42,7 +42,9 @@ test('explicit sold price is retained', async () => {
   const r = await futureRun(futurePage('Sold for £120,000')); assert.equal(r.lots[0].status, 'sold'); assert.equal(r.lots[0].sold_price, 120000);
 });
 test('Bristol Road in Birmingham is not Bristol', async () => {
-  const r = await futureRun(futurePage('Available', '999 Bristol Road, Birmingham, B1 1AA')); assert.equal(r.lots.length, 0);
+  const r = await futureRun(futurePage('Available', '999 Bristol Road, Birmingham, B1 1AA'));
+  assert.equal(r.lots.length, 1);
+  assert.equal(r.lots[0].town, 'Birmingham');
 });
 test('Braveheart not-started future auction is upcoming', async () => { assert.equal((await braveRun()).lots[0].status, 'upcoming'); });
 test('Braveheart starting bid is not guide', async () => {

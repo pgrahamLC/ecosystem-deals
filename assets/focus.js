@@ -18,7 +18,7 @@
     ['rentgap', 'Rent gap']
   ];
   const COPY = {
-    assets: ['Find', 'Where to look', 'Manchester, Cheltenham, Bristol and Edinburgh. Open a town, then a lead, then a deal.'],
+    assets: ['Find', 'Where to look', 'Manchester, Liverpool, Cheshire, Birmingham, Cheltenham, Bristol and Edinburgh. Open an area, then a lead, then a deal.'],
     distress: ['Leads', 'Who has to sell', 'A is a live insolvency. B is a lender or receiver sale. C is a watchlist, not a forced sale.'],
     deal: ['Deal', 'The decision', 'Rent, operating income, the NIY you are using, the maximum bid, and the return.'],
     comps: ['Comps', 'What sold nearby', 'Land Registry prices for this town. A yield is shown only when the same lot states rent and price.'],
@@ -126,7 +126,7 @@
 
   function findCounts() {
     const sites = (window.DM && DM.sites) || [];
-    const towns = [['Manchester', 'Manchester'], ['Cheltenham', 'Cheltenham'], ['City Of Bristol', 'Bristol'], ['Edinburgh', 'Edinburgh']];
+    const towns = [['Manchester', 'Manchester'], ['Liverpool', 'Liverpool'], ['Cheshire', 'Cheshire'], ['Birmingham', 'Birmingham'], ['Cheltenham', 'Cheltenham'], ['City Of Bristol', 'Bristol'], ['Edinburgh', 'Edinburgh']];
     if (!sites.length) return [];
     return towns.map(function (t) {
       return {
@@ -153,7 +153,7 @@
     ];
   }
 
-  const PPS = { Manchester: '…', Bristol: '…', Cheltenham: '…', Glasgow: '…', Edinburgh: '…' };
+  const PPS = { Manchester: '…', Bristol: '…', Cheltenham: '…', Glasgow: '…', Edinburgh: '…', Liverpool: '…', Cheshire: '…', Birmingham: '…' };
   let dealStep = 0;
 
   function compact(n) {
@@ -179,6 +179,9 @@
     if (/edinburgh/i.test(t)) return 'Edinburgh';
     if (/bristol/i.test(t)) return 'Bristol';
     if (/cheltenham|gloucester/i.test(t)) return 'Cheltenham';
+    if (/liverpool|birkenhead|wirral|merseyside/i.test(t)) return 'Liverpool';
+    if (/cheshire|\bchester\b|crewe|macclesfield|warrington/i.test(t)) return 'Cheshire';
+    if (/birmingham|solihull|sutton coldfield/i.test(t)) return 'Birmingham';
     if (/manchester|salford|bolton|stockport|oldham|bury|wigan|trafford/i.test(t)) return 'Manchester';
     return t;
   }
@@ -206,7 +209,7 @@
   }
 
   function loadPrices() {
-    const cities = ['Manchester', 'Bristol', 'Cheltenham', 'Glasgow', 'Edinburgh'];
+    const cities = ['Manchester', 'Bristol', 'Cheltenham', 'Glasgow', 'Edinburgh', 'Liverpool', 'Cheshire', 'Birmingham'];
     fetch('comps/home-ppsqft.json').then(function (r) { return r.json(); }).then(function (data) {
       const areas = (data && data.areas) || {};
       cities.forEach(function (city) {
@@ -241,9 +244,9 @@
   }
 
   function paintFind() {
-    const towns = [['Manchester', 'Manchester'], ['City Of Bristol', 'Bristol'], ['Cheltenham', 'Cheltenham'], ['Glasgow', 'Glasgow'], ['Edinburgh', 'Edinburgh']];
+    const towns = [['Manchester', 'Manchester'], ['Liverpool', 'Liverpool'], ['Cheshire', 'Cheshire'], ['Birmingham', 'Birmingham'], ['City Of Bristol', 'Bristol'], ['Cheltenham', 'Cheltenham'], ['Glasgow', 'Glasgow'], ['Edinburgh', 'Edinburgh']];
     const host = screenHost();
-    host.innerHTML = '<p class="lc-kicker">Find</p><h1>Choose a town</h1><p class="lc-purpose">Tap a town to see who has to sell there. The price is the median of matched Land Registry sales.</p><div class="ios-cities">' +
+    host.innerHTML = '<p class="lc-kicker">Find</p><h1>Choose an area</h1><p class="lc-purpose">Tap an area to see who has to sell there. The price is the median of matched Land Registry sales. Liverpool, Cheshire and Birmingham have no floor-area file yet, so that line stays blank.</p><div class="ios-cities">' +
       towns.map(function (t) {
         const n = leadCount(t[0]);
         const label = t[1] === 'Manchester' ? 'Greater Manchester' : t[1];

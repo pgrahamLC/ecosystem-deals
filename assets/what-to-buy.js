@@ -200,12 +200,12 @@
     if (!host) return;
     const scope = window.DM && DM.scope;
     const area = SCOPE[scope];
-    if (scope === 'Edinburgh' || scope === 'Glasgow') {
-      host.innerHTML = '<section class="ios-buy"><p class="lc-kicker">Agent view</p><h2>' + esc(scope) + '</h2><p>This note covers Manchester, Bristol and Cheltenham.</p></section>';
+    if (scope === 'Edinburgh' || scope === 'Glasgow' || scope === 'Liverpool' || scope === 'Cheshire' || scope === 'Birmingham') {
+      host.innerHTML = '<section class="ios-buy"><p class="lc-kicker">Agent view</p><h2>' + esc(scope) + '</h2><p>This note covers Manchester, Bristol and Cheltenham. No ranked buy note is published for ' + esc(scope) + '.</p></section>';
       return;
     }
     if (!area) {
-      host.innerHTML = '<section class="ios-buy"><p class="lc-kicker">Agent view</p><h2>Pick a town</h2><p>Choose Manchester, Bristol or Cheltenham.</p></section>';
+      host.innerHTML = '<section class="ios-buy"><p class="lc-kicker">Agent view</p><h2>Pick a town</h2><p>Choose Manchester, Bristol or Cheltenham. Liverpool, Cheshire and Birmingham have no ranked note.</p></section>';
       return;
     }
     if (!prices || !book || !window.lcRentGap) {

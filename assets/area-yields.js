@@ -19,6 +19,9 @@
     const t = String(city || '');
     if (/bristol/i.test(t)) return 'Bristol';
     if (/cheltenham/i.test(t)) return 'Cheltenham';
+    if (/liverpool|wirral/i.test(t)) return 'Liverpool';
+    if (/cheshire|\bchester\b/i.test(t)) return 'Cheshire';
+    if (/birmingham/i.test(t)) return 'Birmingham';
     if (/manchester/i.test(t)) return 'Manchester';
     return t;
   }

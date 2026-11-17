@@ -36,6 +36,22 @@ test('Edinburgh and Bristol resolve from the town or postcode', () => {
   assert.equal(api.areaOf({ pc: 'BS11 9TD' }), 'Bristol');
 });
 
+test('Liverpool, Cheshire and Birmingham stay separate from Manchester', () => {
+  assert.equal(api.areaOf({ city: 'Liverpool' }), 'Liverpool');
+  assert.equal(api.areaOf({ pc: 'L1 4DE' }), 'Liverpool');
+  assert.equal(api.areaOf({ pc: 'CH42 4DF' }), 'Liverpool');
+  assert.equal(api.areaOf({ pc: 'WA10 3PW' }), 'Liverpool');
+  assert.equal(api.areaOf({ city: 'Cheshire' }), 'Cheshire');
+  assert.equal(api.areaOf({ pc: 'CH1 3AG' }), 'Cheshire');
+  assert.equal(api.areaOf({ pc: 'CW1 4PN' }), 'Cheshire');
+  assert.equal(api.areaOf({ pc: 'SK9 1AA' }), 'Cheshire');
+  assert.equal(api.areaOf({ pc: 'WA16 0AA' }), 'Cheshire');
+  assert.equal(api.areaOf({ pc: 'B15 2HG' }), 'Birmingham');
+  assert.equal(api.areaOf({ pc: 'SK1 1AA' }), 'Manchester');
+  assert.equal(api.areaOf({ pc: 'WA14 1AA' }), 'Manchester');
+  assert.equal(api.areaOf({ pc: 'M1 1AA' }), 'Manchester');
+});
+
 test('base and downside bids use the same yield and a lower allowance rent', () => {
   const state = { opexMargin: 25, entryYield: 5.55, acqCostsPct: 3.6, taxMode: 'auto', price: 250000 };
   const helpers = { bid, tax };

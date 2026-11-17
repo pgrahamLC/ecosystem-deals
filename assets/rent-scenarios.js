@@ -31,11 +31,23 @@
   function areaOf(state) {
     const city = String((state && state.city) || '');
     const pc = String((state && state.pc) || '').toUpperCase();
-    if (/edinburgh/i.test(city) || /^EH/.test(pc)) return 'Edinburgh';
-    if (/bristol/i.test(city) || /^BS/.test(pc)) return 'Bristol';
-    if (/cheltenham|gloucester/i.test(city) || /^GL/.test(pc)) return 'Cheltenham';
-    if (/glasgow/i.test(city) || /^G\d/.test(pc)) return 'Glasgow';
-    if (/manchester|salford|stockport|oldham|bolton|wigan|trafford/i.test(city) || /^(?:M|SK|OL|BL|WN|WA)\d/.test(pc)) return 'Manchester';
+    const outward = (pc.match(/\b([A-Z]{1,2}\d{1,2}[A-Z]?)/) || [])[1] || '';
+    const prefix = outward.replace(/\d.*/, '');
+    const num = +(outward.match(/\d+/) || [])[0];
+    if (/edinburgh/i.test(city) || prefix === 'EH') return 'Edinburgh';
+    if (/bristol/i.test(city) || prefix === 'BS') return 'Bristol';
+    if (/cheltenham|gloucester/i.test(city) || prefix === 'GL') return 'Cheltenham';
+    if (/glasgow/i.test(city) || prefix === 'G') return 'Glasgow';
+    if (/liverpool|wirral|birkenhead/i.test(city) || prefix === 'L') return 'Liverpool';
+    if (prefix === 'CH' && ((num >= 41 && num <= 49) || (num >= 60 && num <= 63))) return 'Liverpool';
+    if (prefix === 'WA' && num >= 9 && num <= 12) return 'Liverpool';
+    if (/cheshire|\bchester\b|crewe|macclesfield|warrington/i.test(city) || prefix === 'CW') return 'Cheshire';
+    if (prefix === 'CH' && ((num >= 1 && num <= 4) || (num >= 64 && num <= 66))) return 'Cheshire';
+    if (prefix === 'SK' && num >= 9 && num <= 12) return 'Cheshire';
+    if (prefix === 'WA' && [1, 2, 4, 5, 6, 7, 8, 13, 16].indexOf(num) >= 0) return 'Cheshire';
+    if (/birmingham/i.test(city) || prefix === 'B') return 'Birmingham';
+    if (/manchester|salford|stockport|oldham|bolton|wigan|trafford/i.test(city) || /^(?:M|OL|BL|WN)$/.test(prefix)) return 'Manchester';
+    if (prefix === 'SK' || prefix === 'WA') return 'Manchester';
     return '';
   }
 
@@ -113,7 +125,7 @@
       return '<option value="' + pair[0] + '"' + (pair[0] === beds ? ' selected' : '') + '>' + pair[1] + '</option>';
     }).join('') + '</select></label>';
     if (!area) {
-      body += '<p>Choose Edinburgh, Bristol, Manchester, Cheltenham or Glasgow to see the two rents.</p>';
+      body += '<p>Choose Edinburgh, Bristol, Manchester, Cheltenham, Glasgow, Liverpool, Cheshire or Birmingham to see the rents that are loaded.</p>';
     } else if (!beds) {
       body += '<p>The lot does not state the bedrooms. Choose a size. No rent is assumed until you do.</p>';
     } else if (!book) {
@@ -134,7 +146,8 @@
       body += '<p class="ios-source">Base is ' + (omr ? esc(omr.name) + ' (' + esc(omr.code) + '), ' + esc(omrMeta.month) : 'not in the loaded ONS series for ' + esc(area)) + '. ' + esc(omrMeta.source || '') + '. ';
       body += 'Downside is ' + (lha ? esc(lha.brma) + ' BRMA, ' + moneyExact(lha.monthly) + ' a month' : 'not loaded') + '. ' + esc(lhaMeta.period || '') + ', ' + esc(lhaMeta.valid_from || '') + ' to ' + esc(lhaMeta.valid_to || '') + '.';
       if (!(Number(units) > 0)) body += ' Shown for one home until the number of homes is entered.';
-      if (omrArea === null) body += ' Glasgow has no open-market rent in the loaded ONS series.';
+      if (!omr) body += ' ' + area + ' has no open-market rent in the loaded ONS series.';
+      if (area === 'Cheshire' && !lha) body += ' Cheshire has four Broad Rental Market Areas (East, North, South and West Cheshire). No single county allowance is applied.';
       body += '</p>';
       if (omrMeta.url) body += '<p class="ios-source"><a href="' + esc(omrMeta.url) + '" target="_blank" rel="noopener">ONS private rent series</a>';
       if (lhaMeta.publication) body += ' · <a href="' + esc(lhaMeta.publication) + '" target="_blank" rel="noopener">DWP LHA rates 2026/27</a>';

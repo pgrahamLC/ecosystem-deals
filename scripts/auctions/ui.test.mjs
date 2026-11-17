@@ -46,10 +46,10 @@ test('public Auctions entry stays reachable without a main-nav tab',()=>{
   assert.ok(!index.includes('data-g="auctions"'), 'the main nav must not offer an Auctions tab');
   for(const text of ['id="auctions_view"','<div id="app">',"window.lcAuctionsActive=active==='auctions'",'location.hash === "#auctions"','data/auctions/lots.json'])assert.ok(index.includes(text),text);
 });
-test('all five towns and canonical Bristol/Edinburgh aliases are recognized',()=>{
+test('all eight areas and canonical Bristol/Edinburgh aliases are recognized',()=>{
   const {api}=harness();
   assert.equal(api.town('City Of Bristol'),'Bristol');assert.equal(api.town('City of Edinburgh'),'Edinburgh');
-  for(const name of ['Manchester','Glasgow','Edinburgh','Bristol','Cheltenham'])assert.equal(api.town(name),name);
+  for(const name of ['Manchester','Glasgow','Edinburgh','Bristol','Cheltenham','Liverpool','Cheshire','Birmingham'])assert.equal(api.town(name),name);
   assert.equal(api.town('Outside target area'),'');
 });
 test('property type aliases normalize without interpreting sales prose',()=>{
