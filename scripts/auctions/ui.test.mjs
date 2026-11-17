@@ -57,23 +57,26 @@ test('property type aliases normalize without interpreting sales prose',()=>{
   for(const [input,expected] of [['block','Blocks'],['houses','Houses'],['flat','Flats'],['HMO','HMO'],['portfolio','Portfolios'],['mixed_use','Mixed-use'],['development-site','Development']])assert.equal(api.type(input),expected);
   assert.equal(api.type('cheap auction bargain'),'');
 });
-test('town, type and all explicit status filters work',()=>{
+test('town and type filters keep only current lots',()=>{
   const {api}=harness();
   assert.deepEqual(ids(api.filtered(lots,{...base,town:'Edinburgh'})),['one']);
   assert.deepEqual(ids(api.filtered(lots,{...base,type:'Mixed-use'})),['three']);
-  assert.equal(api.filtered(lots,{...base,status:'upcoming'}).length,2);
-  for(const [status,id] of [['sold','two'],['unsold','four'],['withdrawn','five']])assert.deepEqual(ids(api.filtered(lots,{...base,status})),[id]);
-  assert.equal(api.filtered(lots,base).length,5);
+  assert.deepEqual(ids(api.filtered(lots,base)),['one','three']);
+  assert.deepEqual(ids(api.filtered(lots,{...base,status:'sold'})),['one','three']);
+  assert.equal(api.currentLot(lots[1]),false);
+  assert.equal(api.currentLot(lots[3]),false);
+  assert.equal(api.currentLot(lots[4]),false);
+  assert.equal(api.currentLot({...lots[0],auction_date:earlier}),false);
+  assert.equal(api.currentLot({...lots[0],status:'available',auction_date:null}),true);
 });
-test('guide sorting keeps unknown prices last in both directions',()=>{
+test('guide sorting keeps the current lots and leaves sold prices out',()=>{
   const {api}=harness();
-  assert.deepEqual(ids(api.filtered(lots,{...base,sort:'price-asc'})),['four','five','three','one','two']);
-  assert.deepEqual(ids(api.filtered(lots,{...base,sort:'price-desc'})),['one','three','five','four','two']);
+  assert.deepEqual(ids(api.filtered(lots,{...base,sort:'price-asc'})),['three','one']);
+  assert.deepEqual(ids(api.filtered(lots,{...base,sort:'price-desc'})),['one','three']);
 });
-test('unknown auction dates sort last and sold-price sorting is separate',()=>{
+test('a current lot with no auction date stays listed and a past date does not',()=>{
   const {api}=harness();
   assert.deepEqual(ids(api.filtered(lots,{...base,status:'upcoming'})),['one','three']);
-  assert.equal(api.filtered(lots,{...base,sort:'sold-desc'})[0].id,'two');
 });
 test('auction, receiver keywords, result and low guide never assign distress',()=>{
   const {api}=harness();
@@ -103,13 +106,14 @@ test('feed text is escaped and javascript source URLs are never linked',async()=
   assert.ok(h.root.innerHTML.includes('&lt;script&gt;alert(1)&lt;/script&gt;'));
   assert.ok(!h.root.innerHTML.includes('<script>alert'));assert.ok(!h.root.innerHTML.includes('href="javascript:'));
 });
-test('old snapshots and elapsed upcoming auctions get explicit outcome warnings',async()=>{
+test('a past-dated lot is not listed, and an old snapshot is still labelled stale',async()=>{
   const h=harness({payload:{schema_version:1,updated_at:'2020-01-01',lots:[{...lots[0],auction_date:earlier,scraped_at:'2020-01-01'}]}});await h.api.refresh();
-  for(const text of ['Stale or undated snapshot','Outcome unconfirmed','last reported status'])assert.ok(h.root.innerHTML.includes(text));
+  assert.ok(h.root.innerHTML.includes('Stale or undated snapshot'));
+  assert.equal((h.root.innerHTML.match(/<article class="aq-lot"/g)||[]).length,0);
 });
 test('coverage reports each source status and commercial exclusion counts',async()=>{
   const h=harness({sourceCoverage:{...coverage,sources:['live','partial','failed','skipped'].map((status,i)=>({...coverage.sources[0],id:String(i),status,commercial_excluded:i===0?2:0}))}});await h.api.refresh();
-  for(const text of ['1 live','1 partial','1 failed','1 skipped','2 commercial excluded','Not reported'])assert.ok(h.root.innerHTML.includes(text));
+  for(const text of ['1 live','1 partial','1 failed','1 skipped','2 commercial excluded','current lots'])assert.ok(h.root.innerHTML.includes(text));
 });
 test('failed lots feed and unsupported schema show errors rather than invented stock',async()=>{
   const h=harness({failLots:true});await h.api.refresh();
@@ -123,14 +127,16 @@ test('empty results explain coverage limits and failed coverage still permits lo
   const partial=harness({failCoverage:true});await partial.api.refresh();
   assert.ok(partial.root.innerHTML.includes('Coverage unavailable'));assert.ok(partial.root.innerHTML.includes('<article class="aq-lot"'));
 });
-test('status tabs, selects, reset and clearing a town update the rendered records',async()=>{
+test('sold, unsold and withdrawn lots are not rendered, and reset stays on current lots',async()=>{
   const h=harness();await h.api.refresh();
-  h.click({aqStatus:'sold'});assert.ok(h.root.innerHTML.includes('Reported sold price'));assert.ok(h.root.innerHTML.includes('£400,000'));
-  h.change('status','unsold');assert.ok(h.root.innerHTML.includes('Test HMO'));
-  h.change('status','withdrawn');assert.ok(h.root.innerHTML.includes('Test house'));
-  h.click({aqAction:'reset'});assert.equal((h.root.innerHTML.match(/<article class="aq-lot"/g)||[]).length,5);
+  assert.ok(!h.root.innerHTML.includes('data-aq-status="sold"'));
+  assert.ok(!h.root.innerHTML.includes('£400,000'));
+  assert.ok(!h.root.innerHTML.includes('Test HMO'));
+  assert.ok(!h.root.innerHTML.includes('Test house'));
+  assert.equal((h.root.innerHTML.match(/<article class="aq-lot"/g)||[]).length,2);
+  h.click({aqAction:'reset'});assert.equal((h.root.innerHTML.match(/<article class="aq-lot"/g)||[]).length,2);
   h.change('town','Edinburgh');assert.equal((h.root.innerHTML.match(/<article class="aq-lot"/g)||[]).length,1);
-  h.change('town','');assert.equal((h.root.innerHTML.match(/<article class="aq-lot"/g)||[]).length,5);
+  h.change('town','');assert.equal((h.root.innerHTML.match(/<article class="aq-lot"/g)||[]).length,2);
 });
 test('shared grade labels and colors are used for evidenced feed grades',async()=>{
   const h=harness({payload:feed([{...lots[0],grade:'B',grade_evidence:'Verified instruction'}]),sharedGrade:{label:g=>'Shared '+g,color:()=> '#6a1b9a'}});await h.api.refresh();
@@ -165,10 +171,10 @@ test('a source placeholder zero guide is unknown, not a zero-pound offer',async(
  assert.doesNotMatch(h.root.innerHTML,/<strong>£0<\/strong>/);
 });
 
-test('sale status text cannot masquerade as a missing guide price',async()=>{
+test('a sold lot is not shown, even when the guide text says sold',async()=>{
  const h=harness({payload:feed([{...lots[0],status:'sold',guide_price:null,guide_price_text:'Sold prior'}])});
- await h.api.refresh();h.click({aqStatus:'sold'});
- assert.match(h.root.innerHTML,/Guide not published/);
+ await h.api.refresh();
+ assert.equal((h.root.innerHTML.match(/<article class="aq-lot"/g)||[]).length,0);
  assert.doesNotMatch(h.root.innerHTML,/<strong>Sold prior<\/strong>/);
 });
 
