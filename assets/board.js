@@ -18,7 +18,8 @@
       const size = row.count != null ? row.count : row.median;
       const on = state.drill && state.drill.kind === kind && state.drill.id === row.id;
       const label = row.count != null ? row.count : M.money(row.median);
-      return '<button type="button" class="bd-bar' + (on ? ' on' : '') + '" data-kind="' + esc(kind) + '" data-id="' + esc(row.id) + '"><span>' + esc(row.label) + '</span><i><b style="width:' + Math.max(4, (size / max) * 100) + '%"></b></i><em>' + esc(label) + '</em></button>';
+      const mute = /not stated|no guide|no date|unpublished/i.test(String(row.id) + ' ' + row.label);
+      return '<button type="button" class="bd-bar' + (on ? ' on' : '') + (mute ? ' muted' : '') + '" data-kind="' + esc(kind) + '" data-id="' + esc(row.id) + '"><span>' + esc(row.label) + '</span><i><b style="width:' + Math.max(4, (size / max) * 100) + '%"></b></i><em>' + esc(label) + '</em></button>';
     }).join('');
   }
   function drillLots(rows) {
@@ -26,6 +27,47 @@
     const rest = rows.slice(8);
     const line = (lot) => '<article class="bd-lot"><b>' + esc(lot.address) + '</b><p>' + esc(lot.type) + ' · ' + esc(lot.beds === 'Not stated' ? 'Beds not stated' : lot.beds + ' bed') + ' · ' + (lot.guide ? esc(M.money(lot.guide)) : 'Guide not published') + ' · ' + esc(lot.date || 'Date not published') + '</p>' + (lot.url ? '<a href="' + esc(lot.url) + '" target="_blank" rel="noopener">Open the lot</a>' : '') + '</article>';
     return '<div class="bd-list">' + shown.map(line).join('') + '</div>' + (rest.length ? '<details class="bd-fold"><summary>Show detail (' + rest.length + ' more)</summary><div class="bd-list">' + rest.map(line).join('') + '</div></details>' : '');
+  }
+  function rentPairs(screen) {
+    if (!screen.rents.length) return '<p>Not yet recorded</p>';
+    return screen.rents.map((row) => {
+      const ons = row.ons != null ? row.ons : row.ons3;
+      const lha = row.lha;
+      const max = Math.max(ons || 0, lha || 0, 1);
+      return '<button type="button" class="bd-pair" data-kind="rent" data-id="' + esc(row.id) + '"><span>' + esc(String(row.label).replace(' bed', '')) + '</span><i><b class="ons" style="width:' + ((ons || 0) / max * 100) + '%"></b><b class="lha" style="width:' + ((lha || 0) / max * 100) + '%"></b></i></button>';
+    }).join('');
+  }
+  function agentBars(area) {
+    const rows = ((cache && cache.agents && cache.agents.agents) || []).filter((row) => row.area === area);
+    const counts = {};
+    rows.forEach((row) => { counts[row.type || 'Other'] = (counts[row.type || 'Other'] || 0) + 1; });
+    const list = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([id, count]) => ({id, label: id.replace(' agent', '').replace('Sales and letting', 'Sales + let').replace('Registered provider', 'Provider'), count}));
+    if (!list.length) return '<p>Not yet recorded</p>';
+    return '<p class="bd-src">' + rows.length + ' branches</p>' + bars(list, 'agents');
+  }
+  function gngBars(area) {
+    let workstreams = null;
+    try {
+      const saved = JSON.parse(localStorage.getItem('ed-market-entry-v1') || 'null');
+      if (saved && saved.checklists && saved.checklists[area]) workstreams = saved.checklists[area].workstreams;
+    } catch (error) { workstreams = null; }
+    if (!workstreams && cache && cache.checklist) {
+      const answers = (cache.checklist.answers && cache.checklist.answers[area]) || {};
+      workstreams = (cache.checklist.workstreams || []).map((ws) => ({
+        title: ws.title,
+        items: (ws.items || []).map((item) => Object.assign({}, item, answers[item.id] || {}))
+      }));
+    }
+    const streams = (workstreams || []).map((ws) => {
+      const total = (ws.items || []).length;
+      const done = (ws.items || []).filter((item) => item.done || item.status === 'done').length;
+      return {id: ws.title, label: ws.title.replace('Local Authority 10-year Lease Agreements', 'LA leases').replace('Assembling A Portfolio', 'Portfolio'), count: done, total};
+    });
+    if (!streams.length) return '<p>Not yet recorded</p>';
+    const done = streams.reduce((sum, row) => sum + row.count, 0);
+    const total = streams.reduce((sum, row) => sum + row.total, 0);
+    const barsHtml = streams.map((row) => '<button type="button" class="bd-bar" data-go="entry"><span>' + esc(row.label) + '</span><i><b style="width:' + (row.total ? Math.round(row.count / row.total * 100) : 0) + '%"></b></i><em>' + row.count + '/' + row.total + '</em></button>').join('');
+    return '<p class="bd-src">' + done + ' of ' + total + ' done</p>' + barsHtml;
   }
   function html(screen) {
     const rent = screen.rents.find((row) => row.id === '3');
@@ -46,8 +88,10 @@
       + '<article class="bd-chart"><h2>Lots by beds</h2>' + bars(screen.beds, 'beds') + '</article>'
       + '<article class="bd-chart"><h2>Guide prices</h2>' + bars(screen.prices, 'price') + '</article>'
       + '<article class="bd-chart"><h2>Auction dates</h2>' + bars(screen.calendar, 'month') + '</article>'
-      + '<article class="bd-chart"><h2>Open market and allowance</h2>' + (screen.rents.length ? screen.rents.map((row) => '<button type="button" class="bd-bar" data-kind="rent" data-id="' + esc(row.id) + '"><span>' + esc(row.label) + '</span><i><b style="width:100%"></b></i><em>' + esc(row.gap != null ? M.money(row.gap) : ((row.ons != null || row.ons3 != null) ? 'ONS ' + M.money(row.ons != null ? row.ons : row.ons3) : 'Not yet recorded')) + '</em></button>').join('') : '<p>Not yet recorded</p>') + '<p class="bd-src">A 4 bed gap is not shown. The ONS figure is 4 or more bedrooms.</p></article>'
+      + '<article class="bd-chart"><h2>ONS rent and LHA</h2><p class="bd-key"><span><i class="ons"></i>ONS rent</span><span><i class="lha"></i>Allowance</span></p>' + rentPairs(screen) + '<p class="bd-src">Monthly figures. A 4 bed gap is not shown, because ONS is 4 or more bedrooms.</p></article>'
       + '<article class="bd-chart"><h2>Land Registry district medians</h2>' + bars(screen.comps.rows, 'comps') + '<p class="bd-src">' + (screen.comps.year ? 'Price Paid, ' + esc(screen.comps.year) + '. A district is shown when it has at least 5 sales.' : 'Not yet recorded') + '</p><button type="button" class="btn sec" data-go="map">Open the map</button></article>'
+      + '<article class="bd-chart"><h2>Agents by type</h2>' + agentBars(screen.area) + '<button type="button" class="btn sec" data-go="entry">Open the register</button></article>'
+      + '<article class="bd-chart"><h2>Go / No-Go</h2>' + gngBars(screen.area) + '<button type="button" class="btn sec" data-go="entry">Open the checklist</button></article>'
       + '</div>'
       + '<article class="bd-chart"><h2>Takeaways</h2><ul class="bd-take">' + screen.takeaways.map((line) => '<li>' + esc(line) + '</li>').join('') + '</ul></article>'
       + (drill ? '<section class="bd-drill"><p class="bd-kicker">Board / ' + esc(screen.area) + ' / ' + esc(drillTitle) + '</p><button type="button" class="btn sec" id="bd-back">Back to the board</button><h2>' + esc(drillTitle) + '</h2>'
@@ -77,6 +121,7 @@
     host.querySelectorAll('[data-kind]').forEach((button) => button.onclick = () => {
       const kind = button.dataset.kind;
       const id = button.dataset.id;
+      if (kind === 'agents') { open('entry'); return; }
       state.drill = state.drill && state.drill.kind === kind && state.drill.id === id ? null : {kind, id, label: button.querySelector('span') ? button.querySelector('span').textContent : id};
       paint(host);
       const drill = host.querySelector('.bd-drill');
@@ -127,11 +172,11 @@
     if (cache) return Promise.resolve(cache);
     if (pending) return pending;
     state.loading = true;
-    pending = Promise.all(['data/auctions/lots.json', 'data/rent-scenarios.json', 'comps/summary.json'].map((file) => fetch(file + '?v=20261117-board', {cache: 'no-store'}).then((response) => {
+    pending = Promise.all(['data/auctions/lots.json', 'data/rent-scenarios.json', 'comps/summary.json', 'data/market-entry/agents.json', 'data/market-entry/checklist.json'].map((file) => fetch(file + '?v=20261117-fill', {cache: 'no-store'}).then((response) => {
       if (!response.ok) throw new Error(file + ' returned HTTP ' + response.status);
       return response.json();
     }))).then((rows) => {
-      cache = {lots: rows[0].lots || [], rents: rows[1], comps: rows[2]};
+      cache = {lots: rows[0].lots || [], rents: rows[1], comps: rows[2], agents: rows[3], checklist: rows[4]};
       state.loading = false;
       state.error = '';
       pending = null;

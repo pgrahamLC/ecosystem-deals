@@ -13,11 +13,11 @@
     ['Not stated', 'Not stated']
   ]);
   const BANDS = Object.freeze([
-    ['under-100', 'Under £100k', 0, 100000],
-    ['100-200', '£100k to £200k', 100000, 200000],
-    ['200-350', '£200k to £350k', 200000, 350000],
-    ['350-500', '£350k to £500k', 350000, 500000],
-    ['over-500', '£500k and over', 500000, Infinity]
+    ['under-100', 'Under 100k', 0, 100000],
+    ['100-200', '100 to 200k', 100000, 200000],
+    ['200-350', '200 to 350k', 200000, 350000],
+    ['350-500', '350 to 500k', 350000, 500000],
+    ['over-500', '500k plus', 500000, Infinity]
   ]);
   const CHESHIRE = Object.freeze(['Cheshire East', 'Cheshire West and Chester']);
 
@@ -89,7 +89,7 @@
     return /^\d{4}-\d{2}$/.test(day) ? day : '';
   }
   function monthLabel(id) {
-    if (id === 'unpublished') return 'Date not published';
+    if (id === 'unpublished') return 'No date';
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const parts = id.split('-');
     return months[Number(parts[1]) - 1] + ' ' + parts[0];
@@ -184,7 +184,7 @@
     const types = [...typeCounts.entries()].map(([id, count]) => ({id, label: id, count})).sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
     const beds = BEDS.map(([id, label]) => ({id, label, count: bedCountsMap.get(id) || 0})).filter((row) => row.count);
     const prices = BANDS.map(([id, label]) => ({id, label, count: bandCounts.get(id) || 0})).filter((row) => row.count);
-    if (bandCounts.get('unpublished')) prices.push({id: 'unpublished', label: 'Guide not published', count: bandCounts.get('unpublished')});
+    if (bandCounts.get('unpublished')) prices.push({id: 'unpublished', label: 'No guide', count: bandCounts.get('unpublished')});
     const calendar = [...monthCounts.entries()].map(([id, count]) => ({id, label: monthLabel(id), count})).sort((a, b) => a.id === 'unpublished' ? 1 : b.id === 'unpublished' ? -1 : a.id < b.id ? -1 : 1);
     const rents = rentRows(input && input.rents, area);
     const comps = compsFor(input && input.comps, area, today);

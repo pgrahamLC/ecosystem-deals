@@ -57,9 +57,9 @@
     const agents = state.agents.filter((row) => row.area === area);
     const registered = agents.filter((row) => row.alertStatus === 'registered').length;
     return '<div class="me-hero"><p class="me-kicker">Go / No-Go</p><h1>Market entry</h1><p class="me-purpose">' + esc(state.meta.purpose || '') + '</p></div>'
-      + '<div class="kpis"><div class="kpi"><small>' + esc(area) + ' checklist</small><b>' + summary.done + ' of ' + summary.total + ' done</b></div>'
-      + '<div class="kpi"><small>Agents registered</small><b>' + registered + ' of ' + agents.length + '</b></div>'
-      + '<div class="kpi"><small>Off-market deals</small><b>' + state.intake.filter((row) => row.area === area).length + '</b></div></div>'
+      + '<div class="bd-kpis"><button type="button" class="bd-tile" data-act="section" data-section="checklist"><span>' + esc(area) + ' checklist</span><b>' + summary.done + ' of ' + summary.total + ' done</b></button>'
+      + '<button type="button" class="bd-tile" data-act="section" data-section="agents"><span>Agents registered</span><b>' + registered + ' of ' + agents.length + '</b></button>'
+      + '<button type="button" class="bd-tile" data-act="section" data-section="intake"><span>Off-market deals</span><b>' + state.intake.filter((row) => row.area === area).length + '</b></button></div>'
       + '<div class="card"><div class="ctl"><label>Area <select id="me-area" data-act="area">' + M.AREAS.map((name) => '<option' + (name === area ? ' selected' : '') + '>' + esc(name) + '</option>').join('') + '</select></label>'
       + '<div class="me-tabs" role="tablist">' + SECTIONS.map(([id, label]) => '<button type="button" data-act="section" data-section="' + id + '"' + (state.section === id ? ' class="on"' : '') + '>' + label + '</button>').join('') + '</div></div>'
       + '<div id="me-panel"></div>'
@@ -132,6 +132,10 @@
     const types = Object.entries(counts).sort((a, b) => b[1] - a[1]);
     const max = Math.max(1, ...types.map((row) => row[1]));
     const bars = types.map(([label, count]) => '<button type="button" class="bd-bar' + (ui.agentType === label ? ' on' : '') + '" data-act="agent-type" data-type="' + esc(label) + '"><span>' + esc(label) + '</span><i><b style="width:' + (count / max * 100) + '%"></b></i><em>' + count + '</em></button>').join('');
+    const areaCounts = {};
+    state.agents.forEach((row) => { areaCounts[row.area] = (areaCounts[row.area] || 0) + 1; });
+    const areaMax = Math.max(1, ...Object.values(areaCounts));
+    const areaBars = Object.entries(areaCounts).sort((a, b) => b[1] - a[1]).map(([label, count]) => '<button type="button" class="bd-bar' + (state.area === label ? ' on' : '') + '" data-act="agent-area" data-area="' + esc(label) + '"><span>' + esc(label) + '</span><i><b style="width:' + (count / areaMax * 100) + '%"></b></i><em>' + count + '</em></button>').join('');
     const rows = agentRows();
     const shown = rows.slice(0, 20).map(agentCard).join('');
     const rest = rows.slice(20).map(agentCard).join('');
@@ -139,12 +143,10 @@
     const showForm = ui.editing && ui.editing.kind === 'agent';
     const investment = all.filter((row) => (row.specialisms || []).some((item) => /invest|auction|land|new homes|commercial/i.test(item)) || /Auction|Land|Commercial|New homes/.test(row.type)).length;
     return '<div class="bd-kpis"><div class="bd-tile"><span>Branches</span><b>' + all.length + '</b></div><div class="bd-tile"><span>Registered with</span><b>' + registered + '</b></div><div class="bd-tile"><span>Worth a call first</span><b>' + investment + '</b><span>Auction, land, new homes, commercial or investment</span></div></div>'
-      + '<div class="bd-charts"><article class="bd-chart"><h2>Branches by type</h2>' + (bars || '<p>Not yet recorded</p>') + '</article><article class="bd-chart"><h2>Takeaways</h2><ul class="bd-take"><li>' + all.length + ' public branches are on file for ' + esc(state.area) + '.</li><li>' + registered + ' are marked registered with.</li><li>Phone, email and the firm website stay blank unless a public page showed them.</li></ul></article></div>'
+      + '<div class="bd-charts"><article class="bd-chart"><h2>Agents by area</h2>' + areaBars + '</article><article class="bd-chart"><h2>Agents by type in ' + esc(state.area) + '</h2>' + (bars || '<p>Not yet recorded</p>') + '</article><article class="bd-chart"><h2>Takeaways</h2><ul class="bd-take"><li>' + all.length + ' public branches are on file for ' + esc(state.area) + '.</li><li>' + registered + ' are marked registered with.</li><li>Phone, email and the firm website stay blank unless a public page showed them.</li></ul></article></div>'
       + '<section class="card"><h2>Agent register</h2><div class="ctl"><label>Search <input id="me-agent-q" value="' + esc(ui.agentQ) + '" placeholder="Name, branch or postcode" autocomplete="off"></label><button type="button" class="btn sec" data-act="agent-type" data-type="">All types</button><button type="button" class="btn" data-act="new-agent">Add a contact</button></div>'
       + (showForm ? agentForm(editing) : '')
-      + '<p class="foot">' + rows.length + ' match.</p>' + (shown || '<p>No branches match.</p>')
-      + (rest ? '<details class="bd-fold"><summary>Show detail (' + (rows.length - 20) + ' more)</summary>' + rest + '</details>' : '')
-      + '</section>';
+      + '<details class="bd-fold"' + (ui.agentQ || ui.agentType || showForm ? ' open' : '') + '><summary>Show detail (' + rows.length + ')</summary><p class="foot">' + rows.length + ' match.</p>' + (shown || '<p>No branches match.</p>') + rest + '</details></section>';
   }
 
   function sourceChoices() {
@@ -308,6 +310,7 @@
     if (act === 'del-item') { state = M.deleteItem(state, state.area, button.dataset.ws, button.dataset.id).state; save(); render(); return; }
     if (act === 'del-ws') { state = M.deleteWorkstream(state, state.area, button.dataset.ws).state; save(); render(); return; }
     if (act === 'agent-type') { ui.agentType = button.dataset.type || ''; render(); return; }
+    if (act === 'agent-area') { state.area = button.dataset.area || state.area; ui.agentType = ''; ui.agentQ = ''; save(); render(); return; }
     if (act === 'new-agent') { ui.editing = {kind: 'agent', id: ''}; render(); return; }
     if (act === 'edit-agent') { ui.editing = {kind: 'agent', id: button.dataset.id}; state.section = 'agents'; save(); render(); return; }
     if (act === 'del-agent') { state = M.deleteAgent(state, button.dataset.id); ui.editing = null; save(); render(); return; }
@@ -594,7 +597,7 @@
       if (!on) {
         if (host) host.classList.add('hidden');
         const screen = document.getElementById('lc_screen');
-        if (screen) screen.hidden = false;
+        if (screen && (mode === 'board' || mode === 'assets' || mode === 'rentgap')) screen.hidden = false;
         return typeof previous === 'function' ? previous.apply(this, arguments) : undefined;
       }
       if (typeof previous === 'function') previous.call(this, 'entry');

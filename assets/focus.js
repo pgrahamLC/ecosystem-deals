@@ -17,7 +17,7 @@
     ['pipeline', 'Pipeline'],
     ['shortlist', 'Shortlist'],
     ['overview', 'Overview'],
-    ['rentgap', 'Rent gap']
+    ['rentgap', 'Rents and ONS']
   ];
   const COPY = {
     assets: ['Find', 'Where to look', 'Manchester, Liverpool, Cheshire, Birmingham, Cheltenham, Bristol and Edinburgh. Open an area, then a lead, then a deal.'],
