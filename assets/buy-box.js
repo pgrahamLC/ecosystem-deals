@@ -109,7 +109,8 @@
     if (rule.due) dateBits.push('Responses due ' + ukDate(rule.due));
     const badge = rule.status === 'Evidenced' ? 'evidenced' : (rule.status === 'Awaiting response' ? 'waiting' : 'none');
     const countsHtml = ['match', 'partial', 'no'].map((id) => '<button type="button" class="bd-tile" data-kind="buy" data-id="' + id + '"><span>' + TAGS[id] + '</span><b>' + ((tally && tally[id]) || 0) + '</b></button>').join('');
-    const wants = rule.wants.length ? '<ul class="bd-take">' + rule.wants.map((line) => '<li>' + esc(line) + '</li>').join('') + '</ul>' : '';
+    const lines = rule.wants.length ? rule.wants : [rule.note || 'No RFI yet.', rule.summary, rule.openFields.length ? 'Open fields stay blank until a response is recorded.' : 'No further regional brief is on file.'].filter(Boolean);
+    const wants = '<ul class="bd-take">' + lines.map((line) => '<li>' + esc(line) + '</li>').join('') + '</ul>';
     const missing = rule.notSpecified.length ? '<p class="bd-src">Not specified: ' + esc(rule.notSpecified.join(', ')) + '.</p>' : '';
     const open = rule.openFields.length ? '<p class="bd-src">Still to answer: ' + esc(rule.openFields.join(', ')) + '.</p>' : '';
     return '<article class="bd-chart bd-buy"><div class="bd-buy-h"><h2>What we want in ' + esc(area) + '</h2><span class="bd-badge ' + badge + '">' + esc(rule.status) + '</span></div>'

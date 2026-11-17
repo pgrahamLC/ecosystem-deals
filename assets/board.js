@@ -214,11 +214,11 @@
       const heading = card.querySelector('h2, h3, .aq-address');
       const type = eye ? eye.textContent.split('·').slice(1).join('·') : '';
       const tag = window.BuyBox.classify(town, {title: card.textContent, address: heading ? heading.textContent : '', lot_type: type});
+      if (card.dataset.buy === tag.tag && card.querySelector('.bd-buy-tag')) return;
       card.dataset.buy = tag.tag;
       let badge = card.querySelector('.bd-buy-tag');
       if (!badge) {
         badge = document.createElement('p');
-        badge.className = 'bd-buy-tag ' + tag.tag;
         card.appendChild(badge);
       }
       badge.className = 'bd-buy-tag ' + tag.tag;

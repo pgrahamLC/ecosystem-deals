@@ -177,6 +177,13 @@
   watch('auctions_body', 'auctions', false);
   watch('distress_view', 'distress', true);
   watch('comps_view', 'comps', true);
+  watch('deal_view', 'deal', true);
+  watch('map_view', 'map', true);
+  watch('valuation_view', 'valuation', true);
+  watch('accom_view', 'accom', true);
+  watch('pipeline_view', 'pipeline', true);
+  watch('shortlist_view', 'shortlist', true);
+  watch('overview_view', 'overview', true);
   document.addEventListener('click', (event) => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const summary = event.target.closest('summary');

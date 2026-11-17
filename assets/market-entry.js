@@ -96,7 +96,11 @@
         + '<form class="gn-add" data-act="add-item" data-ws="' + esc(ws.id) + '"><input name="text" placeholder="New checklist item" aria-label="New item in ' + esc(ws.title) + '" autocomplete="off"><button class="btn" type="submit">Add item</button></form>'
         + '<details><summary class="foot">Remove this workstream</summary><button type="button" class="btn sec" data-act="del-ws" data-ws="' + esc(ws.id) + '">Delete workstream</button></details></details></section>';
     }).join('');
-    return sections + '<section class="card"><h2>Add a workstream</h2><form class="gn-add" data-act="add-ws"><input name="title" placeholder="New workstream name" aria-label="New workstream name" autocomplete="off"><button class="btn" type="submit">Add workstream</button></form><p class="foot">This checklist is for ' + esc(area) + ' only. Switch area to see the others. Manchester starts with Yes on the market question.</p></section>';
+    const streams = list.workstreams.map((ws) => ({id: 'gn-' + ws.id, label: ws.title.replace('Local Authority 10-year Lease Agreements', 'LA leases').replace('Assembling A Portfolio', 'Portfolio'), count: (ws.items || []).length}));
+    const max = Math.max(1, ...streams.map((row) => row.count));
+    const bars = streams.map((row) => '<button type="button" class="bd-bar" data-act="open-fold" data-target="#' + esc(row.id) + '"><span>' + esc(row.label) + '</span><i><b style="width:' + (row.count / max * 100) + '%"></b></i><em>' + row.count + '</em></button>').join('');
+    const chart = '<div class="bd-charts"><article class="bd-chart"><h2>Checklist</h2>' + (bars || '<p>Not yet recorded</p>') + '</article><article class="bd-chart"><h2>Takeaways</h2><ul class="bd-take"><li>' + summary.done + ' of ' + summary.total + ' items are done in ' + esc(area) + '.</li><li>' + (area === 'Manchester' ? 'Manchester starts with Yes on the market question.' : 'Answer the market question for ' + esc(area) + '.') + '</li><li>A lot is not treated as reserved matters discharged unless its own text says so.</li></ul></article></div>';
+    return chart + sections + '<section class="card"><h2>Add a workstream</h2><form class="gn-add" data-act="add-ws"><input name="title" placeholder="New workstream name" aria-label="New workstream name" autocomplete="off"><button class="btn" type="submit">Add workstream</button></form><p class="foot">This checklist is for ' + esc(area) + ' only. Switch area to see the others. Manchester starts with Yes on the market question.</p></section>';
   }
 
   function agentForm(row) {
@@ -131,7 +135,8 @@
     all.forEach((row) => { counts[row.type] = (counts[row.type] || 0) + 1; });
     const types = Object.entries(counts).sort((a, b) => b[1] - a[1]);
     const max = Math.max(1, ...types.map((row) => row[1]));
-    const bars = types.map(([label, count]) => '<button type="button" class="bd-bar' + (ui.agentType === label ? ' on' : '') + '" data-act="agent-type" data-type="' + esc(label) + '"><span>' + esc(label) + '</span><i><b style="width:' + (count / max * 100) + '%"></b></i><em>' + count + '</em></button>').join('');
+    const shortType = (label) => label.replace('Sales and letting', 'Sales + let').replace('Registered provider', 'Provider').replace('Local authority contact', 'Council');
+    const bars = types.map(([label, count]) => '<button type="button" class="bd-bar' + (ui.agentType === label ? ' on' : '') + (/not stated/i.test(label) ? ' muted' : '') + '" data-act="agent-type" data-type="' + esc(label) + '"><span>' + esc(shortType(label)) + '</span><i><b style="width:' + (count / max * 100) + '%"></b></i><em>' + count + '</em></button>').join('');
     const areaCounts = {};
     state.agents.forEach((row) => { areaCounts[row.area] = (areaCounts[row.area] || 0) + 1; });
     const areaMax = Math.max(1, ...Object.values(areaCounts));
@@ -177,9 +182,15 @@
     const editing = ui.editing && ui.editing.kind === 'intake' ? (state.intake.find((row) => row.id === ui.editing.id) || ui.editing.draft || null) : null;
     const showForm = ui.editing && ui.editing.kind === 'intake';
     const body = rows.map((row) => '<article class="me-row"><h3>' + esc(row.address || 'Address not stated') + (row.postcode ? ', ' + esc(row.postcode) : '') + '</h3><p class="foot">' + esc(row.date || 'No date') + ' · ' + esc(row.type) + (row.beds ? ' · ' + esc(row.beds) + ' bed' : '') + ' · ' + esc(row.status) + '</p><p>Source: <b>' + esc(row.sourceName || 'Not linked') + '</b></p><p>Planning: ' + esc(row.planning) + (row.guide ? ' · Guide £' + esc(Number(row.guide).toLocaleString('en-GB')) : '') + '</p>' + (row.notes ? '<p class="foot">' + esc(row.notes) + '</p>' : '') + '<div class="gn-tools"><button type="button" class="btn sec" data-act="edit-intake" data-id="' + esc(row.id) + '">Edit</button><button type="button" class="btn sec" data-act="del-intake" data-id="' + esc(row.id) + '">Delete</button></div></article>').join('');
-    return '<section class="card"><h2>Off-market deals in ' + esc(state.area) + '</h2><p class="lead">Deals that come from an agent or stakeholder often never reach the open market. Log them here. Planning status is what you were told. Not stated means it was not given. Do not guess.</p><button type="button" class="btn" data-act="new-intake">Add a deal</button>'
+    const statusCounts = {};
+    rows.forEach((row) => { const key = row.status || 'Not stated'; statusCounts[key] = (statusCounts[key] || 0) + 1; });
+    const statusRows = Object.entries(statusCounts).sort((a, b) => b[1] - a[1]);
+    const statusMax = Math.max(1, ...statusRows.map((row) => row[1]));
+    const statusBars = statusRows.map(([label, count]) => '<button type="button" class="bd-bar' + (/not stated/i.test(label) ? ' muted' : '') + '" data-act="open-fold" data-target="#me-intake-log"><span>' + esc(label) + '</span><i><b style="width:' + (count / statusMax * 100) + '%"></b></i><em>' + count + '</em></button>').join('');
+    const chart = '<div class="bd-charts"><article class="bd-chart"><h2>Deals by status</h2>' + (statusBars || '<p>Not yet recorded</p>') + '</article><article class="bd-chart"><h2>Takeaways</h2><ul class="bd-take"><li>' + rows.length + ' off-market deal' + (rows.length === 1 ? '' : 's') + ' logged in ' + esc(state.area) + '.</li><li>Planning status is what you were told. Not stated means it was not given.</li><li>A blank guide is not a price of zero.</li></ul></article></div>';
+    return chart + '<section class="card"><h2>Off-market deals in ' + esc(state.area) + '</h2><p class="lead">Deals that come from an agent or stakeholder often never reach the open market. Log them here. Do not guess a planning status.</p><button type="button" class="btn" data-act="new-intake">Add a deal</button>'
       + (showForm ? intakeForm(editing) : '')
-      + '<details class="bd-fold"' + (showForm ? ' open' : '') + '><summary>Show the log (' + rows.length + ')</summary>' + (body || '<p>No off-market deals logged for this area.</p>') + '</details></section>';
+      + '<details class="bd-fold" id="me-intake-log"' + (showForm ? ' open' : '') + '><summary>Show the log (' + rows.length + ')</summary>' + (body || '<p>No off-market deals logged for this area.</p>') + '</details></section>';
   }
 
   function mapCards() {
@@ -208,8 +219,14 @@
   function stakeholdersPanel() {
     const editing = ui.editing && ui.editing.kind === 'stakeholder' ? (state.stakeholders.find((row) => row.id === ui.editing.id) || null) : null;
     const showForm = ui.editing && ui.editing.kind === 'stakeholder';
-    return '<section class="card"><h2>Stakeholder map for ' + esc(state.area) + '</h2><p class="lead">Agents, charities, contractors, the local authority, registered providers and funders. Auction houses, councils and registered providers in the agent register appear here too. Relationship for those rows follows the deal-alert status.</p><button type="button" class="btn" data-act="new-sh">Add a stakeholder</button>'
-      + (showForm ? stakeholderForm(editing) : '') + '</section>' + mapCards();
+    const cats = M.CATEGORIES.map((cat) => {
+      const n = state.agents.filter((row) => row.area === state.area && M.agentCategory(row.type) === cat.id && !/Sales|Letting|Estate agent/.test(row.type)).length + state.stakeholders.filter((row) => row.area === state.area && row.category === cat.id).length;
+      return {id: cat.id, label: cat.label, count: n};
+    });
+    const catMax = Math.max(1, ...cats.map((row) => row.count));
+    const catBars = cats.map((row) => '<button type="button" class="bd-bar' + (row.count ? '' : ' muted') + '" data-act="open-fold" data-target="#me-stake-map"><span>' + esc(row.label) + '</span><i><b style="width:' + Math.max(row.count ? 4 : 0, row.count / catMax * 100) + '%"></b></i><em>' + row.count + '</em></button>').join('');
+    return '<div class="bd-charts"><article class="bd-chart"><h2>Who is on the map</h2>' + catBars + '</article><article class="bd-chart"><h2>Takeaways</h2><ul class="bd-take"><li>Auction houses, councils and registered providers are included.</li><li>Sales and letting branches stay on the Agents tab.</li><li>Add a name only when you have the organisation and a public website.</li></ul></article></div><section class="card"><h2>Stakeholder map for ' + esc(state.area) + '</h2><p class="lead">Relationship for register rows follows the deal-alert status.</p><button type="button" class="btn" data-act="new-sh">Add a stakeholder</button>'
+      + (showForm ? stakeholderForm(editing) : '') + '<details class="bd-fold" id="me-stake-map"><summary>Show the map</summary>' + mapCards() + '</details></section>';
   }
 
   function criteriaPanel() {
@@ -231,7 +248,7 @@
         + (partial.length ? '<h3>Partial</h3><div class="scroll"><table><thead><tr><th>Tag</th><th>Address</th><th>Why</th><th>Source</th></tr></thead><tbody>' + partial.slice(0, 40).map(lineBuy).join('') + '</tbody></table></div>' + (partial.length > 40 ? '<p class="foot">Showing 40 of ' + partial.length + '.</p>' : '') : '');
     }
     const buy = window.BuyBox ? window.BuyBox.cardHtml(state.area, buyCounts(state.area)) : '';
-    return buy + '<section class="card"><h2>Notes for this browser</h2><p class="lead">The buy box above is the published brief for ' + esc(state.area) + '. These notes stay in this browser. The auction feed has no planning field, so reserved matters count only when the listing text says they have been discharged.</p>'
+    return buy + '<div class="gn-tools"><button type="button" class="btn" data-act="check-lots">Check the auction feed</button></div><details class="bd-fold"' + (matches ? ' open' : '') + '><summary>Show the browser notes</summary><section class="card"><h2>Notes for this browser</h2><p class="lead">The buy box above is the published brief for ' + esc(state.area) + '. These notes stay in this browser. Reserved matters count only when the listing text says they have been discharged.</p>'
       + '<form class="me-form" id="me-criteria" data-act="criteria">'
       + '<label class="wide">Summary <textarea name="summary" data-act="criteria-field">' + esc(row.summary) + '</textarea></label>'
       + '<label>Beds from <input name="bedsMin" type="number" min="0" max="20" step="1" value="' + esc(row.bedsMin) + '" data-act="criteria-field"></label>'
@@ -239,7 +256,7 @@
       + '<label class="wide">Planning we require <input name="planning" value="' + esc(row.planning) + '" data-act="criteria-field" autocomplete="off"></label>'
       + '<label class="wide">Notes <textarea name="notes" data-act="criteria-field">' + esc(row.notes) + '</textarea></label>'
       + '</form><label class="gn-check"><input type="checkbox" data-act="highlight"' + (state.highlight ? ' checked' : '') + '> Highlight current auction lots whose listing text states this bed count</label>'
-      + '<div class="gn-tools"><button type="button" class="btn" data-act="check-lots">Check the auction feed</button></div>' + result + '</section>';
+      + result + '</section></details>';
   }
 
   function render() {
@@ -297,6 +314,11 @@
     if (!button || button.tagName === 'INPUT' || button.tagName === 'SELECT' || button.tagName === 'TEXTAREA') return;
     const act = button.dataset.act;
     if (act === 'section') { setSection(button.dataset.section); return; }
+    if (act === 'open-fold') {
+      const fold = document.querySelector(button.dataset.target);
+      if (fold) { fold.open = true; fold.scrollIntoView({block: 'nearest'}); }
+      return;
+    }
     if (act === 'hash') { followHash(button.dataset.hash); return; }
     if (act === 'export') {
       const blob = new Blob([M.serialise(state)], {type: 'application/json'});
@@ -556,12 +578,14 @@
         if (town) {
           const heading = card.querySelector('h2, h3, .aq-address');
           const tag = window.BuyBox.classify(town, {title: card.textContent, address: heading ? heading.textContent : '', lot_type: eye ? eye.textContent : ''});
-          card.dataset.buy = tag.tag;
-          let badge = card.querySelector('.bd-buy-tag');
-          if (!badge) { badge = document.createElement('p'); card.appendChild(badge); }
-          badge.className = 'bd-buy-tag ' + tag.tag;
-          badge.textContent = tag.label;
-          badge.title = tag.reason;
+          if (card.dataset.buy !== tag.tag || !card.querySelector('.bd-buy-tag')) {
+            card.dataset.buy = tag.tag;
+            let badge = card.querySelector('.bd-buy-tag');
+            if (!badge) { badge = document.createElement('p'); card.appendChild(badge); }
+            badge.className = 'bd-buy-tag ' + tag.tag;
+            badge.textContent = tag.label;
+            badge.title = tag.reason;
+          }
         }
       }
       const existing = card.querySelector('.me-flag');
