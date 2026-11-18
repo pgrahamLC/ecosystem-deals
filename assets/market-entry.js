@@ -14,7 +14,9 @@
 
   let state = null;
   let seeds = null;
-  const ui = {message: '', editing: null, matches: null, lotsError: '', lotsLoading: false, lotCount: null, painting: false, agentQ: '', agentType: ''};
+  const ui = {message: '', editing: null, matches: null, lotsError: '', lotsLoading: false, lotCount: null, painting: false, agentQ: '', agentType: '', agentBucket: '', major: ''};
+  const MAJORS = ['Savills', 'Knight Frank', 'JLL', 'CBRE', 'Colliers', 'Cushman & Wakefield', 'Carter Jonas', 'Lambert Smith Hampton', 'Sanderson Weatherall', 'Strutt & Parker', 'Allsop'];
+  const BUCKETS = ['Sales', 'Letting', 'Auction', 'New homes', 'Land', 'Commercial', 'Council/RP'];
 
   function esc(value) {
     return String(value == null ? '' : value).replace(/[&<>"']/g, (c) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -120,9 +122,38 @@
       + '<label class="wide">Notes <textarea name="notes">' + esc(item.notes) + '</textarea></label>'
       + '<div class="wide gn-tools"><button class="btn" type="submit">' + (item.id ? 'Save agent' : 'Add agent') + '</button><button type="button" class="btn sec" data-act="cancel">Cancel</button></div></form>';
   }
+  function bucketsOf(type) {
+    const text = String(type || '').toLowerCase();
+    const out = [];
+    if (/auction/.test(text)) out.push('Auction');
+    if (/new homes/.test(text)) out.push('New homes');
+    if (/\bland\b/.test(text)) out.push('Land');
+    if (/commercial/.test(text)) out.push('Commercial');
+    if (/local authority|registered provider/.test(text)) out.push('Council/RP');
+    if (/letting/.test(text)) out.push('Letting');
+    if (/sales|estate agent/.test(text)) out.push('Sales');
+    return out.length ? out : ['Other'];
+  }
+  function majorOf(name) {
+    const text = String(name || '').toLowerCase();
+    return MAJORS.find((firm) => text.includes(firm.toLowerCase())) || '';
+  }
+  function agentRank(row) {
+    if (majorOf(row.name)) return 0;
+    const buckets = bucketsOf(row.type);
+    if (buckets.includes('Sales') || buckets.includes('Letting')) return 1;
+    if (buckets.includes('Auction')) return 2;
+    return 3;
+  }
   function agentRows() {
     const q = ui.agentQ.trim().toLowerCase();
-    return state.agents.filter((row) => row.area === state.area && (!ui.agentType || row.type === ui.agentType) && (!q || (row.name + ' ' + (row.branch || '') + ' ' + (row.address || '') + ' ' + (row.subArea || '')).toLowerCase().includes(q))).slice().sort((a, b) => a.name.localeCompare(b.name));
+    return state.agents.filter((row) => {
+      if (row.area !== state.area) return false;
+      if (ui.agentBucket && bucketsOf(row.type).indexOf(ui.agentBucket) < 0) return false;
+      if (ui.major && !row.name.toLowerCase().includes(ui.major.toLowerCase())) return false;
+      if (q && (row.name + ' ' + (row.branch || '') + ' ' + (row.address || '') + ' ' + (row.subArea || '')).toLowerCase().indexOf(q) < 0) return false;
+      return true;
+    }).slice().sort((a, b) => agentRank(a) - agentRank(b) || a.name.localeCompare(b.name));
   }
   function agentCard(row) {
     const phone = row.phone ? esc(row.phone) : 'Not yet recorded';
@@ -150,19 +181,23 @@
     const rest = rows.slice(20).map(agentCard).join('');
     const editing = ui.editing && ui.editing.kind === 'agent' ? (state.agents.find((row) => row.id === ui.editing.id) || null) : null;
     const showForm = ui.editing && ui.editing.kind === 'agent';
-    const investment = all.filter((row) => (row.specialisms || []).some((item) => /invest|auction|land|new homes|commercial/i.test(item)) || /Auction|Land|Commercial|New homes/.test(row.type)).length;
-    const withPhone = all.filter((row) => row.phone).length;
-    const withEmail = all.filter((row) => row.email).length;
-    const withWeb = all.filter((row) => row.website).length;
-    const withAll = all.filter((row) => row.phone && row.email && row.website).length;
-    const coverPct = all.length ? Math.round(withAll / all.length * 100) : 0;
-    const coverMax = Math.max(1, withPhone, withEmail, withWeb);
-    const coverBars = [['Phone', withPhone], ['Email', withEmail], ['Website', withWeb]].map(([label, count]) => '<button type="button" class="bd-bar' + (count ? '' : ' muted') + '" data-act="open-fold" data-target="#me-agent-list"><span>' + label + '</span><i><b style="width:' + (count / coverMax * 100) + '%"></b></i><em>' + (all.length ? Math.round(count / all.length * 100) : 0) + '%</em></button>').join('');
-    return '<div class="bd-kpis"><div class="bd-tile"><span>Branches</span><b>' + all.length + '</b></div><div class="bd-tile"><span>Registered with</span><b>' + registered + '</b></div><div class="bd-tile"><span>Worth a call first</span><b>' + investment + '</b><span>Auction, land, new homes, commercial or investment</span></div><div class="bd-tile"><span>Phone, email and website</span><b>' + coverPct + '%</b><span>' + withAll + ' of ' + all.length + '</span></div></div>'
-      + '<div class="bd-charts"><article class="bd-chart"><h2>Agents by area</h2>' + areaBars + '</article><article class="bd-chart"><h2>Agents by type in ' + esc(state.area) + '</h2>' + (bars || '<p>Not yet recorded</p>') + '</article><article class="bd-chart"><h2>Contact coverage</h2>' + coverBars + '<p class="bd-src">' + withPhone + ' phones, ' + withEmail + ' office emails, ' + withWeb + ' websites. A blank was not on the public page.</p></article><article class="bd-chart"><h2>Takeaways</h2><ul class="bd-take"><li>' + all.length + ' public branches are on file for ' + esc(state.area) + '.</li><li>' + coverPct + '% have a phone, an office email and a website together.</li><li>Named staff emails are not stored. A blank field was not published.</li></ul></article></div>'
-      + '<section class="card"><h2>Agent register</h2><div class="ctl"><label>Search <input id="me-agent-q" value="' + esc(ui.agentQ) + '" placeholder="Name, branch or postcode" autocomplete="off"></label><button type="button" class="btn sec" data-act="agent-type" data-type="">All types</button><button type="button" class="btn" data-act="new-agent">Add a contact</button></div>'
+    const bucketCount = {};
+    BUCKETS.forEach((name) => { bucketCount[name] = 0; });
+    all.forEach((row) => bucketsOf(row.type).forEach((name) => { if (bucketCount[name] != null) bucketCount[name] += 1; }));
+    const typeTiles = BUCKETS.map((name) => '<button type="button" class="bd-tile' + (ui.agentBucket === name ? ' on' : '') + '" data-act="bucket" data-bucket="' + esc(name) + '"><span>' + esc(name) + '</span><b>' + bucketCount[name] + '</b></button>').join('');
+    const majorCount = MAJORS.filter((firm) => all.some((row) => majorOf(row.name) === firm)).length;
+    const strip = '<div class="me-major"><span class="bd-src">Major agents</span>' + MAJORS.map((firm) => {
+      const count = all.filter((row) => majorOf(row.name) === firm).length;
+      return '<button type="button" class="' + (ui.major === firm ? 'on' : '') + (count ? '' : ' muted') + '" data-act="major" data-major="' + esc(firm) + '">' + esc(firm) + ' ' + count + '</button>';
+    }).join('') + '</div>';
+    const chips = ['All'].concat(BUCKETS).map((name) => '<button type="button" data-act="bucket" data-bucket="' + (name === 'All' ? '' : esc(name)) + '"' + ((name === 'All' ? !ui.agentBucket : ui.agentBucket === name) ? ' class="on"' : '') + '>' + esc(name) + '</button>').join('');
+    return '<div class="bd-kpis"><button type="button" class="bd-tile" data-act="bucket" data-bucket=""><span>Branches</span><b>' + all.length + '</b></button><div class="bd-tile"><span>Major agents</span><b>' + majorCount + '</b><span>of the 11 named firms</span></div><div class="bd-tile"><span>Registered with</span><b>' + registered + '</b></div></div>'
+      + strip
+      + '<div class="bd-kpis">' + typeTiles + '</div>'
+      + '<div class="bd-charts"><article class="bd-chart"><h2>Agents by area</h2>' + areaBars + '</article><article class="bd-chart"><h2>Takeaways</h2><ul class="bd-take"><li>' + all.length + ' public branches are on file for ' + esc(state.area) + '.</li><li>Major firms are listed before sales and letting, then auction houses.</li><li>Named staff emails are not stored.</li></ul></article></div>'
+      + '<section class="card"><h2>Agent register</h2><div class="me-tabs" role="group">' + chips + '</div><div class="ctl"><label>Search <input id="me-agent-q" value="' + esc(ui.agentQ) + '" placeholder="Name, branch or postcode" autocomplete="off"></label><button type="button" class="btn" data-act="new-agent">Add a contact</button></div>'
       + (showForm ? agentForm(editing) : '')
-      + '<details class="bd-fold" id="me-agent-list"' + (ui.agentQ || ui.agentType || showForm ? ' open' : '') + '><summary>Show detail (' + rows.length + ')</summary><p class="foot">' + rows.length + ' match.</p>' + (shown || '<p>No branches match.</p>') + rest + '</details></section>';
+      + '<details class="bd-fold" id="me-agent-list"' + (ui.agentQ || ui.agentBucket || ui.major || showForm ? ' open' : '') + '><summary>Show detail (' + rows.length + ')</summary><p class="foot">' + rows.length + ' match. Major agents come first.</p>' + (shown || '<p>No branches match.</p>') + rest + '</details></section>';
   }
 
   function sourceChoices() {
@@ -349,7 +384,9 @@
     if (act === 'import') { const file = document.getElementById('me-file'); if (file) file.click(); return; }
     if (act === 'del-item') { state = M.deleteItem(state, state.area, button.dataset.ws, button.dataset.id).state; save(); render(); return; }
     if (act === 'del-ws') { state = M.deleteWorkstream(state, state.area, button.dataset.ws).state; save(); render(); return; }
-    if (act === 'agent-type') { ui.agentType = button.dataset.type || ''; render(); return; }
+    if (act === 'agent-type') { ui.agentType = button.dataset.type || ''; ui.agentBucket = ''; render(); return; }
+    if (act === 'bucket') { ui.agentBucket = button.dataset.bucket || ''; ui.major = ''; render(); return; }
+    if (act === 'major') { ui.major = ui.major === button.dataset.major ? '' : button.dataset.major; ui.agentBucket = ''; render(); return; }
     if (act === 'agent-area') { state.area = button.dataset.area || state.area; ui.agentType = ''; ui.agentQ = ''; save(); render(); return; }
     if (act === 'new-agent') { ui.editing = {kind: 'agent', id: ''}; render(); return; }
     if (act === 'edit-agent') { ui.editing = {kind: 'agent', id: button.dataset.id}; state.section = 'agents'; save(); render(); return; }
@@ -689,7 +726,7 @@
     });
 
     const files = ['checklist', 'agents', 'stakeholders', 'criteria', 'intake', 'buy-box'];
-    Promise.all(files.map((name) => fetch('data/market-entry/' + name + '.json?v=20261117-entry', {cache: 'no-store'}).then((response) => {
+    Promise.all(files.map((name) => fetch('data/market-entry/' + name + '.json?v=20261118-agents', {cache: 'no-store'}).then((response) => {
       if (!response.ok) throw new Error(name + '.json returned HTTP ' + response.status);
       return response.json();
     }))).then((rows) => {
@@ -701,7 +738,10 @@
       if (stored) {
         const parsed = M.parseImport(stored);
         state = parsed.state || fresh;
-        if (parsed.state) state.meta = fresh.meta;
+        if (parsed.state) {
+          state.meta = fresh.meta;
+          state.agents = mergeAgents(fresh.agents, parsed.state.agents);
+        }
         if (parsed.error) ui.message = 'Saved workspace could not be read. The starting lists are shown. ' + parsed.error;
       } else state = fresh;
       if (/^#(entry|go-no-go)/.test(location.hash)) openEntry();
@@ -714,6 +754,25 @@
     });
   }
 
+  function mergeAgents(fresh, saved) {
+    const prior = new Map((saved || []).filter((row) => row && row.id).map((row) => [row.id, row]));
+    const ids = new Set(fresh.map((row) => row.id));
+    const merged = fresh.map((row) => {
+      const old = prior.get(row.id);
+      if (!old) return row;
+      return Object.assign({}, row, {alertStatus: old.alertStatus || row.alertStatus, alertDate: old.alertDate || row.alertDate, notes: old.notes || row.notes});
+    });
+    (saved || []).forEach((row) => { if (row && row.id && !ids.has(row.id)) merged.push(row); });
+    return merged;
+  }
+  window.lcEntry = {
+    show(area, section) {
+      if (!state) return;
+      if (area) state.area = area;
+      setSection(section || 'agents');
+      if (typeof viewMode === 'function') viewMode('entry');
+    }
+  };
   if (/^#(entry|go-no-go)/.test(location.hash)) window.lcUserNav = true;
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();

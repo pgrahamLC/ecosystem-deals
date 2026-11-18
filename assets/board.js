@@ -82,6 +82,7 @@
       + '<button type="button" class="bd-tile" data-kind="price" data-id=""><span>Median guide</span><b>' + esc(M.money(screen.medianGuide)) + '</b><span>' + screen.guideCount + ' published</span></button>'
       + '<button type="button" class="bd-tile" data-kind="rent" data-id="3"><span>3 bed rent gap</span><b>' + esc(gapText) + '</b><span>' + (screen.onsMonth ? esc(screen.onsMonth) + ' ONS minus the allowance' : 'ONS minus the allowance') + '</span></button>'
       + '<button type="button" class="bd-tile" data-kind="comps" data-id=""><span>District medians</span><b>' + esc(compsText) + '</b><span>' + (screen.comps.rows.length ? 'Middle of ' + screen.comps.rows.length + ' districts, ' + esc(screen.comps.year) : 'Land Registry') + '</span></button>'
+      + '<button type="button" class="bd-tile" data-go="entry/agents"><span>Agents</span><b>' + ((cache && cache.agents && cache.agents.agents) ? cache.agents.agents.filter((row) => row.area === screen.area).length : 'Not yet recorded') + '</b><span>Open the register</span></button>'
       + '</div>'
       + (window.BuyBox ? window.BuyBox.cardHtml(screen.area, screen.buyCounts) : '')
       + (screen.gateCounts ? '<article class="bd-chart"><h2>Gates screen</h2><p class="bd-src">A catalogue lot is never a pass. Where rent is missing it stays not testable yet.</p><div class="bd-buy-counts"><button type="button" class="bd-tile" data-kind="gate" data-id="holds"><span>Price screen holds</span><b>' + screen.gateCounts.holds + '</b></button><button type="button" class="bd-tile" data-kind="gate" data-id="out"><span>Screens out</span><b>' + screen.gateCounts.out + '</b></button><button type="button" class="bd-tile" data-kind="gate" data-id="untested"><span>Not testable yet</span><b>' + screen.gateCounts.untested + '</b></button></div></article>' : '')
@@ -165,6 +166,12 @@
           sel.dispatchEvent(new Event('change', {bubbles: true}));
         }
       }, 400);
+      return;
+    }
+    if (mode === 'entry' || String(mode).indexOf('entry/') === 0) {
+      const section = String(mode).split('/')[1] || 'checklist';
+      if (window.lcEntry) window.lcEntry.show(state.area, section);
+      else if (typeof viewMode === 'function') viewMode('entry');
       return;
     }
     if (typeof viewMode === 'function') viewMode(mode);

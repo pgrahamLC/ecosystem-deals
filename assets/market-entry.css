@@ -4,6 +4,10 @@
 #entry_view .me-kicker{margin:0;font-size:13px;font-weight:600;color:var(--mut)}
 #entry_view .me-purpose{max-width:68ch;color:var(--mut);font-size:17px}
 #entry_view .me-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+#entry_view .me-major{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0 12px}
+#entry_view .me-major button{border:1px solid var(--line);background:#fff;border-radius:16px;padding:6px 10px;cursor:pointer;font:inherit}
+#entry_view .me-major button.on{background:#021726;color:#fff}
+#entry_view .me-major button.muted{color:#8b97a3}
 #entry_view .me-tabs button{border:1px solid var(--line);background:#fff;border-radius:16px;padding:6px 12px;cursor:pointer;font:inherit}
 #entry_view .me-tabs button.on{background:#021726;color:#fff;border-color:#021726}
 #entry_view .gn-top{display:flex;gap:12px;align-items:flex-start}
