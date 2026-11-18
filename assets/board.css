@@ -38,6 +38,34 @@
 .bd-bar.muted b{background:#c5ced6}
 #gates_root .gn-check{display:flex;gap:8px;align-items:flex-start;margin:8px 0}
 #gates_root label.bd-src{display:flex;flex-direction:column;gap:4px;margin:8px 0}
+.deal-groups{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.deal-groups h3{margin:0 0 8px;font-size:15px}
+.deal-field{display:flex;flex-direction:column;gap:2px;margin:0 0 10px;font-size:14px;color:var(--ink);font-weight:650}
+.deal-field input,.deal-field select{font:inherit;font-size:16px;font-weight:500;color:var(--ink);min-height:44px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:#fff;width:100%;max-width:100%}
+.deal-help,.deal-next{font-weight:500}
+.deal-help{color:var(--mut);font-size:13px;line-height:1.35}
+.deal-next{margin:10px 0 0;font-size:17px;line-height:1.35}
+.deal-default{font-style:normal;font-weight:650;font-size:11px;color:#1d4e89;background:#e7f1fb;border-radius:999px;padding:2px 6px;white-space:nowrap}
+.deal-flow{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin:0;padding:0}
+.deal-flow li{display:flex;align-items:center;gap:6px;background:#fff;border-radius:999px;padding:8px 14px;font-weight:700}
+.deal-flow b{display:inline-flex;width:22px;height:22px;border-radius:50%;background:#021726;color:#fff;align-items:center;justify-content:center;font-size:13px}
+abbr[title]{text-decoration:underline dotted;text-underline-offset:2px;cursor:help}
+.deal-strip{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-top:12px}
+.deal-strip span{background:#f4f6f8;border-radius:999px;padding:6px 10px;font-size:13px}
+.deal-step h1,.deal-step h2{margin:0 0 8px}
+.verdict-badge{display:inline-flex;align-items:center;justify-content:center;border-radius:12px;padding:6px 12px;font-weight:750;line-height:1.1;font-size:18px}
+.verdict-badge.lg{font-size:32px;min-height:64px;padding:12px 22px;margin-top:8px}
+.verdict-badge.pass{background:#e5f6ec;color:#0d7a3a}
+.verdict-badge.fail{background:#fdecea;color:#b42318}
+.verdict-badge.wait{background:#fff4d6;color:#8a5a00}
+.bd-tile .verdict-badge{font-size:20px;min-height:0}
+.live-row{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line)}
+.live-row span,.live-row .deal-help{display:block}
+.live-row span{font-weight:700}
+.live-row .deal-help{margin-top:2px}
+.live-row p{margin:4px 0 0}
+.live-location .verdict-badge{flex:0 0 auto}
+@media(max-width:800px){.deal-groups{grid-template-columns:1fr}.live-row{flex-direction:column}.verdict-badge.lg{font-size:26px}}
 .bd-bar.pass b{background:#1a9c5b}
 .bd-bar.fail b{background:#c62828}
 .bd-bar.amber b{background:#d4a017}

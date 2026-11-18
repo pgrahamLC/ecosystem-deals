@@ -104,7 +104,8 @@
     const streams = list.workstreams.map((ws) => ({id: 'gn-' + ws.id, label: ws.title.replace('Local Authority 10-year Lease Agreements', 'LA leases').replace('Assembling A Portfolio', 'Portfolio').replace('Scheme conditions and next steps', 'Scheme conditions'), count: (ws.items || []).length}));
     const max = Math.max(1, ...streams.map((row) => row.count));
     const bars = streams.map((row) => '<button type="button" class="bd-bar" data-act="open-fold" data-target="#' + esc(row.id) + '"><span>' + esc(row.label) + '</span><i><b style="width:' + (row.count / max * 100) + '%"></b></i><em>' + row.count + '</em></button>').join('');
-    const chart = tiles + '<div class="bd-charts"><article class="bd-chart"><h2>By workstream</h2>' + (bars || '<p>Not yet recorded</p>') + '</article><article class="bd-chart"><h2>Takeaways</h2><ul class="bd-take"><li>' + counts.go + ' Go, ' + counts.open + ' open, ' + counts['needs-evidence'] + ' need evidence, ' + counts['no-go'] + ' No-Go.</li><li>' + (area === 'Manchester' ? 'Manchester stays Yes. The 10-year pack does not change that.' : 'Answer the market question for ' + esc(area) + '.') + '</li><li>One No-Go stops the area. Needs evidence is not a Go.</li></ul></article></div>';
+    const live = window.LiveLocation && window.__liveBook ? window.LiveLocation.cardHtml(window.__liveBook, area) : '';
+    const chart = live + tiles + '<div class="bd-charts"><article class="bd-chart"><h2>By workstream</h2>' + (bars || '<p>Not yet recorded</p>') + '</article><article class="bd-chart"><h2>Takeaways</h2><ul class="bd-take"><li>' + counts.go + ' Go, ' + counts.open + ' open, ' + counts['needs-evidence'] + ' need evidence, ' + counts['no-go'] + ' No-Go.</li><li>' + (area === 'Manchester' ? 'Manchester stays Yes. The 10-year pack does not change that.' : 'Answer the market question for ' + esc(area) + '.') + '</li><li>One No-Go stops the area. Needs evidence is not a Go.</li></ul></article></div>';
     return chart + '<details class="bd-fold" id="me-check-list"><summary>Show detail</summary>' + sections + '<section class="card"><h2>Add a workstream</h2><form class="gn-add" data-act="add-ws"><input name="title" placeholder="New workstream name" aria-label="New workstream name" autocomplete="off"><button class="btn" type="submit">Add workstream</button></form><p class="foot">This checklist is for ' + esc(area) + ' only.</p></section></details>';
   }
 
@@ -725,13 +726,14 @@
       }
     });
 
-    const files = ['checklist', 'agents', 'stakeholders', 'criteria', 'intake', 'buy-box'];
-    Promise.all(files.map((name) => fetch('data/market-entry/' + name + '.json?v=20261118-agents', {cache: 'no-store'}).then((response) => {
+    const files = ['checklist', 'agents', 'stakeholders', 'criteria', 'intake', 'buy-box', 'live-location'];
+    Promise.all(files.map((name) => fetch('data/market-entry/' + name + '.json?v=20261118-plain', {cache: 'no-store'}).then((response) => {
       if (!response.ok) throw new Error(name + '.json returned HTTP ' + response.status);
       return response.json();
     }))).then((rows) => {
       seeds = {checklist: rows[0], agents: rows[1], stakeholders: rows[2], criteria: rows[3], intake: rows[4]};
       if (window.BuyBox) window.BuyBox.use(rows[5]);
+      window.__liveBook = rows[6];
       const fresh = M.build(seeds);
       let stored = null;
       try { stored = localStorage.getItem(KEY); } catch (error) {}

@@ -1,0 +1,27 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'fs';
+await import('./live-location.js');
+const L = globalThis.LiveLocation;
+const book = JSON.parse(readFileSync(new URL('../data/market-entry/live-location.json', import.meta.url)));
+const text = JSON.stringify(book);
+assert.equal(text.includes(';'), false);
+assert.equal(text.includes('\u2014'), false);
+assert.equal(/£\s*\d/.test(text), false);
+const man = L.status(book, 'Manchester');
+assert.equal(man.availability, 'Yes');
+assert.equal(man.route, 'Mack Living');
+assert.equal(man.manager, 'Needs evidence');
+assert.equal(man.overall, 'Needs evidence');
+['Glasgow', 'Edinburgh', 'Bristol', 'Cheltenham', 'Liverpool', 'Cheshire', 'Birmingham'].forEach((area) => {
+  assert.equal(L.status(book, area).overall, 'Needs evidence', area);
+});
+assert.equal(L.overall({availability: 'Yes', route: 'Both', manager: 'Yes'}), 'Live');
+assert.equal(L.overall({availability: 'No', route: 'Mack Living', manager: 'Yes'}), 'Not live');
+const html = L.cardHtml(book, 'Manchester');
+assert.equal(html.includes('Needs evidence'), true);
+assert.equal(html.includes('verdict-badge'), true);
+assert.equal(html.includes('Next:'), true);
+assert.equal(html.includes(';'), false);
+assert.equal(html.includes('\u2014'), false);
+assert.equal(L.cardHtml(book, 'Birmingham').includes('Not live'), false);
+console.log('live location tests passed');

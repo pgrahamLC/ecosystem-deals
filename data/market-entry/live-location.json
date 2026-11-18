@@ -1,0 +1,21 @@
+{
+  "updated": "2026-11-18",
+  "howToUpdate": "An area is Live only when lease availability is Yes, the route is Mack Living, LHA or Both, and the property manager is Yes. Use Needs evidence when it is not on file. Do not add rates, terms or names.",
+  "areas": {
+    "Manchester": {
+      "availability": "Yes",
+      "availabilityNote": "Evidence on file. The Mack Living 10-year pack covers the City of Manchester.",
+      "route": "Mack Living",
+      "routeNote": "Evidence on file. The recorded route is Mack Living. An LHA route is not on file.",
+      "manager": "Needs evidence",
+      "managerNote": "It is not on file whether Mack Living can be property manager in this location."
+    },
+    "Glasgow": {"availability": "Needs evidence", "availabilityNote": "Not on file.", "route": "Needs evidence", "routeNote": "Not on file.", "manager": "Needs evidence", "managerNote": "Not on file."},
+    "Edinburgh": {"availability": "Needs evidence", "availabilityNote": "Not on file.", "route": "Needs evidence", "routeNote": "Not on file.", "manager": "Needs evidence", "managerNote": "Not on file."},
+    "Bristol": {"availability": "Needs evidence", "availabilityNote": "Not on file.", "route": "Needs evidence", "routeNote": "Not on file.", "manager": "Needs evidence", "managerNote": "Not on file."},
+    "Cheltenham": {"availability": "Needs evidence", "availabilityNote": "Not on file.", "route": "Needs evidence", "routeNote": "Not on file.", "manager": "Needs evidence", "managerNote": "Not on file."},
+    "Liverpool": {"availability": "Needs evidence", "availabilityNote": "Not on file.", "route": "Needs evidence", "routeNote": "Not on file.", "manager": "Needs evidence", "managerNote": "Not on file."},
+    "Cheshire": {"availability": "Needs evidence", "availabilityNote": "Not on file.", "route": "Needs evidence", "routeNote": "Not on file.", "manager": "Needs evidence", "managerNote": "Not on file."},
+    "Birmingham": {"availability": "Needs evidence", "availabilityNote": "Not on file.", "route": "Needs evidence", "routeNote": "Not on file.", "manager": "Needs evidence", "managerNote": "Not on file."}
+  }
+}
