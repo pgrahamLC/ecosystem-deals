@@ -1,0 +1,175 @@
+{
+  "schema": "ed-deal-1",
+  "id": "tain-manchester",
+  "title": "Tain Manchester portfolio, 6 homes",
+  "caution": "Example deal from a desktop screen, not Red Book, tax or legal advice.",
+  "source": "Tain Manchester Portfolio 14-gate dashboard, 17 Nov 2026",
+  "notes": [
+    "Presented price £1,260,000. Base vacant possession value £1,235,000.",
+    "The strict vacant possession ceiling on that screen is about £537,000. A return only screen is about £768,000, and the route note also says about £733,000.",
+    "A Cook Street comparator at £500,000 to £600,000 a home gives a portfolio vacant possession value of about £1,285,000 to £1,385,000.",
+    "The income lease is a Serco lease with a 2 month break. The landlord break is 6 months. The MCC break is 28 days. The income hold has no 7 year unbreakable term.",
+    "The vacant possession route needs the seller to deliver vacant possession.",
+    "Do not proceed at £1,260,000. The screen allows controlled diligence only at or below about £537,000, and only after the seven open hurdles are closed.",
+    "This site adds stamp duty on top of the 6.8% purchase costs. The desktop screen may already include stamp duty inside purchase costs.",
+    "The yearly Laurito fee is added to running costs, because this model has no separate fee line.",
+    "A vacant sale uses one rent path for the return and for interest cover. The desktop screen uses 9 months of rent for the sale and a further 3 month year one void only for interest cover and cash on cash.",
+    "The vacant possession price is matched through the sale yield. The model also keeps its purchaser adjustment, so the yield will not stay at the 6% the screen quotes.",
+    "Hurdle 14 is a tick on this site until the lease paper is on file. The desktop screen fails the income route because the break is 2 months.",
+    "Interest cover stays needs evidence until the fee tick is checked. The desktop screen passes or fails that hurdle on the cover ratio alone."
+  ],
+  "portfolio": {
+    "homes": 6,
+    "price": 1260000,
+    "annualRent": 68100,
+    "rentBasis": "net",
+    "leaseRoute": "Mack Living",
+    "route": "income"
+  },
+  "incomeHold": {
+    "leaseBreakMonths": 2,
+    "landlordBreakNoticeMonths": 6,
+    "operatorBreakNoticeMonths": 2,
+    "councilBreakDays": 28
+  },
+  "vacantPossession": {
+    "value": 1235000,
+    "saleMonth": 15,
+    "rentMonthsBeforeSale": 9,
+    "voidMonths": 0
+  },
+  "costs": {
+    "purchaseCostsPct": 6.8,
+    "lauritoAcquisitionPct": 1,
+    "lauritoAnnualPct": 1,
+    "lauritoDisposalPct": 0.5,
+    "saleCostsPct": 1.5,
+    "runningCostsPct": 0,
+    "handbackCapex": 52500,
+    "holdingVoidMonths": 0
+  },
+  "debt": {
+    "ltvPct": 50,
+    "debtRatePct": 6.5,
+    "holdMonths": 36
+  },
+  "assumptions": {
+    "exitYieldPct": 7,
+    "downsideExitYieldPct": 7.5,
+    "downsideRentCutPct": 10,
+    "giltPct": 5,
+    "testDebtRatePct": 6.5,
+    "tenantIncome": "",
+    "cheque": "",
+    "completionMonth": 0
+  },
+  "scenario": "base",
+  "evidence": {
+    "attribution": false,
+    "bridge": false,
+    "fees": false,
+    "term": false,
+    "cashOut": false
+  },
+  "scenarios": [
+    {
+      "id": "income-1260",
+      "name": "Income hold at £1.26m",
+      "portfolio": {"price": 1260000, "route": "income"},
+      "debt": {"holdMonths": 36},
+      "costs": {"holdingVoidMonths": 0},
+      "assumptions": {"exitYieldPct": 7, "downsideExitYieldPct": 7.5, "downsideRentCutPct": 10, "completionMonth": 0},
+      "screen": {
+        "verdict": "Fail",
+        "unlevered": "-8.4%",
+        "levered": "-26.1%",
+        "multiple": "0.42x",
+        "downUnlevered": "-13.7%",
+        "downLevered": "-43.3%",
+        "downMultiple": "0.19x",
+        "gates": [
+          {"n": 1, "result": "pass"},
+          {"n": 2, "result": "fail"},
+          {"n": 3, "result": "fail"},
+          {"n": 4, "result": "fail"},
+          {"n": 5, "result": "open"},
+          {"n": 6, "result": "fail"},
+          {"n": 7, "result": "fail"},
+          {"n": 8, "result": "pass"},
+          {"n": 9, "result": "pass"},
+          {"n": 10, "result": "fail"},
+          {"n": 11, "result": "fail"},
+          {"n": 12, "result": "fail"},
+          {"n": 13, "result": "open"},
+          {"n": 14, "result": "fail"}
+        ]
+      }
+    },
+    {
+      "id": "vp-1260",
+      "name": "Vacant possession at £1.26m",
+      "portfolio": {"price": 1260000, "route": "vacant"},
+      "debt": {"holdMonths": 15},
+      "vacantPossession": {"value": 1235000, "saleMonth": 15, "rentMonthsBeforeSale": 9, "voidMonths": 0},
+      "assumptions": {"exitYieldPct": 6, "downsideExitYieldPct": 6.5, "downsideRentCutPct": 10, "completionMonth": 0},
+      "screen": {
+        "verdict": "Fail",
+        "unlevered": "-10.4%",
+        "levered": "-24.7%",
+        "multiple": "0.72x",
+        "downUnlevered": "-16.3%",
+        "downLevered": "-35.9%",
+        "downMultiple": "0.60x",
+        "gates": [
+          {"n": 1, "result": "pass"},
+          {"n": 2, "result": "fail"},
+          {"n": 3, "result": "fail"},
+          {"n": 4, "result": "fail"},
+          {"n": 5, "result": "open"},
+          {"n": 6, "result": "fail"},
+          {"n": 7, "result": "fail"},
+          {"n": 8, "result": "open"},
+          {"n": 9, "result": "fail"},
+          {"n": 10, "result": "fail"},
+          {"n": 11, "result": "fail"},
+          {"n": 12, "result": "fail"},
+          {"n": 13, "result": "open"},
+          {"n": 14, "result": "open"}
+        ]
+      }
+    },
+    {
+      "id": "vp-537",
+      "name": "Vacant possession at about £537,000",
+      "portfolio": {"price": 537000, "route": "vacant"},
+      "debt": {"holdMonths": 15},
+      "vacantPossession": {"value": 1235000, "saleMonth": 15, "rentMonthsBeforeSale": 9, "voidMonths": 0},
+      "assumptions": {"exitYieldPct": 6, "downsideExitYieldPct": 6.5, "downsideRentCutPct": 10, "completionMonth": 0},
+      "screen": {
+        "verdict": "Quantitative pass. Seven hurdles stay open.",
+        "unlevered": "79.8%",
+        "levered": "136.0%",
+        "multiple": "2.59x",
+        "downUnlevered": "67.4%",
+        "downLevered": "114.1%",
+        "downMultiple": "2.32x",
+        "gates": [
+          {"n": 1, "result": "pass"},
+          {"n": 2, "result": "pass"},
+          {"n": 3, "result": "pass"},
+          {"n": 4, "result": "pass"},
+          {"n": 5, "result": "open"},
+          {"n": 6, "result": "pass"},
+          {"n": 7, "result": "pass"},
+          {"n": 8, "result": "open"},
+          {"n": 9, "result": "pass"},
+          {"n": 10, "result": "open"},
+          {"n": 11, "result": "open"},
+          {"n": 12, "result": "open"},
+          {"n": 13, "result": "open"},
+          {"n": 14, "result": "open"}
+        ]
+      }
+    }
+  ]
+}
