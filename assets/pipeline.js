@@ -17,7 +17,9 @@
   }
   function buyTag(area, item) {
     if (!root.BuyBox) return 'not yet recorded';
-    const lot = {title: item.description || item.name, address: item.name, postcode: item.postcode, lot_type: item.kind === 'lot' ? 'Flat' : 'Development'};
+    const desc = item.description || '';
+    const kind = /\bhouses?\b/i.test(desc) && !/\b(flats?|apartments?)\b/i.test(desc) ? 'House' : 'Flat';
+    const lot = {title: kind, address: item.name, postcode: item.postcode, lot_type: kind};
     const tag = root.BuyBox.classify(area, lot);
     return tag.label + '. ' + tag.reason;
   }
