@@ -301,6 +301,7 @@
     const table = view.rows.filter((row) => row.source === 'requirements').map((row) => '<tr><td>' + esc(row.name) + '</td><td>' + esc((row.areas || []).join(', ')) + '</td><td>' + esc(row.unitsLabel) + '</td><td>' + esc(row.block) + '</td><td>' + esc(row.propertyType) + '</td><td>' + esc(row.rentBasis) + '</td><td>' + esc(row.leaseLength) + '. ' + esc(row.leaseFlagText) + '</td><td>' + esc(row.status) + '</td><td>' + (row.areas || []).filter((name) => (window.Timeline.AREAS || []).indexOf(name) >= 0).map((name) => '<button type="button" class="btn sec" data-act="req-board" data-area="' + esc(name) + '">' + esc(name) + ' board</button>').join(' ') + '</td></tr>').join('');
     return '<div class="bd-kpis"><div class="bd-tile"><span>Live</span><b>' + byStatus.live + '</b></div><div class="bd-tile"><span>Bidding</span><b>' + byStatus.bidding + '</b></div><div class="bd-tile"><span>Planned</span><b>' + byStatus.planned + '</b></div><div class="bd-tile"><span>Numbered homes</span><b>' + numbered + '</b><span>Other rows are not a fixed number</span></div></div>'
       + '<div class="me-tabs">' + chips + '</div>'
+      + (window.Pipeline ? window.Pipeline.areaChart() : '')
       + (window.Timeline ? window.Timeline.html({area: area, today: today}) : '')
       + focus
       + '<div class="bd-charts"><article class="bd-chart"><h2>By status</h2>' + bars + '</article><article class="bd-chart"><h2>What to read</h2><ul class="bd-take"><li>Green can take homes now. Amber is still a bid. Red is planned and not yet bidding.</li><li>A lot matches only when the home fits and the lease is at least 7 years.</li><li>Click a bar for the lease side. Open an area board for the lots.</li></ul></article></div>'
@@ -775,6 +776,7 @@
       if (window.BuyBox) window.BuyBox.use(rows[5]);
       window.__liveBook = rows[6];
       window.__requirements = rows[7];
+      fetch('data/market-entry/pipeline.json?v=20261118-pipe', {cache: 'no-store'}).then((response) => response.json()).then((data) => { if (window.Pipeline) window.Pipeline.use(data); if (state && state.section === 'requirements') render(); }).catch(() => {});
       fetch('frameworks.json?v=20261118-fw', {cache: 'no-store'}).then((response) => response.json()).then((data) => { if (window.Timeline) window.Timeline.use(rows[7], data); if (state && state.section === 'requirements') render(); }).catch(() => {});
       const fresh = M.build(seeds);
       let stored = null;

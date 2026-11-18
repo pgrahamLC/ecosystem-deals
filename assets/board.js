@@ -4,7 +4,7 @@
   const M = window.BoardModel;
   if (!M) return;
 
-  const state = {area: 'Manchester', drill: null, screen: null, error: '', loading: false};
+  const state = {area: 'Manchester', drill: null, screen: null, error: '', loading: false, pipe: ''};
   let cache = null;
   let pending = null;
 
@@ -101,6 +101,7 @@
       + (screen.area === 'Glasgow' && window.BuyBox ? '<article class="bd-chart"><h2>Glasgow pipeline</h2><p class="deal-help">Suitable homes in the current feed, against an indicative 25. Accessible homes against about 13, which is 5% of 250. The share is not fixed.</p><div class="bd-buy-counts"><div class="bd-tile"><span>Suitable homes</span><b>' + (screen.buyCounts.pipeline || 0) + '</b><span>indicative 25</span></div><div class="bd-tile"><span>Accessible</span><b>' + (screen.buyCounts.accessible || 0) + '</b><span>about 13 needed</span></div><div class="bd-tile"><span>Full matches</span><b>' + (screen.buyCounts.match || 0) + '</b><span>need a 7 year lease on file</span></div></div></article>' : '')
       + (screen.area === 'Manchester' ? '<p class="bd-src"><a href="https://www.manchester.gov.uk/homes-and-property/help-with-empty-homes/can-i-get-information-about-how-to-buy-empty-properties-in-manchester" target="_blank" rel="noopener">Empty homes investor register</a>. Public council page on buying empty homes in Manchester.</p>' : '')
       + (window.Timeline && cache && cache.requirements ? window.Timeline.html({area: screen.area, today: M.londonDay()}) : '')
+      + (window.Pipeline && cache && cache.pipeline ? window.Pipeline.card(screen.area, state.pipe || '') : '')
       + (screen.gateCounts ? '<article class="bd-chart"><h2>Gates screen</h2><p class="bd-src">A catalogue lot is never a pass. Where rent is missing it stays not testable yet.</p><div class="bd-buy-counts"><button type="button" class="bd-tile" data-kind="gate" data-id="holds"><span>Price screen holds</span><b>' + screen.gateCounts.holds + '</b></button><button type="button" class="bd-tile" data-kind="gate" data-id="out"><span>Screens out</span><b>' + screen.gateCounts.out + '</b></button><button type="button" class="bd-tile" data-kind="gate" data-id="untested"><span>Not testable yet</span><b>' + screen.gateCounts.untested + '</b></button></div></article>' : '')
       + '<div class="bd-charts">'
       + '<article class="bd-chart"><h2>Lots by type</h2>' + bars(screen.types, 'type') + '</article>'
@@ -146,6 +147,7 @@
       if (kind === 'agents') { open('entry'); return; }
       if (kind === 'live') { state.drill = {kind: 'live', id: 'live', label: 'Live location'}; paint(host); return; }
       if (kind === 'framework') { state.drill = {kind: 'framework', id: id, label: 'Contract'}; paint(host); return; }
+      if (kind === 'pipe') { state.pipe = id || ''; paint(host); return; }
       state.drill = state.drill && state.drill.kind === kind && state.drill.id === id ? null : {kind, id, label: button.querySelector('span') ? button.querySelector('span').textContent : id};
       paint(host);
       const drill = host.querySelector('.bd-drill');
@@ -202,13 +204,14 @@
     if (cache) return Promise.resolve(cache);
     if (pending) return pending;
     state.loading = true;
-    pending = Promise.all(['data/auctions/lots.json', 'data/rent-scenarios.json', 'comps/summary.json', 'data/market-entry/agents.json', 'data/market-entry/checklist.json', 'data/market-entry/buy-box.json', 'data/market-entry/gates.json', 'data/market-entry/live-location.json', 'data/market-entry/requirements.json', 'frameworks.json'].map((file) => fetch(file + '?v=20261118-fw', {cache: 'no-store'}).then((response) => {
+    pending = Promise.all(['data/auctions/lots.json', 'data/rent-scenarios.json', 'comps/summary.json', 'data/market-entry/agents.json', 'data/market-entry/checklist.json', 'data/market-entry/buy-box.json', 'data/market-entry/gates.json', 'data/market-entry/live-location.json', 'data/market-entry/requirements.json', 'frameworks.json', 'data/market-entry/pipeline.json'].map((file) => fetch(file + '?v=20261118-pipe', {cache: 'no-store'}).then((response) => {
       if (!response.ok) throw new Error(file + ' returned HTTP ' + response.status);
       return response.json();
     }))).then((rows) => {
       if (window.BuyBox) window.BuyBox.use(rows[5]);
       if (window.Timeline) window.Timeline.use(rows[8], rows[9]);
-      cache = {lots: rows[0].lots || [], rents: rows[1], comps: rows[2], agents: rows[3], checklist: rows[4], buyBox: rows[5], gates: rows[6], live: rows[7], requirements: rows[8], frameworks: rows[9]};
+      if (window.Pipeline) window.Pipeline.use(rows[10]);
+      cache = {lots: rows[0].lots || [], rents: rows[1], comps: rows[2], agents: rows[3], checklist: rows[4], buyBox: rows[5], gates: rows[6], live: rows[7], requirements: rows[8], frameworks: rows[9], pipeline: rows[10]};
       state.loading = false;
       state.error = '';
       pending = null;
