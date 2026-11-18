@@ -317,7 +317,7 @@
       criteria[area] = normaliseCriteria(data.criteria && data.criteria[area]);
     }
     const area = areaOf(data.area) || 'Manchester';
-    const section = ['checklist', 'agents', 'intake', 'stakeholders', 'criteria'].includes(data.section) ? data.section : 'checklist';
+    const section = ['checklist', 'agents', 'intake', 'stakeholders', 'criteria', 'requirements'].includes(data.section) ? data.section : 'checklist';
     return {
       state: {
         version: 1,

@@ -65,6 +65,21 @@ abbr[title]{text-decoration:underline dotted;text-underline-offset:2px;cursor:he
 .live-row .deal-help{margin-top:2px}
 .live-row p{margin:4px 0 0}
 .live-location .verdict-badge{flex:0 0 auto}
+.bd-badges{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.tl-list{display:flex;flex-direction:column;gap:6px}
+.tl-row{display:grid;grid-template-columns:minmax(0,14em) minmax(0,1fr);gap:8px;align-items:center;width:100%;border:0;background:transparent;padding:2px 0;cursor:pointer;font:inherit;color:inherit;text-align:left}
+.tl-row span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tl-track{position:relative;display:block;height:16px;background:#eef1f5;border-radius:8px;overflow:hidden}
+.tl-bar{position:absolute;top:3px;height:10px;border-radius:5px}
+.tl-bar.live{background:#1a9c5b}
+.tl-bar.live.closed{background:repeating-linear-gradient(90deg,#1a9c5b,#1a9c5b 6px,#d7efe4 6px,#d7efe4 10px)}
+.tl-bar.bidding{background:#d4a017}
+.tl-bar.planned{background:#c62828}
+.tl-bar.dashed{background:repeating-linear-gradient(90deg,#fff,#fff 4px,#c5ced6 4px,#c5ced6 8px);border:1px dashed #8b97a3;top:2px;height:10px}
+.tl-today{position:absolute;top:0;bottom:0;width:2px;background:#b42318}
+.tl-award,.tl-break{position:absolute;top:2px;width:8px;height:8px;margin-left:-4px;background:#021726;border-radius:2px}
+.tl-break{background:#fff;border:2px solid #021726}
+@media(max-width:700px){.tl-row{grid-template-columns:1fr}.tl-row span{white-space:normal}}
 @media(max-width:800px){.deal-groups{grid-template-columns:1fr}.live-row{flex-direction:column}.verdict-badge.lg{font-size:26px}}
 .bd-bar.pass b{background:#1a9c5b}
 .bd-bar.fail b{background:#c62828}

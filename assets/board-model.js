@@ -182,6 +182,9 @@
         shaped.buy = tag.tag;
         shaped.buyLabel = tag.label;
         shaped.buyReason = tag.reason;
+        shaped.zone = tag.zone || '';
+        shaped.accessible = tag.accessible === true;
+        shaped.pipeline = tag.pipeline === true;
       }
       if (root.GatesModel && input && input.gates) {
         const gate = root.GatesModel.lotScreen(lot, input.gates);
@@ -233,7 +236,8 @@
       comps,
       onsMonth: (input && input.rents && input.rents.omr && input.rents.omr.month) || '',
       takeaways: takeaways.slice(0, 3),
-      buyCounts: lots.reduce((sum, lot) => { if (lot.buy) sum[lot.buy] += 1; return sum; }, {match: 0, partial: 0, no: 0}),
+      buyCounts: lots.reduce((sum, lot) => { if (lot.buy) sum[lot.buy] += 1; if (lot.pipeline) sum.pipeline += 1; if (lot.accessible) sum.accessible += 1; return sum; }, {match: 0, partial: 0, no: 0, pipeline: 0, accessible: 0}),
+      zones: ['North', 'South or central', 'Part of a zone', 'Outside', 'Not stated'].map((id) => ({id: id, label: id, count: lots.filter((lot) => lot.zone === id).length})).filter((row) => row.count),
       gateCounts: lots.reduce((sum, lot) => { if (lot.gate) sum[lot.gate] += 1; return sum; }, {holds: 0, out: 0, untested: 0})
     };
   }
@@ -245,6 +249,7 @@
       if (drill.kind === 'price') return lot.band === drill.id;
       if (drill.kind === 'month') return lot.month === drill.id;
       if (drill.kind === 'buy') return lot.buy === drill.id;
+      if (drill.kind === 'zone') return lot.zone === drill.id;
       if (drill.kind === 'gate') return lot.gate === drill.id;
       return true;
     });

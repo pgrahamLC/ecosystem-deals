@@ -8,13 +8,14 @@
     ['agents', 'Agents'],
     ['intake', 'Off-market'],
     ['stakeholders', 'Stakeholders'],
-    ['criteria', 'What we want']
+    ['criteria', 'What we want'],
+    ['requirements', 'Requirements']
   ];
   if (!M) return;
 
   let state = null;
   let seeds = null;
-  const ui = {message: '', editing: null, matches: null, lotsError: '', lotsLoading: false, lotCount: null, painting: false, agentQ: '', agentType: '', agentBucket: '', major: ''};
+  const ui = {message: '', editing: null, matches: null, lotsError: '', lotsLoading: false, lotCount: null, painting: false, agentQ: '', agentType: '', agentBucket: '', major: '', reqArea: '', reqId: ''};
   const MAJORS = ['Savills', 'Knight Frank', 'JLL', 'CBRE', 'Colliers', 'Cushman & Wakefield', 'Carter Jonas', 'Lambert Smith Hampton', 'Sanderson Weatherall', 'Strutt & Parker', 'Allsop'];
   const BUCKETS = ['Sales', 'Letting', 'Auction', 'New homes', 'Land', 'Commercial', 'Council/RP'];
 
@@ -276,6 +277,35 @@
       + (showForm ? stakeholderForm(editing) : '') + '<details class="bd-fold" id="me-stake-map"><summary>Show the map</summary>' + mapCards() + '</details></section>';
   }
 
+  function requirementsPanel() {
+    const area = ui.reqArea || '';
+    const today = (window.BoardModel && window.BoardModel.londonDay) ? window.BoardModel.londonDay() : '2026-11-18';
+    const view = window.Timeline ? window.Timeline.build({area: area, today: today}) : {rows: [], openNow: 0, opening: 0};
+    const chips = [''].concat(window.Timeline ? window.Timeline.AREAS : []).map((name) => '<button type="button" data-act="req-area" data-area="' + esc(name) + '"' + (area === name ? ' class="on"' : '') + '>' + esc(name || 'All areas') + '</button>').join('');
+    const byStatus = {live: 0, bidding: 0, planned: 0};
+    view.rows.forEach((row) => { if (byStatus[row.tone] != null) byStatus[row.tone] += 1; });
+    const numbered = (window.__requirements && window.__requirements.rows || []).reduce((sum, row) => sum + (Number(row.units) || 0), 0);
+    let lotsLine = '';
+    if (ui.reqId && window.Timeline && lotRows && window.BuyBox) {
+      const picked = window.Timeline.find(ui.reqId);
+      if (picked && picked.primary && picked.areas.length === 1) {
+        const name = picked.areas[0];
+        const rows = lotRows.filter((lot) => M.townOf(lot.town || lot.city) === name && isCurrent(lot));
+        const tally = window.BuyBox.counts(name, rows);
+        lotsLine = '<p>' + tally.match + ' full matches and ' + tally.partial + ' partial on the ' + esc(name) + ' feed.</p>';
+      }
+    }
+    const focus = ui.reqId && window.Timeline ? window.Timeline.detail(ui.reqId, today) + lotsLine : '';
+    const max = Math.max(1, byStatus.live, byStatus.bidding, byStatus.planned);
+    const bars = [['live', 'Live', byStatus.live], ['bidding', 'Bidding', byStatus.bidding], ['planned', 'Planned', byStatus.planned]].map((row) => '<button type="button" class="bd-bar ' + row[0] + '" data-act="req-area" data-area="' + esc(area) + '"><span>' + row[1] + '</span><i><b style="width:' + (row[2] / max * 100) + '%"></b></i><em>' + row[2] + '</em></button>').join('');
+    const table = view.rows.filter((row) => row.source === 'requirements').map((row) => '<tr><td>' + esc(row.name) + '</td><td>' + esc((row.areas || []).join(', ')) + '</td><td>' + esc(row.unitsLabel) + '</td><td>' + esc(row.block) + '</td><td>' + esc(row.propertyType) + '</td><td>' + esc(row.rentBasis) + '</td><td>' + esc(row.leaseLength) + '. ' + esc(row.leaseFlagText) + '</td><td>' + esc(row.status) + '</td><td>' + (row.areas || []).filter((name) => (window.Timeline.AREAS || []).indexOf(name) >= 0).map((name) => '<button type="button" class="btn sec" data-act="req-board" data-area="' + esc(name) + '">' + esc(name) + ' board</button>').join(' ') + '</td></tr>').join('');
+    return '<div class="bd-kpis"><div class="bd-tile"><span>Live</span><b>' + byStatus.live + '</b></div><div class="bd-tile"><span>Bidding</span><b>' + byStatus.bidding + '</b></div><div class="bd-tile"><span>Planned</span><b>' + byStatus.planned + '</b></div><div class="bd-tile"><span>Numbered homes</span><b>' + numbered + '</b><span>Other rows are not a fixed number</span></div></div>'
+      + '<div class="me-tabs">' + chips + '</div>'
+      + (window.Timeline ? window.Timeline.html({area: area, today: today}) : '')
+      + focus
+      + '<div class="bd-charts"><article class="bd-chart"><h2>By status</h2>' + bars + '</article><article class="bd-chart"><h2>What to read</h2><ul class="bd-take"><li>Green can take homes now. Amber is still a bid. Red is planned and not yet bidding.</li><li>A lot matches only when the home fits and the lease is at least 7 years.</li><li>Click a bar for the lease side. Open an area board for the lots.</li></ul></article></div>'
+      + '<details class="bd-fold"><summary>Show the schedule</summary><div class="scroll"><table><thead><tr><th>Contract</th><th>Location</th><th>Units</th><th>Lot or block</th><th>Homes</th><th>Rent basis</th><th>Lease</th><th>Status</th><th>Board</th></tr></thead><tbody>' + table + '</tbody></table></div></details>';
+  }
   function criteriaPanel() {
     const row = state.criteria[state.area];
     const matches = ui.matches;
@@ -309,7 +339,7 @@
   function render() {
     const host = document.getElementById('entry_body');
     if (!host || !state) return;
-    const panel = {checklist: checklistPanel, agents: agentsPanel, intake: intakePanel, stakeholders: stakeholdersPanel, criteria: criteriaPanel}[state.section] || checklistPanel;
+    const panel = {checklist: checklistPanel, agents: agentsPanel, intake: intakePanel, stakeholders: stakeholdersPanel, criteria: criteriaPanel, requirements: requirementsPanel}[state.section] || checklistPanel;
     host.innerHTML = shell().replace('<div id="me-panel"></div>', '<div id="me-panel">' + panel() + '</div>');
   }
 
@@ -361,6 +391,16 @@
     if (!button || button.tagName === 'INPUT' || button.tagName === 'SELECT' || button.tagName === 'TEXTAREA') return;
     const act = button.dataset.act;
     if (act === 'section') { setSection(button.dataset.section); return; }
+    if (act === 'req-area') { ui.reqArea = button.dataset.area || ''; render(); return; }
+    if (act === 'framework') { ui.reqId = button.dataset.id || ''; render(); const node = document.querySelector('.tl-detail'); if (node) node.scrollIntoView({block: 'nearest'}); return; }
+    if (act === 'req-board') {
+      const name = button.dataset.area;
+      if (window.lcBoard) { window.lcBoard.state.area = name; window.lcBoard.state.drill = null; }
+      if (typeof viewMode === 'function') viewMode('board');
+      const host = document.getElementById('lc_screen');
+      if (window.lcBoard && host) window.lcBoard.paint(host);
+      return;
+    }
     if (act === 'open-fold') {
       const fold = document.querySelector(button.dataset.target);
       if (fold) {
@@ -726,14 +766,16 @@
       }
     });
 
-    const files = ['checklist', 'agents', 'stakeholders', 'criteria', 'intake', 'buy-box', 'live-location'];
-    Promise.all(files.map((name) => fetch('data/market-entry/' + name + '.json?v=20261118-plain', {cache: 'no-store'}).then((response) => {
+    const files = ['checklist', 'agents', 'stakeholders', 'criteria', 'intake', 'buy-box', 'live-location', 'requirements'];
+    Promise.all(files.map((name) => fetch('data/market-entry/' + name + '.json?v=20261118-fw', {cache: 'no-store'}).then((response) => {
       if (!response.ok) throw new Error(name + '.json returned HTTP ' + response.status);
       return response.json();
     }))).then((rows) => {
       seeds = {checklist: rows[0], agents: rows[1], stakeholders: rows[2], criteria: rows[3], intake: rows[4]};
       if (window.BuyBox) window.BuyBox.use(rows[5]);
       window.__liveBook = rows[6];
+      window.__requirements = rows[7];
+      fetch('frameworks.json?v=20261118-fw', {cache: 'no-store'}).then((response) => response.json()).then((data) => { if (window.Timeline) window.Timeline.use(rows[7], data); if (state && state.section === 'requirements') render(); }).catch(() => {});
       const fresh = M.build(seeds);
       let stored = null;
       try { stored = localStorage.getItem(KEY); } catch (error) {}

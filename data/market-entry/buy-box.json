@@ -1,8 +1,8 @@
 {
   "updated": "2026-11-18",
-  "howToUpdate": "When an RFI response arrives, set status to Evidenced, add the dated wants, set the bed rules, and clear openFields. Publish only the buy box. Do not add rates, names, emails, or contract terms.",
+  "howToUpdate": "Each area has a lease half and a homes half. A lot matches only when the home fits and a lease of 7 years or more is on offer. Leave a half as Needs evidence when it is not on file. Do not add rates, names or emails.",
   "base": {
-    "summary": "Sites with planning permission where reserved matters have been discharged, and 3 to 4 bed homes.",
+    "summary": "Until a council brief is on file, the Laurito screen is 3 to 4 bed homes where reserved matters have been discharged.",
     "bedsMin": 3,
     "bedsMax": 4,
     "priorityBeds": [3, 4],
@@ -11,12 +11,79 @@
     "excludeShared": false
   },
   "areas": {
+    "Manchester": {
+      "status": "Partially evidenced",
+      "source": "MCC 10 Year Leasing pack",
+      "evidenceDate": "2026-11-17",
+      "note": "The MCC Private Sector Leasing RFI is still due 30 Nov 2026.",
+      "qualifyingLease": true,
+      "bedsMin": 1,
+      "bedsMax": 5,
+      "priorityBeds": [1, 2, 3, 4, 5],
+      "lowerBeds": [],
+      "requireReserved": false,
+      "districts": ["M1", "M2", "M8", "M9", "M11", "M12", "M13", "M14", "M15", "M18", "M19", "M20", "M21", "M22", "M23", "M40", "M90"],
+      "partDistricts": ["M3", "M4", "M16"],
+      "zones": {
+        "North": {"whole": ["M8", "M9", "M40"], "part": ["M4"]},
+        "South or central": {"whole": ["M1", "M2", "M11", "M12", "M13", "M14", "M15", "M18", "M19", "M20", "M21", "M22", "M23", "M90"], "part": ["M3", "M4", "M16"]}
+      },
+      "lease": {
+        "length": "10 years and a day",
+        "sevenNote": "Break option can cut below the 7 year gate 14 base: Needs evidence on chosen option",
+        "rentBasis": "Guaranteed rent, set by zone and bed size, with an extra payment for adapted homes. It moves with inflation each year. Subject to break and maintenance.",
+        "manager": "Needs evidence. The council is the tenant and furnishes the home.",
+        "programme": "Not stated",
+        "start": "Needs evidence",
+        "whoCanLet": "The landlord can be the freeholder, a long leaseholder, or a company holding a headlease longer than 10 years and a day.",
+        "councilRole": "The lease is registrable at HM Land Registry. The council handles stamp duty and registration."
+      },
+      "accommodation": {
+        "type": "Houses or flats. Adapted homes at level 1, 2 or 3 to the council specification are in demand.",
+        "beds": "1 to 5",
+        "boundary": "Inside Manchester City Council. North: M8, M9, M40 and parts of M4. South or central: M1, M2, parts of M3, parts of M4, M11, M12, M13, M14, M15, parts of M16, M18, M19, M20, M21, M22, M23 and M90.",
+        "shops": "Needs evidence",
+        "condition": "The landlord keeps up maintenance, holds a valid EPC, gas and electrical certificates, has mortgagee consent and their own solicitor, and has no council tax debt on the property.",
+        "clustering": "Needs evidence"
+      }
+    },
+    "Glasgow": {
+      "status": "Bidding",
+      "priority": true,
+      "source": "Pipeline meeting",
+      "evidenceDate": "2026-11-18",
+      "note": "The bid needs a credible pipeline of suitable homes, not completed purchases.",
+      "qualifyingLease": false,
+      "pipelineTarget": 25,
+      "programmeHomes": 250,
+      "accessibleNeed": 13,
+      "bedsMin": 0,
+      "bedsMax": 20,
+      "priorityBeds": [],
+      "requireReserved": false,
+      "lease": {
+        "length": "Needs evidence",
+        "sevenNote": "Lease length is not on file, so the 7 year rule is Needs evidence.",
+        "rentBasis": "Needs evidence",
+        "manager": "Needs evidence",
+        "programme": "250 homes within 12 months. Indicative share about 25 homes, about 10%, not fixed.",
+        "start": "April 2027. Award around early March 2027."
+      },
+      "accommodation": {
+        "type": "Suitable homes. 5% of the 250 home programme must be accessible, about 13 homes.",
+        "beds": "Needs evidence",
+        "boundary": "Glasgow, as tagged on the feed. A tighter council boundary is not on file.",
+        "shops": "Needs evidence",
+        "condition": "Needs evidence",
+        "clustering": "Needs evidence"
+      }
+    },
     "Edinburgh": {
       "status": "Evidenced",
       "source": "Edinburgh TA RFI",
       "evidenceDate": "2026-11-04",
-      "issued": "",
-      "due": "",
+      "note": "The framework is live and no homes have been placed yet.",
+      "qualifyingLease": false,
       "bedsMin": 1,
       "bedsMax": 4,
       "priorityBeds": [1, 3, 4],
@@ -26,57 +93,88 @@
       "supportedMin": 12,
       "supportedMax": 16,
       "excludePlaces": ["Midlothian", "East Lothian", "West Lothian", "Fife", "Scottish Borders"],
+      "lease": {
+        "length": "Needs evidence",
+        "sevenNote": "Lease length is not on file, so the 7 year rule is Needs evidence.",
+        "rentBasis": "Needs evidence",
+        "manager": "Needs evidence",
+        "programme": "No homes placed yet",
+        "start": "Live. A start date is not on file."
+      },
+      "accommodation": {
+        "type": "Self-contained homes for one household. Shared houses are out. 12 to 16 bed supported accommodation is considered case by case.",
+        "beds": "1 to 4. Strongest demand is 1, 3 and 4 bed. 2 bed is lower priority.",
+        "boundary": "City of Edinburgh only. Midlothian, East Lothian, West Lothian, Fife and the Scottish Borders are out.",
+        "shops": "Within 1.5 miles of a grocery shop and public transport.",
+        "condition": "The home must be capable of full compliance before call-off. That covers insurance, certification and licences. Minimum EPC and space standards are not specified.",
+        "clustering": "More than 2 temporary accommodation properties in one stair, or more than 20% in one street, needs a management strategy."
+      },
       "wants": [
-        "Self-contained homes for one household, 1 to 4 bed, inside the City of Edinburgh boundary only. Outside the boundary is excluded.",
-        "Strongest demand is 1, 3 and 4 bed. 2 bed is lower priority, because the council appears to have more 2 bed supply.",
+        "Self-contained homes for one household, 1 to 4 bed, inside the City of Edinburgh boundary only.",
+        "Strongest demand is 1, 3 and 4 bed. 2 bed is lower priority.",
         "Within 1.5 miles of a grocery shop and public transport.",
-        "More than 2 temporary accommodation properties in one stair, or more than 20% in one street, needs a management strategy. Clustering should be flagged.",
+        "More than 2 temporary accommodation properties in one stair, or more than 20% in one street, needs a management strategy.",
         "Larger buildings and conversions are considered case by case. The council is seeking 12 to 16 bed supported accommodation that is HMO compliant, with en-suite rooms and staff space.",
-        "Home Share and Shared House intake is currently suspended, so no HMO or shared houses for this route.",
-        "The home must be capable of full compliance before call-off. That covers insurance, certification and licences."
+        "Home Share and Shared House intake is currently suspended.",
+        "The home must be capable of full compliance before call-off."
       ],
-      "notSpecified": ["Minimum EPC", "Floor area or space standards", "Accessibility standard"],
-      "openFields": []
+      "notSpecified": ["Minimum EPC", "Floor area or space standards", "Accessibility standard", "Lease length", "Rent basis"]
     },
-    "Manchester": {
-      "status": "Partially evidenced",
-      "source": "MCC 10 Year Leasing pack",
-      "evidenceDate": "2026-11-17",
-      "issued": "",
-      "due": "",
-      "note": "The MCC Private Sector Leasing RFI is still due 30 Nov 2026.",
-      "bedsMin": 1,
-      "bedsMax": 5,
-      "priorityBeds": [1, 2, 3, 4, 5],
-      "lowerBeds": [],
+    "Bristol": {
+      "status": "Live",
+      "source": "Bristol framework",
+      "evidenceDate": "2026-11-18",
+      "note": "Standard capacity is filled. Only accessible or adapted homes are wanted. No homes have been placed yet.",
+      "qualifyingLease": false,
+      "requireAccessible": true,
+      "bedsMin": 0,
+      "bedsMax": 20,
+      "priorityBeds": [],
       "requireReserved": false,
-      "districts": ["M1", "M2", "M8", "M9", "M11", "M12", "M13", "M14", "M15", "M18", "M19", "M20", "M21", "M22", "M23", "M40", "M90"],
-      "partDistricts": ["M3", "M4", "M16"],
-      "wants": [
-        "Homes inside the City of Manchester only, split north and south or central.",
-        "1 to 5 bed houses or flats for temporary accommodation, with all bed sizes in scope until a demand mix is confirmed.",
-        "An optional adapted route at three specification levels, accepted after inspection.",
-        "Council furnishes and the landlord provides basic fixtures.",
-        "Current energy, gas and electrical certificates are required. No council tax arrears.",
-        "The landlord must have sufficient title and consents to grant the lease.",
-        "North: M9, M8, M40, parts of M4. South or central: M1, M2, parts of M3, parts of M4, M11, M12, M13, M14, M15, parts of M16, M18, M19, M20, M21, M22, M23, M90."
-      ],
-      "notSpecified": ["Minimum EPC", "Space standards", "Licensing", "Demand ranking"],
-      "openFields": []
+      "lease": {
+        "length": "Needs evidence",
+        "sevenNote": "Lease length is not on file, so the 7 year rule is Needs evidence.",
+        "rentBasis": "Needs evidence",
+        "manager": "Needs evidence",
+        "programme": "No homes placed yet",
+        "start": "Live. A start date is not on file."
+      },
+      "accommodation": {
+        "type": "Accessible or adapted homes only.",
+        "beds": "Needs evidence",
+        "boundary": "Bristol. A tighter boundary is not on file.",
+        "shops": "Needs evidence",
+        "condition": "Needs evidence",
+        "clustering": "Needs evidence"
+      }
     },
     "Birmingham": {
       "status": "Awaiting response",
       "source": "BCC Long Income RFI",
-      "evidenceDate": "",
       "issued": "2026-11-16",
       "due": "2026-11-30",
       "note": "Buy box awaiting RFI response, due 30 Nov 2026.",
-      "openFields": ["Eligible locations", "Property types", "Bedroom mix", "Condition", "Furnishing", "EPC", "Accessibility", "Compliance", "Demand by geography", "Demand by bedroom"]
+      "qualifyingLease": false,
+      "openFields": ["Eligible locations", "Property types", "Bedroom mix", "Condition", "Furnishing", "EPC", "Accessibility", "Compliance", "Demand by geography", "Demand by bedroom"],
+      "lease": {
+        "length": "Needs evidence",
+        "sevenNote": "Lease length is not on file, so the 7 year rule is Needs evidence.",
+        "rentBasis": "Needs evidence",
+        "manager": "Needs evidence",
+        "programme": "Needs evidence",
+        "start": "Needs evidence"
+      },
+      "accommodation": {
+        "type": "Needs evidence",
+        "beds": "Needs evidence",
+        "boundary": "Needs evidence",
+        "shops": "Needs evidence",
+        "condition": "Needs evidence",
+        "clustering": "Needs evidence"
+      }
     },
-    "Glasgow": {"status": "No RFI yet", "source": "Laurito base criteria", "note": "No RFI yet."},
-    "Liverpool": {"status": "No RFI yet", "source": "Laurito base criteria", "note": "No RFI yet."},
-    "Cheltenham": {"status": "No RFI yet", "source": "Laurito base criteria", "note": "No RFI yet."},
-    "Cheshire": {"status": "No RFI yet", "source": "Laurito base criteria", "note": "No RFI yet."},
-    "Bristol": {"status": "No RFI yet", "source": "Laurito base criteria", "note": "No RFI yet."}
+    "Liverpool": {"status": "No RFI yet", "source": "Laurito base criteria", "note": "No RFI yet.", "qualifyingLease": false},
+    "Cheltenham": {"status": "No RFI yet", "source": "Laurito base criteria", "note": "No RFI yet.", "qualifyingLease": false},
+    "Cheshire": {"status": "No RFI yet", "source": "Laurito base criteria", "note": "No RFI yet.", "qualifyingLease": false}
   }
 }

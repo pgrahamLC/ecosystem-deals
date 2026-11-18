@@ -6,6 +6,22 @@
   "metadata_only": true,
   "sources": [
     {
+      "id": "mcc-empty-homes",
+      "name": "Manchester empty homes investor register",
+      "url": "https://www.manchester.gov.uk/homes-and-property/help-with-empty-homes/can-i-get-information-about-how-to-buy-empty-properties-in-manchester",
+      "checked_at": "2026-11-18T12:00:00.000Z",
+      "status": "live",
+      "reason": "Public council page on how to buy empty homes in Manchester. This is a sourcing link, not an auction catalogue.",
+      "lot_count": 0,
+      "commercial_excluded": 0,
+      "out_of_area_excluded": 0,
+      "unknown_excluded": 0,
+      "pages": 1,
+      "by_town": {
+        "Manchester": 0
+      }
+    },
+    {
       "id": "auction_house_manchester",
       "name": "Auction House Manchester",
       "url": "https://www.auctionhouse.co.uk/manchester",

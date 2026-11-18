@@ -69,6 +69,13 @@
     const barsHtml = streams.map((row) => '<button type="button" class="bd-bar" data-go="entry"><span>' + esc(row.label) + '</span><i><b style="width:' + (row.total ? Math.round(row.count / row.total * 100) : 0) + '%"></b></i><em>' + row.count + '/' + row.total + '</em></button>').join('');
     return '<p class="bd-src">' + done + ' of ' + total + ' done</p>' + barsHtml;
   }
+  function frameworkLots(screen, id) {
+    const row = window.Timeline && window.Timeline.find ? window.Timeline.find(id) : null;
+    if (!row || !row.primary || (row.areas || []).indexOf(screen.area) < 0) return '<p>This contract has no separate lot test. Use the area buy box for the home match.</p>';
+    const lots = screen.area === 'Glasgow' ? screen.lots.filter((lot) => lot.pipeline) : (screen.area === 'Bristol' ? screen.lots.filter((lot) => lot.accessible) : screen.lots.filter((lot) => lot.buy === 'match' || lot.buy === 'partial'));
+    if (!lots.length) return '<p>No current lot fits this contract yet.</p>';
+    return '<p>' + lots.length + ' current lot' + (lots.length === 1 ? '' : 's') + ' fit the home side.</p><ul class="bd-take">' + lots.slice(0, 12).map((lot) => '<li>' + esc(lot.address) + '. ' + esc(lot.buyLabel || '') + '.</li>').join('') + '</ul>' + (lots.length > 12 ? '<p class="bd-src">Showing 12 of ' + lots.length + '.</p>' : '');
+  }
   function liveOverall(area) {
     if (!window.LiveLocation || !cache || !cache.live) return 'Not yet recorded';
     return window.LiveLocation.status(cache.live, area).overall;
@@ -78,7 +85,7 @@
     const gapText = screen.area === 'Cheshire' ? 'Not yet recorded' : (rent && rent.gap != null ? M.money(rent.gap) : 'Not yet recorded');
     const compsText = screen.comps.rows.length ? M.money(M.median(screen.comps.rows.map((row) => row.median))) : 'Not yet recorded';
     const drill = state.drill;
-    const matched = drill && drill.kind !== 'rent' && drill.kind !== 'comps' && drill.kind !== 'map' && drill.kind !== 'live' ? M.matches(screen, drill) : [];
+    const matched = drill && drill.kind !== 'rent' && drill.kind !== 'comps' && drill.kind !== 'map' && drill.kind !== 'live' && drill.kind !== 'framework' ? M.matches(screen, drill) : [];
     const drillTitle = !drill ? '' : drill.kind === 'rent' ? 'Rents' : drill.kind === 'comps' ? 'Sold prices' : drill.kind === 'map' ? 'Map' : (drill.label || drill.id);
     return '<div class="bd"><div class="bd-top"><div><p class="bd-kicker">Board</p><h1>' + esc(screen.area) + '</h1></div><label>Area <select id="bd-area">' + M.AREAS.map((area) => '<option' + (area === screen.area ? ' selected' : '') + '>' + esc(area) + '</option>').join('') + '</select></label></div>'
       + '<div class="bd-kpis">'
@@ -91,6 +98,9 @@
       + '</div>'
       + (window.LiveLocation && cache && cache.live ? window.LiveLocation.cardHtml(cache.live, screen.area) : '')
       + (window.BuyBox ? window.BuyBox.cardHtml(screen.area, screen.buyCounts) : '')
+      + (screen.area === 'Glasgow' && window.BuyBox ? '<article class="bd-chart"><h2>Glasgow pipeline</h2><p class="deal-help">Suitable homes in the current feed, against an indicative 25. Accessible homes against about 13, which is 5% of 250. The share is not fixed.</p><div class="bd-buy-counts"><div class="bd-tile"><span>Suitable homes</span><b>' + (screen.buyCounts.pipeline || 0) + '</b><span>indicative 25</span></div><div class="bd-tile"><span>Accessible</span><b>' + (screen.buyCounts.accessible || 0) + '</b><span>about 13 needed</span></div><div class="bd-tile"><span>Full matches</span><b>' + (screen.buyCounts.match || 0) + '</b><span>need a 7 year lease on file</span></div></div></article>' : '')
+      + (screen.area === 'Manchester' ? '<p class="bd-src"><a href="https://www.manchester.gov.uk/homes-and-property/help-with-empty-homes/can-i-get-information-about-how-to-buy-empty-properties-in-manchester" target="_blank" rel="noopener">Empty homes investor register</a>. Public council page on buying empty homes in Manchester.</p>' : '')
+      + (window.Timeline && cache && cache.requirements ? window.Timeline.html({area: screen.area, today: M.londonDay()}) : '')
       + (screen.gateCounts ? '<article class="bd-chart"><h2>Gates screen</h2><p class="bd-src">A catalogue lot is never a pass. Where rent is missing it stays not testable yet.</p><div class="bd-buy-counts"><button type="button" class="bd-tile" data-kind="gate" data-id="holds"><span>Price screen holds</span><b>' + screen.gateCounts.holds + '</b></button><button type="button" class="bd-tile" data-kind="gate" data-id="out"><span>Screens out</span><b>' + screen.gateCounts.out + '</b></button><button type="button" class="bd-tile" data-kind="gate" data-id="untested"><span>Not testable yet</span><b>' + screen.gateCounts.untested + '</b></button></div></article>' : '')
       + '<div class="bd-charts">'
       + '<article class="bd-chart"><h2>Lots by type</h2>' + bars(screen.types, 'type') + '</article>'
@@ -101,6 +111,7 @@
       + '<article class="bd-chart"><h2>Land Registry district medians</h2>' + bars(screen.comps.rows, 'comps') + '<p class="bd-src">' + (screen.comps.year ? 'Price Paid, ' + esc(screen.comps.year) + '. A district is shown when it has at least 5 sales.' : 'Not yet recorded') + '</p><button type="button" class="btn sec" data-go="map">Open the map</button></article>'
       + '<article class="bd-chart"><h2>Agents by type</h2>' + agentBars(screen.area) + '<button type="button" class="btn sec" data-go="entry">Open the register</button></article>'
       + '<article class="bd-chart"><h2>Go / No-Go</h2>' + gngBars(screen.area) + '<button type="button" class="btn sec" data-go="entry">Open the checklist</button></article>'
+      + (screen.area === 'Manchester' && screen.zones && screen.zones.length ? '<article class="bd-chart"><h2>Lease zones</h2><p class="bd-src">North, or south and central, from the postcode. Part of a district stays partial.</p>' + bars(screen.zones, 'zone') + '</article>' : '')
       + '</div>'
       + '<article class="bd-chart"><h2>Takeaways</h2><ul class="bd-take">' + screen.takeaways.map((line) => '<li>' + esc(line) + '</li>').join('') + '</ul></article>'
       + (drill ? '<section class="bd-drill"><p class="bd-kicker">Board / ' + esc(screen.area) + ' / ' + esc(drillTitle) + '</p><button type="button" class="btn sec" id="bd-back">Back to the board</button><h2>' + esc(drillTitle) + '</h2>'
@@ -108,6 +119,7 @@
         + (drill.kind === 'comps' ? '<p>' + (screen.comps.rows.length ? esc(screen.comps.rows.length) + ' districts in ' + esc(screen.comps.year) + '.' : 'Not yet recorded') + '</p><button type="button" class="btn sec" data-go="comps">Open comps</button>' : '')
         + (drill.kind === 'map' ? '<p>The map uses the existing town view. It is not redrawn from these lots.</p>' : '')
         + (drill.kind === 'live' && window.LiveLocation && cache && cache.live ? window.LiveLocation.cardHtml(cache.live, screen.area) : '')
+        + (drill.kind === 'framework' && window.Timeline ? window.Timeline.detail(drill.id, M.londonDay()) + frameworkLots(screen, drill.id) : '')
         + (matched.length ? '<p>' + matched.length + ' current lot' + (matched.length === 1 ? '' : 's') + '.</p>' + drillLots(matched) + '<button type="button" class="btn" data-go="auctions">Open these in Auctions</button>' : (drill.kind === 'type' || drill.kind === 'beds' || drill.kind === 'price' || drill.kind === 'month' ? '<p>No current lot is in this cut.</p>' : ''))
         + '</section>' : '')
       + '</div>';
@@ -133,6 +145,7 @@
       const id = button.dataset.id;
       if (kind === 'agents') { open('entry'); return; }
       if (kind === 'live') { state.drill = {kind: 'live', id: 'live', label: 'Live location'}; paint(host); return; }
+      if (kind === 'framework') { state.drill = {kind: 'framework', id: id, label: 'Contract'}; paint(host); return; }
       state.drill = state.drill && state.drill.kind === kind && state.drill.id === id ? null : {kind, id, label: button.querySelector('span') ? button.querySelector('span').textContent : id};
       paint(host);
       const drill = host.querySelector('.bd-drill');
@@ -189,12 +202,13 @@
     if (cache) return Promise.resolve(cache);
     if (pending) return pending;
     state.loading = true;
-    pending = Promise.all(['data/auctions/lots.json', 'data/rent-scenarios.json', 'comps/summary.json', 'data/market-entry/agents.json', 'data/market-entry/checklist.json', 'data/market-entry/buy-box.json', 'data/market-entry/gates.json', 'data/market-entry/live-location.json'].map((file) => fetch(file + '?v=20261118-plain', {cache: 'no-store'}).then((response) => {
+    pending = Promise.all(['data/auctions/lots.json', 'data/rent-scenarios.json', 'comps/summary.json', 'data/market-entry/agents.json', 'data/market-entry/checklist.json', 'data/market-entry/buy-box.json', 'data/market-entry/gates.json', 'data/market-entry/live-location.json', 'data/market-entry/requirements.json', 'frameworks.json'].map((file) => fetch(file + '?v=20261118-fw', {cache: 'no-store'}).then((response) => {
       if (!response.ok) throw new Error(file + ' returned HTTP ' + response.status);
       return response.json();
     }))).then((rows) => {
       if (window.BuyBox) window.BuyBox.use(rows[5]);
-      cache = {lots: rows[0].lots || [], rents: rows[1], comps: rows[2], agents: rows[3], checklist: rows[4], buyBox: rows[5], gates: rows[6], live: rows[7]};
+      if (window.Timeline) window.Timeline.use(rows[8], rows[9]);
+      cache = {lots: rows[0].lots || [], rents: rows[1], comps: rows[2], agents: rows[3], checklist: rows[4], buyBox: rows[5], gates: rows[6], live: rows[7], requirements: rows[8], frameworks: rows[9]};
       state.loading = false;
       state.error = '';
       pending = null;

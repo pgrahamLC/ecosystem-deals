@@ -44,6 +44,12 @@
   function criterion(label, help, value, note, kind) {
     return '<div class="live-row"><div><span>' + label + '</span><small class="deal-help">' + help + '</small><p>' + esc(note) + '</p></div>' + badge(value, kind) + '</div>';
   }
+  function leaseLine(area) {
+    const box = root.BuyBox || (typeof window !== 'undefined' ? window.BuyBox : null);
+    const rule = box ? box.ruleFor(area) : null;
+    const note = rule && rule.lease && rule.lease.sevenNote;
+    return 'Laurito needs a lease of 7 years or more. This is hurdle 14. ' + (note || 'The term is not on file.');
+  }
   function cardHtml(book, area) {
     const row = status(book, area);
     return '<article class="bd-chart live-location"><div class="bd-buy-h"><h2>Live location</h2>' + badge(row.overall, 'overall', true) + '</div>'
@@ -52,7 +58,7 @@
       + criterion('Are the right leases available?', 'Plenty of the right leases, from Mack Living or from LHA backed demand.', row.availability, row.availabilityNote, 'yes')
       + criterion('Who is the lease with?', 'Mack Living, LHA, or both. LHA is demand backed by the housing allowance.', row.route, row.routeNote, 'route')
       + criterion('Can Mack Living manage the homes?', 'Mack Living would be the property manager in this location.', row.manager, row.managerNote, 'yes')
-      + '</article>';
+      + '<p class="deal-next">' + esc(leaseLine(area)) + '</p></article>';
   }
   root.LiveLocation = Object.freeze({status, overall, cardHtml, ROUTES});
 })(typeof globalThis !== 'undefined' ? globalThis : this);
