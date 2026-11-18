@@ -29,9 +29,9 @@ for (const file of ['checklist.json', 'agents.json', 'stakeholders.json', 'crite
 const manchester = state.checklists.Manchester.workstreams.find((row) => row.id === 'portfolio').items.find((row) => row.id === 'manchester');
 assert.equal(manchester.text, 'Is Manchester a good market for you?');
 assert.equal(manchester.done, true);
-assert.equal(manchester.notes, 'Yes');
-assert.equal(manchester.status, 'done');
-assert.equal(M.summarise(state.checklists.Manchester).done, 1);
+assert.equal(manchester.notes, 'Already answered Yes. This pack does not change that.');
+assert.equal(manchester.status, 'go');
+assert.equal(M.summarise(state.checklists.Manchester).done, 4);
 
 const glasgow = state.checklists.Glasgow.workstreams.find((row) => row.id === 'portfolio').items.find((row) => row.id === 'manchester');
 assert.equal(glasgow.text, 'Is Glasgow a good market for you?');
@@ -41,7 +41,7 @@ assert.equal(glasgow.links.some((link) => /GM-035/.test(link.href || '')), false
 assert.equal(state.checklists.Glasgow.workstreams.map((row) => row.title).join('|'), 'Local Authority 10-year Lease Agreements|Assembling A Portfolio');
 
 let next = M.setDone(state, 'Glasgow', 'la-lease', 'offer', true);
-assert.equal(next.checklists.Glasgow.workstreams[0].items[0].status, 'done');
+assert.equal(next.checklists.Glasgow.workstreams[0].items[0].status, 'go');
 assert.equal(state.checklists.Glasgow.workstreams[0].items[0].done, false);
 next = M.addItem(next, 'Glasgow', 'la-lease', 'Who is on the ground?').state;
 assert.equal(next.checklists.Glasgow.workstreams[0].items.at(-1).text, 'Who is on the ground?');
@@ -53,14 +53,15 @@ assert.equal(next.checklists.Bristol.workstreams.length, 2);
 
 const round = M.parseImport(M.serialise(next));
 assert.equal(round.error, undefined);
-assert.equal(round.state.checklists.Manchester.workstreams[1].items[0].notes, 'Yes');
+assert.equal(round.state.checklists.Manchester.workstreams[1].items[0].notes, 'Already answered Yes. This pack does not change that.');
 assert.equal(round.state.agents.length, state.agents.length);
 
 const partnerFile = {workstreams: [{id: 'portfolio', title: 'Assembling A Portfolio', items: [{id: 'manchester', text: 'Is Manchester a good market for you?', done: true, notes: 'Yes', status: 'done'}]}]};
 const imported = M.replaceChecklist(state, 'Liverpool', partnerFile);
 assert.equal(imported.error, '');
 assert.equal(imported.state.checklists.Liverpool.workstreams.length, 1);
-assert.equal(imported.state.checklists.Manchester.workstreams.length, 2);
+assert.equal(imported.state.checklists.Manchester.workstreams.length, 3);
+assert.equal(state.checklists.Glasgow.workstreams.some((row) => row.id === 'scheme-conditions'), false);
 
 const saved = M.saveAgent(state, {area: 'Manchester', name: 'Test Land', type: 'Land agent', website: 'https://example.com/land', contact: '', alertStatus: 'requested', alertDate: '2026-11-17', coverage: 'Manchester'});
 assert.equal(saved.error, '');

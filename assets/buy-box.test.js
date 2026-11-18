@@ -18,8 +18,9 @@ areas.forEach((area) => {
 
 assert.equal(Box.ruleFor('Edinburgh').status, 'Evidenced');
 assert.equal(Box.ukDate('2026-11-04'), '4 Nov 2026');
-assert.equal(Box.ruleFor('Manchester').status, 'Awaiting response');
-assert.equal(Box.ruleFor('Manchester').openFields.includes('Eligible wards'), true);
+assert.equal(Box.ruleFor('Manchester').status, 'Partially evidenced');
+assert.equal(Box.ruleFor('Manchester').districts.includes('M14'), true);
+assert.equal(Box.ruleFor('Manchester').partDistricts.includes('M4'), true);
 assert.equal(Box.ruleFor('Birmingham').note.includes('30 Nov 2026'), true);
 assert.equal(Box.ruleFor('Glasgow').note, 'No RFI yet.');
 assert.equal(Box.ruleFor('Glasgow').priorityBeds.join(','), '3,4');
@@ -39,9 +40,11 @@ assert.equal(ediReserved.tag, 'match');
 
 const manPartial = Box.classify('Manchester', {title: '3 bedroom house', address: '1 Oldham Road', lot_type: 'House'});
 assert.equal(manPartial.tag, 'partial');
-const manMatch = Box.classify('Manchester', {title: '4 bedroom house. Reserved matters have been discharged.', address: '2 Oldham Road', lot_type: 'House'});
+const manMatch = Box.classify('Manchester', {title: '4 bedroom house', address: '2 Oldham Road', postcode: 'M14 5AA', lot_type: 'House'});
 assert.equal(manMatch.tag, 'match');
-const manNo = Box.classify('Manchester', {title: '2 bedroom flat', address: '3 Oldham Road', lot_type: 'Flat'});
+const manPart = Box.classify('Manchester', {title: '2 bedroom flat', address: '3 Street', postcode: 'M4 1AA', lot_type: 'Flat'});
+assert.equal(manPart.tag, 'partial');
+const manNo = Box.classify('Manchester', {title: '3 bedroom house', address: 'Altrincham', postcode: 'WA14 1AA', lot_type: 'House'});
 assert.equal(manNo.tag, 'no');
 const manBlank = Box.classify('Manchester', {title: 'House', address: '4 Oldham Road', lot_type: 'House'});
 assert.equal(manBlank.tag, 'partial');
@@ -53,6 +56,7 @@ assert.equal(html.includes('4 Nov 2026'), true);
 assert.equal(html.includes('Not specified'), true);
 assert.equal(html.includes(';'), false);
 assert.equal(html.includes('\u2014'), false);
-assert.equal(Box.cardHtml('Manchester', {match: 0, partial: 0, no: 0}).includes('Awaiting response'), true);
+assert.equal(Box.cardHtml('Manchester', {match: 0, partial: 0, no: 0}).includes('Partially evidenced'), true);
+assert.equal(Box.cardHtml('Manchester', {match: 0, partial: 0, no: 0}).includes('£'), false);
 
 console.log('buy box tests passed');

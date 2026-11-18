@@ -4,9 +4,10 @@
 
   const AREAS = Object.freeze(['Manchester', 'Glasgow', 'Edinburgh', 'Bristol', 'Cheltenham', 'Liverpool', 'Cheshire', 'Birmingham']);
   const CHECK_STATUSES = Object.freeze([
-    {id: 'not-started', label: 'Not started'},
-    {id: 'in-progress', label: 'In progress'},
-    {id: 'done', label: 'Done'}
+    {id: 'go', label: 'Go'},
+    {id: 'open', label: 'Open'},
+    {id: 'needs-evidence', label: 'Needs evidence'},
+    {id: 'no-go', label: 'No-Go'}
   ]);
   const ALERTS = Object.freeze([
     {id: 'not-registered', label: 'Not registered'},
@@ -83,9 +84,10 @@
     return null;
   }
   function alignStatus(raw) {
-    let status = CHECK_IDS.includes(raw.status) ? raw.status : '';
-    if (!status) status = raw.done ? 'done' : 'not-started';
-    return {status, done: status === 'done'};
+    const legacy = {done: 'go', 'not-started': 'open', 'in-progress': 'open'};
+    let status = legacy[raw.status] || (CHECK_IDS.includes(raw.status) ? raw.status : '');
+    if (!status) status = raw.done ? 'go' : 'open';
+    return {status, done: status === 'go'};
   }
   function tally(items) {
     const list = Array.isArray(items) ? items : [];
@@ -105,7 +107,7 @@
   function cloneChecklist(seed, area) {
     const answers = (seed.answers && seed.answers[area]) || {};
     const usedWs = new Set();
-    const workstreams = (seed.workstreams || []).map((ws, index) => {
+    const workstreams = (seed.workstreams || []).filter((ws) => !ws.only || ws.only === area).map((ws, index) => {
       const used = new Set();
       const items = (ws.items || []).map((item, itemIndex) => {
         const flags = alignStatus(Object.assign({}, item, answers[item.id] || {}));
@@ -411,14 +413,14 @@
   function setDone(state, area, wsId, itemId, done) {
     return mapItem(state, area, wsId, itemId, (item) => {
       const next = Object.assign({}, item, {done: !!done});
-      if (next.done) next.status = 'done';
-      else if (next.status === 'done') next.status = 'not-started';
+      if (next.done) next.status = 'go';
+      else if (next.status === 'go' || next.status === 'done') next.status = 'open';
       return next;
     });
   }
   function setStatus(state, area, wsId, itemId, status) {
     if (!CHECK_IDS.includes(status)) return state;
-    return mapItem(state, area, wsId, itemId, (item) => Object.assign({}, item, {status, done: status === 'done'}));
+    return mapItem(state, area, wsId, itemId, (item) => Object.assign({}, item, {status, done: status === 'go'}));
   }
   function setField(state, area, wsId, itemId, field, value) {
     if (field !== 'notes' && field !== 'owner') return state;

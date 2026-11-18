@@ -40,7 +40,9 @@
       excludePlaces: row.excludePlaces || [],
       wants: row.wants || [],
       notSpecified: row.notSpecified || [],
-      openFields: row.openFields || []
+      openFields: row.openFields || [],
+      districts: row.districts || [],
+      partDistricts: row.partDistricts || []
     };
   }
   function textOf(lot) {
@@ -64,6 +66,11 @@
   function homeType(text) {
     return !/\b(commercial|office|retail|industrial|garage|land|development plot)\b/i.test(String(text || ''));
   }
+  function districtOf(lot) {
+    const blob = [lot && lot.postcode, lot && lot.address, lot && lot.title].filter(Boolean).join(' ');
+    const match = String(blob).toUpperCase().match(/\bM90\b|\bM\d{1,2}\b/);
+    return match ? match[0] : '';
+  }
   function result(tag, reason) {
     return {tag, label: TAGS[tag] || 'No', reason};
   }
@@ -71,13 +78,27 @@
     const rule = ruleFor(area, source);
     const text = textOf(lot);
     const beds = bedCounts(text);
-    const address = String((lot && lot.address) || '');
+    const address = String((lot && (lot.postcode || lot.address)) || '');
     const outside = rule.excludePlaces.find((place) => new RegExp('\\b' + place.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i').test(address));
     if (outside) return result('no', 'Outside the buy box boundary (' + outside + ').');
     const supported = rule.supportedMax > 0 && beds.some((n) => n >= rule.supportedMin && n <= rule.supportedMax);
     if (rule.excludeShared && sharedHome(text)) {
       if (supported) return result('partial', '12 to 16 bed supported accommodation is considered case by case.');
       return result('no', 'Shared houses and HMOs are not in this buy box.');
+    }
+    if (rule.districts.length) {
+      const district = districtOf(lot);
+      const hasPostcode = /\b[A-Z]{1,2}\d/i.test([lot && lot.postcode, lot && lot.address].filter(Boolean).join(' '));
+      const whole = rule.districts.indexOf(district) >= 0;
+      const part = rule.partDistricts.indexOf(district) >= 0;
+      if (hasPostcode && !whole && !part) return result('no', 'Outside the City of Manchester districts in the buy box.');
+      if (!homeType(text) || /\bhmo\b/i.test(text)) return result('no', 'Not a house or flat in the City of Manchester buy box.');
+      const inBeds = beds.length && !beds.some((n) => n < rule.bedsMin || n > rule.bedsMax);
+      if (beds.some((n) => n < rule.bedsMin || n > rule.bedsMax)) return result('no', 'Bed count is outside 1 to 5.');
+      if (!beds.length) return result('partial', district ? 'Bed count is not stated.' : 'Postcode district and bed count are not stated.');
+      if (!district) return result('partial', 'Postcode district is not stated.');
+      if (part) return result('partial', 'Only part of ' + district + ' is in the buy box.');
+      if (whole && inBeds) return result('match', district + ' is in the buy box and the bed count is 1 to 5.');
     }
     if (!beds.length) {
       if (!homeType(text)) return result('no', 'Not a home in the buy box.');
@@ -107,7 +128,7 @@
     if (rule.evidenceDate) dateBits.push('Evidence ' + ukDate(rule.evidenceDate));
     if (rule.issued) dateBits.push('Issued ' + ukDate(rule.issued));
     if (rule.due) dateBits.push('Responses due ' + ukDate(rule.due));
-    const badge = rule.status === 'Evidenced' ? 'evidenced' : (rule.status === 'Awaiting response' ? 'waiting' : 'none');
+    const badge = rule.status === 'Evidenced' ? 'evidenced' : (rule.status === 'Partially evidenced' ? 'partial' : (rule.status === 'Awaiting response' ? 'waiting' : 'none'));
     const countsHtml = ['match', 'partial', 'no'].map((id) => '<button type="button" class="bd-tile" data-kind="buy" data-id="' + id + '"><span>' + TAGS[id] + '</span><b>' + ((tally && tally[id]) || 0) + '</b></button>').join('');
     const lines = rule.wants.length ? rule.wants : [rule.note || 'No RFI yet.', rule.summary, rule.openFields.length ? 'Open fields stay blank until a response is recorded.' : 'No further regional brief is on file.'].filter(Boolean);
     const wants = '<ul class="bd-take">' + lines.map((line) => '<li>' + esc(line) + '</li>').join('') + '</ul>';
@@ -116,7 +137,7 @@
     return '<article class="bd-chart bd-buy"><div class="bd-buy-h"><h2>What we want in ' + esc(area) + '</h2><span class="bd-badge ' + badge + '">' + esc(rule.status) + '</span></div>'
       + '<p class="bd-src">' + esc(rule.source) + (dateBits.length ? '. ' + esc(dateBits.join('. ')) + '.' : '') + '</p>'
       + (rule.note ? '<p>' + esc(rule.note) + '</p>' : '')
-      + '<p>' + esc(rule.summary) + '</p>'
+      + (rule.districts.length ? '' : '<p>' + esc(rule.summary) + '</p>')
       + wants + missing + open
       + '<div class="bd-buy-counts">' + countsHtml + '</div></article>';
   }

@@ -60,7 +60,7 @@
     }
     const streams = (workstreams || []).map((ws) => {
       const total = (ws.items || []).length;
-      const done = (ws.items || []).filter((item) => item.done || item.status === 'done').length;
+      const done = (ws.items || []).filter((item) => item.done || item.status === 'done' || item.status === 'go').length;
       return {id: ws.title, label: ws.title.replace('Local Authority 10-year Lease Agreements', 'LA leases').replace('Assembling A Portfolio', 'Portfolio'), count: done, total};
     });
     if (!streams.length) return '<p>Not yet recorded</p>';

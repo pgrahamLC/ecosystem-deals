@@ -17,6 +17,7 @@
 .bd-badge{border-radius:999px;padding:3px 8px;font-size:12px;font-weight:650;white-space:nowrap}
 .bd-badge.evidenced{background:#edf5f0;color:#1f5c45}
 .bd-badge.waiting{background:#fff8ee;color:#b26a00}
+.bd-badge.partial{background:#e7f1fb;color:#1d4e89}
 .bd-badge.none{background:#f4f6f8;color:#5c6b78}
 .bd-buy-counts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
 .bd-buy-tag{margin:8px 0 0;font-size:12px;font-weight:650}

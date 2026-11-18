@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-17",
+  "updated": "2026-11-18",
   "howToUpdate": "When an RFI response arrives, set status to Evidenced, add the dated wants, set the bed rules, and clear openFields. Publish only the buy box. Do not add rates, names, emails, or contract terms.",
   "base": {
     "summary": "Sites with planning permission where reserved matters have been discharged, and 3 to 4 bed homes.",
@@ -39,13 +39,30 @@
       "openFields": []
     },
     "Manchester": {
-      "status": "Awaiting response",
-      "source": "MCC Private Sector Leasing RFI",
-      "evidenceDate": "",
-      "issued": "2026-11-16",
-      "due": "2026-11-30",
-      "note": "Buy box awaiting RFI response, due 30 Nov 2026.",
-      "openFields": ["Eligible wards", "Property types", "Bedroom mix", "Sizes", "EPC", "Licensing", "Accessibility", "Condition", "Furnishing", "Exclusions"]
+      "status": "Partially evidenced",
+      "source": "MCC 10 Year Leasing pack",
+      "evidenceDate": "2026-11-17",
+      "issued": "",
+      "due": "",
+      "note": "The MCC Private Sector Leasing RFI is still due 30 Nov 2026.",
+      "bedsMin": 1,
+      "bedsMax": 5,
+      "priorityBeds": [1, 2, 3, 4, 5],
+      "lowerBeds": [],
+      "requireReserved": false,
+      "districts": ["M1", "M2", "M8", "M9", "M11", "M12", "M13", "M14", "M15", "M18", "M19", "M20", "M21", "M22", "M23", "M40", "M90"],
+      "partDistricts": ["M3", "M4", "M16"],
+      "wants": [
+        "Homes inside the City of Manchester only, split north and south or central.",
+        "1 to 5 bed houses or flats for temporary accommodation, with all bed sizes in scope until a demand mix is confirmed.",
+        "An optional adapted route at three specification levels, accepted after inspection.",
+        "Council furnishes and the landlord provides basic fixtures.",
+        "Current energy, gas and electrical certificates are required. No council tax arrears.",
+        "The landlord must have sufficient title and consents to grant the lease.",
+        "North: M9, M8, M40, parts of M4. South or central: M1, M2, parts of M3, parts of M4, M11, M12, M13, M14, M15, parts of M16, M18, M19, M20, M21, M22, M23, M90."
+      ],
+      "notSpecified": ["Minimum EPC", "Space standards", "Licensing", "Demand ranking"],
+      "openFields": []
     },
     "Birmingham": {
       "status": "Awaiting response",

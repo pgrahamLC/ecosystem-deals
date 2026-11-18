@@ -1,16 +1,124 @@
 {
-  "updated": "2026-11-17",
+  "updated": "2026-11-18",
   "file": "checklist.json",
   "title": "Go / No-Go Checklist",
   "purpose": "Decide whether we can operate in an area. Tick an item when it is done and add a short answer where you have one. Manchester is already answered Yes.",
   "storageNote": "Ticks, notes, owners, the agent register, the stakeholder map, acquisition criteria and the off-market log stay in this browser. Export JSON to share them. The starting items are in the market-entry JSON files.",
   "answers": {
     "Manchester": {
+      "offer": {
+        "done": true,
+        "status": "go",
+        "owner": "",
+        "notes": "MCC 10-year lease route is documented. Scheme cover, rent review method, break choices, furnishing, registration and landlord duties are now in hand."
+      },
+      "engage-decision": {
+        "done": false,
+        "status": "open",
+        "owner": "",
+        "notes": "The route is available. The decision to engage should wait until scheme income has been run through the acquisition gates."
+      },
+      "how-engage": {
+        "done": false,
+        "status": "needs-evidence",
+        "owner": "",
+        "notes": "The council team is the engagement channel. Adapted stock should be discussed with the team before submission. Standard stock still needs a written offer and completion process."
+      },
+      "complete": {
+        "done": false,
+        "status": "needs-evidence",
+        "owner": "",
+        "notes": "A precedent lease exists and the council handles registration and SDLT. Solicitor, consents and certificates are required to complete. Deal flow is not yet activated."
+      },
       "manchester": {
         "done": true,
-        "notes": "Yes",
+        "status": "go",
         "owner": "",
-        "status": "done"
+        "notes": "Already answered Yes. This pack does not change that."
+      },
+      "property-type": {
+        "done": true,
+        "status": "go",
+        "owner": "",
+        "notes": "For the 10-year scheme, 1 to 5 bed houses or flats in the City of Manchester, standard or adapted at three specification levels, used as temporary accommodation."
+      },
+      "volume": {
+        "done": false,
+        "status": "needs-evidence",
+        "owner": "",
+        "notes": "A council investor register of empty homes exists. Available volume and competition are not yet proven."
+      },
+      "gates": {
+        "done": false,
+        "status": "needs-evidence",
+        "owner": "",
+        "notes": "Scheme income and lease mechanics are known internally but not yet run through the fourteen gates."
+      },
+      "pathways": {
+        "done": false,
+        "status": "open",
+        "owner": "",
+        "notes": "A council empty-homes register is available alongside auctions, agents and the off-market log. The pathway mix still needs a decision."
+      },
+      "legal-review": {
+        "done": false,
+        "status": "needs-evidence",
+        "owner": "",
+        "notes": "A council precedent is in hand and still needs a solicitor review."
+      },
+      "term-and-breaks": {
+        "done": false,
+        "status": "needs-evidence",
+        "owner": "",
+        "notes": "Break options are offered. They need a gates and legal review before any offer."
+      },
+      "capacity-to-grant": {
+        "done": false,
+        "status": "needs-evidence",
+        "owner": "",
+        "notes": ""
+      },
+      "consents-and-solicitor": {
+        "done": false,
+        "status": "open",
+        "owner": "",
+        "notes": ""
+      },
+      "certificates-and-arrears": {
+        "done": true,
+        "status": "go",
+        "owner": "",
+        "notes": "These are standing eligibility rules. Apply them to every lot."
+      },
+      "repair-costing": {
+        "done": false,
+        "status": "needs-evidence",
+        "owner": "",
+        "notes": "Landlord duties look heavy and need an operating cost assumption before a gates test."
+      },
+      "adapted-route": {
+        "done": false,
+        "status": "open",
+        "owner": "",
+        "notes": "An inspected adapted route exists with an additional payment. Whether to deliver it is still a decision."
+      },
+      "empty-homes-register": {
+        "done": false,
+        "status": "open",
+        "owner": "",
+        "notes": ""
+      },
+      "rfi-reconcile": {
+        "done": false,
+        "status": "open",
+        "owner": "",
+        "notes": "This pack evidences the 10-year route but does not close the PSL RFI."
+      },
+      "run-gates": {
+        "done": false,
+        "status": "needs-evidence",
+        "owner": "",
+        "notes": ""
       }
     }
   },
@@ -139,6 +247,105 @@
             {"label": "Auction lots", "hash": "auctions"},
             {"label": "Off-market log", "hash": "entry/intake"}
           ]
+        }
+      ]
+    },
+    {
+      "id": "scheme-conditions",
+      "title": "Scheme conditions and next steps",
+      "only": "Manchester",
+      "items": [
+        {
+          "id": "legal-review",
+          "text": "Have we had a solicitor review the council precedent lease?",
+          "done": false,
+          "notes": "",
+          "owner": "",
+          "status": "open",
+          "links": []
+        },
+        {
+          "id": "term-and-breaks",
+          "text": "Do the scheme term and break options still clear the acquisition gates, including unexpired term at exit?",
+          "done": false,
+          "notes": "",
+          "owner": "",
+          "status": "open",
+          "links": []
+        },
+        {
+          "id": "capacity-to-grant",
+          "text": "Can we grant the scheme lease from freehold, long leasehold or an acceptable headlease?",
+          "done": false,
+          "notes": "",
+          "owner": "",
+          "status": "open",
+          "links": []
+        },
+        {
+          "id": "consents-and-solicitor",
+          "text": "Are mortgagee and owner consents, and a solicitor to complete, lined up?",
+          "done": false,
+          "notes": "",
+          "owner": "",
+          "status": "open",
+          "links": []
+        },
+        {
+          "id": "certificates-and-arrears",
+          "text": "Do we only offer homes with current energy, gas and electrical certificates and no council tax arrears?",
+          "done": false,
+          "notes": "",
+          "owner": "",
+          "status": "open",
+          "links": []
+        },
+        {
+          "id": "repair-costing",
+          "text": "Have we costed landlord repair, compliance, insurance and void duties?",
+          "done": false,
+          "notes": "",
+          "owner": "",
+          "status": "open",
+          "links": []
+        },
+        {
+          "id": "adapted-route",
+          "text": "Do we want to offer adapted homes under the L1, L2 and L3 specifications?",
+          "done": false,
+          "notes": "",
+          "owner": "",
+          "status": "open",
+          "links": []
+        },
+        {
+          "id": "empty-homes-register",
+          "text": "Have we joined the council empty-homes investor register?",
+          "done": false,
+          "notes": "",
+          "owner": "",
+          "status": "open",
+          "links": [
+            {"label": "Empty homes in Manchester", "href": "https://www.manchester.gov.uk/homes-and-property/help-with-empty-homes/can-i-get-information-about-how-to-buy-empty-properties-in-manchester"}
+          ]
+        },
+        {
+          "id": "rfi-reconcile",
+          "text": "Has this pack been reconciled with the MCC Private Sector Leasing RFI, due 30 Nov 2026?",
+          "done": false,
+          "notes": "",
+          "owner": "",
+          "status": "open",
+          "links": []
+        },
+        {
+          "id": "run-gates",
+          "text": "Have scheme rents been run through the fourteen gates by bed size and area, including adapted uplifts?",
+          "done": false,
+          "notes": "",
+          "owner": "",
+          "status": "open",
+          "links": []
         }
       ]
     }

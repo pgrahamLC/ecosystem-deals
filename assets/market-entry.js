@@ -82,7 +82,7 @@
       const count = summary.streams.find((row) => row.id === ws.id) || {done: 0, total: 0, percent: 0};
       const items = ws.items.map((item) => {
         const statuses = M.CHECK_STATUSES.map((row) => '<option value="' + row.id + '"' + (item.status === row.id ? ' selected' : '') + '>' + row.label + '</option>').join('');
-        return '<article class="gn-item' + (item.done ? ' done' : '') + '"><div class="gn-top"><label class="gn-check"><input type="checkbox" data-act="done" data-ws="' + esc(ws.id) + '" data-id="' + esc(item.id) + '"' + (item.done ? ' checked' : '') + '> Done</label><p class="gn-q">' + esc(item.text) + '</p></div>'
+        return '<article class="gn-item' + (item.done ? ' done' : '') + '"><div class="gn-top"><label class="gn-check"><input type="checkbox" data-act="done" data-ws="' + esc(ws.id) + '" data-id="' + esc(item.id) + '"' + (item.done ? ' checked' : '') + '> Go</label><p class="gn-q">' + esc(item.text) + '</p></div>'
           + '<div class="gn-meta"><label>Status <select data-act="status" data-ws="' + esc(ws.id) + '" data-id="' + esc(item.id) + '">' + statuses + '</select></label>'
           + '<label>Owner <input data-act="owner" data-ws="' + esc(ws.id) + '" data-id="' + esc(item.id) + '" value="' + esc(item.owner) + '" placeholder="Name" autocomplete="off"></label>'
           + '<button type="button" class="btn sec" data-act="del-item" data-ws="' + esc(ws.id) + '" data-id="' + esc(item.id) + '">Delete</button></div>'
@@ -96,11 +96,14 @@
         + '<form class="gn-add" data-act="add-item" data-ws="' + esc(ws.id) + '"><input name="text" placeholder="New checklist item" aria-label="New item in ' + esc(ws.title) + '" autocomplete="off"><button class="btn" type="submit">Add item</button></form>'
         + '<details><summary class="foot">Remove this workstream</summary><button type="button" class="btn sec" data-act="del-ws" data-ws="' + esc(ws.id) + '">Delete workstream</button></details></details></section>';
     }).join('');
-    const streams = list.workstreams.map((ws) => ({id: 'gn-' + ws.id, label: ws.title.replace('Local Authority 10-year Lease Agreements', 'LA leases').replace('Assembling A Portfolio', 'Portfolio'), count: (ws.items || []).length}));
+    const counts = {go: 0, open: 0, 'needs-evidence': 0, 'no-go': 0};
+    list.workstreams.forEach((ws) => ws.items.forEach((item) => { if (counts[item.status] != null) counts[item.status] += 1; }));
+    const tiles = '<div class="bd-kpis"><div class="bd-tile"><span>Go</span><b>' + counts.go + '</b></div><div class="bd-tile"><span>Open</span><b>' + counts.open + '</b></div><div class="bd-tile"><span>Needs evidence</span><b>' + counts['needs-evidence'] + '</b></div><div class="bd-tile"><span>No-Go</span><b>' + counts['no-go'] + '</b></div></div>';
+    const streams = list.workstreams.map((ws) => ({id: 'gn-' + ws.id, label: ws.title.replace('Local Authority 10-year Lease Agreements', 'LA leases').replace('Assembling A Portfolio', 'Portfolio').replace('Scheme conditions and next steps', 'Scheme conditions'), count: (ws.items || []).length}));
     const max = Math.max(1, ...streams.map((row) => row.count));
     const bars = streams.map((row) => '<button type="button" class="bd-bar" data-act="open-fold" data-target="#' + esc(row.id) + '"><span>' + esc(row.label) + '</span><i><b style="width:' + (row.count / max * 100) + '%"></b></i><em>' + row.count + '</em></button>').join('');
-    const chart = '<div class="bd-charts"><article class="bd-chart"><h2>Checklist</h2>' + (bars || '<p>Not yet recorded</p>') + '</article><article class="bd-chart"><h2>Takeaways</h2><ul class="bd-take"><li>' + summary.done + ' of ' + summary.total + ' items are done in ' + esc(area) + '.</li><li>' + (area === 'Manchester' ? 'Manchester starts with Yes on the market question.' : 'Answer the market question for ' + esc(area) + '.') + '</li><li>A lot is not treated as reserved matters discharged unless its own text says so.</li></ul></article></div>';
-    return chart + sections + '<section class="card"><h2>Add a workstream</h2><form class="gn-add" data-act="add-ws"><input name="title" placeholder="New workstream name" aria-label="New workstream name" autocomplete="off"><button class="btn" type="submit">Add workstream</button></form><p class="foot">This checklist is for ' + esc(area) + ' only. Switch area to see the others. Manchester starts with Yes on the market question.</p></section>';
+    const chart = tiles + '<div class="bd-charts"><article class="bd-chart"><h2>By workstream</h2>' + (bars || '<p>Not yet recorded</p>') + '</article><article class="bd-chart"><h2>Takeaways</h2><ul class="bd-take"><li>' + counts.go + ' Go, ' + counts.open + ' open, ' + counts['needs-evidence'] + ' need evidence, ' + counts['no-go'] + ' No-Go.</li><li>' + (area === 'Manchester' ? 'Manchester stays Yes. The 10-year pack does not change that.' : 'Answer the market question for ' + esc(area) + '.') + '</li><li>One No-Go stops the area. Needs evidence is not a Go.</li></ul></article></div>';
+    return chart + '<details class="bd-fold" id="me-check-list"><summary>Show detail</summary>' + sections + '<section class="card"><h2>Add a workstream</h2><form class="gn-add" data-act="add-ws"><input name="title" placeholder="New workstream name" aria-label="New workstream name" autocomplete="off"><button class="btn" type="submit">Add workstream</button></form><p class="foot">This checklist is for ' + esc(area) + ' only.</p></section></details>';
   }
 
   function agentForm(row) {
@@ -324,7 +327,13 @@
     if (act === 'section') { setSection(button.dataset.section); return; }
     if (act === 'open-fold') {
       const fold = document.querySelector(button.dataset.target);
-      if (fold) { fold.open = true; fold.scrollIntoView({block: 'nearest'}); }
+      if (fold) {
+        const outer = fold.closest('details');
+        if (outer) outer.open = true;
+        const inner = fold.querySelector('details');
+        if (inner) inner.open = true;
+        fold.scrollIntoView({block: 'nearest'});
+      }
       return;
     }
     if (act === 'hash') { followHash(button.dataset.hash); return; }
