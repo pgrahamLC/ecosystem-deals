@@ -15,7 +15,6 @@
     "The yearly Laurito fee is added to running costs, because this model has no separate fee line.",
     "A vacant sale uses one rent path for the return and for interest cover. The desktop screen uses 9 months of rent for the sale and a further 3 month year one void only for interest cover and cash on cash.",
     "The vacant possession price is matched through the sale yield. The model also keeps its purchaser adjustment, so the yield will not stay at the 6% the screen quotes.",
-    "Hurdle 14 is a tick on this site until the lease paper is on file. The desktop screen fails the income route because the break is 2 months.",
     "Interest cover stays needs evidence until the fee tick is checked. The desktop screen passes or fails that hurdle on the cover ratio alone."
   ],
   "portfolio": {

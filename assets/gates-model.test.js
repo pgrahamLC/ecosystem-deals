@@ -54,6 +54,14 @@ assert.equal(G.lotScreen({guide_price: 100000, title: 'House'}, config).tag, 'un
 assert.equal(G.lotScreen({guide_price: 100000, title: 'Let at £2,000 pa'}, config).tag, 'out');
 assert.equal(G.lotScreen({guide_price: 100000, title: 'Let at £12,000 pa'}, config).reason.includes('not a pass'), true);
 
+// Hurdle 14: a typed break before 7 years fails on the income route, even with the tick.
+const shortBreak = G.score(Object.assign({}, metrics, {leaseBreakMonths: 2}), evidence, config);
+assert.equal(shortBreak.gates[13].status, 'fail');
+const longBreak = G.score(Object.assign({}, metrics, {leaseBreakMonths: 84}), evidence, config);
+assert.equal(longBreak.gates[13].status, 'pass');
+assert.equal(result.gates[13].status, 'pass');
+assert.equal(G.score(metrics, {}, config).gates[13].status, 'amber');
+
 const copy = JSON.stringify(result.gates.map((row) => row.name + row.thresholdText + row.calc));
 assert.equal(copy.includes(';'), false);
 assert.equal(copy.includes('\u2014'), false);
