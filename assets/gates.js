@@ -560,6 +560,12 @@
     if (!node || !config) return;
     const result = current();
     node.innerHTML = html(result);
+    const vacantRoute = !!(engaged && deal && deal.portfolio.route === 'vacant');
+    node.querySelectorAll('h3').forEach((heading) => {
+      if (heading.textContent === 'Sell vacant' && heading.parentElement) heading.parentElement.hidden = !vacantRoute;
+    });
+    const holdingVoid = node.querySelector('#deal-void-months');
+    if (holdingVoid && holdingVoid.closest('label')) holdingVoid.closest('label').hidden = vacantRoute;
     node.querySelectorAll('[data-gate]').forEach((button) => button.onclick = () => { open = Number(button.dataset.gate); paint(); });
     const back = node.querySelector('#gate-back');
     if (back) back.onclick = () => { open = null; paint(); };
