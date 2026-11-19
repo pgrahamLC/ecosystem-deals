@@ -194,10 +194,11 @@
     const running = file.costs.runningCostsPct;
     s.opexMargin = running === '' || running == null ? null : Number(running);
     const annualPct = numOr(file.costs.lauritoAnnualPct, 0);
-    if (annualPct > 0 && modelledRent > 0 && typeof UW.tax === 'function') {
+    s.annualFee = 0;
+    if (annualPct > 0 && typeof UW.tax === 'function') {
       const sdlt = UW.tax(s.price, homes, s.taxMode || 'auto');
       const allIn = s.price + sdlt + s.price * s.acqCostsPct / 100 + s.capex;
-      s.opexMargin = (Number(s.opexMargin) || 0) + (allIn * annualPct / 100) / modelledRent * 100;
+      s.annualFee = allIn * annualPct / 100;
     }
     if (route === 'vacant' && numOr(file.vacantPossession.value, 0) > 0 && s.opexMargin != null) {
       const probe = UW.compute(s);
@@ -407,7 +408,7 @@
       + '</div><div><h3>What you pay</h3>'
       + field('deal-fees', 'Purchase costs, %', engaged ? file.costs.purchaseCostsPct : state.acqCostsPct, 'Legal and agent costs, as a share of the price. Stamp duty is worked out from the price. You do not type it.', true)
       + field('deal-laurito-acq', 'Laurito fee on purchase, %', file.costs.lauritoAcquisitionPct, 'Laurito acquisition fee, as a share of the price. Added to the purchase costs.')
-      + field('deal-laurito-annual', 'Laurito fee each year, % of all-in cost', file.costs.lauritoAnnualPct, 'Charged every year on the all-in cost. It is added to running costs.')
+      + field('deal-laurito-annual', 'Laurito fee each year, % of all-in cost', file.costs.lauritoAnnualPct, 'Charged every year on the all-in cost. It comes off your income. It does not lower the price a buyer pays.')
       + field('deal-laurito-disposal', 'Laurito fee on sale, %', file.costs.lauritoDisposalPct, 'Laurito disposal fee, as a share of the sale price. Added to the sale costs.')
       + field('deal-sale-costs', 'Sale costs, %', engaged ? file.costs.saleCostsPct : state.saleCostsPct, 'Other costs of selling, as a share of the sale price.', true)
       + field('deal-capex', 'Handback or works, £', engaged ? file.costs.handbackCapex : state.capex, 'Money for handback or works. 0 means none.')
