@@ -13,12 +13,11 @@
   const MORE = [
     ['map', 'Map'],
     ['valuation', 'Local OMV / LHA'],
-    ['accom', 'Demand'],
-    ['pipeline', 'Pipeline'],
-    ['shortlist', 'Shortlist'],
-    ['overview', 'Overview'],
-    ['rentgap', 'Rents and ONS']
+    ['accom', 'Demand']
   ];
+  /* Pipeline, Shortlist, Overview and Rents and ONS are out of the menu. The views still exist.
+     To bring one back, add its pair to MORE: ['pipeline', 'Pipeline'], ['shortlist', 'Shortlist'],
+     ['overview', 'Overview'], ['rentgap', 'Rents and ONS']. */
   const COPY = {
     assets: ['Find', 'Where to look', 'Manchester, Liverpool, Cheshire, Birmingham, Cheltenham, Bristol and Edinburgh. Open an area, then a lead, then a deal.'],
     distress: ['Leads', 'Who has to sell', 'A is a live insolvency. B is a lender or receiver sale. C is a watchlist, not a forced sale.'],
