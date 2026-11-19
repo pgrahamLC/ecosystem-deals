@@ -151,7 +151,7 @@
     const mult = m.leveredMultiple;
     let g4 = 'amber';
     if ((m.leveredIrr != null && !levOk) || (post != null && !taxOk)) g4 = 'fail';
-    else if (levOk && taxOk) g4 = 'amber';
+    else if (levOk && taxOk && ev.ratified) g4 = mult == null ? 'amber' : (mult + 1e-8 >= t.multiple ? 'pass' : 'fail');
     gates.push(gate({
       n: 4, group: 'return', name: 'Levered IRR, equity multiple and post tax',
       status: g4,
@@ -180,6 +180,7 @@
     const cocOk = coc != null && coc + 1e-8 >= t.cashOnCash;
     let g6 = 'amber';
     if (m.peakEquity != null && coc != null && m.paybackYears != null && (!payOk || !cocOk || (m.cheque > 0 && !chequeOk))) g6 = 'fail';
+    else if (ev.ratified && payOk && cocOk && chequeOk) g6 = 'pass';
     gates.push(gate({
       n: 6, group: 'return', name: 'Peak equity, payback and cash on cash',
       status: g6,

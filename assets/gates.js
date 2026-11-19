@@ -6,7 +6,7 @@
   const KEY = 'ed-gates-evidence-v1';
   const CFG = 'ed-gates-config-v1';
   let config = null;
-  let evidence = {attribution: false, bridge: false, fees: false, term: false, cashOut: false};
+  let evidence = {attribution: false, bridge: false, fees: false, term: false, cashOut: false, ratified: false};
   let scenario = 'base';
   let operatorIncome = '';
   let cheque = '';
@@ -149,7 +149,7 @@
         completionMonth: s.completionMonth == null ? 0 : s.completionMonth
       },
       scenario: scenario,
-      evidence: {attribution: !!evidence.attribution, bridge: !!evidence.bridge, fees: !!evidence.fees, term: !!evidence.term, cashOut: !!evidence.cashOut}
+      evidence: {attribution: !!evidence.attribution, bridge: !!evidence.bridge, fees: !!evidence.fees, term: !!evidence.term, cashOut: !!evidence.cashOut, ratified: !!evidence.ratified}
     };
   }
   function normaliseDeal(raw) {
@@ -216,7 +216,7 @@
     operatorIncome = file.assumptions.tenantIncome == null ? '' : String(file.assumptions.tenantIncome);
     cheque = file.assumptions.cheque == null ? '' : String(file.assumptions.cheque);
     scenario = file.scenario === 'down' ? 'down' : 'base';
-    evidence = Object.assign({attribution: false, bridge: false, fees: false, term: false, cashOut: false}, file.evidence || {});
+    evidence = Object.assign({attribution: false, bridge: false, fees: false, term: false, cashOut: false, ratified: false}, file.evidence || {});
   }
   function downsideExit(state) {
     if (engaged && deal && deal.assumptions.downsideExitYieldPct !== '' && deal.assumptions.downsideExitYieldPct != null) return numOr(deal.assumptions.downsideExitYieldPct, state.exitYield);
@@ -464,7 +464,8 @@
       ['bridge', 'Every fee is deducted, including Laurito fees'],
       ['fees', 'The rent left after costs already has Laurito fees taken off', 'NOI means rent left after running costs.'],
       ['term', 'The years left on the lease, and the valuation basis, are on file'],
-      ['cashOut', 'The investment committee has approved a loan above 80% of the full cost', 'LTC means the loan as a share of the full cost.']
+      ['cashOut', 'The investment committee has approved a loan above 80% of the full cost', 'LTC means the loan as a share of the full cost.'],
+      ['ratified', 'The investment committee has signed off the equity multiple scale and the most you can invest', 'Hurdles 4 and 6 stay needs evidence until this is ticked. The numbers still have to pass.']
     ].map(([id, label, tip]) => '<label class="gn-check"' + (tip ? ' title="' + esc(tip) + '"' : '') + '><input type="checkbox" data-ev="' + id + '"' + (evidence[id] ? ' checked' : '') + '> ' + label + '</label>').join('');
     const plain = drill ? (PLAIN[drill.n] || [drill.name, drill.name]) : null;
     const worseLine = engaged && (file.assumptions.downsideExitYieldPct !== '' || file.assumptions.downsideRentCutPct !== '') ? 'The worse case uses the sale yield and the rent cut you typed. A better case does not help you pass.' : 'The worse case is a sale yield 0.5 points higher and rent 10% lower. A better case does not help you pass.';
@@ -525,7 +526,7 @@
     try { localStorage.removeItem(FILEKEY); } catch (error) { /* private mode */ }
     try { localStorage.removeItem(KEY); } catch (error) { /* private mode */ }
     try { localStorage.removeItem(CFG); } catch (error) { /* private mode */ }
-    evidence = {attribution: false, bridge: false, fees: false, term: false, cashOut: false};
+    evidence = {attribution: false, bridge: false, fees: false, term: false, cashOut: false, ratified: false};
     operatorIncome = '';
     cheque = '';
     scenario = 'base';
