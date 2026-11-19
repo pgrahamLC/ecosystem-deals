@@ -31,11 +31,12 @@
     return [...map.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6).map(([label, count]) => ({label, count}));
   }
   function bars(rows, filter) {
-    const max = Math.max(1, ...rows.map((row) => row.count));
+    const max = Math.max(1, ...rows.map((row) => row.count || 0));
     if (!rows.length) return '<p>Not yet recorded</p>';
     return rows.map((row) => {
       const mute = /not stated|not published|no guide|ungraded/i.test(row.label);
-      return '<button type="button" class="bd-bar' + (mute ? ' muted' : '') + '" data-sheet="' + esc(row.label) + '"><span>' + esc(row.label) + '</span><i><b style="width:' + Math.max(4, row.count / max * 100) + '%"></b></i><em>' + row.count + '</em></button>';
+      const known = row.count != null;
+      return '<button type="button" class="bd-bar' + (mute || !known ? ' muted' : '') + '" data-sheet="' + esc(row.label) + '"><span>' + esc(row.label) + '</span><i><b style="width:' + (known && row.count > 0 ? Math.max(4, row.count / max * 100) : 0) + '%"></b></i><em>' + (known ? row.count : 'Not yet recorded') + '</em></button>';
     }).join('');
   }
   function head(title, kpis, chartTitle, series, takes) {
@@ -60,8 +61,17 @@
     }
     if (name === 'assets') {
       const cities = [...root.querySelectorAll('.ios-city')];
-      const series = cities.map((city) => ({label: (city.querySelector('.ios-city-name') || {}).textContent || city.textContent.slice(0, 18), count: 1}));
-      return head(title, [['Areas', String(cities.length || 'Not yet recorded')], ['With a price', String(cities.filter((city) => /£/.test(city.textContent)).length)]], 'Areas', series, [
+      // The lead count is the number painted on each area card. No number there means it is not loaded yet, not zero.
+      const series = cities.map((city) => {
+        const meta = ((city.querySelector('.ios-city-meta') || {}).textContent || '').trim();
+        const found = /^(\d[\d,]*)\b/.exec(meta);
+        return {label: (city.querySelector('.ios-city-name') || {}).textContent || city.textContent.slice(0, 18), count: found ? Number(found[1].replace(/,/g, '')) : null};
+      });
+      const counted = series.filter((row) => row.count != null);
+      const total = counted.reduce((sum, row) => sum + row.count, 0);
+      const top = counted.slice().sort((a, b) => b.count - a.count)[0];
+      return head(title, [['Areas', String(cities.length || 'Not yet recorded')], ['A/B/C leads', counted.length ? String(total) : 'Not yet recorded'], ['With a price', String(cities.filter((city) => /£/.test(city.textContent)).length)]], 'A/B/C leads by area', series, [
+        counted.length ? total + ' A/B/C lead' + (total === 1 ? '' : 's') + ' across ' + counted.length + ' area' + (counted.length === 1 ? '' : 's') + (top && top.count ? '. ' + top.label + ' has the most, ' + top.count + '.' : '.') : 'Lead counts are still loading.',
         'Open an area to see who has to sell there.',
         'A price is shown only where a floor area or a 2025 sale median is on file.',
         'This is a screen, not a valuation.'
@@ -146,6 +156,7 @@
     if (next === 'entry' && root.querySelector('.bd-kpis')) return;
     mode = next;
     const screen = document.getElementById('lc_screen');
+    if (next === 'assets') watchFind(screen);
     if (screen && !SCREEN.has(next)) screen.hidden = true;
     painting = true;
     quiet = true;
@@ -167,6 +178,16 @@
       setTimeout(run, 900);
       return out;
     };
+  }
+  // Find repaints its area cards when the lead list arrives. Dress it again so the chart shows the loaded counts.
+  let findWatched = false;
+  function watchFind(screen) {
+    if (findWatched || !screen || !window.MutationObserver) return;
+    findWatched = true;
+    new MutationObserver(() => {
+      if (quiet || painting) return;
+      if (screen.querySelector(':scope > .ios-cities')) dress('assets');
+    }).observe(screen, {childList: true});
   }
   function watch(id, name, subtree) {
     const node = document.getElementById(id);
