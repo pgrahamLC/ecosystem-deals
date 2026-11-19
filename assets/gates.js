@@ -42,7 +42,9 @@
       node = document.createElement('div');
       node.id = 'gates_root';
       node.className = 'sheet-keep';
-      view.insertBefore(node, view.firstChild);
+      // Sit under the sheet head when it is already there, so the example and saved models stay at the top.
+      const sheetHead = view.querySelector(':scope > .sheet-head');
+      view.insertBefore(node, sheetHead ? sheetHead.nextSibling : view.firstChild);
     }
     return node;
   }
@@ -495,6 +497,13 @@
     if (typeof uwUpdate === 'function') uwUpdate();
     else schedulePaint();
   }
+  // Load a published example by id. Used by the Example list here and by the list at the top of the Deal sheet.
+  function loadExample(id) {
+    const chosen = EXAMPLES.find((item) => item.id === id);
+    if (!chosen) return false;
+    fetch(chosen.file + '?v=20261118-tain', {cache: 'no-store'}).then((response) => response.json()).then((data) => useParsed(data)).catch(() => { fileMessage = 'The example did not load.'; schedulePaint(); });
+    return true;
+  }
   function ingest(text) {
     try {
       const parsed = JSON.parse(text);
@@ -690,9 +699,7 @@
     bindSelect('deal-route', (file) => { file.portfolio.route = node.querySelector('#deal-route').value === 'Sell vacant' ? 'vacant' : 'income'; });
     const example = node.querySelector('#deal-example');
     if (example) example.onchange = () => {
-      const chosen = EXAMPLES.find((item) => item.id === example.value);
-      if (!chosen) { clearDeal(); return; }
-      fetch(chosen.file + '?v=20261118-tain', {cache: 'no-store'}).then((response) => response.json()).then((data) => useParsed(data)).catch(() => { fileMessage = 'The example did not load.'; schedulePaint(); });
+      if (!loadExample(example.value)) clearDeal();
     };
     node.querySelectorAll('[data-deal-scenario]').forEach((button) => button.onclick = () => {
       if (!catalogue) return;
@@ -755,5 +762,5 @@
     };
   }
   boot();
-  window.lcGates = {paint, current};
+  window.lcGates = {paint, current, loadExample, examples: () => EXAMPLES.map((item) => ({id: item.id, title: item.title})), exampleId: () => (engaged && catalogue && catalogue.id) || ''};
 })();
