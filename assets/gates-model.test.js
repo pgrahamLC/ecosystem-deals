@@ -57,6 +57,22 @@ assert.equal(G.lotScreen({guide_price: 100000, title: 'Let at £12,000 pa'}, con
 const copy = JSON.stringify(result.gates.map((row) => row.name + row.thresholdText + row.calc));
 assert.equal(copy.includes(';'), false);
 assert.equal(copy.includes('\u2014'), false);
+// Hurdles 4 and 6 wait for the investment committee. Once ratified, they pass or fail on the numbers.
+const strong = {
+  noi: 120000, annualRent: 130000, annualOpex: 10000, fees: 20000, allIn: 1000000, price: 900000, debt: 450000,
+  interestRate: 0.065, annualInterest: 29250, yieldOnCost: 0.12, profitOnCost: 0.5, unleveredIrr: 0.2, leveredIrr: 0.35,
+  postTaxIrr: 0.3, leveredMultiple: 2.5, peakEquity: 550000, cheque: 2000000, paybackYears: 2.5, holdYears: 3, cashOnCash: 0.16,
+  ltv: 0.5, ltc: 0.45, dscr: 4.1, breakEvenUnlev: 0.12, breakEvenLev: 0.11, operatorCover: 2,
+  downside: {multiple: 2, dscr: 3.5, unleveredIrr: 0.15, ltv: 0.5}
+};
+const waiting = G.score(strong, evidence, config);
+assert.equal(waiting.verdict, 'FAIL');
+assert.deepEqual(waiting.gates.filter((row) => row.status !== 'pass').map((row) => [row.n, row.status]), [[4, 'amber'], [6, 'amber']]);
+const ratified = Object.assign({}, evidence, {ratified: true});
+assert.equal(G.score(strong, ratified, config).verdict, 'PASS');
+assert.equal(G.score(Object.assign({}, strong, {leveredMultiple: 1.2}), ratified, config).gates[3].status, 'fail');
+assert.equal(G.score(Object.assign({}, strong, {cheque: null}), ratified, config).gates[5].status, 'amber');
+assert.equal(G.score(Object.assign({}, strong, {leveredIrr: 0.05}), ratified, config).gates[3].status, 'fail');
 console.log('gates model tests passed');
 console.log(G.takeaway(result));
 console.log('cleared', result.cleared, 'fails', result.fails, 'binding', result.binding.n, result.binding.name);
