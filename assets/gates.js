@@ -138,10 +138,13 @@
       debt: {
         ltvPct: s.ltv == null ? '' : s.ltv,
         debtRatePct: s.interest == null ? '' : s.interest,
+        loanFeePct: s.debtFee == null ? '' : s.debtFee,
         holdMonths: Math.round((Number(s.holdYears) || anchors.holdYears || 3) * 12)
       },
       assumptions: {
         exitYieldPct: Math.round((anchors.exitYield || 0) * 1000) / 10,
+        purchaserCostsPct: s.exitPurchaserPct == null ? '' : s.exitPurchaserPct,
+        rentGrowthPct: s.rentGrowth == null ? '' : s.rentGrowth,
         downsideExitYieldPct: '',
         downsideRentCutPct: '',
         giltPct: Math.round((anchors.gilt || 0) * 1000) / 10,
@@ -191,6 +194,9 @@
     s.saleCostsPct = numOr(file.costs.saleCostsPct, 0) + numOr(file.costs.lauritoDisposalPct, 0);
     s.acqCostsPct = numOr(file.costs.purchaseCostsPct, 0) + numOr(file.costs.lauritoAcquisitionPct, 0);
     s.exitYield = numOr(file.assumptions.exitYieldPct, s.exitYield);
+    s.exitPurchaserPct = numOr(file.assumptions.purchaserCostsPct, s.exitPurchaserPct);
+    s.rentGrowth = numOr(file.assumptions.rentGrowthPct, s.rentGrowth);
+    s.debtFee = numOr(file.debt.loanFeePct, s.debtFee);
     s.voidPct = voidMonths;
     s.leaseBreakMonths = numOr(file.incomeHold.leaseBreakMonths, 0);
     const running = file.costs.runningCostsPct;
@@ -416,12 +422,15 @@
       + '</div><div><h3>The rent and the loan</h3>'
       + field('deal-opex', 'Running costs, % of rent', engaged ? file.costs.runningCostsPct : state.opexMargin, 'Bills, management and repairs, as a share of rent. The hurdles will not run until you fill this.')
       + field('deal-void-months', 'Holding void, months', file.costs.holdingVoidMonths, 'Months with no rent while you hold. Used on the income route.')
+      + field('deal-rent-growth', 'Rent growth each year, %', file.assumptions.rentGrowthPct, 'Rent rises by this much each year. It lifts the rent a buyer pays for at sale. 0 means flat rent.', true)
       + field('deal-ltv', 'Loan share of the price, %', engaged ? file.debt.ltvPct : state.ltv, 'How much of the price is borrowed. This is sometimes called LTV.', true)
       + field('deal-interest', 'Interest on this loan, %', engaged ? file.debt.debtRatePct : state.interest, 'The yearly interest you expect to pay on this loan.', true)
+      + field('deal-loan-fee', 'Loan arrangement fee, %', file.debt.loanFeePct, 'A one off fee to the lender, as a share of the loan. 0 means none.', true)
       + field('deal-hold-months', 'Hold, months', holdMonths, 'How long you keep the homes. 15 means fifteen months. 36 is the three year starting point.', true)
       + field('deal-completion', 'Completion month', engaged ? file.assumptions.completionMonth : state.completionMonth, '0 means you complete now and rent can start at once. The full model starts at 18 months until you change this.')
       + '</div><div><h3>Exit and breaks</h3>'
       + field('gate-exit', 'Sale yield, %', engaged ? file.assumptions.exitYieldPct : anchors.exitYield * 100, 'The yield a buyer would want if you sell with the income. A higher number means a lower price.', true)
+      + field('deal-purchaser', 'Buyer costs at sale, %', file.assumptions.purchaserCostsPct, 'What a buyer pays in stamp duty and fees on top of the price. It lowers the price you receive. 0 means the sale yield is used as it stands.', true)
       + field('deal-down-exit', 'Worse case sale yield, %', file.assumptions.downsideExitYieldPct, 'Leave blank to use the standard test, which is 0.5 points higher than the sale yield.')
       + field('deal-down-rent', 'Worse case rent cut, %', file.assumptions.downsideRentCutPct, 'Leave blank to use the standard test, which cuts rent by 10%.')
       + field('deal-break', 'Lease break, months', file.incomeHold.leaseBreakMonths, 'Months until a break. Hurdle 14 needs 7 years with no break. This does not by itself tick that hurdle.')
@@ -680,6 +689,9 @@
     setDeal('deal-void-months', (value) => write((file) => { file.costs.holdingVoidMonths = value; }));
     setDeal('deal-hold-months', (value) => write((file) => { file.debt.holdMonths = value; }));
     setDeal('deal-completion', (value) => write((file) => { file.assumptions.completionMonth = value; }));
+    setDeal('deal-rent-growth', (value) => write((file) => { file.assumptions.rentGrowthPct = value; }));
+    setDeal('deal-loan-fee', (value) => write((file) => { file.debt.loanFeePct = value; }));
+    setDeal('deal-purchaser', (value) => write((file) => { file.assumptions.purchaserCostsPct = value; }));
     setDeal('deal-down-exit', (value) => write((file) => { file.assumptions.downsideExitYieldPct = value; }));
     setDeal('deal-down-rent', (value) => write((file) => { file.assumptions.downsideRentCutPct = value; }));
     setDeal('deal-break', (value) => write((file) => { file.incomeHold.leaseBreakMonths = value; }));
