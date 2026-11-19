@@ -318,3 +318,20 @@ select option:disabled{color:#8b97a3}
   #map_canvas,#dm_map{height:420px;max-width:100%}
   .pc select{width:100%;max-width:100%}
 }
+
+/* Page gutters. The summary block at the top of a sheet lines up with the Caveats bar instead of touching the screen edge. */
+[id$="_view"]>.sheet-head{padding-left:28px;padding-right:28px;box-sizing:border-box}
+#distress_view>.sheet-head,#valuation_view>.sheet-head{padding-left:4px;padding-right:4px}
+#comps_view>.card,#comps_view>.g2,#auctions_view>details.sheet-detail{margin-left:28px;margin-right:28px}
+#deal_view>#gates_root,#deal_view>details.sheet-detail{margin-left:28px;margin-right:28px}
+@media(min-width:1200px){#deal_view .deal-groups{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 28px}}
+@media(max-width:700px){
+  [id$="_view"]>.sheet-head{padding-left:16px;padding-right:16px}
+  #distress_view>.sheet-head,#valuation_view>.sheet-head{padding-left:0;padding-right:0}
+  #comps_view>.card,#comps_view>.g2,#auctions_view>details.sheet-detail{margin-left:16px;margin-right:16px}
+  #deal_view>#gates_root,#deal_view>details.sheet-detail{margin-left:16px;margin-right:16px}
+  /* Control rows wrap inside the screen on a phone. */
+  .ctl{max-width:100%;min-width:0}
+  .ctl>label,.ctl>span,.ctl>b{max-width:100%;min-width:0;white-space:normal;flex-wrap:wrap}
+  .ctl select,.ctl input:not([type=checkbox]):not([type=radio]){max-width:100%;min-width:0}
+}

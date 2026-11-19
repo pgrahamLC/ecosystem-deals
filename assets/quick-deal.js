@@ -12,19 +12,21 @@
   let config = null;
 
   const style = document.createElement('style');
-  style.textContent = '#quick_model{background:#fff;border-radius:16px;padding:18px;margin:0 0 18px;color:#021a2b}' +
-    '#quick_model h2{margin:2px 0 4px;font-size:22px}#quick_model .qm-k{margin:0;font-size:12px;color:#5b6472}#quick_model .qm-sub{margin:0 0 14px;color:#5b6472;font-size:14px}' +
-    '.qm-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.qm-grid label{display:block;font-size:13px;color:#5b6472}' +
-    '.qm-grid input,.qm-grid select{display:block;width:100%;box-sizing:border-box;margin-top:4px;min-height:44px;padding:8px 10px;border:1px solid #d5dbe3;border-radius:10px;font:inherit;color:#021a2b;background:#fff}' +
-    '.qm-h{grid-column:1/-1;margin:8px 0 -4px;font-size:13px;font-weight:600;color:#021a2b}' +
-    '.qm-tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0 0}.qm-tile{background:#f1f3f6;border-radius:12px;padding:12px;min-width:0}' +
-    '.qm-tile span{display:block;font-size:12px;color:#5b6472}.qm-tile b{display:block;font-size:22px;margin-top:2px;overflow-wrap:anywhere}.qm-tile small{display:block;font-size:12px;color:#5b6472;margin-top:2px}' +
-    '.qm-wrap{overflow-x:auto;margin-top:16px}.qm-table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}' +
-    '.qm-table th,.qm-table td{padding:7px 10px;text-align:right;border-bottom:1px solid #e9edf2;white-space:nowrap}.qm-table th:first-child,.qm-table td:first-child{text-align:left}' +
+  style.textContent = '#quick_model{background:#fff;border-radius:16px;padding:20px 22px;margin:16px auto;width:calc(100% - 56px);box-sizing:border-box;color:#021a2b;font-size:15px}' +
+    '#quick_model h2{margin:2px 0 4px;font-size:20px}#quick_model .qm-k{margin:0;font-size:12px;color:#5b6472}#quick_model .qm-sub{margin:0 0 14px;color:#5b6472;font-size:13px}' +
+    '.qm-cols{display:grid;grid-template-columns:minmax(360px,540px) minmax(0,1fr);gap:28px;align-items:start}' +
+    '.qm-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 12px}.qm-grid label{display:block;font-size:12px;line-height:1.3;color:#5b6472}' +
+    '#quick_model .qm-grid input,#quick_model .qm-grid select{display:block;width:100%;box-sizing:border-box;margin:3px 0 0;height:36px;min-height:0;padding:4px 10px;border:1px solid #d5dbe3;border-radius:8px;font:inherit;font-size:14px;color:#021a2b;background-color:#fff}' +
+    '.qm-h{grid-column:1/-1;margin:8px 0 -2px;font-size:13px;font-weight:600;color:#021a2b}' +
+    '.qm-tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0}.qm-tile{background:#f1f3f6;border-radius:10px;padding:10px 12px;min-width:0}' +
+    '.qm-tile span{display:block;font-size:12px;color:#5b6472}.qm-tile b{display:block;font-size:19px;margin-top:2px;overflow-wrap:anywhere}.qm-tile small{display:block;font-size:12px;color:#5b6472;margin-top:2px}' +
+    '.qm-wrap{overflow-x:auto;margin-top:14px}.qm-table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}' +
+    '.qm-table th,.qm-table td{padding:5px 10px;text-align:right;border-bottom:1px solid #e9edf2;white-space:nowrap}.qm-table th:first-child,.qm-table td:first-child{text-align:left}' +
     '.qm-table thead th{font-size:12px;color:#5b6472;font-weight:600}.qm-pass{color:#0a6b3d;font-weight:600}.qm-fail{color:#b3261e;font-weight:600}' +
-    '.qm-note{margin:12px 0 0;font-size:12px;color:#5b6472}.qm-need{margin:16px 0 0;padding:12px;border-radius:12px;background:#fff8e6;font-size:14px}' +
-    '.qm-bar{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}.qm-bar button{min-height:40px;border:1px solid #d5dbe3;background:#fff;border-radius:999px;padding:6px 14px;font:inherit;cursor:pointer;color:#021a2b}' +
-    '@media(max-width:900px){.qm-grid,.qm-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}';
+    '.qm-note{margin:12px 0 0;font-size:12px;color:#5b6472}.qm-need{margin:0;padding:12px;border-radius:10px;background:#fff8e6;font-size:14px}' +
+    '.qm-bar{display:flex;gap:8px;justify-content:flex-start;margin-top:12px}#quick_model .qm-bar button{min-height:0;height:34px;border:1px solid #d5dbe3;background:#fff;border-radius:999px;padding:0 14px;font:inherit;font-size:13px;cursor:pointer;color:#021a2b}' +
+    '@media(max-width:1100px){.qm-cols{grid-template-columns:minmax(0,1fr);gap:16px}.qm-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}' +
+    '@media(max-width:700px){#quick_model{width:calc(100% - 32px);padding:16px;margin:12px auto}.qm-grid,.qm-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}';
   document.head.appendChild(style);
 
   const host = document.createElement('section');
@@ -101,7 +103,7 @@
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (error) { /* private mode */ } }
   function paint() {
     host.innerHTML = '<p class="qm-k">Quick model</p><h2>Price, rent, debt and exit</h2><p class="qm-sub">Works for any income deal: LHA, a council or Home Office lease, Mack Living or an office. What you type stays in this browser.</p>' +
-      inputs() + '<div class="qm-bar"><button type="button" id="qm_clear">Clear</button></div><div id="qm_out">' + results() + '</div>';
+      '<div class="qm-cols"><div>' + inputs() + '<div class="qm-bar"><button type="button" id="qm_clear">Clear</button></div></div><div id="qm_out">' + results() + '</div></div>';
     host.querySelectorAll('[data-k]').forEach((el) => {
       const key = el.dataset.k;
       const on = () => { state[key] = el.value; save(); if (key === 'basis') paint(); else paintResults(); };
