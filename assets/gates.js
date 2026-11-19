@@ -130,6 +130,7 @@
         lauritoAcquisitionPct: '',
         lauritoAnnualPct: '',
         lauritoDisposalPct: '',
+        managementFeePct: '',
         saleCostsPct: s.saleCostsPct == null ? '' : s.saleCostsPct,
         runningCostsPct: s.opexMargin == null ? '' : s.opexMargin,
         handbackCapex: s.capex == null ? '' : s.capex,
@@ -177,7 +178,8 @@
     let rentMonths = route === 'vacant' ? numOr(file.vacantPossession.rentMonthsBeforeSale, operatingMonths) : operatingMonths;
     const voidMonths = route === 'vacant' ? numOr(file.vacantPossession.voidMonths, 0) : numOr(file.costs.holdingVoidMonths, 0);
     const paidMonths = Math.max(0, Math.min(operatingMonths, rentMonths) - Math.max(0, voidMonths));
-    const typedRent = numOr(file.portfolio.annualRent, 0);
+    const managementPct = file.portfolio.rentBasis === 'net' ? 0 : Math.min(100, Math.max(0, numOr(file.costs.managementFeePct, 0)));
+    const typedRent = numOr(file.portfolio.annualRent, 0) * (1 - managementPct / 100);
     const modelledRent = operatingMonths > 0 ? typedRent * paidMonths / operatingMonths : 0;
     s.price = numOr(file.portfolio.price, 0);
     s.rows = [{tenure: 'Rent', units: homes, beds: '3', omv: 0, annualRent: homes ? modelledRent / homes : 0}];
@@ -403,7 +405,8 @@
       + field('deal-homes', 'Number of homes', file.portfolio.homes, 'How many homes are in this purchase.')
       + field('deal-price', 'Total purchase price, £', engaged ? file.portfolio.price : state.price, 'What you pay for all the homes. 0 means you have not set a price yet.')
       + field('deal-rent', 'Total year one rent, £', rent, 'Rent for the whole portfolio in the first year. Use the rent after the management fee if you choose net below.')
-      + choice('deal-rent-basis', 'Rent basis', file.portfolio.rentBasis === 'net' ? 'Net of management' : 'Gross', ['Gross', 'Net of management'], 'Net means the rent you typed is already after the management fee.')
+      + choice('deal-rent-basis', 'Rent basis', file.portfolio.rentBasis === 'net' ? 'Net of management' : 'Gross', ['Gross', 'Net of management'], 'Gross takes the management fee below off the rent you typed. Net means the rent is already after that fee.')
+      + field('deal-mgmt-fee', 'Management fee, % of rent', file.costs.managementFeePct, 'Used only when the rent basis is Gross. Leave blank if your running costs already include management. Ignored when the basis is Net.')
       + choice('deal-lease', 'Lease route', lease, ['Mack Living', 'LHA'], 'Mack Living is a lease to Mack. LHA is demand backed by the housing allowance.')
       + choice('deal-route', 'How you exit', file.portfolio.route === 'vacant' ? 'Sell vacant' : 'Keep the income', ['Keep the income', 'Sell vacant'], 'Keep the income holds the lease. Sell vacant uses a vacant possession price.')
       + '</div><div><h3>What you pay</h3>'
@@ -689,6 +692,7 @@
     setDeal('deal-sale-month', (value) => write((file) => { file.vacantPossession.saleMonth = value; }));
     setDeal('deal-rent-months', (value) => write((file) => { file.vacantPossession.rentMonthsBeforeSale = value; }));
     setDeal('deal-vp-void', (value) => write((file) => { file.vacantPossession.voidMonths = value; }));
+    setDeal('deal-mgmt-fee', (value) => write((file) => { file.costs.managementFeePct = value; }));
     const bindSelect = (id, apply) => {
       const input = node.querySelector('#' + id);
       if (!input) return;
