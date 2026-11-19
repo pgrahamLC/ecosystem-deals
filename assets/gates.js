@@ -127,6 +127,7 @@
       vacantPossession: {value: '', saleMonth: '', rentMonthsBeforeSale: '', voidMonths: ''},
       costs: {
         purchaseCostsPct: s.acqCostsPct == null ? '' : s.acqCostsPct,
+        stampDuty: 'auto',
         lauritoAcquisitionPct: '',
         lauritoAnnualPct: '',
         lauritoDisposalPct: '',
@@ -188,6 +189,8 @@
     s.completionMonth = numOr(file.assumptions.completionMonth, 0);
     s.capex = numOr(file.costs.handbackCapex, 0);
     s.capexPerUnit = 0;
+    if (file.costs.stampDuty === 'included') s.taxMode = 'included';
+    else if (s.taxMode === 'included') s.taxMode = 'auto';
     s.saleCostsPct = numOr(file.costs.saleCostsPct, 0) + numOr(file.costs.lauritoDisposalPct, 0);
     s.acqCostsPct = numOr(file.costs.purchaseCostsPct, 0) + numOr(file.costs.lauritoAcquisitionPct, 0);
     s.exitYield = numOr(file.assumptions.exitYieldPct, s.exitYield);
@@ -408,6 +411,7 @@
       + choice('deal-route', 'How you exit', file.portfolio.route === 'vacant' ? 'Sell vacant' : 'Keep the income', ['Keep the income', 'Sell vacant'], 'Keep the income holds the lease. Sell vacant uses a vacant possession price.')
       + '</div><div><h3>What you pay</h3>'
       + field('deal-fees', 'Purchase costs, %', engaged ? file.costs.purchaseCostsPct : state.acqCostsPct, 'Legal and agent costs, as a share of the price. Stamp duty is worked out from the price. You do not type it.', true)
+      + choice('deal-stamp', 'Stamp duty', file.costs.stampDuty === 'included' ? 'Already inside purchase costs' : 'Worked out from the price', ['Worked out from the price', 'Already inside purchase costs'], 'Choose the second if the purchase costs figure above already has stamp duty in it. That stops it being counted twice.')
       + field('deal-laurito-acq', 'Laurito fee on purchase, %', file.costs.lauritoAcquisitionPct, 'Laurito acquisition fee, as a share of the price. Added to the purchase costs.')
       + field('deal-laurito-annual', 'Laurito fee each year, % of all-in cost', file.costs.lauritoAnnualPct, 'Charged every year on the all-in cost. It is added to running costs.')
       + field('deal-laurito-disposal', 'Laurito fee on sale, %', file.costs.lauritoDisposalPct, 'Laurito disposal fee, as a share of the sale price. Added to the sale costs.')
@@ -697,6 +701,7 @@
     bindSelect('deal-rent-basis', (file) => { file.portfolio.rentBasis = node.querySelector('#deal-rent-basis').value === 'Net of management' ? 'net' : 'gross'; });
     bindSelect('deal-lease', (file) => { file.portfolio.leaseRoute = node.querySelector('#deal-lease').value; });
     bindSelect('deal-route', (file) => { file.portfolio.route = node.querySelector('#deal-route').value === 'Sell vacant' ? 'vacant' : 'income'; });
+    bindSelect('deal-stamp', (file) => { file.costs.stampDuty = node.querySelector('#deal-stamp').value === 'Already inside purchase costs' ? 'included' : 'auto'; });
     const example = node.querySelector('#deal-example');
     if (example) example.onchange = () => {
       if (!loadExample(example.value)) clearDeal();
