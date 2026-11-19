@@ -54,6 +54,18 @@ assert.equal(G.lotScreen({guide_price: 100000, title: 'House'}, config).tag, 'un
 assert.equal(G.lotScreen({guide_price: 100000, title: 'Let at £2,000 pa'}, config).tag, 'out');
 assert.equal(G.lotScreen({guide_price: 100000, title: 'Let at £12,000 pa'}, config).reason.includes('not a pass'), true);
 
+// Post tax: the money put in comes back untaxed. Only income and the gain are taxed.
+const taxed = G.postTaxFlows([-100, 0, 0, 150], 0.25);
+assert.deepEqual(taxed, [-100, 0, 0, 137.5]);
+assert.equal(Math.round(G.irr(taxed) * 1000), 112);
+assert.deepEqual(G.postTaxFlows([-100, 8, 8, 108], 0.25), [-100, 6, 6, 106]);
+assert.deepEqual(G.postTaxFlows([-100, 5, 5, 60], 0.25), [-100, 3.75, 3.75, 60]);
+// A losing cash flow still solves. A blank would skip the test.
+assert.equal(Math.round(G.irr([-100, 2, 2, 30]) * 100), -31);
+assert.equal(Math.round(G.irr([-100, 0, 0, 150]) * 1000), 145);
+assert.equal(G.irr([-100, -5, -5, -1]), null);
+assert.equal(G.irr([100, 5]), null);
+
 const copy = JSON.stringify(result.gates.map((row) => row.name + row.thresholdText + row.calc));
 assert.equal(copy.includes(';'), false);
 assert.equal(copy.includes('\u2014'), false);
