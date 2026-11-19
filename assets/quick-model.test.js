@@ -105,3 +105,80 @@ test('the quick screen uses the site hurdle settings', () => {
   assert.equal(by['Unlevered IRR'].pass, out.unleveredIrr >= limits.unleveredIrr);
   assert.equal(by['Loan share of price'].pass, true);
 });
+
+// 500,000 at 6% over 25 years. The level payment and the balance are checked against the standard closed forms.
+const repay = Object.assign({}, flat, {loanType: 'amort', termYears: 25, exitMonth: '2030-01'});
+const r = 0.06 / 12;
+const pay = 500000 * r / (1 - Math.pow(1 + r, -300));
+const owed = (k) => 500000 * Math.pow(1 + r, k) - pay * (Math.pow(1 + r, k) - 1) / r;
+
+test('a repayment loan pays one level amount, with interest falling and principal rising', () => {
+  const out = Q.compute(repay);
+  near(pay, 3221.51, 0.01);
+  near(out.payment, pay, 1e-6);
+  near(out.rows[0].interest, 2500);
+  near(out.rows[0].principal, pay - 2500, 1e-6);
+  out.rows.forEach((row) => near(row.interest + row.principal, pay, 1e-6));
+  assert.ok(out.rows[35].interest < out.rows[0].interest);
+  assert.ok(out.rows[35].principal > out.rows[0].principal);
+  near(out.rows[11].balance, owed(12), 0.01);
+  near(out.loanAtExit, owed(36), 0.01);
+  near(out.loanRepaid, 500000 - owed(36), 0.01);
+});
+
+test('only the balance still owed comes out of the sale, and the yearly cash is after the full payment', () => {
+  const io = Q.compute(Object.assign({}, flat, {exitMonth: '2030-01'}));
+  const out = Q.compute(repay);
+  near(out.rows[35].sale, out.netSale - owed(36), 0.01);
+  near(out.rows[0].cash, 80000 / 12 - pay, 1e-6);
+  near(out.years[0].principal, 500000 - owed(12), 0.01);
+  near(out.years[2].balance, owed(36), 0.01);
+  // The property is the same, so the return before debt does not move.
+  near(out.unleveredIrr, io.unleveredIrr, 1e-12);
+  near(out.equity, io.equity);
+  // Total cash to equity: three years of NOI, less interest actually paid, plus the sale less the original loan.
+  const interestPaid = out.rows.reduce((sum, row) => sum + row.interest, 0);
+  near(out.multiple * out.equity, 240000 - interestPaid + out.netSale - 500000, 0.01);
+  const monthly = Math.pow(1 + out.leveredIrr, 1 / 12) - 1;
+  near(out.flows.levered.reduce((sum, flow, month) => sum + flow / Math.pow(1 + monthly, month), 0), 0, 1);
+});
+
+test('cover and cash on cash on a repayment loan count principal as well as interest', () => {
+  const out = Q.compute(repay);
+  near(out.debtCover, 80000 / (12 * pay), 1e-9);
+  near(out.cashOnCash, (80000 - 12 * pay) / 500000, 1e-9);
+  assert.ok(out.interestCover > out.debtCover);
+  near(out.exitLtv, owed(36) / out.exitValue, 1e-9);
+  near(out.breakEvenYield, out.exitNoi / (out.equity - out.rows.reduce((sum, row) => sum + row.cash, 0) + owed(36)), 1e-9);
+  const config = JSON.parse(readFileSync(new URL('../data/market-entry/gates.json', import.meta.url)));
+  const rows = Q.screen(out, globalThis.GatesModel.thresholds(config));
+  const cover = rows.find((row) => row.name === 'Debt service cover');
+  assert.ok(cover && !rows.some((row) => row.name === 'Interest cover'));
+  near(cover.value, out.debtCover);
+});
+
+test('a term shorter than the hold clears the loan and then stops paying', () => {
+  const out = Q.compute(Object.assign({}, repay, {termYears: 2}));
+  assert.equal(out.rows[23].balance, 0);
+  assert.equal(out.loanAtExit, 0);
+  near(out.rows[24].interest + out.rows[24].principal, 0);
+  near(out.rows[35].sale, out.netSale, 1e-6);
+  near(out.rows.reduce((sum, row) => sum + row.principal, 0), 500000, 0.01);
+  assert.ok(out.rows.every((row) => row.balance >= 0 && row.principal >= 0));
+});
+
+test('a repayment loan at a nil rate repays in equal parts, and interest only is unchanged', () => {
+  const nil = Q.compute(Object.assign({}, repay, {ratePct: 0, termYears: 10}));
+  near(nil.rows[0].principal, 500000 / 120, 1e-6);
+  near(nil.loanAtExit, 500000 - 36 * 500000 / 120, 0.01);
+  const io = Q.compute(Object.assign({}, flat, {loanType: 'io', termYears: 25}));
+  near(io.loanAtExit, 500000);
+  near(io.debtCover, io.interestCover);
+  assert.ok(io.rows.every((row) => row.principal === 0));
+});
+
+test('a repayment loan needs a term, and no loan needs none', () => {
+  assert.deepEqual(Q.compute(Object.assign({}, repay, {termYears: ''})).missing, ['loan term, in years']);
+  assert.equal(Q.compute(Object.assign({}, repay, {termYears: '', ltvPct: 0})).ok, true);
+});
+

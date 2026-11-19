@@ -1,4 +1,4 @@
-/* Quick model: entry price or NIY, year one rent, opex, rent growth, debt and exit. Monthly, interest-only. */
+/* Quick model: entry price or NIY, year one rent, opex, rent growth, debt and exit. Monthly. The loan is interest only or repaid over a term. */
 (function (root) {
   'use strict';
 
@@ -53,6 +53,8 @@
     const months = exit - entry;
     const exitYield = num(input.exitYieldPct) / 100;
     const saleCosts = (Number.isFinite(num(input.saleCostsPct)) ? num(input.saleCostsPct) : 0) / 100;
+    const amortising = input.loanType === 'amort' && ltv > 0;
+    const termMonths = Math.round(num(input.termYears) * 12);
 
     const missing = [];
     if (!(rent1 > 0)) missing.push('year one rent');
@@ -64,6 +66,7 @@
     else if (Number.isFinite(entry) && !(months >= 1 && months <= 480)) missing.push('an exit month after the entry month');
     if (!(exitYield > 0)) missing.push('exit yield');
     if (!(ltv >= 0 && ltv < 1)) missing.push('loan share');
+    if (amortising && !(termMonths >= 1 && termMonths <= 600)) missing.push('loan term, in years');
     if (missing.length) return {ok: false, missing};
 
     // Month 1 is the entry month. Rent steps up once a year, on each anniversary of entry.
@@ -75,7 +78,10 @@
     const niy = noi1 / allIn;
     const debt = price * ltv;
     const equity = allIn - debt;
-    const interest = debt * rate / 12;
+    // Interest only: interest on the full loan each month, and the whole loan repaid from the sale.
+    // Repaid over a term: one level monthly payment that clears the loan over the term. Whatever is still owed is repaid from the sale.
+    const monthlyRate = rate / 12;
+    const payment = !amortising ? 0 : (monthlyRate > 0 ? debt * monthlyRate / (1 - Math.pow(1 + monthlyRate, -termMonths)) : debt / termMonths);
     // Sale value rests on the twelve months of NOI after the sale.
     let exitNoi = 0;
     for (let month = months + 1; month <= months + 12; month += 1) exitNoi += noiIn(month);
@@ -85,41 +91,53 @@
     const rows = [];
     const unlevered = [-allIn];
     const levered = [-equity];
+    let balance = debt;
     for (let month = 1; month <= months; month += 1) {
       const rent = rentIn(month);
       const income = noiIn(month);
       const last = month === months;
-      rows.push({month, label: monthLabel(entry + month - 1), rent, opex: rent - income, noi: income, interest, cash: income - interest, sale: last ? netSale - debt : 0});
+      const interest = balance * monthlyRate;
+      const principal = amortising ? Math.max(0, Math.min(balance, payment - interest)) : 0;
+      balance -= principal;
+      if (balance < 1e-6) balance = 0;
+      const service = interest + principal;
+      rows.push({month, label: monthLabel(entry + month - 1), rent, opex: rent - income, noi: income, interest, principal, balance, cash: income - service, sale: last ? netSale - balance : 0});
       unlevered.push(income + (last ? netSale : 0));
-      levered.push(income - interest + (last ? netSale - debt : 0));
+      levered.push(income - service + (last ? netSale - balance : 0));
     }
+    const loanAtExit = balance;
     const years = [];
     rows.forEach((row) => {
       const index = Math.floor((row.month - 1) / 12);
-      if (!years[index]) years[index] = {year: index + 1, from: row.label, to: row.label, months: 0, rent: 0, opex: 0, noi: 0, interest: 0, cash: 0, sale: 0};
+      if (!years[index]) years[index] = {year: index + 1, from: row.label, to: row.label, months: 0, rent: 0, opex: 0, noi: 0, interest: 0, principal: 0, cash: 0, sale: 0, balance: 0};
       const year = years[index];
       year.to = row.label;
       year.months += 1;
-      ['rent', 'opex', 'noi', 'interest', 'cash', 'sale'].forEach((key) => { year[key] += row[key]; });
+      year.balance = row.balance;
+      ['rent', 'opex', 'noi', 'interest', 'principal', 'cash', 'sale'].forEach((key) => { year[key] += row[key]; });
     });
     const back = levered.slice(1).reduce((sum, flow) => sum + flow, 0);
     const income = rows.reduce((sum, row) => sum + row.cash, 0);
     const firstYear = rows.slice(0, 12);
     const span = firstYear.length / 12;
     const firstNoi = firstYear.reduce((sum, row) => sum + row.noi, 0) / span;
-    const firstInterest = interest * 12;
+    const firstInterest = firstYear.reduce((sum, row) => sum + row.interest, 0) / span;
+    const firstService = firstYear.reduce((sum, row) => sum + row.interest + row.principal, 0) / span;
     // The sale value at which equity only just comes back, and the yield that implies.
-    const neededSale = (equity - income + debt) / (1 - saleCosts);
+    const neededSale = (equity - income + loanAtExit) / (1 - saleCosts);
     return {
       ok: true, basis, price, niy, allIn, purchaseCosts: allIn - price, noi1, yieldOnCost: noi1 / allIn,
-      debt, equity, interest: firstInterest, months, holdYears: months / 12,
+      debt, equity, interest: firstInterest, debtService: firstService, months, holdYears: months / 12,
+      loanType: amortising ? 'amort' : 'io', termMonths: amortising ? termMonths : null, payment, loanAtExit, loanRepaid: debt - loanAtExit,
       entryLabel: monthLabel(entry), exitLabel: monthLabel(exit - 1), saleLabel: monthLabel(exit),
       exitNoi, exitValue, netSale, saleCosts: exitValue - netSale,
       rows, years, unleveredIrr: yearly(irr(unlevered)), leveredIrr: yearly(irr(levered)),
       multiple: equity > 0 ? back / equity : null, profit: back - equity,
-      cashOnCash: equity > 0 ? (firstNoi - firstInterest) / equity : null,
+      cashOnCash: equity > 0 ? (firstNoi - firstService) / equity : null,
       interestCover: firstInterest > 0 ? firstNoi / firstInterest : null,
-      ltv, exitLtv: exitValue > 0 ? debt / exitValue : null,
+      // Cover of everything paid to the lender in year one. Equal to interest cover on an interest only loan.
+      debtCover: firstService > 0 ? firstNoi / firstService : null,
+      ltv, exitLtv: exitValue > 0 ? loanAtExit / exitValue : null,
       breakEvenYield: neededSale > 0 ? exitNoi / neededSale : null,
       flows: {unlevered, levered}
     };
@@ -137,7 +155,7 @@
       row('Equity multiple', result.multiple, limits.multiple, atLeast(result.multiple, limits.multiple), 'times'),
       row('Year one cash on cash', result.cashOnCash, limits.cashOnCash, atLeast(result.cashOnCash, limits.cashOnCash), 'pct'),
       row('Loan share of price', result.ltv, limits.ltvMax, result.ltv <= limits.ltvMax + 1e-9, 'max'),
-      row('Interest cover', result.interestCover, limits.dscr, result.debt > 0 ? atLeast(result.interestCover, limits.dscr) : true, 'times'),
+      row(result.loanType === 'amort' ? 'Debt service cover' : 'Interest cover', result.debtCover, limits.dscr, result.debt > 0 ? atLeast(result.debtCover, limits.dscr) : true, 'times'),
       row('Break even exit yield', result.breakEvenYield, limits.breakEven, atLeast(result.breakEvenYield, limits.breakEven), 'pct')
     ];
   }
