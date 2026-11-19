@@ -44,7 +44,10 @@ test('Auctions and every inline application script parse',()=>{
 });
 test('public Auctions entry stays reachable without a main-nav tab',()=>{
   assert.ok(!index.includes('data-g="auctions"'), 'the main nav must not offer an Auctions tab');
-  for(const text of ['id="auctions_view"','<div id="app">',"window.lcAuctionsActive=active==='auctions'",'location.hash === "#auctions"','data/auctions/lots.json'])assert.ok(index.includes(text),text);
+  for(const text of ['id="auctions_view"','<div id="app">',"window.lcAuctionsActive=active==='auctions'",'data/auctions/lots.json'])assert.ok(index.includes(text),text);
+  // The page start-up must still recognise the deep link. Quote style and spacing are not part of the contract.
+  assert.match(index,/location\.hash\s*===\s*['"]#auctions['"]/,'index.html start-up checks for #auctions');
+  assert.match(source,/location\.hash\s*===\s*['"]#auctions['"]/,'auctions.js opens on #auctions');
 });
 test('all eight areas and canonical Bristol/Edinburgh aliases are recognized',()=>{
   const {api}=harness();
@@ -149,7 +152,10 @@ test('redesign hides Auctions from primary navigation and keeps the deep link',(
   assert.ok(!focus.includes("['auctions', 'Auctions']"), 'Auctions is not a primary tab');
   assert.ok(focus.includes("['distress', 'Leads']"));
   assert.ok(focus.includes("screenHost().hidden = mode === 'auctions'"));
-  assert.ok(focus.includes("viewMode(location.hash === '#auctions' || window.lcAuctionsActive ? 'auctions' : 'assets')"));
+  // The opening screen is now the Board and other hashes have tabs of their own, so only the Auctions branch is pinned here.
+  assert.match(focus,/location\.hash === '#auctions' \|\| window\.lcAuctionsActive \? 'auctions' :/,'#auctions still opens Auctions on first load');
+  assert.ok(focus.includes('viewMode(opening)'),'the opening screen is applied');
+  assert.ok(focus.includes("if (mode === 'auctions' && location.hash !== '#auctions') history.replaceState(null, '', '#auctions');"),'opening Auctions writes the deep link');
   new vm.Script(focus);
 });
 test('descriptive auctioneer lot types filter by the canonical residential subtype',()=>{
