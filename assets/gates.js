@@ -380,6 +380,47 @@
     const figures = lastFigures || {};
     return '<article class="bd-chart"><h2>Desktop screen</h2><p class="bd-src">' + esc(deal.caution || 'Example deal from a desktop screen, not Red Book, tax or legal advice.') + '</p><p>Our engine: unlevered ' + pctText(figures.unlevered) + ', levered ' + pctText(figures.levered) + ', multiple ' + timesText(figures.multiple) + '. Worse case unlevered ' + pctText(figures.downUnlevered) + ', levered ' + pctText(figures.downLevered) + ', multiple ' + timesText(figures.downMultiple) + '.</p><p>Desktop screen: unlevered ' + esc(screen.unlevered || '') + ', levered ' + esc(screen.levered || '') + ', multiple ' + esc(screen.multiple || '') + '. Worse case unlevered ' + esc(screen.downUnlevered || '') + ', levered ' + esc(screen.downLevered || '') + ', multiple ' + esc(screen.downMultiple || '') + '. ' + esc(screen.verdict || '') + '</p><div class="scroll"><table><thead><tr><th>Hurdle</th><th>This site</th><th>Desktop screen</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div><ul class="bd-take">' + (deal.notes || []).map((line) => '<li>' + esc(line) + '</li>').join('') + '</ul></article>';
   }
+  function bridgeHtml() {
+    if (typeof UW === 'undefined' || !UW.compute || !UW.state) return '';
+    const r = UW.compute(UW.state);
+    if (!r || (r.errors && r.errors.length) || !(r.allIn > 0)) return '';
+    const money = (value) => (value < 0 ? '-' + G.money(-value) : G.money(value));
+    const start = r.allIn - r.debt + r.debtFee;
+    const groups = [
+      ['What you pay', [
+        ['Purchase price', money(r.price)],
+        ['Stamp duty', money(r.sdlt)],
+        ['Purchase costs and fees', money(r.acqFees)],
+        ['Handback or works', money(r.totalCapex)],
+        ['Full cost', money(r.allIn), true]
+      ]],
+      ['How it is paid for', [
+        ['Loan', money(r.debt)],
+        ['Loan arrangement fee', money(r.debtFee)],
+        ['Your money at the start', money(start), true]
+      ]],
+      ['Year one income', [
+        ['Rent', money(r.annualRent)],
+        ['Running costs and yearly fees', money(r.annualOpex)],
+        ['Rent left after costs', money(r.noi), true],
+        ['Rent left after costs, as a share of the full cost', G.pct(r.yieldOnCost)],
+        ['Interest for the year', money(r.annualInterest)]
+      ]],
+      ['At sale', [
+        ['Sale value', money(r.exitValue)],
+        ['Costs of selling', money(r.exitValue - r.exitNet)],
+        ['Loan repaid', money(r.debt)],
+        ['Left for you at sale', money(r.exitNet - r.debt), true]
+      ]],
+      ['Over the whole hold', [
+        ['Profit before the loan', money(r.unlevered && r.unlevered.profit)],
+        ['Profit after the loan', money(r.levered && r.levered.profit), true]
+      ]]
+    ];
+    const body = groups.map(([title, rows]) => '<tr><th colspan="2" class="l">' + esc(title) + '</th></tr>'
+      + rows.map(([label, value, strong]) => '<tr><td class="l">' + (strong ? '<b>' + esc(label) + '</b>' : esc(label)) + '</td><td>' + (strong ? '<b>' + esc(value) + '</b>' : esc(value)) + '</td></tr>').join('')).join('');
+    return '<article class="bd-chart" id="deal-money"><h2>Where the money goes</h2><p class="bd-src">The figures behind the hurdles, from the inputs above. A minus sign means a loss.</p><div class="scroll"><table><tbody>' + body + '</tbody></table></div></article>';
+  }
   function viewDeal() {
     return engaged && deal ? deal : blankDeal();
   }
@@ -477,6 +518,7 @@
       + '<div class="bd-charts">' + charts + '</div>'
       + '<div class="bd-chart"><h2>Tick these when the paper is on file</h2><p class="bd-src">An unticked box keeps that hurdle as needs evidence. Needs evidence is not a pass.</p>' + ticks + '</div></section>'
       + verdictBlock
+      + bridgeHtml()
       + screenHtml(result)
       + '<article class="bd-chart"><h2>Why</h2><ul class="bd-take"><li>' + esc(G.takeaway(result)) + '</li><li>' + esc(worseLine) + '</li><li>A hurdle marked for the investment committee in December 2026 is not a pass until they sign it off.</li></ul></article>'
       + (drill ? '<section class="bd-drill"><p class="bd-kicker">Hurdle ' + drill.n + '</p><button type="button" class="btn sec" id="gate-back">Back to the hurdles</button><h2>' + esc(plain[0]) + '</h2><p class="bd-src" title="' + esc(plain[1]) + '">' + esc(plain[1]) + '</p><p>' + esc(drill.valueText) + ' against ' + esc(drill.thresholdText) + '</p><p>' + esc(drill.calc) + '</p><p class="bd-src">' + esc(drill.evidence) + '</p></section>' : '')
