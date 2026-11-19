@@ -750,7 +750,7 @@
       if (view) view.classList.add('hidden');
       if (find) find.classList.remove('hidden');
     }
-    const opening = location.hash === '#auctions' || window.lcAuctionsActive ? 'auctions' : (location.hash.indexOf('#entry') === 0 ? 'entry' : 'board');
+    const opening = location.hash === '#auctions' || window.lcAuctionsActive ? 'auctions' : (location.hash.indexOf('#entry') === 0 ? 'entry' : (location.hash === '#deal' ? 'deal' : 'board'));
     viewMode(opening);
   }, 0);
   let tries = 0;

@@ -473,7 +473,7 @@ async function fStart(){$('#f_only').oninput=fTable;$('#f_q').oninput=fTable;$('
   if(h[1]){const a=D.subareas.find(s=>s.district===h[1]&&s.city===ck);if(a){F.district=a.district;cur.area={district:a.district,city:ck};F.level=2;F.rows[1]=districtRows().find(r=>r.district===a.district);
    if(h[2]){F.sector=h[2];F.level=3;const data=await fDistrictData(F.district,F.city);F.rows[2]=sectorRows(data).find(r=>r.name===h[2])||{name:h[2]};
     if(h[3]){F.street=h[3];F.level=4;F.rows[3]=streetRows(data).find(r=>r.name===h[3])||{name:h[3]}}}}}}}
- sortK['#tfun']={k:'pri',d:-1};const reserved=!location.hash||location.hash==='#'||location.hash==='#board'||location.hash==='#auctions'||location.hash.indexOf('#entry')===0;if(!reserved)goStep(1);fRender();try{dashStart();if(!h[0]&&!reserved)viewMode('overview')}catch(e){console.log('dash',e)}}
+ sortK['#tfun']={k:'pri',d:-1};const reserved=!location.hash||location.hash==='#'||location.hash==='#board'||location.hash==='#auctions'||location.hash==='#deal'||location.hash.indexOf('#entry')===0;if(!reserved)goStep(1);fRender();try{dashStart();if(!h[0]&&!reserved)viewMode('overview')}catch(e){console.log('dash',e)}}
 
 // ===== Dashboards (14 Oct 2026): Overview (mirrors flowchart stages), level charts in the funnel, Pipeline board =====
 const STAGES=['identified','contacted','pack','offer','exchanged','dead'];
@@ -1544,7 +1544,7 @@ async function vaComps(){const el=$('#va_comps');el.innerHTML='<p>Loading transa
 })();
 
 /* MARKET_ACCURACY_END */
-init().then(async()=>{try{await sfLoad();renderBest()}catch(e){console.log(e)}if(window.lcUserNav)return;const hash=location.hash;if(!hash||hash==='#'||hash==='#board'||hash.indexOf('#entry')===0)return;try{navGo(hash==='#auctions'||window.lcAuctionsActive?'auctions':'find')}catch(e){console.log(e)}});try{navSync("assets")}catch(e){}
+init().then(async()=>{try{await sfLoad();renderBest()}catch(e){console.log(e)}if(window.lcUserNav)return;const hash=location.hash;if(!hash||hash==='#'||hash==='#board'||hash==='#deal'||hash.indexOf('#entry')===0)return;try{navGo(hash==='#auctions'||window.lcAuctionsActive?'auctions':'find')}catch(e){console.log(e)}});try{navSync("assets")}catch(e){}
 </script>
 <style id="bd-motion">.owner,.pc,.dlmb,.dm-row,.me-match,[style*="border-left"]{padding-left:12px !important}</style>
 <script src="assets/grades.js"></script>

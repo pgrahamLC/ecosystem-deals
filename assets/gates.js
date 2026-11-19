@@ -750,9 +750,17 @@
   if (typeof previousMode === 'function') {
     window.viewMode = function (mode) {
       const out = previousMode.apply(this, arguments);
-      if (mode === 'deal') setTimeout(paint, 50);
+      if (mode === 'deal') {
+        setTimeout(paint, 50);
+        if (location.hash !== '#deal') history.replaceState(null, '', '#deal');
+      } else if (location.hash === '#deal') {
+        history.replaceState(null, '', location.pathname + location.search);
+      }
       return out;
     };
+    window.addEventListener('hashchange', () => {
+      if (location.hash === '#deal') window.viewMode('deal');
+    });
   }
   boot();
   window.lcGates = {paint, current};
