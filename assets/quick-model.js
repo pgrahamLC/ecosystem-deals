@@ -32,6 +32,12 @@
     const hold = Math.round(num(input.holdYears));
     const exitYield = num(input.exitYieldPct) / 100;
     const saleCosts = (Number.isFinite(num(input.saleCostsPct)) ? num(input.saleCostsPct) : 0) / 100;
+    // The manager fee is either yearly, or charged on the way in and out, or both. Blank means no fee.
+    const feeMode = ['annual', 'entryexit', 'both'].indexOf(input.feeMode) >= 0 ? input.feeMode : 'none';
+    const part = (value) => (Number.isFinite(num(value)) && num(value) > 0 ? num(value) : 0) / 100;
+    const feeAnnual = feeMode === 'annual' || feeMode === 'both' ? part(input.feeAnnualPct) : 0;
+    const feeEntry = feeMode === 'entryexit' || feeMode === 'both' ? part(input.feeEntryPct) : 0;
+    const feeExit = feeMode === 'entryexit' || feeMode === 'both' ? part(input.feeExitPct) : 0;
 
     const missing = [];
     if (!(rent1 > 0)) missing.push('year one rent');
@@ -46,14 +52,19 @@
     const noi = (year) => rent1 * Math.pow(1 + growth, year - 1) * (1 - opex);
     const noi1 = noi(1);
     const price = basis === 'niy' ? noi1 / ((num(input.niyPct) / 100) * (1 + costs)) : num(input.price);
-    const allIn = price * (1 + costs);
-    const niy = noi1 / allIn;
+    const entryFee = price * feeEntry;
+    const allIn = price * (1 + costs) + entryFee;
+    // NIY is a property figure, so it leaves the manager fee out. Yield on cost uses the full all-in cost.
+    const niy = noi1 / (price * (1 + costs));
+    const yearFee = allIn * feeAnnual;
     const debt = price * ltv;
     const equity = allIn - debt;
     const interest = debt * rate;
     const exitNoi = noi(hold + 1);
     const exitValue = exitNoi / exitYield;
-    const netSale = exitValue * (1 - saleCosts);
+    const exitFee = exitValue * feeExit;
+    // The yearly fee comes out of cash each year. It does not lower the sale value, which rests on the property NOI.
+    const netSale = exitValue * (1 - saleCosts) - exitFee;
 
     const years = [];
     const unlevered = [-allIn];
@@ -62,21 +73,22 @@
       const rent = rent1 * Math.pow(1 + growth, year - 1);
       const income = noi(year);
       const last = year === hold;
-      years.push({year, rent, opex: rent - income, noi: income, interest, cash: income - interest});
-      unlevered.push(income + (last ? netSale : 0));
-      levered.push(income - interest + (last ? netSale - debt : 0));
+      years.push({year, rent, opex: rent - income, noi: income, fee: yearFee, interest, cash: income - yearFee - interest});
+      unlevered.push(income - yearFee + (last ? netSale : 0));
+      levered.push(income - yearFee - interest + (last ? netSale - debt : 0));
     }
     const back = levered.slice(1).reduce((sum, flow) => sum + flow, 0);
     const income = years.reduce((sum, row) => sum + row.cash, 0);
     // The exit value at which equity only just comes back, and the yield that implies.
-    const neededSale = (equity - income + debt) / (1 - saleCosts);
+    const neededSale = (equity - income + debt) / (1 - saleCosts - feeExit);
     return {
       ok: true, basis, price, niy, allIn, purchaseCosts: allIn - price, noi1, yieldOnCost: noi1 / allIn,
-      debt, equity, interest, hold, exitNoi, exitValue, netSale, saleCosts: exitValue - netSale,
+      feeMode, fees: {entry: entryFee, yearly: yearFee, exit: exitFee, total: entryFee + yearFee * hold + exitFee},
+      debt, equity, interest, hold, exitNoi, exitValue, netSale, saleCosts: exitValue * saleCosts,
       years, unleveredIrr: irr(unlevered), leveredIrr: irr(levered),
       multiple: equity > 0 ? back / equity : null, profit: back - equity,
-      cashOnCash: equity > 0 ? (noi1 - interest) / equity : null,
-      interestCover: interest > 0 ? noi1 / interest : null,
+      cashOnCash: equity > 0 ? (noi1 - yearFee - interest) / equity : null,
+      interestCover: interest > 0 ? (noi1 - yearFee) / interest : null,
       ltv, exitLtv: exitValue > 0 ? debt / exitValue : null,
       breakEvenYield: neededSale > 0 ? exitNoi / neededSale : null,
       flows: {unlevered, levered}

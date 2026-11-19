@@ -5,7 +5,8 @@
   const body = document.getElementById('deal_body');
   if (!body || !document.getElementById('deal_view') || !window.QuickModel) return;
   const KEY = 'ed_quick_model';
-  const DEFAULTS = {name: '', route: 'LHA', basis: 'price', price: '', niyPct: '', rent1: '', opexPct: '', growthPct: '', costsPct: '6.8', ltvPct: '50', ratePct: '6.5', holdYears: '5', exitYieldPct: '6', saleCostsPct: '2'};
+  const DEFAULTS = {name: '', route: 'LHA', basis: 'price', price: '', niyPct: '', rent1: '', opexPct: '', growthPct: '', costsPct: '6.8', ltvPct: '50', ratePct: '6.5', holdYears: '5', exitYieldPct: '6', saleCostsPct: '2', feeMode: 'none', feeAnnualPct: '', feeEntryPct: '', feeExitPct: ''};
+  const FEES = [['none', 'No fee'], ['annual', 'Each year'], ['entryexit', 'On entry and exit'], ['both', 'All three']];
   const ROUTES = ['LHA', 'Council lease', 'Home Office provider', 'Mack Living', 'Office', 'Other'];
   let state = Object.assign({}, DEFAULTS);
   try { state = Object.assign(state, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (error) { /* private mode */ }
@@ -67,7 +68,11 @@
       '<p class="qm-h">Exit</p>' +
       field('holdYears', 'Hold, years', 'Whole years', 'numeric') +
       field('exitYieldPct', 'Exit yield, %', 'For example 6') +
-      field('saleCostsPct', 'Sale costs, % of sale', 'Agent, legal and fees') +
+      field('saleCostsPct', 'Sale costs, % of sale', 'Agent and legal') +
+      '<p class="qm-h">Laurito fee</p>' +
+      '<label>Charged<select data-k="feeMode">' + FEES.map((pair) => '<option value="' + pair[0] + '"' + (pair[0] === state.feeMode ? ' selected' : '') + '>' + esc(pair[1]) + '</option>').join('') + '</select></label>' +
+      (state.feeMode === 'annual' || state.feeMode === 'both' ? field('feeAnnualPct', 'Each year, % of all-in cost', 'Blank means none') : '') +
+      (state.feeMode === 'entryexit' || state.feeMode === 'both' ? field('feeEntryPct', 'On entry, % of price', 'Blank means none') + field('feeExitPct', 'On exit, % of sale', 'Blank means none') : '') +
       '</div>';
   }
 
@@ -77,7 +82,7 @@
     const tile = (label, value, small) => '<div class="qm-tile"><span>' + esc(label) + '</span><b>' + esc(value) + '</b>' + (small ? '<small>' + esc(small) + '</small>' : '') + '</div>';
     const tiles = '<div class="qm-tiles">' +
       tile(out.basis === 'niy' ? 'Price this NIY implies' : 'Entry NIY', out.basis === 'niy' ? money(out.price) : pct(out.niy), out.basis === 'niy' ? 'NIY ' + pct(out.niy) + ' after costs' : 'After purchase costs') +
-      tile('All-in cost', money(out.allIn), 'Costs ' + money(out.purchaseCosts)) +
+      tile('All-in cost', money(out.allIn), 'Costs ' + money(out.purchaseCosts) + (out.fees.entry ? ', with ' + money(out.fees.entry) + ' fee' : '')) +
       tile('Year one NOI', money(out.noi1), 'Yield on cost ' + pct(out.yieldOnCost)) +
       tile('Equity in', money(out.equity), 'Loan ' + money(out.debt)) +
       tile('Unlevered IRR', pct(out.unleveredIrr)) +
@@ -85,17 +90,19 @@
       tile('Equity multiple', times(out.multiple), 'Profit ' + money(out.profit)) +
       tile('Exit value', money(out.exitValue), 'Year ' + (out.hold + 1) + ' NOI at ' + pct(window.QuickModel.num(state.exitYieldPct) / 100)) +
       '</div>';
+    const hasFee = out.fees.yearly > 0;
     const rows = out.years.map((row, index) => {
       const last = index === out.years.length - 1;
-      return '<tr><td>Year ' + row.year + '</td><td>' + money(row.rent) + '</td><td>' + money(-row.opex) + '</td><td>' + money(row.noi) + '</td><td>' + money(-row.interest) + '</td><td>' + money(row.cash) + '</td><td>' + (last ? money(out.netSale - out.debt) : '') + '</td></tr>';
+      return '<tr><td>Year ' + row.year + '</td><td>' + money(row.rent) + '</td><td>' + money(-row.opex) + '</td><td>' + money(row.noi) + '</td>' + (hasFee ? '<td>' + money(-row.fee) + '</td>' : '') + '<td>' + money(-row.interest) + '</td><td>' + money(row.cash) + '</td><td>' + (last ? money(out.netSale - out.debt) : '') + '</td></tr>';
     }).join('');
-    const table = '<div class="qm-wrap"><table class="qm-table"><thead><tr><th>Cash flow</th><th>Rent</th><th>Opex</th><th>NOI</th><th>Interest</th><th>Cash after debt</th><th>Sale after loan and costs</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+    const table = '<div class="qm-wrap"><table class="qm-table"><thead><tr><th>Cash flow</th><th>Rent</th><th>Opex</th><th>NOI</th>' + (hasFee ? '<th>Laurito fee</th>' : '') + '<th>Interest</th><th>Cash after debt</th><th>Sale after loan, costs' + (out.fees.exit ? ' and fee' : '') + '</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
     const lim = limits(out.hold);
     const checks = window.QuickModel.screen(out, lim);
     const show = (row, value) => row.kind === 'times' ? times(value) : (value == null || !Number.isFinite(value) ? 'n/a' : (value * 100).toFixed(2) + '%');
     const screen = checks.length ? '<div class="qm-wrap"><table class="qm-table"><thead><tr><th>Quick screen</th><th>This deal</th><th>Hurdle</th><th>Result</th></tr></thead><tbody>' + checks.map((row) => '<tr><td>' + esc(row.name) + '</td><td>' + show(row, row.value) + '</td><td>' + (row.kind === 'max' ? 'At most ' : 'At least ') + show(row, row.limit) + '</td><td class="' + (row.pass ? 'qm-pass' : 'qm-fail') + '">' + (row.pass == null ? 'n/a' : row.pass ? 'Pass' : 'Fail') + '</td></tr>').join('') + '</tbody></table></div>' : '';
     return tiles + table + screen +
       '<p class="qm-note">Annual model. Interest only loan. Exit value is the NOI of the year after sale divided by the exit yield. Year one cash on cash ' + pct(out.cashOnCash) + ', interest cover ' + times(out.interestCover) + ', loan at exit ' + pct(out.exitLtv) + ' of value, break even exit yield ' + pct(out.breakEvenYield) + '.' +
+      (out.fees.total > 0 ? ' Laurito fees over the hold ' + money(out.fees.total) + (out.fees.yearly ? '. The yearly fee comes out of cash and cover, and does not lower the sale value' : '') + '.' : '') +
       (checks.length ? ' The quick screen covers the numeric hurdles only. The lease, operator and evidence hurdles are in the full test below.' : '') + ' Screening research, not an investment recommendation.</p>';
   }
 
@@ -106,7 +113,7 @@
       '<div class="qm-cols"><div>' + inputs() + '<div class="qm-bar"><button type="button" id="qm_clear">Clear</button></div></div><div id="qm_out">' + results() + '</div></div>';
     host.querySelectorAll('[data-k]').forEach((el) => {
       const key = el.dataset.k;
-      const on = () => { state[key] = el.value; save(); if (key === 'basis') paint(); else paintResults(); };
+      const on = () => { state[key] = el.value; save(); if (key === 'basis' || key === 'feeMode') paint(); else paintResults(); };
       el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', on);
     });
     host.querySelector('#qm_clear').onclick = () => { state = Object.assign({}, DEFAULTS); save(); paint(); };
