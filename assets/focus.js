@@ -32,6 +32,26 @@
     overview: ['More', 'Overview', 'A count of the book, not a recommendation.']
   };
 
+  /* Deep links. Each of these hashes opens one tab, on first load and when the hash changes.
+     #board, #auctions and #entry/* are routed by their own modules. Area links such as #Manchester are left alone. */
+  const HASH_TABS = { '#deal': 'deal', '#find': 'assets', '#leads': 'distress', '#comps': 'comps' };
+  const TAB_HASH = { deal: '#deal', assets: '#find', distress: '#leads', comps: '#comps' };
+  function tabForHash(hash) {
+    return Object.prototype.hasOwnProperty.call(HASH_TABS, hash) ? HASH_TABS[hash] : '';
+  }
+  function ownedHash(hash) {
+    return !hash || hash === '#' || hash === '#board' || hash === '#auctions' || hash === '#go-no-go' || hash === '#entry' || hash.indexOf('#entry/') === 0 || !!tabForHash(hash);
+  }
+  // Keep the address in step with the open tab, so the link can be copied and a later hash change is seen.
+  function syncHash(mode) {
+    const want = TAB_HASH[mode];
+    if (want) {
+      if (location.hash !== want && ownedHash(location.hash)) history.replaceState(null, '', want);
+    } else if (tabForHash(location.hash) && mode !== 'entry' && mode !== 'board' && mode !== 'auctions') {
+      history.replaceState(null, '', location.pathname + location.search);
+    }
+  }
+
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
       return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
@@ -704,6 +724,7 @@
       if (mode === 'sales') mode = 'distress';
       const out = prev.call(this, mode);
       if (mode === 'auctions' && location.hash !== '#auctions') history.replaceState(null, '', '#auctions');
+      syncHash(mode);
       const run = function () { tidy(mode); };
       if (out && typeof out.then === 'function') return out.then(function (v) { run(); return v; });
       setTimeout(run, 0);
@@ -750,9 +771,21 @@
       if (view) view.classList.add('hidden');
       if (find) find.classList.remove('hidden');
     }
-    const opening = location.hash === '#auctions' || window.lcAuctionsActive ? 'auctions' : (location.hash.indexOf('#entry') === 0 ? 'entry' : 'board');
+    const opening = tabForHash(location.hash) || (location.hash === '#auctions' || window.lcAuctionsActive ? 'auctions' : (location.hash.indexOf('#entry') === 0 ? 'entry' : 'board'));
+    // A tab named in the address waits for the scripts after this one, so it opens with the same layout a click gives.
+    if (tabForHash(location.hash) && document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { if (tabForHash(location.hash)) viewMode(tabForHash(location.hash)); });
+      return;
+    }
     viewMode(opening);
   }, 0);
+  window.addEventListener('hashchange', function () {
+    const tab = tabForHash(location.hash);
+    if (!tab) return;
+    window.lcUserNav = true;
+    closeMore();
+    viewMode(tab);
+  });
   let tries = 0;
   const waitSites = setInterval(function () {
     tries += 1;
