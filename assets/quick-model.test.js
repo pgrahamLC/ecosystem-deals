@@ -66,3 +66,46 @@ test('the quick screen uses the site hurdle settings', () => {
   assert.equal(by['Unlevered IRR'].pass, 0.08 >= limits.unleveredIrr);
   assert.equal(by['Loan share of price'].pass, true);
 });
+
+test('no fee mode ignores any fee figures left in the boxes', () => {
+  const plain = Q.compute(flat);
+  const stale = Q.compute(Object.assign({}, flat, {feeMode: 'none', feeAnnualPct: 1, feeEntryPct: 1, feeExitPct: 0.5}));
+  near(stale.leveredIrr, plain.leveredIrr, 1e-12);
+  assert.equal(stale.fees.total, 0);
+});
+
+test('a yearly fee comes out of cash each year but leaves the sale value alone', () => {
+  const plain = Q.compute(Object.assign({}, flat, {holdYears: 3}));
+  const out = Q.compute(Object.assign({}, flat, {holdYears: 3, feeMode: 'annual', feeAnnualPct: 1, feeEntryPct: 5, feeExitPct: 5}));
+  near(out.fees.yearly, 10000);
+  near(out.exitValue, plain.exitValue);
+  near(out.netSale, plain.netSale);
+  near(out.allIn, plain.allIn);
+  near(out.years[0].cash, plain.years[0].cash - 10000);
+  near(out.interestCover, 70000 / 30000);
+  near(out.cashOnCash, 40000 / 500000);
+  near(out.fees.total, 30000);
+  assert.ok(out.leveredIrr < plain.leveredIrr);
+});
+
+test('entry and exit fees change what you pay in and what you get out, not the yearly cash', () => {
+  const plain = Q.compute(flat);
+  const out = Q.compute(Object.assign({}, flat, {feeMode: 'entryexit', feeEntryPct: 1, feeExitPct: 0.5, feeAnnualPct: 9}));
+  near(out.fees.entry, 10000);
+  near(out.allIn, 1010000);
+  near(out.equity, 510000);
+  near(out.fees.exit, 5000);
+  near(out.netSale, 995000);
+  near(out.years[0].cash, plain.years[0].cash);
+  near(out.niy, plain.niy);
+  near(out.yieldOnCost, 80000 / 1010000);
+  // 80,000 income less 30,000 interest, plus 995,000 less the 500,000 loan, on 510,000 of equity.
+  near(out.leveredIrr, 545000 / 510000 - 1);
+});
+
+test('both together charge all three', () => {
+  const out = Q.compute(Object.assign({}, flat, {feeMode: 'both', feeAnnualPct: 1, feeEntryPct: 1, feeExitPct: 0.5}));
+  near(out.fees.total, 10000 + 10100 + 5000);
+  near(out.breakEvenYield, 80000 / ((510000 - (80000 - 10100 - 30000) + 500000) / 0.995));
+});
+
