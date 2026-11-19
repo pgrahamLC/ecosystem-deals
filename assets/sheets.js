@@ -1,4 +1,5 @@
-/* Give every page the board layout. Detail stays behind Show detail. */
+/* Give every page the board layout. Sheets with their own summary fold the detail behind Show detail.
+   Map, Comps, Pipeline and the other working sheets keep their own widgets on screen. */
 (function () {
   'use strict';
   const esc = (value) => String(value == null ? '' : value).replace(/[&<>"']/g, (ch) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[ch]));
@@ -38,10 +39,18 @@
       return '<button type="button" class="bd-bar' + (mute ? ' muted' : '') + '" data-sheet="' + esc(row.label) + '"><span>' + esc(row.label) + '</span><i><b style="width:' + Math.max(4, row.count / max * 100) + '%"></b></i><em>' + row.count + '</em></button>';
     }).join('');
   }
-  function head(title, kpis, chartTitle, series, takes) {
-    return '<div class="bd-top"><div><p class="bd-kicker">' + esc(title[0]) + '</p><h1>' + esc(title[1]) + '</h1></div></div>'
+  function top(title) {
+    return '<div class="bd-top"><div><p class="bd-kicker">' + esc(title[0]) + '</p><h1>' + esc(title[1]) + '</h1></div></div>';
+  }
+  // A reading is a value drawn to scale, not a filter. It has nothing to narrow in the widget below.
+  function readings(rows) {
+    const peak = Math.max(1, ...rows.map((row) => row.count || 0));
+    return rows.map((row) => '<div class="bd-bar" style="cursor:default"><span>' + esc(row.label) + '</span><i><b style="width:' + (row.count > 0 ? Math.max(4, row.count / peak * 100) : 0) + '%"></b></i><em>' + esc(row.show == null ? row.count : row.show) + '</em></div>').join('');
+  }
+  function head(title, kpis, chartTitle, series, takes, plain) {
+    return top(title)
       + '<div class="bd-kpis">' + kpis.map((row) => '<div class="bd-tile"><span>' + esc(row[0]) + '</span><b>' + esc(row[1]) + '</b></div>').join('') + '</div>'
-      + '<div class="bd-charts"><article class="bd-chart"><h2>' + esc(chartTitle) + '</h2>' + bars(series) + '</article><article class="bd-chart"><h2>Takeaways</h2><ul class="bd-take">' + takes.map((line) => '<li>' + esc(line) + '</li>').join('') + '</ul></article></div>';
+      + '<div class="bd-charts"><article class="bd-chart"><h2>' + esc(chartTitle) + '</h2>' + (plain ? readings(series) : bars(series)) + '</article><article class="bd-chart"><h2>Takeaways</h2><ul class="bd-take">' + takes.map((line) => '<li>' + esc(line) + '</li>').join('') + '</ul></article></div>';
   }
   function spec(name, root) {
     const title = TITLES[name] || ['Sheet', 'Detail'];
@@ -95,13 +104,59 @@
         'A missing comparison is not yet recorded. It is not zero.'
       ]);
     }
-    const rows = [...root.querySelectorAll('tbody tr, .card, .opc')].slice(0, 80);
-    const series = counts(rows, (row) => (row.cells && row.cells[0] ? row.cells[0].textContent : row.textContent).trim().slice(0, 22));
-    return head(title, [['Records', String(rows.length || 'Not yet recorded')]], 'What is on this sheet', series, [
-      rows.length ? rows.length + ' records are in the detail.' : 'Detail is still loading.',
-      'Open Show detail for the full list.',
-      'A blank figure is not yet recorded.'
-    ]);
+    if (name === 'comps') return compsHead(title, root);
+    if (name === 'pipeline') return pipelineHead(title, root);
+    // Map, Local OMV / LHA, Demand, Shortlist and Overview: the widget is the picture. Title only.
+    return top(title);
+  }
+  const pounds = (value) => '£' + Math.round(value).toLocaleString('en-GB');
+  const chosen = (root, id) => {
+    const sel = root.querySelector('#' + id);
+    const option = sel && sel.options && sel.options[sel.selectedIndex];
+    return option ? option.textContent.trim() : '';
+  };
+  /* Comps: the median sold price by year, read from the widget's own by-year table for the filters in force. */
+  function compsHead(title, root) {
+    const table = [...root.querySelectorAll('table')].find((node) => {
+      const heads = [...node.querySelectorAll('th')].slice(0, 3).map((th) => th.textContent.trim().toLowerCase());
+      return heads[0] === 'year' && heads[1] === 'sales' && heads[2] === 'median';
+    });
+    if (!table) return top(title);
+    const series = [...table.querySelectorAll('tbody tr')].map((row) => {
+      const cells = [...row.cells].map((cell) => cell.textContent.trim());
+      const median = Number((cells[2] || '').replace(/[^0-9.]/g, ''));
+      const sales = Number((cells[1] || '').replace(/[^0-9]/g, ''));
+      return {label: cells[0] || '', sales: sales, count: /£\s*\d/.test(cells[2] || '') && median > 0 ? median : null};
+    }).filter((row) => /^\d{4}$/.test(row.label) && row.count != null).map((row) => Object.assign(row, {show: pounds(row.count)}));
+    if (!series.length) return top(title);
+    const place = chosen(root, 'comp_city');
+    const area = chosen(root, 'comp_area');
+    const first = series[0];
+    const last = series[series.length - 1];
+    const where = place ? place + (area && !/^whole/i.test(area) ? ', ' + area : '') : 'this selection';
+    return head(title, [['Place', where], ['Median, ' + last.label, pounds(last.count)], ['Sales, ' + last.label, last.sales.toLocaleString('en-GB')]], 'Median sold price by year', series, [
+      'The median sale in ' + where + ' was ' + pounds(last.count) + ' in ' + last.label + ', from ' + last.sales.toLocaleString('en-GB') + ' recorded sales.',
+      series.length > 1 ? 'In ' + first.label + ' it was ' + pounds(first.count) + '.' : 'Only one year is in this cut.',
+      'Change the place, cut, type or years below and this chart follows.',
+      'A year with no median on file is left out. It is not drawn as zero.'
+    ], true);
+  }
+  /* Pipeline: owners by stage, read from the column counts on the board below. */
+  function pipelineHead(title, root) {
+    const series = [...root.querySelectorAll('.board .col')].map((col) => {
+      const label = ((col.querySelector('.colh b') || {}).textContent || '').trim();
+      const tag = ((col.querySelector('.colh .tag') || {}).textContent || '').trim();
+      return {label: label, count: /^\d+$/.test(tag) ? Number(tag) : null};
+    }).filter((row) => row.label && row.count != null);
+    if (!series.length) return top(title);
+    const total = series.reduce((sum, row) => sum + row.count, 0);
+    const used = series.filter((row) => row.count > 0);
+    const fullest = used.slice().sort((a, b) => b.count - a.count)[0];
+    return head(title, [['Landlords on the board', String(total)], ['Stages in use', used.length + ' of ' + series.length]], 'Landlords by stage', series, [
+      total ? total + ' landlord' + (total === 1 ? ' is' : 's are') + ' on the board' + (fullest ? '. Most are at ' + fullest.label + ', ' + fullest.count + '.' : '.') : 'No landlord is on the board for these filters.',
+      'Set a stage on a card below and this chart follows.',
+      'The city and band filters change what is counted.'
+    ], true);
   }
   function wire(headEl, root) {
     headEl.querySelectorAll('[data-sheet]').forEach((button) => button.onclick = () => {
@@ -114,7 +169,8 @@
       items.forEach((item) => { item.style.display = !on || item.textContent.toLowerCase().includes(label.toLowerCase()) ? '' : 'none'; });
     });
   }
-  function apply(root, html) {
+  const FOLD = new Set(['auctions', 'assets', 'distress', 'deal', 'rentgap']);
+  function apply(root, html, fold) {
     if (!root || !html) return;
     let headEl = root.querySelector(':scope > .sheet-head');
     if (!headEl) {
@@ -122,17 +178,21 @@
       headEl.className = 'bd sheet-head';
       root.insertBefore(headEl, root.firstChild);
     }
-    headEl.innerHTML = html;
-    wire(headEl, root);
-    if (root.querySelector(':scope > details.sheet-detail')) return;
-    const fold = document.createElement('details');
-    fold.className = 'bd-fold sheet-detail';
+    // These sheets redraw often (a map pan, a filter). Leave the head alone when nothing changed.
+    if (headEl._html !== html) {
+      headEl._html = html;
+      headEl.innerHTML = html;
+      wire(headEl, root);
+    }
+    if (!fold || root.querySelector(':scope > details.sheet-detail')) return;
+    const detail = document.createElement('details');
+    detail.className = 'bd-fold sheet-detail';
     const summary = document.createElement('summary');
     summary.textContent = 'Show detail';
-    fold.appendChild(summary);
+    detail.appendChild(summary);
     const kids = [...root.children].filter((node) => node !== headEl && !node.classList.contains('sheet-keep'));
-    root.appendChild(fold);
-    kids.forEach((node) => fold.appendChild(node));
+    root.appendChild(detail);
+    kids.forEach((node) => detail.appendChild(node));
   }
   function ownRoot(next) {
     if (next === 'entry') return document.getElementById('me-panel');
@@ -149,7 +209,7 @@
     if (screen && !SCREEN.has(next)) screen.hidden = true;
     painting = true;
     quiet = true;
-    try { apply(root, spec(next, root)); }
+    try { apply(root, spec(next, root), FOLD.has(next)); }
     finally {
       painting = false;
       queueMicrotask(() => { quiet = false; });
