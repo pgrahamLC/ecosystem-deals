@@ -54,6 +54,9 @@ assert.equal(G.lotScreen({guide_price: 100000, title: 'House'}, config).tag, 'un
 assert.equal(G.lotScreen({guide_price: 100000, title: 'Let at £2,000 pa'}, config).tag, 'out');
 assert.equal(G.lotScreen({guide_price: 100000, title: 'Let at £12,000 pa'}, config).reason.includes('not a pass'), true);
 
+const copy = JSON.stringify(result.gates.map((row) => row.name + row.thresholdText + row.calc));
+assert.equal(copy.includes(';'), false);
+assert.equal(copy.includes('\u2014'), false);
 // Hurdles 4 and 6 wait for the investment committee. Once ratified, they pass or fail on the numbers.
 const strong = {
   noi: 120000, annualRent: 130000, annualOpex: 10000, fees: 20000, allIn: 1000000, price: 900000, debt: 450000,
@@ -70,10 +73,6 @@ assert.equal(G.score(strong, ratified, config).verdict, 'PASS');
 assert.equal(G.score(Object.assign({}, strong, {leveredMultiple: 1.2}), ratified, config).gates[3].status, 'fail');
 assert.equal(G.score(Object.assign({}, strong, {cheque: null}), ratified, config).gates[5].status, 'amber');
 assert.equal(G.score(Object.assign({}, strong, {leveredIrr: 0.05}), ratified, config).gates[3].status, 'fail');
-
-const copy = JSON.stringify(result.gates.map((row) => row.name + row.thresholdText + row.calc));
-assert.equal(copy.includes(';'), false);
-assert.equal(copy.includes('\u2014'), false);
 console.log('gates model tests passed');
 console.log(G.takeaway(result));
 console.log('cleared', result.cleared, 'fails', result.fails, 'binding', result.binding.n, result.binding.name);
