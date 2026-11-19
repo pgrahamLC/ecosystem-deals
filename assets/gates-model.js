@@ -57,33 +57,37 @@
   }
   function irr(cash) {
     if (!cash || cash.length < 2) return null;
-    let rate = 0.1;
-    for (let i = 0; i < 50; i++) {
-      let npv = 0;
-      let slope = 0;
-      for (let t = 0; t < cash.length; t++) {
-        const den = Math.pow(1 + rate, t);
-        npv += cash[t] / den;
-        if (t) slope -= t * cash[t] / Math.pow(1 + rate, t + 1);
-      }
-      if (!Number.isFinite(npv) || !slope) return null;
-      const next = rate - npv / slope;
-      if (Math.abs(next - rate) < 1e-7) return next;
-      rate = next;
+    if (!cash.some((value) => value < 0) || !cash.some((value) => value > 0)) return null;
+    const npv = (rate) => cash.reduce((sum, value, t) => sum + value / Math.pow(1 + rate, t), 0);
+    let lo = -0.99;
+    let hi = 10;
+    let atLo = npv(lo);
+    const atHi = npv(hi);
+    if (!Number.isFinite(atLo) || !Number.isFinite(atHi) || atLo * atHi > 0) return null;
+    for (let i = 0; i < 200; i++) {
+      const mid = (lo + hi) / 2;
+      const atMid = npv(mid);
+      if (!Number.isFinite(atMid)) return null;
+      if (Math.abs(atMid) < 1e-9 || hi - lo < 1e-9) return mid;
+      if (atLo * atMid <= 0) hi = mid;
+      else { lo = mid; atLo = atMid; }
     }
-    return Number.isFinite(rate) ? rate : null;
+    return (lo + hi) / 2;
+  }
+  function postTaxFlows(flows, tax) {
+    const invested = -flows.reduce((sum, row) => sum + (row < 0 ? row : 0), 0);
+    const last = flows.length - 1;
+    return flows.map((row, index) => {
+      if (!index) return row;
+      const taxable = index < last ? Math.max(0, row) : Math.max(0, row - invested);
+      return row - taxable * tax;
+    });
   }
   function postTaxIrr(metrics, config) {
     if (metrics.postTaxIrr != null) return metrics.postTaxIrr;
     const flows = metrics.annualLevered;
     if (!flows || flows.length < 2) return null;
-    const tax = config.taxRate;
-    const taxed = flows.map((row, index) => {
-      if (!index) return row;
-      const profit = row > 0 ? row : 0;
-      return row - profit * tax;
-    });
-    return irr(taxed);
+    return irr(postTaxFlows(flows, config.taxRate));
   }
   function gate(partial) {
     return Object.assign({headroom: null, unit: '', valueText: '', thresholdText: '', calc: '', evidence: ''}, partial);
@@ -158,7 +162,7 @@
       ratify: true,
       valueText: pct(m.leveredIrr) + ', ' + times(mult) + ', post tax ' + pct(post),
       thresholdText: pct(t.leveredIrr) + ' levered, ' + t.multiple.toFixed(1) + 'x multiple, post tax ' + pct(t.postTaxIrr),
-      calc: 'Post tax uses the 25% main rate on positive levered cash, stand alone. The multiple scale is IC to ratify, December 2026.',
+      calc: 'Post tax uses the 25% main rate on income each year and on the gain at sale, stand alone. The money put in comes back untaxed. The multiple scale is IC to ratify, December 2026.',
       evidence: 'IRR and post tax are set. The multiple is not cleared until IC ratifies it.',
       headroom: m.leveredIrr == null ? null : bp(m.leveredIrr - t.leveredIrr), unit: 'bp',
       ratio: minRatio(m.leveredIrr, t.leveredIrr)
@@ -362,6 +366,6 @@
   }
 
   root.GatesModel = Object.freeze({
-    thresholds, score, lotScreen, takeaway, parseRent, irr, multipleFor, GROUPS, pct, times, money, bp
+    thresholds, score, lotScreen, takeaway, parseRent, irr, postTaxFlows, multipleFor, GROUPS, pct, times, money, bp
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);
