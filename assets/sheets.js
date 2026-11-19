@@ -98,12 +98,24 @@
     if (name === 'deal') {
       let saved = [];
       try { saved = JSON.parse(localStorage.getItem('ed_uw_deals') || '[]'); } catch (error) { saved = []; }
-      const series = counts(saved, (row) => (row.state && row.state.city) || 'Not stated');
-      return head(title, [['Saved models', String(saved.length)], ['Cities', String(series.length || 'Not yet recorded')]], 'Saved deals by city', series, [
-        saved.length ? saved.length + ' underwriting models are in this browser.' : 'No underwriting model is saved yet.',
-        'Enter rent and costs yourself. A public contract is not a rent offer.',
-        'Download the workbook if you need the figures outside this browser.'
-      ]);
+      if (!Array.isArray(saved)) saved = [];
+      const examples = window.lcGates && window.lcGates.examples ? window.lcGates.examples() : [];
+      const loaded = window.lcGates && window.lcGates.exampleId ? window.lcGates.exampleId() : '';
+      // The example and the saved models open from here, so neither is hidden in a list or a fold further down.
+      const pick = (attr, id, label, note, on) => '<button type="button" class="bd-row' + (on ? ' on' : '') + '" ' + attr + '="' + esc(id) + '"><span style="max-width:none;white-space:normal">' + esc(label) + '</span><i style="background:none"></i><em>' + esc(note) + '</em></button>';
+      const shown = saved.filter((row) => row && row.state).slice(0, 8);
+      const list = examples.map((item) => pick('data-deal-example', item.id, item.title, item.id === loaded ? 'Example, loaded' : 'Example, open', item.id === loaded)).join('')
+        + shown.map((row) => pick('data-deal-saved', row.id, (row.state.name || row.state.pc || 'Unnamed deal'), 'Saved ' + (row.date || 'date not recorded') + ', open', false)).join('')
+        + (saved.length > shown.length ? '<p class="bd-src">' + (saved.length - shown.length) + ' more saved in the full underwriting model below.</p>' : '')
+        + (!examples.length && !saved.length ? '<p>Not yet recorded</p>' : '');
+      return '<div class="bd-top"><div><p class="bd-kicker">' + esc(title[0]) + '</p><h1>' + esc(title[1]) + '</h1></div></div>'
+        + '<div class="bd-kpis">' + [['Examples', String(examples.length)], ['Saved models', String(saved.length)]].map((row) => '<div class="bd-tile"><span>' + esc(row[0]) + '</span><b>' + esc(row[1]) + '</b></div>').join('') + '</div>'
+        + '<div class="bd-charts"><article class="bd-chart"><h2>Examples and saved models</h2>' + list + '</article><article class="bd-chart"><h2>Takeaways</h2><ul class="bd-take">' + [
+          saved.length ? saved.length + ' underwriting model' + (saved.length === 1 ? ' is' : 's are') + ' saved in this browser.' : 'No underwriting model is saved yet.',
+          examples.length ? 'An example is a published illustration, not advice.' : 'No example is published.',
+          'Enter rent and costs yourself. A public contract is not a rent offer.',
+          'Download the workbook if you need the figures outside this browser.'
+        ].map((line) => '<li>' + esc(line) + '</li>').join('') + '</ul></article></div>';
     }
     if (name === 'rentgap') {
       const cards = [...root.querySelectorAll('.ios-gap')];
@@ -278,5 +290,24 @@
       details.classList.remove('is-closing');
     }, 250);
   }, true);
+  // Deal sheet: open an example or a saved model from the list at the top.
+  document.addEventListener('click', (event) => {
+    const example = event.target.closest('[data-deal-example]');
+    const model = example ? null : event.target.closest('[data-deal-saved]');
+    if (!example && !model) return;
+    if (example) {
+      if (!(window.lcGates && window.lcGates.loadExample && window.lcGates.loadExample(example.dataset.dealExample))) return;
+    } else {
+      let saved = [];
+      try { saved = JSON.parse(localStorage.getItem('ed_uw_deals') || '[]'); } catch (error) { saved = []; }
+      const row = Array.isArray(saved) ? saved.find((item) => item && String(item.id) === model.dataset.dealSaved) : null;
+      if (!row || !row.state || typeof UW === 'undefined') return;
+      UW.state = JSON.parse(JSON.stringify(row.state));
+      if (typeof uwStore === 'function') uwStore();
+      if (typeof uwStart === 'function') uwStart();
+    }
+    const gates = document.getElementById('gates_root');
+    if (gates) gates.scrollIntoView({block: 'start'});
+  });
   window.lcSheets = {dress};
 })();
