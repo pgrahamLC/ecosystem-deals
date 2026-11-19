@@ -5,11 +5,26 @@
   const body = document.getElementById('deal_body');
   if (!body || !document.getElementById('deal_view') || !window.QuickModel) return;
   const KEY = 'ed_quick_model';
-  const DEFAULTS = {name: '', route: 'LHA', basis: 'price', price: '', niyPct: '', rent1: '', opexPct: '', growthPct: '', costsPct: '6.8', ltvPct: '50', ratePct: '6.5', holdYears: '5', exitYieldPct: '6', saleCostsPct: '2'};
+  const DEFAULTS = {name: '', route: 'LHA', basis: 'price', price: '', niyPct: '', rent1: '', opexPct: '', growthPct: '', costsPct: '6.8', ltvPct: '50', ratePct: '6.5', entryMonth: '', exitMonth: '', exitYieldPct: '6', saleCostsPct: '2'};
   const ROUTES = ['LHA', 'Council lease', 'Home Office provider', 'Mack Living', 'Office', 'Other'];
   let state = Object.assign({}, DEFAULTS);
   try { state = Object.assign(state, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (error) { /* private mode */ }
   let config = null;
+  const Q = window.QuickModel;
+  function thisMonth() {
+    const parts = new Intl.DateTimeFormat('en-CA', {timeZone: 'Europe/London', year: 'numeric', month: '2-digit'}).format(new Date()).split('-');
+    return parts[0] + '-' + parts[1];
+  }
+  // Fill the two dates when they are blank: entry this month, exit five years on (or the old hold in years, if one was saved).
+  function seedDates() {
+    if (!Number.isFinite(Q.monthIndex(state.entryMonth))) state.entryMonth = thisMonth();
+    if (!Number.isFinite(Q.monthIndex(state.exitMonth))) {
+      const years = Math.round(Q.num(state.holdYears));
+      state.exitMonth = Q.monthText(Q.monthIndex(state.entryMonth) + (years >= 1 && years <= 40 ? years : 5) * 12);
+    }
+    delete state.holdYears;
+  }
+  seedDates();
 
   const style = document.createElement('style');
   style.textContent = '#quick_model{background:#fff;border-radius:16px;padding:20px 22px;margin:16px auto;width:calc(100% - 56px);box-sizing:border-box;color:#021a2b;font-size:15px}' +
@@ -17,6 +32,7 @@
     '.qm-cols{display:grid;grid-template-columns:minmax(360px,540px) minmax(0,1fr);gap:28px;align-items:start}' +
     '.qm-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 12px}.qm-grid label{display:block;font-size:12px;line-height:1.3;color:#5b6472}' +
     '#quick_model .qm-grid input,#quick_model .qm-grid select{display:block;width:100%;box-sizing:border-box;margin:3px 0 0;height:36px;min-height:0;padding:4px 10px;border:1px solid #d5dbe3;border-radius:8px;font:inherit;font-size:14px;color:#021a2b;background-color:#fff}' +
+    '.qm-date{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:4px}.qm-months{margin-top:10px}.qm-months summary{cursor:pointer;font-size:13px;color:#021a2b;padding:4px 0}' +
     '.qm-h{grid-column:1/-1;margin:8px 0 -2px;font-size:13px;font-weight:600;color:#021a2b}' +
     '.qm-tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0}.qm-tile{background:#f1f3f6;border-radius:10px;padding:10px 12px;min-width:0}' +
     '.qm-tile span{display:block;font-size:12px;color:#5b6472}.qm-tile b{display:block;font-size:19px;margin-top:2px;overflow-wrap:anywhere}.qm-tile small{display:block;font-size:12px;color:#5b6472;margin-top:2px}' +
@@ -43,6 +59,17 @@
   function field(key, label, hint, mode) {
     return '<label>' + esc(label) + '<input data-k="' + key + '" inputmode="' + (mode || 'decimal') + '" value="' + esc(state[key]) + '" placeholder="' + esc(hint || '') + '" autocomplete="off"></label>';
   }
+  function dateField(key, label) {
+    const index = Q.monthIndex(state[key]);
+    const month = ((index % 12) + 12) % 12;
+    const year = Math.floor(index / 12);
+    const first = Math.min(year, Math.floor(Q.monthIndex(thisMonth()) / 12) - 2);
+    let years = '';
+    for (let y = first; y <= Math.max(year, first + 42); y += 1) years += '<option' + (y === year ? ' selected' : '') + '>' + y + '</option>';
+    return '<label>' + esc(label) + '<span class="qm-date"><select data-d="' + key + '" data-part="m" aria-label="' + esc(label) + ', month">' +
+      Q.MONTHS.map((name, i) => '<option value="' + (i + 1) + '"' + (i === month ? ' selected' : '') + '>' + name + '</option>').join('') +
+      '</select><select data-d="' + key + '" data-part="y" aria-label="' + esc(label) + ', year">' + years + '</select></span></label>';
+  }
   function limits(hold) {
     if (!config || !window.GatesModel) return null;
     try { return window.GatesModel.thresholds(Object.assign({}, config, {anchors: Object.assign({}, config.anchors, {holdYears: hold})})); } catch (error) { return null; }
@@ -64,8 +91,10 @@
       '<p class="qm-h">Debt</p>' +
       field('ltvPct', 'Loan, % of price', '0 for no debt') +
       field('ratePct', 'Interest rate, %', 'Interest only') +
+      '<p class="qm-h">Timing</p>' +
+      dateField('entryMonth', 'Entry month') +
+      dateField('exitMonth', 'Exit month') +
       '<p class="qm-h">Exit</p>' +
-      field('holdYears', 'Hold, years', 'Whole years', 'numeric') +
       field('exitYieldPct', 'Exit yield, %', 'For example 6') +
       field('saleCostsPct', 'Sale costs, % of sale', 'Agent, legal and fees') +
       '</div>';
@@ -83,19 +112,19 @@
       tile('Unlevered IRR', pct(out.unleveredIrr)) +
       tile('Levered IRR', pct(out.leveredIrr)) +
       tile('Equity multiple', times(out.multiple), 'Profit ' + money(out.profit)) +
-      tile('Exit value', money(out.exitValue), 'Year ' + (out.hold + 1) + ' NOI at ' + pct(window.QuickModel.num(state.exitYieldPct) / 100)) +
+      tile('Exit value', money(out.exitValue), 'Sold ' + out.saleLabel + ' at ' + pct(Q.num(state.exitYieldPct) / 100)) +
       '</div>';
-    const rows = out.years.map((row, index) => {
-      const last = index === out.years.length - 1;
-      return '<tr><td>Year ' + row.year + '</td><td>' + money(row.rent) + '</td><td>' + money(-row.opex) + '</td><td>' + money(row.noi) + '</td><td>' + money(-row.interest) + '</td><td>' + money(row.cash) + '</td><td>' + (last ? money(out.netSale - out.debt) : '') + '</td></tr>';
-    }).join('');
-    const table = '<div class="qm-wrap"><table class="qm-table"><thead><tr><th>Cash flow</th><th>Rent</th><th>Opex</th><th>NOI</th><th>Interest</th><th>Cash after debt</th><th>Sale after loan and costs</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
-    const lim = limits(out.hold);
+    const head = '<thead><tr><th>Cash flow</th><th>Rent</th><th>Opex</th><th>NOI</th><th>Interest</th><th>Cash after debt</th><th>Sale after loan and costs</th></tr></thead>';
+    const line = (name, row) => '<tr><td>' + esc(name) + '</td><td>' + money(row.rent) + '</td><td>' + money(-row.opex) + '</td><td>' + money(row.noi) + '</td><td>' + money(-row.interest) + '</td><td>' + money(row.cash) + '</td><td>' + (row.sale ? money(row.sale) : '') + '</td></tr>';
+    const table = '<div class="qm-wrap"><table class="qm-table">' + head + '<tbody>' +
+      out.years.map((year) => line('Year ' + year.year + ', ' + year.from + (year.from === year.to ? '' : ' to ' + year.to), year)).join('') + '</tbody></table></div>' +
+      '<details class="qm-months"><summary>Show all ' + out.months + ' months</summary><div class="qm-wrap"><table class="qm-table">' + head + '<tbody>' + out.rows.map((row) => line(row.label, row)).join('') + '</tbody></table></div></details>';
+    const lim = limits(out.holdYears);
     const checks = window.QuickModel.screen(out, lim);
     const show = (row, value) => row.kind === 'times' ? times(value) : (value == null || !Number.isFinite(value) ? 'n/a' : (value * 100).toFixed(2) + '%');
     const screen = checks.length ? '<div class="qm-wrap"><table class="qm-table"><thead><tr><th>Quick screen</th><th>This deal</th><th>Hurdle</th><th>Result</th></tr></thead><tbody>' + checks.map((row) => '<tr><td>' + esc(row.name) + '</td><td>' + show(row, row.value) + '</td><td>' + (row.kind === 'max' ? 'At most ' : 'At least ') + show(row, row.limit) + '</td><td class="' + (row.pass ? 'qm-pass' : 'qm-fail') + '">' + (row.pass == null ? 'n/a' : row.pass ? 'Pass' : 'Fail') + '</td></tr>').join('') + '</tbody></table></div>' : '';
     return tiles + table + screen +
-      '<p class="qm-note">Annual model. Interest only loan. Exit value is the NOI of the year after sale divided by the exit yield. Year one cash on cash ' + pct(out.cashOnCash) + ', interest cover ' + times(out.interestCover) + ', loan at exit ' + pct(out.exitLtv) + ' of value, break even exit yield ' + pct(out.breakEvenYield) + '.' +
+      '<p class="qm-note">Monthly model, ' + out.months + ' months: in at the start of ' + esc(out.entryLabel) + ', last rent ' + esc(out.exitLabel) + ', sold at the start of ' + esc(out.saleLabel) + '. Rent, opex and interest are a twelfth of the yearly figure each month. Rent growth steps up on each anniversary of entry. Interest only loan. Exit value is the twelve months of NOI after the sale divided by the exit yield. IRR is the monthly rate compounded to a year. Year one cash on cash ' + pct(out.cashOnCash) + ', interest cover ' + times(out.interestCover) + ', loan at exit ' + pct(out.exitLtv) + ' of value, break even exit yield ' + pct(out.breakEvenYield) + '.' +
       (checks.length ? ' The quick screen covers the numeric hurdles only. The lease, operator and evidence hurdles are in the full test below.' : '') + ' Screening research, not an investment recommendation.</p>';
   }
 
@@ -109,7 +138,17 @@
       const on = () => { state[key] = el.value; save(); if (key === 'basis') paint(); else paintResults(); };
       el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', on);
     });
-    host.querySelector('#qm_clear').onclick = () => { state = Object.assign({}, DEFAULTS); save(); paint(); };
+    host.querySelectorAll('[data-d]').forEach((el) => {
+      el.addEventListener('change', () => {
+        const key = el.dataset.d;
+        const month = host.querySelector('[data-d="' + key + '"][data-part="m"]').value;
+        const year = host.querySelector('[data-d="' + key + '"][data-part="y"]').value;
+        state[key] = year + '-' + String(month).padStart(2, '0');
+        save();
+        paintResults();
+      });
+    });
+    host.querySelector('#qm_clear').onclick = () => { state = Object.assign({}, DEFAULTS); seedDates(); save(); paint(); };
   }
 
   paint();
