@@ -286,15 +286,18 @@
       ratio: minRatio(cover, t.operatorCover)
     }));
 
+    const minTermMonths = (config.minTermYears || 7) * 12;
+    const breakMonths = m.leaseBreakMonths;
+    const shortBreak = breakMonths != null && breakMonths > 0 && breakMonths < minTermMonths;
     gates.push(gate({
       n: 14, group: 'risk', name: 'Unexpired term at exit',
-      status: ev.term ? 'pass' : 'amber',
+      status: shortBreak ? 'fail' : (ev.term ? 'pass' : 'amber'),
       qualitative: true,
-      valueText: ev.term ? 'Evidenced' : 'Needs evidence',
+      valueText: shortBreak ? 'Break at ' + breakMonths + ' months' : (ev.term ? 'Evidenced' : 'Needs evidence'),
       thresholdText: 'At least 7 years unbreakable, and never below the lower of vacant possession and short income value. A long income price needs a signed lease of 15 years or more.',
-      calc: 'Qualitative. Comparable evidence is required.',
+      calc: shortBreak ? 'The lease can be broken before 7 years on the income route. A tick does not clear this.' : 'Qualitative. Comparable evidence is required.',
       evidence: 'Tick only when the term and the valuation basis are on file.',
-      headroom: ev.term ? 1 : -1, unit: ''
+      headroom: shortBreak ? -1 : (ev.term ? 1 : -1), unit: ''
     }));
 
     const cleared = gates.filter((row) => row.status === 'pass').length;

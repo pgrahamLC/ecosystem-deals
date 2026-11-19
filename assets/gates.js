@@ -100,7 +100,8 @@
       breakEvenUnlev: breakEven(result.exitNoi, result.exitNet, result.unlevered.profit, purchaser, saleCosts, Number(s.exitCosts) || 0),
       breakEvenLev: breakEven(result.exitNoi, result.exitNet, result.levered.profit, purchaser, saleCosts, Number(s.exitCosts) || 0),
       operatorCover: operatorIncome === '' || !(result.annualRent > 0) ? null : Number(operatorIncome) / result.annualRent,
-      annualLevered: annual.length ? annual : null
+      annualLevered: annual.length ? annual : null,
+      leaseBreakMonths: engaged && deal && deal.portfolio.route !== 'vacant' ? (numOr(deal.incomeHold.leaseBreakMonths, 0) || null) : null
     };
   }
   function numOr(value, fallback) {
@@ -311,7 +312,7 @@
       11: 'lower the price, because a small rise in the sale yield wipes the profit',
       12: 'leave more room on price or rent, because the worse case fails',
       13: 'type the tenant income, which needs to be at least 1.25 times the rent',
-      14: 'tick the lease box once at least 7 years remain when you sell'
+      14: 'get a lease with at least 7 years and no break, then tick the lease box'
     };
     const n = result.binding && result.binding.n;
     const tip = tips[n] || 'fix the first hurdle that is not clear';
@@ -397,7 +398,7 @@
     const exampleOptions = '<option value="">No example</option>' + EXAMPLES.map((item) => '<option value="' + item.id + '"' + (catalogue && catalogue.id === item.id ? ' selected' : '') + '>' + esc(item.title) + '</option>').join('');
     const scenarioButtons = catalogue && catalogue.scenarios ? catalogue.scenarios.map((item) => '<button type="button" data-deal-scenario="' + esc(item.id) + '"' + (deal && deal.activeScenario === item.id ? ' class="on"' : '') + '>' + esc(item.name) + '</button>').join('') : '';
     const tools = '<div class="bd-auc"><label>Example <select id="deal-example">' + exampleOptions + '</select></label><button type="button" id="deal-load">Load a deal</button><button type="button" id="deal-save">Save this deal</button><button type="button" id="deal-clear">Clear deal</button><input id="deal-file" type="file" accept="application/json,.json" hidden></div>' + (scenarioButtons ? '<div class="bd-auc">' + scenarioButtons + '</div>' : '') + '<p class="deal-help">The file stays on this computer. Nothing is uploaded. A refresh keeps the last deal you loaded. An example is a published illustration.</p>' + (fileMessage ? '<p class="bd-src">' + esc(fileMessage) + '</p>' : '');
-    const breakNote = engaged && numOr(file.incomeHold.leaseBreakMonths, 0) > 0 ? '<p class="bd-src">Lease break is ' + esc(file.incomeHold.leaseBreakMonths) + ' months. Hurdle 14 needs at least 7 years with no break. Tick it only when the paper shows that.</p>' : '';
+    const breakNote = engaged && numOr(file.incomeHold.leaseBreakMonths, 0) > 0 ? '<p class="bd-src">Lease break is ' + esc(file.incomeHold.leaseBreakMonths) + ' months. Hurdle 14 needs at least 7 years with no break. On the income route a shorter break fails it.</p>' : '';
     const step1 = '<section class="bd-chart deal-step"><p class="bd-kicker">Step 1</p><h2>Inputs</h2><p class="bd-src">Type the portfolio here, or load a deal file. A grey Default tag is a starting figure, and you can change it.</p><div class="deal-groups">'
       + '<div><h3>The portfolio</h3>'
       + field('deal-homes', 'Number of homes', file.portfolio.homes, 'How many homes are in this purchase.')
@@ -424,7 +425,7 @@
       + field('gate-exit', 'Sale yield, %', engaged ? file.assumptions.exitYieldPct : anchors.exitYield * 100, 'The yield a buyer would want if you sell with the income. A higher number means a lower price.', true)
       + field('deal-down-exit', 'Worse case sale yield, %', file.assumptions.downsideExitYieldPct, 'Leave blank to use the standard test, which is 0.5 points higher than the sale yield.')
       + field('deal-down-rent', 'Worse case rent cut, %', file.assumptions.downsideRentCutPct, 'Leave blank to use the standard test, which cuts rent by 10%.')
-      + field('deal-break', 'Lease break, months', file.incomeHold.leaseBreakMonths, 'Months until a break. Hurdle 14 needs 7 years with no break. This does not by itself tick that hurdle.')
+      + field('deal-break', 'Lease break, months', file.incomeHold.leaseBreakMonths, 'Months until a break. Hurdle 14 needs 7 years with no break. A shorter break fails it on the income route.')
       + field('deal-landlord-notice', 'Landlord break notice, months', file.incomeHold.landlordBreakNoticeMonths, 'Notice the landlord must give. Recorded on the deal file.')
       + field('deal-operator-notice', 'Operator break notice, months', file.incomeHold.operatorBreakNoticeMonths, 'Notice the operator must give. Recorded on the deal file.')
       + '</div><div><h3>Sell vacant</h3>'
