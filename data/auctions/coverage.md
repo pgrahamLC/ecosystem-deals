@@ -1,8 +1,8 @@
 # Auction collection
 
-Checked: 2026-11-20T20:27:49.384Z
+Checked: 2026-11-21T07:17:27.483Z
 
-Fresh: 837; stale: 281; commercial lots are kept and tagged, not dropped.
+Fresh: 837; stale: 283; commercial lots are kept and tagged, not dropped.
 
 ## Town counts (fresh, deduplicated)
 - Manchester: 269
@@ -41,7 +41,7 @@ Fresh: 837; stale: 281; commercial lots are kept and tagged, not dropped.
 - **Bruton Knowles**: live; 27 lots (Cheltenham 23, Birmingham 3, Bristol 1); tags Auction 27. Public catalogue pages read. Commercial lots are included and tagged. 
 - **Moore Allen Innocent**: failed; 0 lots (none); tags none. HTTP 403: https://www.mooreallen.co.uk/property-auctions; Login or captcha at https://www.mooreallen.co.uk/property-auctions (page 1)
 - **Hollis Morgan**: live; 9 lots (Bristol 9); tags Auction 9. Public catalogue pages read. Commercial lots are included and tagged. Spot-check found "BS11 0AW" on https://www.hollismorgan.co.uk/property-details/35039752/bristol-city/bristol/lower-high-street-1?bid=11&showstc=on&orderby=lot_no+asc&extra_2%21=501%2C502
-- **Maggs And Allen**: live; 0 lots (none); tags none. Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them. fetch failed
+- **Maggs And Allen**: live; 0 lots (none); tags none. Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them.
 - **Bristol Property Auctions Identity Unresolved**: failed; 0 lots (none); tags none. No distinct official domain established from searches; no invented URL or block bypass.
 - **Online Property Auction Group / OPA Scotland**: live; 14 lots (Glasgow 12, Edinburgh 1, Manchester 1); tags Auction 14. Public catalogue pages read. Commercial lots are included and tagged. Spot-check did not find "G2 3DH" on https://www.opagroup.co.uk/lot/details/0135dc64-42c0-4bd6-9d6d-4b77aaee22d4
 - **Scotland Property Auction**: live; 0 lots (none); tags none. Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them.
