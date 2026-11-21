@@ -1,8 +1,8 @@
 # Auction collection
 
-Checked: 2026-11-21T07:17:27.483Z
+Checked: 2026-11-21T19:23:07.079Z
 
-Fresh: 837; stale: 283; commercial lots are kept and tagged, not dropped.
+Fresh: 829; stale: 291; commercial lots are kept and tagged, not dropped.
 
 ## Town counts (fresh, deduplicated)
 - Manchester: 269
@@ -12,7 +12,7 @@ Fresh: 837; stale: 283; commercial lots are kept and tagged, not dropped.
 - Cheltenham: 41
 - Liverpool: 193
 - Cheshire: 84
-- Birmingham: 83
+- Birmingham: 75
 
 ## Source coverage
 - **Auction House Manchester**: live; 56 lots (Cheshire 1, Manchester 55); tags Auction 56. Public catalogue pages read. Commercial lots are included and tagged. 
@@ -28,7 +28,7 @@ Fresh: 837; stale: 283; commercial lots are kept and tagged, not dropped.
 - **Clive Emson**: live; 1 lots (Cheltenham 1); tags Auction 1. Public catalogue pages read. Commercial lots are included and tagged. Spot-check found "GL51 9QN" on https://www.cliveemson.co.uk/properties/268/88/
 - **Pugh**: live; 126 lots (Manchester 83, Cheshire 17, Glasgow 1, Liverpool 23, Cheltenham 2); tags Auction 126. Public catalogue pages read. Commercial lots are included and tagged. Spot-check found "WN3 4TJ" on https://www.pugh-auctions.com/property/202601231232sq_gm55
 - **SDL**: failed; 0 lots (none); tags none. HTTP 403: https://www.sdlauctions.co.uk/property-auctions/past-auctions/; Login or captcha at https://www.sdlauctions.co.uk/property-auctions/past-auctions/ (page 1)
-- **Bond Wolfe**: live; 8 lots (Birmingham 8); tags Auction 8. Public catalogue pages read. Commercial lots are included and tagged. Spot-check did not find "Land Adjacent, 75 Norman Str" on https://www.bondwolfe.com/auctions/properties/ Login or bot challenge refused
+- **Bond Wolfe**: live; 0 lots (none); tags none. Public catalogue pages read. Commercial lots are included and tagged. Login or bot challenge refused
 - **Barnard Marcus**: live; 0 lots (none); tags none. Public catalogue pages read. Commercial lots are included and tagged. Barnard Marcus page had no SearchApi endpoint. Public pages were read. No in-area lot with a street address or full postcode was on them. Login or captcha at https://www.barnardmarcusauctions.co.uk/auctions/upcoming/ (page 1); Login or captcha at https://www.barnardmarcusauctions.co.uk/auctions/upcoming/ (search Manchester); Login or captcha at https://www.barnardmarcusauctions.co.uk/auctions/upcoming/ (search Glasgow); Login or captcha at https://www.barnardmarcusauctions.co.uk/auctions/upcoming/ (search Edinburgh); Login or captcha at https://www.barnardmarcusauctions.co.uk/auctions/upcoming/ (search Bristol); Login or captcha at https://www.barnardmarcusauctions.co.uk/auctions/upcoming/ (search Cheltenham); Login or captcha at https://www.barnardmarcusauctions.co.uk/auctions/upcoming/ (search Gloucester); Login or captcha at https://www.barnardmarcusauctions.co.uk/auctions/upcoming/ (search Liverpool); Login or captcha at https://www.barnardmarcusauctions.co.uk/auctions/upcoming/ (search Cheshire); Login or captcha at https://www.barnardmarcusauctions.co.uk/auctions/upcoming/ (search Chester); Login or captcha at https://www.barnardmarcusauctions.co.uk/auctions/upcoming/ (search Birmingham); Login or captcha at https://www.barnardmarcusauctions.co.uk/auctions/upcoming/ (search Wirral)
 - **Mark Jenkinson**: live; 5 lots (Liverpool 2, Manchester 3); tags Auction 5. Public catalogue pages read. Commercial lots are included and tagged. 
 - **Strettons**: live; 0 lots (none); tags none. Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them. Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (page 1); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Manchester); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Glasgow); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Edinburgh); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Bristol); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Cheltenham); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Gloucester); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Liverpool); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Cheshire); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Chester); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Birmingham); Login or captcha at https://www.strettons.co.uk/auctions/current-catalogue/ (search Wirral)
