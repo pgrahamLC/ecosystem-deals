@@ -1,26 +1,26 @@
 # Auction collection
 
-Checked: 2026-11-22T19:46:46.957Z
+Checked: 2026-11-23T07:47:29.903Z
 
-Fresh: 837; stale: 283; commercial lots are kept and tagged, not dropped.
+Fresh: 823; stale: 297; commercial lots are kept and tagged, not dropped.
 
 ## Town counts (fresh, deduplicated)
-- Manchester: 269
+- Manchester: 267
 - Glasgow: 102
 - Edinburgh: 23
-- Bristol: 42
+- Bristol: 41
 - Cheltenham: 41
-- Liverpool: 193
-- Cheshire: 84
-- Birmingham: 83
+- Liverpool: 187
+- Cheshire: 81
+- Birmingham: 81
 
 ## Source coverage
-- **Auction House Manchester**: live; 56 lots (Cheshire 1, Manchester 55); tags Auction 56. Public catalogue pages read. Commercial lots are included and tagged. 
-- **Auction House South West (Bristol and Gloucestershire)**: live; 40 lots (Cheltenham 12, Bristol 27, Birmingham 1); tags Auction 40. Public catalogue pages read. Commercial lots are included and tagged. Detail date differs from historical result https://online.auctionhouse.co.uk/lot/redirect/367468; result event date/amount retained.
+- **Auction House Manchester**: live; 55 lots (Cheshire 1, Manchester 54); tags Auction 55. Public catalogue pages read. Commercial lots are included and tagged. 
+- **Auction House South West (Bristol and Gloucestershire)**: live; 39 lots (Cheltenham 12, Bristol 26, Birmingham 1); tags Auction 39. Public catalogue pages read. Commercial lots are included and tagged. Detail date differs from historical result https://online.auctionhouse.co.uk/lot/redirect/367468; result event date/amount retained.
 - **Auction House Scotland**: live; 26 lots (Edinburgh 8, Glasgow 18); tags Auction 26. Public catalogue pages read. Commercial lots are included and tagged. 
-- **Auction House North West**: live; 226 lots (Manchester 111, Cheshire 16, Liverpool 90, Birmingham 5, Bristol 3, Cheltenham 1); tags Receiver 1, Auction 225. Public catalogue pages read. Commercial lots are included and tagged. PARTIAL: max_details=200 reached; 35 residential/unknown candidates not detail-verified.
-- **Auction House Cheshire, Staffordshire and Shropshire**: live; 71 lots (Cheshire 42, Liverpool 24, Manchester 5); tags Auction 71. Public catalogue pages read. Commercial lots are included and tagged. Detail failed https://online.auctionhouse.co.uk/lot/redirect/336246: HTTP 404: https://online.auctionhouse.co.uk/lot/details/efc2b6a5-e7e4-4113-a69a-5d59fd9a1e6e; Detail failed https://online.auctionhouse.co.uk/lot/redirect/335984: HTTP 404: https://online.auctionhouse.co.uk/lot/details/c0dd8c9a-6132-4233-bc25-a725899cd74f; Detail failed https://online.auctionhouse.co.uk/lot/redirect/335370: HTTP 404: https://online.auctionhouse.co.uk/lot/details/ac536e87-aaa8-4795-b64f-672d76c1bc74; Detail failed https://online.auctionhouse.co.uk/lot/redirect/313399: HTTP 404: https://online.auctionhouse.co.uk/lot/details/862e1cae-4853-41c2-b70f-4b3ea17e4b89; Detail failed https://online.auctionhouse.co.uk/lot/redirect/296991: HTTP 404: https://online.auctionhouse.co.uk/lot/details/188c7f61-f3bc-435e-9eb8-2653a7986d21; Detail failed https://online.auctionhouse.co.uk/lot/redirect/297899: HTTP 404: https://online.auctionhouse.co.uk/lot/details/9fa49f01-5f39-4227-8c69-377b391e37a7; Detail failed https://online.auctionhouse.co.uk/lot/redirect/295594: HTTP 404: https://online.auctionhouse.co.uk/lot/details/22269e3e-d032-41d7-a294-1467b5bc07cd; Detail failed https://online.auctionhouse.co.uk/lot/redirect/285504: HTTP 404: https://online.auctionhouse.co.uk/lot/details/b694fe02-1053-4d12-8d66-50a58b109421; Detail failed https://online.auctionhouse.co.uk/lot/redirect/283013: HTTP 404: https://online.auctionhouse.co.uk/lot/details/cb0f2e6e-9470-4719-a6ef-5bd0bfa6f9fb; Detail failed https://online.auctionhouse.co.uk/lot/redirect/281639: HTTP 404: https://online.auctionhouse.co.uk/lot/details/74197b3c-936c-44b2-82fc-3ef0de1eddd4
-- **Auction House Birmingham and Black Country**: live; 66 lots (Birmingham 66); tags Auction 66. Public catalogue pages read. Commercial lots are included and tagged. Detail failed https://online.auctionhouse.co.uk/lot/redirect/95573: HTTP 404: https://online.auctionhouse.co.uk/lot/details/2c905ce6-0716-401d-9671-4ab6701178bc
+- **Auction House North West**: live; 222 lots (Manchester 111, Cheshire 16, Liverpool 86, Birmingham 5, Bristol 3, Cheltenham 1); tags Receiver 1, Auction 221. Public catalogue pages read. Commercial lots are included and tagged. PARTIAL: max_details=200 reached; 35 residential/unknown candidates not detail-verified.
+- **Auction House Cheshire, Staffordshire and Shropshire**: live; 65 lots (Cheshire 39, Liverpool 22, Manchester 4); tags Auction 65. Public catalogue pages read. Commercial lots are included and tagged. Detail failed https://online.auctionhouse.co.uk/lot/redirect/336246: HTTP 404: https://online.auctionhouse.co.uk/lot/details/efc2b6a5-e7e4-4113-a69a-5d59fd9a1e6e; Detail failed https://online.auctionhouse.co.uk/lot/redirect/335984: HTTP 404: https://online.auctionhouse.co.uk/lot/details/c0dd8c9a-6132-4233-bc25-a725899cd74f; Detail failed https://online.auctionhouse.co.uk/lot/redirect/335370: HTTP 404: https://online.auctionhouse.co.uk/lot/details/ac536e87-aaa8-4795-b64f-672d76c1bc74; Detail failed https://online.auctionhouse.co.uk/lot/redirect/313399: HTTP 404: https://online.auctionhouse.co.uk/lot/details/862e1cae-4853-41c2-b70f-4b3ea17e4b89; Detail failed https://online.auctionhouse.co.uk/lot/redirect/296991: HTTP 404: https://online.auctionhouse.co.uk/lot/details/188c7f61-f3bc-435e-9eb8-2653a7986d21; Detail failed https://online.auctionhouse.co.uk/lot/redirect/297899: HTTP 404: https://online.auctionhouse.co.uk/lot/details/9fa49f01-5f39-4227-8c69-377b391e37a7; Detail failed https://online.auctionhouse.co.uk/lot/redirect/295594: HTTP 404: https://online.auctionhouse.co.uk/lot/details/22269e3e-d032-41d7-a294-1467b5bc07cd; Detail failed https://online.auctionhouse.co.uk/lot/redirect/285504: HTTP 404: https://online.auctionhouse.co.uk/lot/details/b694fe02-1053-4d12-8d66-50a58b109421; Detail failed https://online.auctionhouse.co.uk/lot/redirect/283013: HTTP 404: https://online.auctionhouse.co.uk/lot/details/cb0f2e6e-9470-4719-a6ef-5bd0bfa6f9fb; Detail failed https://online.auctionhouse.co.uk/lot/redirect/281639: HTTP 404: https://online.auctionhouse.co.uk/lot/details/74197b3c-936c-44b2-82fc-3ef0de1eddd4
+- **Auction House Birmingham and Black Country**: live; 64 lots (Birmingham 64); tags Auction 64. Public catalogue pages read. Commercial lots are included and tagged. Detail failed https://online.auctionhouse.co.uk/lot/redirect/95573: HTTP 404: https://online.auctionhouse.co.uk/lot/details/2c905ce6-0716-401d-9671-4ab6701178bc
 - **Future Property Auctions**: live; 87 lots (Glasgow 66, Manchester 6, Edinburgh 13, Bristol 2); tags Auction 87. Public catalogue pages read. Commercial lots are included and tagged. https://www.futurepropertyauctions.co.uk/auctions.asp: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.; https://www.futurepropertyauctions.co.uk/catalogue_viewall_auction_map.asp?id=10707&: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.; Catalogue page limit reached; collection incomplete.
 - **Braveheart Auctions (Edinburgh and Glasgow)**: live; 0 lots (none); tags none. Public catalogue pages read. Commercial lots are included and tagged. Spot-check found "95 Monteith Row, Glasgow" on https://braveheartauctions.co.uk/product/95-monteith-row-glasgow-city-of-glasgow/
 - **Allsop**: skipped; 0 lots (none); tags none. Removed on 17 Nov 2026. Allsop catalogues are old and are not collected. Do not turn this source back on.
