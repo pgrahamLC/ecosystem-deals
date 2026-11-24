@@ -24,7 +24,7 @@ Each part is out of a fixed maximum. A part with no evidence is **not recorded**
 | Distress | 15 | 15 insolvency wording, 12 receiver or mortgagee wording, 8 watchlist title, 5 live auction with no distress wording. |
 | Gates | 15 | `cleared / 14 × 15` after the monthly model runs. Until rent and operating costs are both present this part is not recorded. Qualitative gates stay on “needs evidence”. A full pass is all 14. |
 
-The default shortlist keeps town-level matches (location 30) and live lots. Region-only and watchlist rows are still calculated; the filters show them. The eight highest supplies are kept for each framework so one wide framework cannot fill the page.
+The default shortlist keeps town-level matches (location 30) and live lots. Region-only and watchlist rows are still calculated; the filters show them. Twenty live lots and eight watchlist titles are kept for each framework, so one wide framework cannot fill the page. The shortlist can export the rows on screen as CSV.
 
 Purchase costs 6.8%, a 50% loan, a 6.5% rate and a 6% exit yield are the deal sheet’s starting figures. They are labelled as such. Operating costs are left blank.
 

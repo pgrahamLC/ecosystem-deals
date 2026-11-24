@@ -42,6 +42,7 @@
     channel: 'auction',
     town: '',
     q: '',
+    rentBook: null,
     sort: {k: 'points', d: -1},
     view: 'shortlist',
     openId: '',
@@ -138,6 +139,9 @@
     if (key === 'form') return match.supply.form || '';
     if (key === 'beds') return match.supply.beds;
     if (key === 'guide') return match.supply.guide;
+    if (key === 'bed') return facts(match).perBed;
+    if (key === 'gap') return facts(match).gap;
+    if (key === 'yield') return facts(match).lhaYield;
     if (key === 'distress') return {A: 3, B: 2, C: 1}[match.supply.band] || 0;
     if (key === 'gates') return part(match, 'gates').points;
     return null;
@@ -193,6 +197,62 @@
     if (!row) return M.NOT;
     return row.stat.mean + '% mean NIY, n=' + row.stat.n + ', ' + city + ' ' + asset;
   }
+  const NEXT = {
+    shortlist: ['demand', 'Demand'],
+    demand: ['requirement', 'Requirement'],
+    requirement: ['supply', 'Supply'],
+    supply: ['evidence', 'Evidence'],
+    evidence: ['underwrite', 'Underwrite']
+  };
+  function pct1(rate) {
+    if (rate == null || !isFinite(rate)) return M.NOT;
+    return (rate * 100).toFixed(1) + '%';
+  }
+  function facts(match) {
+    const supply = match.supply;
+    const rent = rentRow(supply);
+    const pps = M.ppsLine(state.pps, supply);
+    const perBed = supply.guide > 0 && supply.beds ? supply.guide / supply.beds : null;
+    const lha = rent && rent.row ? rent.row.lha : null;
+    const omr = rent && rent.row ? rent.row.omr : null;
+    const gap = rent && rent.row ? rent.row.gap : null;
+    const lhaYield = lha && supply.guide > 0 ? (lha * 12) / supply.guide : null;
+    return {rent: rent, pps: pps, perBed: perBed, lha: lha, omr: omr, gap: gap, lhaYield: lhaYield};
+  }
+  function pickBar() {
+    const match = currentMatch();
+    if (!match) return '';
+    const next = NEXT[state.view];
+    const action = state.view === 'underwrite'
+      ? '<button type="button" class="btn" id="print_deal">Print one page</button>'
+      : '<button type="button" class="btn" id="next_step">Next: ' + esc(next[1]) + '</button>';
+    return '<div id="pick"><div><p class="foot">' + esc(match.requirement.name) + '</p><p><b>' + esc(match.supply.address) + '</b> ' + scoreMark(match.points) + ' <span class="foot">/ ' + match.counted + ' scored</span></p></div>' + action + '</div>';
+  }
+  function wirePick() {
+    const next = document.getElementById('next_step');
+    if (next) next.onclick = function () { state.view = NEXT[state.view][0]; render(); };
+    const print = document.getElementById('print_deal');
+    if (print) print.onclick = function () { window.print(); };
+  }
+  function fillPrint(match) {
+    const sheet = document.getElementById('print-sheet');
+    if (!sheet) return;
+    if (!match) { sheet.innerHTML = ''; return; }
+    const fact = facts(match);
+    const under = match.underwrite && match.underwrite.ok ? match.underwrite.gates : null;
+    const summary = under
+      ? under.cleared + ' pass, ' + under.gates.filter(function (g) { return g.status === 'fail'; }).length + ' fail, ' + under.gates.filter(function (g) { return g.status === 'amber'; }).length + ' need evidence. ' + window.GatesModel.takeaway(under)
+      : 'Not run. Year one rent or operating costs are not recorded, so none of the 14 gates has been tested.';
+    sheet.innerHTML = '<p>Laurito Capital · Underwrite · ' + esc(new Date().toISOString().slice(0, 10)) + '</p><h1>' + esc(match.supply.address) + '</h1><p>' + esc(match.requirement.name) + ' · ' + esc(match.requirement.buyer) + '</p>' +
+      '<table><tbody>' + match.parts.map(function (row) { return '<tr><th>' + esc(row.key) + '</th><td>' + esc(pointsText(row)) + '</td><td>' + esc(row.reason) + '</td></tr>'; }).join('') +
+      '<tr><th>Guide</th><td colspan="2">' + esc(match.supply.guide ? M.money(match.supply.guide) : M.NOT) + '</td></tr>' +
+      '<tr><th>Guide per bedroom</th><td colspan="2">' + esc(fact.perBed ? M.money(fact.perBed) : M.NOT) + '</td></tr>' +
+      '<tr><th>Allowance gap</th><td colspan="2">' + esc(fact.gap == null ? M.NOT : M.money(fact.gap) + ' a month') + '</td></tr>' +
+      '<tr><th>Gross yield if the rent were the allowance</th><td colspan="2">' + esc(pct1(fact.lhaYield)) + '</td></tr>' +
+      '</tbody></table><h2>14 gates</h2><p>' + esc(summary) + '</p>' +
+      (under ? '<table><tbody>' + under.gates.map(function (g) { return '<tr><td>' + g.n + ' ' + esc(g.name) + '</td><td>' + esc(g.status) + '</td><td>' + esc(g.valueText) + '</td></tr>'; }).join('') + '</tbody></table>' : '') +
+      '<p>Screening research, not an investment recommendation. A blank is not recorded.</p>';
+  }
   function companyNote(supply) {
     const row = supply.company && (state.distress[String(supply.company).padStart(8, '0')] || state.distress[supply.company]);
     if (!row) return '';
@@ -206,6 +266,7 @@
     document.getElementById('screen').innerHTML = '<p class="lc-kicker">' + esc(copy[0]) + '</p><h1>' + esc(title) + '</h1><p class="lc-purpose">' + esc(copy[2]) + '</p>' + (stats || '');
     document.querySelectorAll('#nav2 .mainb').forEach(function (button) {
       button.classList.toggle('on', button.getAttribute('data-v') === state.view);
+      button.setAttribute('aria-current', button.getAttribute('data-v') === state.view ? 'page' : 'false');
     });
     const sub = document.getElementById('subnav');
     if (state.view !== 'shortlist' || !state.matches.length) { sub.innerHTML = ''; return; }
@@ -249,29 +310,68 @@
     const mark = on ? (state.sort.d < 0 ? ' ↓' : ' ↑') : '';
     return '<th' + (key === 'framework' || key === 'address' || key === 'town' || key === 'form' ? ' class="l"' : '') + ' data-k="' + key + '">' + esc(label) + mark + '</th>';
   }
+  function whyCell(match) {
+    const reasons = match.parts.map(function (row) { return '<li><b>' + esc(row.key) + ' ' + esc(pointsText(row)) + '.</b> ' + esc(row.reason) + '</li>'; }).join('');
+    return '<details><summary>' + esc(match.requirement.name) + '</summary><ul>' + reasons + '</ul></details>';
+  }
+  function csvCell(value) {
+    const text = value == null ? '' : String(value);
+    return '"' + text.replace(/"/g, '""') + '"';
+  }
+  function exportCsv() {
+    const rows = visible();
+    const header = ['Framework', 'Buyer', 'Address', 'Postcode', 'Town', 'Form', 'Beds', 'Guide', 'Guide per bedroom', 'Channel', 'Distress', 'Score', 'Location', 'Type', 'Rent cover', 'Allowance gap £/month', 'Gross yield if rent were the allowance', 'Town £ per sq ft', 'Listing'];
+    const lines = [header.map(csvCell).join(',')];
+    rows.forEach(function (match) {
+      const fact = facts(match);
+      const supply = match.supply;
+      const ppsNum = fact.pps && fact.pps.value && fact.pps.value.indexOf('£') === 0 ? fact.pps.value : M.NOT;
+      lines.push([
+        match.requirement.name, match.requirement.buyer, supply.address, supply.postcode, supply.town || M.NOT, supply.form,
+        supply.beds == null ? M.NOT : supply.beds, supply.guide == null ? M.NOT : supply.guide, fact.perBed == null ? M.NOT : Math.round(fact.perBed),
+        supply.live ? 'Live auction' : 'Watchlist', supply.band || 'none', match.points,
+        pointsText(part(match, 'location')), pointsText(part(match, 'type')), pointsText(part(match, 'rent')),
+        fact.gap == null ? M.NOT : Math.round(fact.gap), fact.lhaYield == null ? M.NOT : (fact.lhaYield * 100).toFixed(1) + '%',
+        ppsNum, supply.url || M.NOT
+      ].map(csvCell).join(','));
+    });
+    const blob = new Blob([lines.join('\n')], {type: 'text/csv'});
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'underwrite-shortlist.csv';
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
   function shortlist() {
     const rows = visible();
-    const stats = '<div class="lc-stats"><div><b>' + rows.length + '</b><span>On this filter</span></div><div><b>' + examples().length + '</b><span>Worked examples</span></div><div><b>' + state.matches.length + '</b><span>Ranked</span></div></div>';
+    const stats = '<div class="lc-stats"><div><b>' + rows.length + '</b><span>On this filter</span></div><div><b>' + examples().length + '</b><span>Checked examples</span></div><div><b>' + state.matches.length + '</b><span>Ranked</span></div></div>';
     chrome(stats);
     const empty = rows.length ? '' : '<div class="card pipe-empty"><h2>No matches</h2><p class="lead">Nothing on this filter. The files are loaded. Choose another town, or include region matches and the watchlist.</p></div>';
-    app.innerHTML = '<div class="ctl"><div class="seg" id="channel">' +
+    const checks = examples().map(function (item) {
+      return '<button type="button" class="btn sec" data-open="' + esc(item.match.id) + '">' + esc(item.title) + ' ' + item.match.points + '</button>';
+    }).join(' ');
+    app.innerHTML = pickBar() + '<div class="ctl noprint"><div class="seg" id="channel">' +
       [['auction', 'Live lots'], ['watchlist', 'Watchlist'], ['both', 'Both']].map(function (pair) {
         return '<button type="button" class="segb' + (state.channel === pair[0] ? ' on' : '') + '" data-c="' + pair[0] + '">' + pair[1] + '</button>';
       }).join('') + '</div>' +
       '<label><input id="town_only" type="checkbox"' + (state.townOnly ? ' checked' : '') + '> Town named on the framework</label>' +
-      '<input id="q" type="search" placeholder="Search" value="' + esc(state.q) + '"></div>' +
-      exampleCards() +
+      '<input id="q" type="search" placeholder="Search" aria-label="Search framework, town or address" value="' + esc(state.q) + '">' +
+      '<button type="button" class="btn sec" id="csv">Export CSV</button></div>' +
+      (checks ? '<p class="noprint"><span class="foot">Checked examples </span>' + checks + '</p>' : '') +
       empty +
-      (rows.length ? '<div class="scroll"><table id="match_table"><thead><tr>' +
-        head('framework', 'Framework') + head('address', 'Property') + head('town', 'Town') + head('form', 'Form') + head('beds', 'Beds') + head('guide', 'Guide') + head('distress', 'Distress') + head('points', 'Score') + head('gates', 'Gates') +
+      (rows.length ? '<div class="scroll"><table id="match_table"><caption class="foot">Ranked framework-to-property matches. Open Why for the score. Gross yield is the allowance times 12, divided by the guide. It is not the lease rent.</caption><thead><tr>' +
+        head('framework', 'Framework') + head('address', 'Property') + head('town', 'Town') + head('beds', 'Beds') + head('guide', 'Guide') + head('bed', '£/bed') + head('gap', 'LHA gap') + head('yield', 'LHA yield') + head('distress', 'Flag') + head('points', 'Score') +
         '</tr></thead><tbody>' + rows.map(function (match) {
           const supply = match.supply;
-          const gates = part(match, 'gates');
-          return '<tr data-open="' + esc(match.id) + '"><td class="l"><b>' + esc(match.requirement.name) + '</b></td><td class="l">' + esc(supply.address) + '</td><td class="l">' + esc(supply.town || M.NOT) + '</td><td class="l">' + esc(supply.form) + '</td><td>' + (supply.beds == null ? M.NOT : supply.beds) + '</td><td>' + esc(supply.guide ? M.money(supply.guide) : M.NOT) + '</td><td>' + bandMark(supply.band) + '</td><td>' + scoreMark(match.points) + '</td><td>' + esc(pointsText(gates)) + '</td></tr>';
+          const fact = facts(match);
+          const flag = (supply.live ? '<span class="tag">Live</span> ' : '<span class="tag">Watch</span> ') + bandMark(supply.band);
+          const gapTitle = fact.rent && fact.rent.row ? 'Open-market rent minus the ' + fact.rent.row.brma + ' allowance. Not the lease rent.' : 'Not recorded';
+          return '<tr><td class="l">' + whyCell(match) + ' <button type="button" class="btn sec" data-open="' + esc(match.id) + '">Open</button></td><td class="l">' + esc(supply.address) + '</td><td class="l">' + esc(supply.town || M.NOT) + '</td><td>' + (supply.beds == null ? M.NOT : supply.beds) + '</td><td>' + esc(supply.guide ? M.money(supply.guide) : M.NOT) + '</td><td>' + esc(fact.perBed ? M.money(fact.perBed) : M.NOT) + '</td><td title="' + esc(gapTitle) + '">' + esc(fact.gap == null ? M.NOT : M.money(fact.gap)) + '</td><td title="Allowance times 12, divided by the guide. Not the lease rent.">' + esc(pct1(fact.lhaYield)) + '</td><td>' + flag + '</td><td>' + scoreMark(match.points) + '</td></tr>';
         }).join('') + '</tbody></table></div>' : '') +
-      '<p class="foot">Eight live lots and five watchlist titles are kept for each framework. Click a heading to sort. Click a row to open it.</p>' +
+      '<p class="foot">Twenty live lots and eight watchlist titles are kept for each framework. £/bed is the guide divided by the recorded bedrooms. LHA yield uses the published allowance, not a lease rent.</p>' +
       sourceLine();
     wireShortlist();
+    wirePick();
   }
   function wireShortlist() {
     const channel = document.getElementById('channel');
@@ -297,12 +397,12 @@
       };
     });
     app.querySelectorAll('[data-open]').forEach(function (node) {
-      const open = function () { openMatch(node.getAttribute('data-open')); };
-      if (node.tagName === 'TR') node.onclick = open;
-      else node.onclick = open;
+      node.onclick = function (event) { event.stopPropagation(); openMatch(node.getAttribute('data-open')); };
     });
     const retry = document.getElementById('retry');
     if (retry) retry.onclick = function () { start(); };
+    const csv = document.getElementById('csv');
+    if (csv) csv.onclick = exportCsv;
   }
 
   function needMatch() {
@@ -330,13 +430,14 @@
   function demand(match) {
     const requirement = match.requirement;
     chrome('<div class="lc-stats"><div><b>' + scoreMark(match.points) + '</b><span>/ ' + match.counted + '</span></div></div>');
-    app.innerHTML = '<div class="card"><h2>' + esc(requirement.name) + '</h2><p class="lead">' + esc(match.supply.address) + '</p>' + scoreList(match) +
+    app.innerHTML = pickBar() + '<div class="card"><h2>' + esc(requirement.name) + '</h2><p class="lead">Who already holds this framework, from the partner file and the presence file.</p>' + scoreList(match) +
       holders(requirement) + '<dl class="kv"><dt>Buyer</dt><dd>' + esc(requirement.buyer) + '</dd><dt>Status</dt><dd>' + esc(requirement.status) + '</dd><dt>Route</dt><dd>' + esc(requirement.investorRoute) + '</dd></dl></div>';
+    wirePick();
   }
   function requirement(match) {
     const requirement = match.requirement;
     chrome('');
-    app.innerHTML = '<div class="card"><h2>' + esc(requirement.name) + '</h2><dl class="kv">' +
+    app.innerHTML = pickBar() + '<div class="card"><h2>' + esc(requirement.name) + '</h2><p class="lead">Where the framework applies, and the property it asks for. A range is not turned into one number.</p><dl class="kv">' +
       '<dt>Geography</dt><dd>' + esc(requirement.geography) + '</dd>' +
       '<dt>Towns used</dt><dd>' + esc(requirement.towns.length ? requirement.towns.join(', ') : 'None named. Region matching is off on the default shortlist.') + '</dd>' +
       '<dt>Regions</dt><dd>' + esc(requirement.regions.length ? requirement.regions.join(', ') : M.NOT) + '</dd>' +
@@ -346,11 +447,12 @@
       '<dt>Rent basis</dt><dd>' + esc(requirement.rentBasis) + (requirement.rentFrom ? ' (' + esc(requirement.rentFrom) + ')' : '') + '</dd>' +
       '<dt>Rent used</dt><dd>' + esc(requirement.annualRent ? M.money(requirement.annualRent) + ' a year. ' + requirement.rentNote : requirement.rentNote) + '</dd>' +
       '<dt>Repairs / voids</dt><dd>' + esc(requirement.repairs) + '</dd></dl><p class="foot">' + esc(requirement.spec.text || M.NOT) + '</p></div>';
+    wirePick();
   }
   function supply(match) {
     const supply = match.supply;
     chrome('');
-    app.innerHTML = '<div class="card"><h2>' + esc(supply.address) + '</h2><dl class="kv">' +
+    app.innerHTML = pickBar() + '<div class="card"><h2>' + esc(supply.address) + '</h2><p class="lead">The property on this match. Live means the auction date has not passed.</p><dl class="kv">' +
       '<dt>Channel</dt><dd>' + (supply.live ? 'Live auction' : 'Watchlist') + '</dd>' +
       '<dt>Postcode</dt><dd>' + esc(supply.postcode || M.NOT) + '</dd>' +
       '<dt>Town</dt><dd>' + esc(supply.town || M.NOT) + (supply.region ? ' · region ' + esc(supply.region) : '') + '</dd>' +
@@ -361,25 +463,50 @@
       (companyNote(supply) ? '<p class="foot">' + esc(companyNote(supply)) + '</p>' : '') +
       (supply.url ? '<p><a class="btn" href="' + esc(supply.url) + '" target="_blank" rel="noopener">Listing</a></p>' : '<p class="foot">No listing URL is recorded.</p>') +
       '</div>';
+    wirePick();
+  }
+  function yieldTable(supply) {
+    if (!window.lcAreaYield) return '<p class="lead">Area yields: not recorded. The yield file did not load.</p>';
+    const sets = window.lcAreaYield.setsForCity(state.yieldRows, supply.town || supply.city);
+    const rows = [];
+    sets.forEach(function (set) { (set.members || []).forEach(function (row) { rows.push(row); }); });
+    if (!rows.length) return '<p class="lead">Area yields: not recorded for ' + esc(supply.town || supply.city || 'this place') + '. The file has no published row here. Retrieved ' + esc((state.yieldRows.length && 'see comps/area-yields.json') || M.NOT) + '.</p>';
+    return '<h2>Area yields</h2><p class="foot">Published rows for this town, from comps/area-yields.json. A row is a house comp only when the asset says so. An asking quote is not a completed sale.</p><div class="scroll"><table><thead><tr><th class="l">Place</th><th class="l">Asset</th><th>Yield</th><th class="l">Kind</th><th>Date</th><th class="l">Source</th></tr></thead><tbody>' +
+      rows.map(function (row) {
+        const link = row.url ? '<a href="' + esc(row.url) + '" target="_blank" rel="noopener">' + esc(row.source || 'source') + '</a>' : esc(row.source || M.NOT);
+        return '<tr><td class="l">' + esc(row.location || M.NOT) + '</td><td class="l">' + esc(row.asset_type || M.NOT) + '</td><td>' + (row.yield_pct == null ? M.NOT : Number(row.yield_pct).toFixed(1) + '%') + '</td><td class="l">' + esc(row.yield_kind || M.NOT) + ' · ' + esc(row.quote_status || M.NOT) + '</td><td>' + esc(row.date || M.NOT) + '</td><td class="l">' + link + '</td></tr>';
+      }).join('') + '</tbody></table></div>';
+  }
+  function niyTable(supply) {
+    const city = /bristol/i.test(supply.town) || /bristol/i.test(supply.city) ? 'Bristol' : (supply.town || '');
+    const rows = state.niy.filter(function (item) { return item.city === city && item.rows && item.rows.length; });
+    if (!rows.length) return '<h2>Laurito NIY comps</h2><p class="lead">Not recorded for ' + esc(city || 'this town') + '. The NIY book has no residential comp in the average for this place.</p>';
+    const body = rows.map(function (group) {
+      return group.rows.map(function (row) {
+        return '<tr><td class="l">' + esc(row.address || row.location || M.NOT) + '</td><td class="l">' + esc(group.asset) + '</td><td>' + (row.pct == null ? M.NOT : Number(row.pct).toFixed(2) + '%') + '</td><td class="l">' + esc(row.basis || M.NOT) + '</td><td>' + esc(row.date || M.NOT) + '</td></tr>';
+      }).join('');
+    }).join('');
+    return '<h2>Laurito NIY comps</h2><p class="foot">Comps kept in the residential average. ' + esc(niyLine(supply)) + '.</p><div class="scroll"><table><thead><tr><th class="l">Address</th><th class="l">Asset</th><th>NIY</th><th class="l">Basis</th><th>Date</th></tr></thead><tbody>' + body + '</tbody></table></div>';
   }
   function evidence(match) {
     const supply = match.supply;
-    const rent = rentRow(supply);
+    const fact = facts(match);
     const sold = M.soldLine(state.prices, supply);
-    const pps = M.ppsLine(state.pps, supply);
-    const yields = yieldLines(supply);
-    const allowance = rent && rent.row
-      ? 'Open-market rent ' + M.money(rent.row.omr) + ' a month. Local Housing Allowance ' + M.money(rent.row.lha) + ' a month (' + rent.row.brma + '). Gap ' + M.money(rent.row.gap) + '.'
-      : M.NOT + (supply.beds == null ? ' Bedrooms are not on the lot.' : (rent && rent.area === 'Cheshire' ? ' Cheshire is more than one allowance.' : ' No single allowance row for this town and bed count.'));
-    const wn = rent && rent.area === 'Manchester' && supply.town && supply.town !== 'Manchester' ? ' The shared rent-gap lookup uses the Central Greater Manchester allowance for this postcode. An allowance for ' + supply.town + ' alone is not in that file.' : '';
+    const book = state.rentBook || {};
+    const lhaDates = book.lha ? 'Allowance in force ' + book.lha.valid_from + ' to ' + book.lha.valid_to + ', checked ' + book.lha.checked + '.' : 'Allowance dates: not recorded.';
+    const omrDates = book.omr ? book.omr.source + '. Month ' + book.omr.month + '.' : 'Market rent dates: not recorded.';
+    const wn = fact.rent && fact.rent.area === 'Manchester' && supply.town && supply.town !== 'Manchester' ? ' The shared lookup uses the Central Greater Manchester allowance. An allowance for ' + supply.town + ' alone is not recorded.' : '';
+    const rentLine = fact.lha == null
+      ? M.NOT + (supply.beds == null ? ' Bedrooms are not on the lot.' : ' No single allowance for this town and bed count.')
+      : 'Open-market rent ' + M.money(fact.omr) + ' a month. Local Housing Allowance ' + M.money(fact.lha) + ' a month' + (fact.rent.row.brma ? ' (' + fact.rent.row.brma + ')' : '') + '. Gap ' + M.money(fact.gap) + ' a month.';
     chrome('');
-    app.innerHTML = '<div class="card"><h2>' + esc(supply.address) + '</h2><dl class="kv">' +
-      '<dt>' + esc(sold.label) + '</dt><dd>' + esc(sold.value) + '<div class="foot">' + esc(sold.source) + '</div></dd>' +
-      '<dt>' + esc(pps.label) + '</dt><dd>' + esc(pps.value) + '<div class="foot">' + esc(pps.source) + '</div></dd>' +
-      '<dt>LHA and market rent</dt><dd>' + esc(allowance + wn) + '</dd>' +
-      '<dt>Area yield</dt><dd>' + esc(yields.length ? yields.join('; ') : M.NOT) + '</dd>' +
-      '<dt>Laurito NIY book</dt><dd>' + esc(niyLine(supply)) + '</dd></dl>' +
-      '<p class="foot">These are published area figures. They are not a valuation of this building. Street-level rows in valuation_audit.json are not joined: the lot has no shared transaction id.</p></div>';
+    app.innerHTML = pickBar() + '<div class="card"><h2>Sold prices</h2><p>' + esc(sold.value) + '</p><p class="foot">' + esc(sold.source) + ' File date ' + esc((state.prices && state.prices.updated) || M.NOT) + '.</p>' +
+      '<h2>£ per sq ft</h2><p>' + esc(fact.pps.value) + '</p><p class="foot">' + esc(fact.pps.source) + '</p>' +
+      '<h2>Guide per bedroom</h2><p>' + esc(fact.perBed ? M.money(fact.perBed) : M.NOT) + '</p><p class="foot">' + (fact.perBed ? 'Guide divided by the bedrooms on the listing. Not a valuation.' : 'Not recorded. Guide or bedrooms are missing.') + '</p>' +
+      '<h2>LHA and market rent</h2><p>' + esc(rentLine + wn) + '</p><p class="foot">' + esc(lhaDates) + ' ' + esc(omrDates) + ' Gross yield if the rent were the allowance: ' + esc(pct1(fact.lhaYield)) + '. That is not the lease rent.</p>' +
+      yieldTable(supply) + niyTable(supply) +
+      '<p class="foot">Street-level rows in valuation_audit.json are not joined: the lot has no shared transaction id.</p></div>';
+    wirePick();
   }
   function field(key, label, value) {
     return '<label class="dlf"><small>' + esc(label) + '</small><input data-k="' + key + '" value="' + esc(value == null ? '' : value) + '" inputmode="decimal" autocomplete="off"></label>';
@@ -399,7 +526,7 @@
     const under = match.underwrite;
     const metrics = under && under.ok ? under.result : null;
     chrome('');
-    app.innerHTML = '<div class="card"><h2>Price, rent, debt and exit</h2><p class="lead">Price is the guide where one is recorded. Rent is filled only when the framework states a figure paid to the owner. Purchase costs 6.8%, loan 50%, rate 6.5% and exit yield 6% are the deal sheet starting figures, not facts from this lot. ' +
+    app.innerHTML = pickBar() + '<div class="card"><h2>Price, rent, debt and exit</h2><p class="lead">Price is the guide where one is recorded. Rent is filled only when the framework states a figure paid to the owner. Purchase costs 6.8%, loan 50%, rate 6.5% and exit yield 6% are the deal sheet starting figures, not facts from this lot. ' +
       (input.termAssumed ? 'The hold is five years because the framework does not record a single term.' : 'The hold follows the recorded term of ' + input.termYearsUsed + ' years.') + '</p>' +
       '<div class="dlgrid">' +
       field('price', 'Guide price, £', input.price) +
@@ -420,16 +547,32 @@
       };
     });
     document.getElementById('open_sheet').onclick = function () { openSheet(input); };
+    wirePick();
+  }
+  function namedGates() {
+    if (!window.GatesModel || !state.config) return [];
+    try { return window.GatesModel.score({debt: 1}, {attribution: false, bridge: false, fees: false, term: false, cashOut: false}, state.config).gates; }
+    catch (error) { return []; }
   }
   function paintUnderwrite(match) {
     const box = document.getElementById('uw_out');
     if (!box) return;
     const under = match.underwrite;
     if (!under || !under.ok) {
-      box.innerHTML = '<p class="lead">Not testable yet. ' + esc((under && under.missing || ['year one rent', 'opex']).join(', ')) + '.</p>';
+      const names = namedGates();
+      const missing = (under && under.missing) || ['year one rent', 'operating costs'];
+      const need = missing.length === 1 ? missing[0] + ' is' : missing.slice(0, -1).join(', ') + ' and ' + missing[missing.length - 1] + ' are';
+      box.innerHTML = '<p class="lead">Needs evidence. ' + esc(need) + ' not recorded, so none of the 14 gates has been tested. A pass is not assumed.</p>' +
+        (names.length ? '<div id="gates_root">' + names.map(function (gate) {
+          return '<div class="bd-bar amber"><span>' + gate.n + ' ' + esc(gate.name) + '. ' + esc(gate.thresholdText) + '</span><em>needs evidence</em></div>';
+        }).join('') + '</div>' : '<p class="foot">Gate hurdles did not load.</p>');
+      fillPrint(match);
       return;
     }
-    box.innerHTML = metricTiles(under.result) + gateBars(under.gates);
+    const fail = under.gates.gates.filter(function (gate) { return gate.status === 'fail'; }).length;
+    const amber = under.gates.gates.filter(function (gate) { return gate.status === 'amber'; }).length;
+    box.innerHTML = '<p class="lead">' + under.gates.cleared + ' pass, ' + fail + ' fail, ' + amber + ' need evidence. Verdict ' + esc(under.gates.verdict) + '.</p>' + metricTiles(under.result) + gateBars(under.gates);
+    fillPrint(match);
   }
   function openSheet(input) {
     let saved = {};
@@ -457,6 +600,7 @@
     else if (state.view === 'supply') supply(match);
     else if (state.view === 'evidence') evidence(match);
     else underwrite(match);
+    fillPrint(match);
     if (state.view !== 'shortlist') history.replaceState(null, '', '#' + state.view);
   }
   function loading() {
@@ -497,6 +641,7 @@
     state.pps = pps;
     state.config = gates;
     state.yieldRows = (areaYields && areaYields.rows) || [];
+    state.rentBook = rentFile;
     state.rentTable = window.lcRentGap && rentFile ? window.lcRentGap.build(rentFile) : null;
     state.niy = [];
     if (window.lcNiy) {
@@ -507,7 +652,7 @@
     const requirements = M.buildRequirements(frameworks, partners || {partners: []}, presence || {providers: []}, offers || []);
     const auctions = M.auctionSupply((lotsFile && lotsFile.lots) || [], current);
     const watchlist = M.watchSupply(watch || {sites: []});
-    state.matches = M.rank(requirements, auctions, 8).concat(M.rank(requirements, watchlist, 5));
+    state.matches = M.rank(requirements, auctions, 20).concat(M.rank(requirements, watchlist, 8));
     setStatus(requirements.length + ' frameworks · ' + auctions.length + ' live lots');
     const hash = decodeURIComponent(location.hash.replace(/^#/, ''));
     if (VIEWS[hash]) state.view = hash;
