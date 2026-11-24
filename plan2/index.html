@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Laurito Capital — Plan 2</title>
+<link rel="icon" href="../assets/laurito-mark.png">
+<link rel="stylesheet" href="../assets/laurito.css?v=20261124-uw2">
+<link rel="stylesheet" href="../assets/ios.css?v=20261124-uw2">
+<style>
+/* Layout rules that live in the Deals page, not in the shared stylesheets. Colour, type and controls come from those files. */
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+#status{margin-left:auto}
+#subnav{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;padding:0 16px 8px}
+.subb{border:1px solid var(--line);background:#fff;border-radius:16px;padding:8px 12px;font:inherit;font-size:15px;cursor:pointer;min-height:44px}
+.subb.on{background:#021726;color:#fff;border-color:#021726}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.opgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.dlgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.kv{display:grid;grid-template-columns:minmax(120px,180px) 1fr;gap:6px 12px;margin:8px 0}
+.kv dt{color:var(--mut)} .kv dd{margin:0}
+.foot{color:var(--mut);font-size:13px}
+.score{display:inline-block;min-width:36px;text-align:center;padding:2px 6px;color:#fff;font-weight:700}
+.lvl{display:inline-block;padding:2px 9px;font-size:12px;font-weight:700;color:#fff}
+th{cursor:pointer}
+tbody tr{cursor:pointer}
+#q{min-width:220px;flex:1}
+#pick{position:sticky;top:0;z-index:25;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;margin:0 0 12px;border-top:3px solid var(--accent)}
+#pick p{margin:0}
+#app .scroll{overflow-x:auto}
+#match_table{min-width:1100px}
+#match_table details{background:transparent;margin:0;border-radius:0}
+#match_table summary{min-height:0;padding:0;font-size:15px;font-weight:600}
+#gates_root .bd-bar{display:grid}
+#print-sheet{display:none}
+@media(max-width:480px){
+  #nav2 .mainnav{flex-wrap:wrap;overflow:visible}
+  #nav2 .mainb{flex:0 0 auto;min-width:max-content}
+  #q{min-width:0;width:100%}
+  .kv{grid-template-columns:1fr}
+  #pick{top:96px}
+}
+@media print{
+  header,#nav2,#screen,#pick,.noprint{display:none!important}
+  #print-sheet{display:block!important;color:#021726;font:12px/1.35 "Helvetica Neue",Helvetica,Arial,sans-serif}
+  #print-sheet h1{font-size:18px;margin:0 0 4px}
+  #print-sheet table{width:100%;border-collapse:collapse;font-size:11px}
+  #print-sheet td,#print-sheet th{text-align:left;padding:3px 6px;border-bottom:1px solid #ccc}
+}
+</style>
+</head>
+<body>
+<header>
+  <a class="lc-brand" href="../index.html"><img src="../assets/laurito-lockup.png" alt="Laurito Capital"></a>
+  <div class="lc-product">Plan 2<span>Framework, requirement, supply, evidence, then the monthly model.</span></div>
+  <div id="status">loading…</div>
+</header>
+<nav id="nav2">
+  <div class="mainnav">
+    <button class="mainb on" type="button" data-v="shortlist">Shortlist</button>
+    <button class="mainb" type="button" data-v="demand">Demand</button>
+    <button class="mainb" type="button" data-v="requirement">Requirement</button>
+    <button class="mainb" type="button" data-v="supply">Supply</button>
+    <button class="mainb" type="button" data-v="evidence">Evidence</button>
+    <button class="mainb" type="button" data-v="underwrite">Plan 2</button>
+  </div>
+  <div id="subnav"></div>
+</nav>
+<section class="lc-screen" id="screen">
+  <p class="lc-kicker">Plan 2</p>
+  <h1>Shortlist</h1>
+  <p class="lc-purpose">Loading recorded frameworks and lots.</p>
+</section>
+<main id="app"></main>
+<article id="print-sheet" aria-hidden="true"></article>
+<script src="../assets/niy.js"></script>
+<script src="../assets/area-yields.js"></script>
+<script src="../assets/current-lots.js"></script>
+<script src="../assets/quick-model.js"></script>
+<script src="../assets/gates-model.js"></script>
+<script src="match-model.js"></script>
+<script src="underwrite.js"></script>
+</body>
+</html>
