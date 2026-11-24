@@ -16,6 +16,7 @@
     pps: '../comps/home-ppsqft.json',
     prices: '../prices.json',
     gates: '../data/market-entry/gates.json',
+    leases: '../data/land-registry/council-leases.json',
     bip: 'https://pgraham974.github.io/ecosystem-partners/v4-enrich.json',
     supabase: 'https://kkdfprhrgxbkydqeifgz.supabase.co/rest/v1/owners?select=company_no,name,distress_class&distress_class=neq.unknown',
     supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtrZGZwcmhyZ3hia3lkcWVpZmd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3OTgzMDEsImV4cCI6MjEwNzM3NDMwMX0.dd32w-wmLe1vlwzPwZsTpoGra3cFghE2bb5LGorJjJM'
@@ -26,7 +27,8 @@
     requirement: ['Requirement', 'The homes', 'What the framework records about the asset. A blank is not recorded.'],
     supply: ['Supply', 'The property', 'A live auction lot, or a watchlist title.'],
     evidence: ['Evidence', 'Price and rent', 'Published area figures. Not a valuation of this building.'],
-    underwrite: ['Underwrite', 'Monthly model', 'The same monthly cash flow as the Deals deal sheet.']
+    underwrite: ['Underwrite', 'Monthly model', 'The same monthly cash flow as the Deals deal sheet.'],
+    leases: ['Council leases', 'Registered long leases', 'Leasehold titles registered to a council or housing association. Leases of seven years or less are not here.']
   };
   const app = document.getElementById('app');
   const state = {
@@ -48,6 +50,7 @@
     newOnly: true,
     future: [],
     bipLinks: [],
+    leases: null,
     view: 'shortlist',
     openId: '',
     inputs: {},
@@ -272,8 +275,9 @@
   function chrome(stats) {
     const copy = VIEWS[state.view] || VIEWS.shortlist;
     const match = currentMatch();
-    const title = state.view === 'shortlist' || !match ? copy[1] : match.supply.address;
-    document.getElementById('screen').innerHTML = '<p class="lc-kicker">' + esc(copy[0]) + '</p><h1>' + esc(title) + '</h1><p class="lc-purpose">' + esc(copy[2]) + '</p>' + (stats || '');
+    const title = state.view === 'shortlist' || state.view === 'leases' || !match ? copy[1] : match.supply.address;
+    const purpose = match && state.view !== 'shortlist' && state.view !== 'leases' && match.requirement.line ? match.requirement.line : copy[2];
+    document.getElementById('screen').innerHTML = '<p class="lc-kicker">' + esc(copy[0]) + '</p><h1>' + esc(title) + '</h1><p class="lc-purpose">' + esc(purpose) + '</p>' + (stats || '');
     document.querySelectorAll('#nav2 .mainb').forEach(function (button) {
       button.classList.toggle('on', button.getAttribute('data-v') === state.view);
       button.setAttribute('aria-current', button.getAttribute('data-v') === state.view ? 'page' : 'false');
@@ -444,7 +448,7 @@
   function demand(match) {
     const requirement = match.requirement;
     chrome('<div class="lc-stats"><div><b>' + scoreMark(match.points) + '</b><span>/ ' + match.counted + '</span></div></div>');
-    app.innerHTML = pickBar() + '<div class="card"><h2>' + esc(requirement.name) + '</h2><p class="lead">' + esc(requirement.status) + (requirement.nextWindow && requirement.nextWindow !== M.NOT ? ' · Next: ' + esc(requirement.nextWindow) : '') + '</p>' + scoreList(match) +
+    app.innerHTML = pickBar() + '<div class="card"><h2>' + esc(requirement.name) + '</h2><p class="lead">' + esc(requirement.line) + (requirement.nextWindow && requirement.nextWindow !== M.NOT ? ' Next window: ' + esc(requirement.nextWindow) + '.' : '') + '</p>' + scoreList(match) +
       holders(requirement) + '</div>' + futureCard();
     wirePick();
   }
@@ -487,12 +491,14 @@
     return '<details class="card"><summary>Schemes still to open (' + rows.length + ')</summary><div class="scroll"><table><thead><tr><th class="l">Scheme</th><th class="l">Opens</th><th class="l">Buyer</th><th class="l">Homes</th></tr></thead><tbody>' +
       rows.map(function (row) {
         return '<tr><td class="l"><b>' + esc(row.name) + '</b><div class="foot">' + esc(row.status || '') + '</div></td><td class="l">' + esc(row.start || M.NOT) + '</td><td class="l">' + esc(row.buyer || M.NOT) + '</td><td class="l">' + esc(row.homes || M.NOT) + '</td></tr>';
-      }).join('') + '</tbody></table></div><p class="foot">Partners site file v4-enrich.json, which carries licensed BiP Intelligence rows. A value in that file is a ceiling unless it says actual. Built ' + esc(state.bipBuilt || M.NOT) + '.</p></details>';
+      }).join('') + '</tbody></table></div><p class="foot">Partners site file v4-enrich.json, built ' + esc(state.bipBuilt || '3 Nov 2026') + '. It carries licensed BiP Intelligence rows. A value is a ceiling unless the file says actual. There is no newer file in the Partners repo, and this agent has no BiP login. To refresh it, Patrick re-fetches awards and spend with the licensed BiP access used on 3 Nov 2026 (get_award and search_spend_transactions), replaces ecosystem-partners/build/bip_refresh.json, runs python3 build/enrich_site.py, and publishes v4-enrich.json. This page will then read the new file.</p></details>';
   }
   function requirement(match) {
     const requirement = match.requirement;
     chrome('');
-    app.innerHTML = pickBar() + '<div class="card"><h2>' + esc(requirement.name) + '</h2><p class="lead">' + esc(requirement.buyer) + ' · ' + esc(requirement.status) + '</p>' + assetCards(requirement) + '</div>';
+    const precedent = M.leasePrecedent(requirement, state.leases);
+    app.innerHTML = pickBar() + '<div class="card"><h2>' + esc(requirement.name) + '</h2>' + assetCards(requirement) +
+      '<h2>Lease evidence already registered</h2><p>' + esc(precedent.text) + '</p></div>';
     wirePick();
   }
   function supply(match) {
@@ -683,8 +689,24 @@
     state.view = 'demand';
     render();
   }
+  function councilLeases() {
+    chrome('');
+    const file = state.leases;
+    if (!file || file.loaded !== true) {
+      app.innerHTML = '<div class="card"><h2>No Land Registry file is loaded</h2><p class="lead">' + esc((file && file.source) || 'The council lease file did not load.') + '</p><p>' + esc((file && file.note) || 'Leases granted for seven years or less are not registered. Rent and the parties’ lease terms need a £7 copy of the register.') + '</p><ol class="gaps"><li>Create a free account at use-land-property-data.service.gov.uk and sign in.</li><li>Agree the licence for UK companies that own property in England and Wales (this was CCOD). It is free and still needs the account.</li><li>Agree a Registered Leases licence. Non-commercial use is listed as free. Commercial use is a paid licence. This site is a business tool, so Patrick should confirm which licence applies before downloading.</li><li>Copy the API key into the GitHub secret HMLR_API_KEY, or download the full CSVs and put them in data/land-registry/inbox/.</li><li>Run node scripts/land-registry/council-leases.mjs. It keeps leasehold titles whose proprietor is a council or housing association, in the towns this site already covers, and joins the lease date, term and premium.</li></ol><p><a class="btn" href="https://use-land-property-data.service.gov.uk/" target="_blank" rel="noopener">Open the Land Registry data service</a></p></div>';
+      return;
+    }
+    const councils = file.councils || [];
+    app.innerHTML = '<p class="foot">' + esc(file.note) + '</p>' + (councils.length ? councils.map(function (council) {
+      return '<div class="card"><h2>' + esc(council.name) + '</h2><p class="lead">' + council.count + ' titles' + (council.shown < council.count ? ', ' + council.shown + ' shown' : '') + '. Typical term: ' + esc(council.typicalTerm || M.NOT) + '. ' + esc((council.locations || []).join(', ') || M.NOT) + '.</p><div class="scroll"><table><thead><tr><th class="l">Address</th><th>Start</th><th>Term</th><th>Premium</th><th class="l">Register</th></tr></thead><tbody>' +
+        council.rows.map(function (row) {
+          return '<tr><td class="l">' + esc(row.address) + '<div class="foot">' + esc(row.postcode) + ' · ' + esc(row.title) + '</div></td><td>' + esc(row.leaseStart || M.NOT) + '</td><td>' + esc(row.term || M.NOT) + '</td><td>' + esc(row.premium || M.NOT) + '</td><td class="l"><a href="' + esc(row.orderUrl || file.orderUrl) + '" target="_blank" rel="noopener">Order the £7 register</a></td></tr>';
+        }).join('') + '</tbody></table></div></div>';
+    }).join('') : '<div class="card"><h2>No council leases in the file</h2><p class="lead">The files were read. No leasehold title in the covered towns had a council or housing association proprietor.</p></div>');
+  }
   function render() {
     const match = currentMatch();
+    if (state.view === 'leases') { councilLeases(); return; }
     if (state.view !== 'shortlist' && !match) { needMatch(); return; }
     if (state.view === 'shortlist') shortlist();
     else if (state.view === 'demand') demand(match);
@@ -722,7 +744,7 @@
     await ensureRentGap();
     const current = window.lcCurrentLot ? window.lcCurrentLot.currentLot : function () { return true; };
     const repoNote = 'Not published on the Partners site. Loaded from this repository.';
-    const [frameworks, partners, offers, presence, lotsFile, watch, prices, pps, gates, areaYields, auctionYields, rentFile, bip] = await Promise.all([
+    const [frameworks, partners, offers, presence, lotsFile, watch, prices, pps, gates, areaYields, auctionYields, rentFile, bip, leases] = await Promise.all([
       getJson('Frameworks', SRC.frameworks),
       getJson('Partners', SRC.partners),
       getJson('Provider offers', SRC.offers, repoNote),
@@ -735,7 +757,8 @@
       getJson('Area yields', SRC.areaYields),
       getJson('Auction yields', SRC.auctionYields),
       getJson('LHA and market rent', SRC.rent),
-      getJson('BiP file on the Partners site', SRC.bip, 'Licensed BiP Intelligence rows published with the Partners site. Not copied into this repository.')
+      getJson('BiP file on the Partners site', SRC.bip, 'Licensed BiP Intelligence rows published with the Partners site. Not copied into this repository.'),
+      getJson('Council leases', SRC.leases, 'HM Land Registry CCOD joined to Registered Leases, when the files have been supplied.')
     ]);
     state.prices = prices;
     state.pps = pps;
@@ -750,6 +773,7 @@
     }
     if (!frameworks || !lotsFile) { failedLoad(); return; }
     const requirements = M.buildRequirements(frameworks, partners || {partners: []}, presence || {providers: []}, offers || []);
+    state.leases = leases;
     state.bipBuilt = bip && bip.built || '';
     state.future = futureRows(requirements, bip);
     const auctions = M.auctionSupply((lotsFile && lotsFile.lots) || [], current);

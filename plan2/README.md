@@ -23,9 +23,13 @@ A sample page of 100 Contracts Finder releases, requested with the keyword “te
 
 So the feeds cannot fill homes needed, lease term, rent basis or the rent paid to the owner for these frameworks. Patrick does not need to register for the public read. A useful fill would need the notice id for each framework, and even then the rent and repair terms are usually only in the tender documents, which these calls do not return.
 
+## Council leases
+
+`data/land-registry/council-leases.json` is empty of titles. The Use land and property data API refused a request with no key (HTTP 403 on 24 Nov 2026). The pipeline is `node scripts/land-registry/council-leases.mjs`. Patrick’s steps are in `data/land-registry/README.md`: create an account, agree the CCOD licence and a Registered Leases licence, then set the GitHub secret `HMLR_API_KEY` or drop the files in `data/land-registry/inbox/`. Leases of seven years or less are not registered. Rent is not in the files. Each row links to the title-number search, where an online copy of the register is £7. When the file is loaded, a scheme shows the count, typical term and locations of matching council titles as precedent, not as the rent.
+
 ## BiP
 
-`BiP` does not appear in this repository. It is on the Partners site. `v4-enrich.json` is published at `https://pgraham974.github.io/ecosystem-partners/v4-enrich.json` (HTTP 200). It was built 3 Nov 2026 from the Laurito opportunities workbook and includes licensed BiP Intelligence rows: 20 BiP records, 6 notices in `newItems`, and framework links. Laurito gates reads that file and lists schemes still to open, with the opening date and any homes figure in the text. It does not copy the file. A value there is a ceiling unless the file says actual. There is no separate BiP login in this repo. A newer BiP pull is a Partners-site rebuild, not a key for Laurito gates.
+`BiP` does not appear in this repository. It is on the Partners site. `v4-enrich.json` is published at `https://pgraham974.github.io/ecosystem-partners/v4-enrich.json` (HTTP 200). It was built 3 Nov 2026. The Partners pipeline (`build/enrich_site.py`) rebuilds that file from the Laurito opportunities workbook and overlays `build/bip_refresh.json`. That overlay is the 3 Nov 2026 re-fetch (`get_award` and `search_spend_transactions`). No refresh script and no credential are in the repo, and the BiP connection on this agent did not load. A newer pull needs Patrick’s licensed BiP access: replace `ecosystem-partners/build/bip_refresh.json`, run `python3 build/enrich_site.py`, and publish `v4-enrich.json`. Laurito gates reads the live file and does not copy it. A value there is a ceiling unless the file says actual.
 
 ## Supply
 

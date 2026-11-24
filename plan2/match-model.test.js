@@ -110,6 +110,12 @@ test('a framework requirement keeps recorded asset facts and leaves the rest bla
   assert.equal(by.Indexation.recorded, false);
   assert.equal(by['Rent level'].recorded, false);
   assert.equal(by.Breaks.recorded, false);
+  assert.match(wigan.line, /^Type: Leasing scheme\. Buyer: Wigan Council\./);
+  assert.match(wigan.line, /Status: Open to join/);
+  const precedent = M.leasePrecedent(wigan, {loaded: true, councils: [{name: 'Wigan Borough Council', count: 4, typicalTerm: '99 years', locations: ['Wigan']}]});
+  assert.equal(precedent.count, 4);
+  assert.match(precedent.text, /99 years/);
+  assert.match(M.leasePrecedent(wigan, {loaded: false, councils: []}).text, /not recorded/);
   const hanover = auctions.filter((lot) => /13 Hanover Street/.test(lot.address))[0];
   assert.ok(hanover.firstSeen);
 });

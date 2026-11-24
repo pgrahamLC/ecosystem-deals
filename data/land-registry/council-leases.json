@@ -1,0 +1,26 @@
+{
+  "loaded": false,
+  "checked": "2026-11-24",
+  "source": "No CCOD or Registered Leases file is available. The dataset API returned HTTP 403 without a key on 24 Nov 2026. Put HMLR_API_KEY in the environment, or drop the CSVs or zips into data/land-registry/inbox/.",
+  "note": "Leases granted for seven years or less are not registered, so they are absent. Rent and the parties’ lease terms are not in these datasets. An online copy of the register is £7. Order it from the title-number search; the title number is on the row.",
+  "orderUrl": "https://search-property-information.service.gov.uk/search/search-by-title-number",
+  "areas": [
+    "Manchester",
+    "Salford",
+    "Oldham",
+    "Rochdale",
+    "Bury",
+    "Bolton",
+    "Stockport",
+    "Trafford",
+    "Tameside",
+    "Wigan",
+    "Liverpool",
+    "Birmingham",
+    "Bristol",
+    "South Gloucestershire",
+    "Cheltenham",
+    "Gloucester"
+  ],
+  "councils": []
+}

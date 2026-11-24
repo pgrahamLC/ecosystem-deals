@@ -229,8 +229,9 @@
       if (parts.join(' ').toLowerCase().indexOf(hit.toLowerCase()) < 0) parts.push(hit.trim());
     });
     const block = source.match(/blocks?\s+up to\s+\d+\s+units/i);
-    if (block && parts.join(' ').toLowerCase().indexOf(block[0].toLowerCase()) < 0) parts.push(block[0].trim());
-    return parts.length ? parts.join('; ') : NOT;
+    const kept = parts.filter(function (part) { return !block || block[0].toLowerCase().indexOf(part.toLowerCase()) < 0; });
+    if (block) kept.push(block[0].trim());
+    return kept.length ? kept.join('; ') : NOT;
   }
   function assetNeed(framework, spec, rent, term) {
     const lease = framework.lease_terms || {};
@@ -255,6 +256,60 @@
     return rows.map(function (row) {
       return {label: row[0], value: row[1] || NOT, recorded: row[1] && row[1] !== NOT};
     });
+  }
+  function shorten(text, max) {
+    const clean = String(text || '').replace(/\s+/g, ' ').trim();
+    if (!clean) return NOT;
+    return clean.length > max ? clean.slice(0, max - 1).trim() + '…' : clean;
+  }
+  function schemeLine(framework) {
+    const blob = (framework.name || '') + ' ' + (framework.accom_type || '');
+    let type = NOT;
+    if (/\bDPS\b|dynamic purchasing/i.test(blob)) type = 'Dynamic purchasing system';
+    else if (/open framework/i.test(blob)) type = 'Open framework';
+    else if (/framework/i.test(blob)) type = 'Framework';
+    else if (/leas/i.test(blob)) type = 'Leasing scheme';
+    else if (framework.accom_type) type = shorten(framework.accom_type, 80);
+    const who = framework.accom_type ? shorten(framework.accom_type, 140) : NOT;
+    const buyer = framework.buyer || NOT;
+    const status = framework.status_n || framework.status || NOT;
+    const route = framework.investor_route || NOT;
+    return {
+      type: type,
+      who: who,
+      line: 'Type: ' + type + '. Buyer: ' + buyer + '. Houses: ' + who + '. Status: ' + status + '. Route: ' + route + '.'
+    };
+  }
+  function bodyKey(value) {
+    return String(value || '').toLowerCase().replace(/\b(the|city|borough|county|district|metropolitan|council|of)\b/g, '').replace(/[^a-z]/g, '');
+  }
+  function leasePrecedent(requirement, file) {
+    if (!file || file.loaded !== true) {
+      return {recorded: false, count: 0, text: 'Council lease evidence: not recorded. The Land Registry files are not loaded.'};
+    }
+    const buyerKey = bodyKey(requirement.buyer);
+    const towns = requirement.towns || [];
+    const hits = (file.councils || []).filter(function (council) {
+      const key = bodyKey(council.name);
+      const nameHit = buyerKey && key && (key.indexOf(buyerKey) >= 0 || buyerKey.indexOf(key) >= 0);
+      const placeHit = towns.some(function (town) {
+        return (council.locations || []).some(function (place) { return place.toLowerCase().indexOf(String(town).toLowerCase()) >= 0; }) || council.name.toLowerCase().indexOf(String(town).toLowerCase()) >= 0;
+      });
+      return nameHit || placeHit;
+    });
+    if (!hits.length) return {recorded: true, count: 0, text: 'No registered council lease in the loaded file matches ' + (requirement.buyer || 'this buyer') + '.'};
+    const count = hits.reduce(function (sum, row) { return sum + (row.count || 0); }, 0);
+    const terms = [];
+    const places = [];
+    hits.forEach(function (row) {
+      if (row.typicalTerm && row.typicalTerm !== NOT && terms.indexOf(row.typicalTerm) < 0) terms.push(row.typicalTerm);
+      (row.locations || []).forEach(function (place) { if (places.indexOf(place) < 0) places.push(place); });
+    });
+    return {
+      recorded: true,
+      count: count,
+      text: count + ' registered leasehold titles. Typical term: ' + (terms.length ? terms.join('; ') : NOT) + '. Locations: ' + (places.length ? places.join(', ') : NOT) + '. These are titles already registered to the council, not the rent or the lease clauses.'
+    };
   }
   function routeFor(framework, rentBasis) {
     const blob = (framework.accom_type || '') + ' ' + (framework.name || '');
@@ -315,11 +370,15 @@
       const termFrom = (framework.lease_terms && framework.lease_terms.term) ? 'framework' : (termText ? 'provider offer' : '');
       const term = parseTerm(termText);
       const towns = townsIn([framework.geography, framework.name, framework.accom_type].filter(Boolean).join(' '));
+      const scheme = schemeLine(framework);
       const regions = (framework.regions || []).filter(function (region) { return region && region !== 'National'; });
       return {
         id: 'fw:' + index + ':' + framework.name,
         name: framework.name,
         buyer: framework.buyer || NOT,
+        line: scheme.line,
+        schemeType: scheme.type,
+        houses: scheme.who,
         status: framework.status_n || framework.status || NOT,
         route: routeFor(framework, rentText),
         investorRoute: framework.investor_route || NOT,
@@ -714,6 +773,7 @@
     parseSpec: parseSpec,
     placeOf: placeOf,
     lotKind: lotKind,
-    money: money
+    money: money,
+    leasePrecedent: leasePrecedent
   });
 })(typeof globalThis !== 'undefined' ? globalThis : this);
