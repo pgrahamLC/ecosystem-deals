@@ -437,6 +437,11 @@
       'BRMA for LHA benchmark': 'Benefit area',
       'Capex £ per unit, one-off': 'Works per home, £',
       'Additional scheme-level works £': 'Other works, £',
+      'Scheme-level works, £': 'Other works, £',
+      'Scheme capex basis': 'Works entered as',
+      'Scheme capex, % of purchase price': 'Works, % of the price',
+      'Renovation, £ per sq ft': 'Works, £ per sq ft',
+      'Apply renovation £ per sq ft to': '£ per sq ft applies to',
       'Annual rent £ / unit': 'Rent per year',
       'LHA category': 'Bed size',
       'Tenure': 'Type'
@@ -586,7 +591,12 @@
 
   function layoutDeal(body) {
     const property = cardWith('#uw_name');
+    const areas = cardWith('#uw_niaSqft');
     const units = cardWith('#uw_units');
+    const review = cardWith('#uw_reviewType');
+    const headlease = cardWith('#uw_headlease');
+    const ground = cardWith('#uw_groundMode');
+    const service = cardWith('#uw_scMode');
     const price = cardWith('#uw_opexMargin');
     const capex = cardWith('#uw_capex');
     const timing = body.querySelector('details') ? body.querySelector('details').closest('.card') : null;
@@ -602,7 +612,6 @@
     const lha = document.getElementById('uw_lha_reference');
     if (income) advanced.appendChild(income);
     if (lha) advanced.appendChild(lha);
-    if (capex) advanced.appendChild(capex);
     if (timing && timing !== property) advanced.appendChild(timing);
 
     function pane(index, title, helper) {
@@ -613,18 +622,24 @@
       return step;
     }
     const steps = [
-      pane(0, 'Property', 'Name the building and the town.'),
-      pane(1, 'Rent roll', 'Upload the schedule, or type the rent.'),
-      pane(2, 'Assumptions', 'The yield you want to buy at, costs, loan and interest.'),
+      pane(0, 'Property', 'Name the building, the town and the floor area.'),
+      pane(1, 'Rent roll', 'Type the rent, or upload a schedule. Rent review, rent-free, headlease, ground rent and service charge are here.'),
+      pane(2, 'Assumptions', 'The yield you want to buy at, works, loan and interest.'),
       pane(3, 'Your bid', 'What you could pay, and what it earns.'),
       pane(4, 'Required rent', 'The rent this deal needs, and the sale price its rent needs, for the return you set.')
     ];
     const bodies = steps.map(function (step) { return step.querySelector('.ios-step-body'); });
     if (property) bodies[0].appendChild(property);
+    if (areas) bodies[0].appendChild(areas);
     if (rr) bodies[1].appendChild(rr);
     if (units) bodies[1].appendChild(units);
+    if (review) bodies[1].appendChild(review);
+    if (headlease) bodies[1].appendChild(headlease);
+    if (ground) bodies[1].appendChild(ground);
+    if (service) bodies[1].appendChild(service);
     if (advanced.childElementCount > 1) bodies[1].appendChild(advanced);
     if (price) bodies[2].appendChild(price);
+    if (capex) bodies[2].appendChild(capex);
     const result = document.createElement('div');
     result.id = 'ios_result';
     bodies[3].appendChild(result);
