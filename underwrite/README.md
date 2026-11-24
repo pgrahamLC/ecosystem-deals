@@ -1,6 +1,6 @@
 # Ecosystem Underwrite
 
-A separate static page from the Deals screens. It joins a recorded framework to a recorded lot, shows why the score moved, and opens the existing monthly model.
+A separate static page from the Deals screens. It uses the same `assets/laurito.css` and `assets/ios.css` as Deals: the same header, tab bar, cards, tables, pills and buttons. It joins a recorded framework to a recorded lot, shows why the score moved, and opens the existing monthly model.
 
 GitHub Pages serves it at `/underwrite/` on this repository. To move it into its own repository later, copy this folder and the shared scripts listed below, and keep the same relative layout (`../assets`, `../data`, `../comps`) or change the paths in `underwrite.js`.
 

@@ -2,18 +2,60 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ecosystem Underwrite</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Laurito Capital — Underwrite</title>
 <link rel="icon" href="../assets/laurito-mark.png">
-<link rel="stylesheet" href="underwrite.css">
+<link rel="stylesheet" href="../assets/laurito.css?v=20261124-uw">
+<link rel="stylesheet" href="../assets/ios.css?v=20261124-uw">
+<style>
+/* Layout rules that live in the Deals page, not in the shared stylesheets. Colour, type and controls come from those files. */
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+#status{margin-left:auto}
+#subnav{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;padding:0 16px 8px}
+.subb{border:1px solid var(--line);background:#fff;border-radius:16px;padding:8px 12px;font:inherit;font-size:15px;cursor:pointer;min-height:44px}
+.subb.on{background:#021726;color:#fff;border-color:#021726}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.opgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.dlgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.kv{display:grid;grid-template-columns:minmax(120px,180px) 1fr;gap:6px 12px;margin:8px 0}
+.kv dt{color:var(--mut)} .kv dd{margin:0}
+.foot{color:var(--mut);font-size:13px}
+.score{display:inline-block;min-width:36px;text-align:center;padding:2px 6px;color:#fff;font-weight:700}
+.lvl{display:inline-block;padding:2px 9px;font-size:12px;font-weight:700;color:#fff}
+th{cursor:pointer}
+tbody tr{cursor:pointer}
+#q{min-width:220px;flex:1}
+@media(max-width:480px){
+  #nav2 .mainnav{flex-wrap:wrap;overflow:visible}
+  #nav2 .mainb{flex:1 1 auto}
+  #q{min-width:0;width:100%}
+  .kv{grid-template-columns:1fr}
+}
+</style>
 </head>
 <body>
-<header class="top">
-  <a class="brand" href="../index.html"><img src="../assets/laurito-mark.png" alt="">Ecosystem Underwrite</a>
-  <p>Framework to deal. Recorded demand, then the lot, then the monthly model.</p>
-  <a class="back" href="../index.html">Deals</a>
+<header>
+  <a class="lc-brand" href="../index.html"><img src="../assets/laurito-lockup.png" alt="Laurito Capital"></a>
+  <div class="lc-product">Underwrite<span>Framework, requirement, supply, evidence, then the monthly model.</span></div>
+  <div id="status">loading…</div>
 </header>
-<main id="app"><p class="loading">Loading recorded frameworks and lots.</p></main>
+<nav id="nav2">
+  <div class="mainnav">
+    <button class="mainb on" type="button" data-v="shortlist">Shortlist</button>
+    <button class="mainb" type="button" data-v="demand">Demand</button>
+    <button class="mainb" type="button" data-v="requirement">Requirement</button>
+    <button class="mainb" type="button" data-v="supply">Supply</button>
+    <button class="mainb" type="button" data-v="evidence">Evidence</button>
+    <button class="mainb" type="button" data-v="underwrite">Underwrite</button>
+  </div>
+  <div id="subnav"></div>
+</nav>
+<section class="lc-screen" id="screen">
+  <p class="lc-kicker">Underwrite</p>
+  <h1>Shortlist</h1>
+  <p class="lc-purpose">Loading recorded frameworks and lots.</p>
+</section>
+<main id="app"></main>
 <script>window.lcDataRoot = '../';</script>
 <script src="../assets/niy.js"></script>
 <script src="../assets/area-yields.js"></script>
