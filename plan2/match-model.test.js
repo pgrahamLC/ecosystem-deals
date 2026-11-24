@@ -100,6 +100,19 @@ test('the monthly model and the 14 gates run when rent and opex are supplied', (
   assert.equal(scored.parts.find((part) => part.key === 'gates').points, Math.round(filled.gates.cleared / 14 * 15));
 });
 
+test('a framework requirement keeps recorded asset facts and leaves the rest blank', () => {
+  const wigan = requirements.filter((row) => /Wigan Council Lease/.test(row.name))[0];
+  const by = Object.fromEntries(wigan.asset.map((row) => [row.label, row]));
+  assert.equal(by.Bedrooms.value, '1–4');
+  assert.match(by['Unit type'].value, /house/);
+  assert.equal(by.Repairs.recorded, true);
+  assert.equal(by.Voids.recorded, true);
+  assert.equal(by.Indexation.recorded, false);
+  assert.equal(by['Rent level'].recorded, false);
+  assert.equal(by.Breaks.recorded, false);
+  const hanover = auctions.filter((lot) => /13 Hanover Street/.test(lot.address))[0];
+  assert.ok(hanover.firstSeen);
+});
 test('live lots use the same current-lot test as the deals site', () => {
   const past = {stale: false, status: 'unsold', auction_date: '2026-10-14', sale_status: ''};
   assert.equal(current(past, '2026-11-24'), false);

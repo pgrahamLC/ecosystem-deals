@@ -362,8 +362,16 @@ function combine(a, b) {
     sources: distinct([...(a.sources || [{ name: a.source, url: a.source_url }]), ...(b.sources || [{ name: b.source, url: b.source_url }])]),
     provenance: distinct([...(a.provenance || [{ source: a.source, source_url: a.source_url, scraped_at: a.scraped_at, status: a.status }]), ...(b.provenance || [{ source: b.source, source_url: b.source_url, scraped_at: b.scraped_at, status: b.status }])]) };
   merged.id = stableId(assetKey(merged) + '|' + (merged.auction_date || 'undated'));
+  const first = [seenStamp(a), seenStamp(b)].filter(Boolean).sort()[0];
+  if (first) merged.first_seen = first;
   // Never fill one source's unknown current price with another source's stale price.
   return merged;
+}
+function seenStamp(lot) {
+  const times = [lot && lot.first_seen, lot && lot.scraped_at, ...(((lot && lot.provenance) || []).map(row => row && row.scraped_at))];
+  const stamps = times.filter(Boolean).map(value => ({ value, n: +new Date(value) })).filter(row => Number.isFinite(row.n));
+  stamps.sort((a, b) => a.n - b.n);
+  return stamps.length ? new Date(stamps[0].n).toISOString() : '';
 }
 export function dedupeLots(lots = []) {
   const exact = [];
@@ -403,13 +411,15 @@ export function mergePrevious(fresh = [], previous = [], coverage = {}, now = ne
     });
     if (present >= 0) {
       const freshRow = result[present], merged = combine(old, freshRow);
-      result[present] = { ...freshRow, sources: merged.sources, provenance: merged.provenance };
+      result[present] = { ...freshRow, sources: merged.sources, provenance: merged.provenance, first_seen: merged.first_seen || seenStamp(merged) };
       continue;
     }
     const names = [...sourceNames(old)]; const succeeded = names.some(name => coverageOK(coverage, name));
-    result.push({ ...old, stale: true, stale_reason: succeeded ? 'missing_from_successful_crawl' : 'source_unavailable', stale_checked_at: new Date(current).toISOString() });
+    const carried = { ...old, stale: true, stale_reason: succeeded ? 'missing_from_successful_crawl' : 'source_unavailable', stale_checked_at: new Date(current).toISOString() };
+    if (!carried.first_seen) carried.first_seen = seenStamp(old);
+    result.push(carried);
   }
-  return dedupeLots(result);
+  return dedupeLots(result).map(lot => ({ ...lot, first_seen: lot.first_seen || seenStamp(lot) }));
 }
 const INSTRUCTION = /instructed by (?:the |a |an )?(?:[\w &.'-]{0,60}?)?(?:receivers?|lenders?|mortgagees?)\b|on (?:the )?instructions of (?:the |a |an )?(?:[\w &.'-]{0,60}?)?(?:receivers?|lenders?|mortgagees?)\b/i;
 const HEDGE = /potential|possible|may |might |could |not instructed|no receiver/i;

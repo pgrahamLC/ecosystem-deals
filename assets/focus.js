@@ -82,7 +82,7 @@
         return '<button type="button" data-v="' + pair[0] + '">' + pair[1] + '</button>';
       }).join('') +
       '<a href="' + esc(partnerHref) + '" target="_blank" rel="noopener">Partner site</a>' +
-      '<a href="' + esc(underwriteHref) + '" target="_blank" rel="noopener">Plan 2</a></div></div>';
+      '<a href="' + esc(underwriteHref) + '" target="_blank" rel="noopener">Laurito gates</a></div></div>';
     bar.addEventListener('click', function (e) {
       const btn = e.target.closest('[data-v]');
       if (!btn || !bar.contains(btn)) return;

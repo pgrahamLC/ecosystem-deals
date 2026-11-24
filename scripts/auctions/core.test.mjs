@@ -300,6 +300,14 @@ test('mergePrevious correction identity never crosses event dates or source owne
   const differentSource = { ...old, auction_date: fresh.auction_date, source: 'Other', sources: [{ name: 'Other', url: fresh.source_url }] };
   assert.equal(mergePrevious([fresh], [differentSource], {}, NOW).length, 2);
 });
+test('a repeat of the same lot keeps the earliest first-seen date', () => {
+  const older = lot({ scraped_at: '2026-11-01T00:00:00.000Z', provenance: [{ source: 'Test', source_url: 'https://example.test/lot', scraped_at: '2026-11-01T00:00:00.000Z', status: 'upcoming' }] });
+  const newer = lot({ scraped_at: '2026-11-20T00:00:00.000Z' });
+  const merged = dedupeLots([older, newer]);
+  assert.equal(merged.length, 1);
+  assert.equal(merged[0].first_seen, '2026-11-01T00:00:00.000Z');
+  assert.equal(merged[0].scraped_at, '2026-11-20T00:00:00.000Z');
+});
 test('scraped chrome is not an address, and a real street inside it is kept', () => {
   assert.equal(addressLike('our FAQs section. Pre-auction Marketing 7 Modern Method Freehold 4 bed Chalet Glendevon Road, Bristol, Avon, BS14 0HT'), false);
   assert.equal(cleanAddress('our FAQs section. Pre-auction Marketing 7 Modern Method Freehold 4 bed Chalet Glendevon Road, Bristol , Avon, BS14 0HT'), '4 bed Chalet Glendevon Road, Bristol , Avon, BS14 0HT');

@@ -214,6 +214,48 @@
     if (all.length === 1) return {years: +all[0].match(/\d+/)[0], note: source};
     return {years: null, note: source};
   }
+  function recorded(value) {
+    const text = String(value == null ? '' : value).trim();
+    if (!text || /^(none|null|n\/a|not published\b.*|not stated|unverified)$/i.test(text)) return NOT;
+    return text;
+  }
+  function homesLine(text) {
+    const source = String(text || '');
+    const parts = [];
+    const target = source.match(/target units:[^.]*/i);
+    if (target) parts.push(target[0].trim());
+    const hits = source.match(/\b(?:up to\s+)?\d[\d,]*\s+(?:homes|units|properties|bed\s*spaces|bedspaces)\b/gi) || [];
+    hits.forEach(function (hit) {
+      if (parts.join(' ').toLowerCase().indexOf(hit.toLowerCase()) < 0) parts.push(hit.trim());
+    });
+    const block = source.match(/blocks?\s+up to\s+\d+\s+units/i);
+    if (block && parts.join(' ').toLowerCase().indexOf(block[0].toLowerCase()) < 0) parts.push(block[0].trim());
+    return parts.length ? parts.join('; ') : NOT;
+  }
+  function assetNeed(framework, spec, rent, term) {
+    const lease = framework.lease_terms || {};
+    const beds = spec.bedsMin == null ? NOT : (spec.bedsMin === spec.bedsMax ? String(spec.bedsMin) : spec.bedsMin + '–' + spec.bedsMax);
+    const value = framework.value_gbp > 0 ? money(framework.value_gbp) + (framework.value_text ? ' · ' + framework.value_text : '') : recorded(framework.value_text);
+    const rows = [
+      ['Homes needed', homesLine([framework.accom_type, framework.geography].filter(Boolean).join('. '))],
+      ['Unit type', spec.forms.length ? spec.forms.join(', ') : NOT],
+      ['Bedrooms', beds],
+      ['Locations', recorded(framework.geography)],
+      ['Lease term', recorded(term.note)],
+      ['Rent basis', recorded((lease.rent_basis) || '')],
+      ['Rent level', rent.annual ? money(rent.annual) + ' a year' : NOT],
+      ['Repairs', recorded(lease.repairs)],
+      ['Voids', recorded(lease.voids)],
+      ['Breaks', recorded(lease.breaks)],
+      ['Indexation', recorded(lease.indexation)],
+      ['Start', recorded(framework.start)],
+      ['End', recorded(framework.end)],
+      ['Contract value', value]
+    ];
+    return rows.map(function (row) {
+      return {label: row[0], value: row[1] || NOT, recorded: row[1] && row[1] !== NOT};
+    });
+  }
   function routeFor(framework, rentBasis) {
     const blob = (framework.accom_type || '') + ' ' + (framework.name || '');
     if (/asylum|aasc|home office/i.test(blob)) return 'Home Office provider';
@@ -295,6 +337,9 @@
         rentBasis: rentText || NOT,
         rentFrom: rentFrom,
         repairs: (framework.lease_terms && framework.lease_terms.voids) || (framework.lease_terms && framework.lease_terms.repairs) || NOT,
+        asset: assetNeed(framework, spec, rent, term),
+        nextWindow: framework.next_window || NOT,
+        opening: framework.start || NOT,
         holders: holders,
         partnerTowns: holders.reduce(function (list, holder) {
           (holder.cities || []).forEach(function (city) {
@@ -310,6 +355,16 @@
     });
   }
 
+  function firstSeenOf(lot) {
+    const times = [lot.first_seen, lot.scraped_at].concat((lot.provenance || []).map(function (row) { return row && row.scraped_at; })).filter(Boolean);
+    let best = '';
+    let bestN = Infinity;
+    times.forEach(function (value) {
+      const n = Date.parse(value);
+      if (Number.isFinite(n) && n < bestN) { bestN = n; best = new Date(n).toISOString(); }
+    });
+    return best;
+  }
   function auctionSupply(lots, isCurrent) {
     const out = [];
     (lots || []).forEach(function (lot) {
@@ -334,7 +389,8 @@
         beds: kind.beds,
         band: band.band,
         bandWhy: band.why,
-        company: ''
+        company: '',
+        firstSeen: firstSeenOf(lot)
       });
     });
     return out;

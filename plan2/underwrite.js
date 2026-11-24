@@ -1,4 +1,4 @@
-/* Plan 2. Same chrome as Deals. Numbers come from the shared models. */
+/* Laurito gates. Same chrome as Deals. Numbers come from the shared models. The page stays at plan2/. */
 (function () {
   'use strict';
 
@@ -16,16 +16,17 @@
     pps: '../comps/home-ppsqft.json',
     prices: '../prices.json',
     gates: '../data/market-entry/gates.json',
+    bip: 'https://pgraham974.github.io/ecosystem-partners/v4-enrich.json',
     supabase: 'https://kkdfprhrgxbkydqeifgz.supabase.co/rest/v1/owners?select=company_no,name,distress_class&distress_class=neq.unknown',
     supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtrZGZwcmhyZ3hia3lkcWVpZmd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3OTgzMDEsImV4cCI6MjEwNzM3NDMwMX0.dd32w-wmLe1vlwzPwZsTpoGra3cFghE2bb5LGorJjJM'
   };
   const VIEWS = {
-    shortlist: ['Shortlist', 'Ranked matches', 'Each row is one recorded framework and one recorded property. A blank stays not recorded.'],
-    demand: ['Demand', 'Who holds it', 'Partners and evidence named on the framework. Nothing is added.'],
-    requirement: ['Requirement', 'Where and what', 'Town, form, beds, term and rent basis taken from the framework text.'],
-    supply: ['Supply', 'The property', 'A live auction lot, or a watchlist title. Commercial lots are left out of a homes requirement.'],
-    evidence: ['Evidence', 'Price and rent context', 'Published area figures. Not a valuation of this building.'],
-    underwrite: ['Plan 2', 'Monthly model and 14 gates', 'The guide is filled where one is recorded. Rent is filled only when the framework states what the owner is paid.']
+    shortlist: ['Shortlist', 'Matches', 'One framework, one property. Open a row for the detail.'],
+    demand: ['Demand', 'Who holds it', 'Partners named on the framework, plus schemes that are still to open.'],
+    requirement: ['Requirement', 'The homes', 'What the framework records about the asset. A blank is not recorded.'],
+    supply: ['Supply', 'The property', 'A live auction lot, or a watchlist title.'],
+    evidence: ['Evidence', 'Price and rent', 'Published area figures. Not a valuation of this building.'],
+    underwrite: ['Underwrite', 'Monthly model', 'The same monthly cash flow as the Deals deal sheet.']
   };
   const app = document.getElementById('app');
   const state = {
@@ -44,6 +45,9 @@
     q: '',
     rentBook: null,
     sort: {k: 'points', d: -1},
+    newOnly: true,
+    future: [],
+    bipLinks: [],
     view: 'shortlist',
     openId: '',
     inputs: {},
@@ -150,6 +154,7 @@
     const query = state.q.trim().toLowerCase();
     const rows = state.matches.filter(function (match) {
       if (state.townOnly && !match.townLevel) return false;
+      if (state.newOnly && match.supply.channel === 'auction' && !isFresh(match.supply)) return false;
       if (state.channel === 'auction' && match.supply.channel !== 'auction') return false;
       if (state.channel === 'watchlist' && match.supply.channel !== 'watchlist') return false;
       if (state.town && match.supply.town !== state.town) return false;
@@ -202,11 +207,16 @@
     demand: ['requirement', 'Requirement'],
     requirement: ['supply', 'Supply'],
     supply: ['evidence', 'Evidence'],
-    evidence: ['underwrite', 'Plan 2']
+    evidence: ['underwrite', 'Underwrite']
   };
   function pct1(rate) {
     if (rate == null || !isFinite(rate)) return M.NOT;
     return (rate * 100).toFixed(1) + '%';
+  }
+  function isFresh(supply) {
+    const seen = Date.parse(supply.firstSeen || '');
+    if (!Number.isFinite(seen)) return false;
+    return Date.now() - seen <= 14 * 24 * 60 * 60 * 1000;
   }
   function facts(match) {
     const supply = match.supply;
@@ -243,7 +253,7 @@
     const summary = under
       ? under.cleared + ' pass, ' + under.gates.filter(function (g) { return g.status === 'fail'; }).length + ' fail, ' + under.gates.filter(function (g) { return g.status === 'amber'; }).length + ' need evidence. ' + window.GatesModel.takeaway(under)
       : 'Not run. Year one rent or operating costs are not recorded, so none of the 14 gates has been tested.';
-    sheet.innerHTML = '<p>Laurito Capital · Plan 2 · ' + esc(new Date().toISOString().slice(0, 10)) + '</p><h1>' + esc(match.supply.address) + '</h1><p>' + esc(match.requirement.name) + ' · ' + esc(match.requirement.buyer) + '</p>' +
+    sheet.innerHTML = '<p>Laurito Capital · Laurito gates · ' + esc(new Date().toISOString().slice(0, 10)) + '</p><h1>' + esc(match.supply.address) + '</h1><p>' + esc(match.requirement.name) + ' · ' + esc(match.requirement.buyer) + '</p>' +
       '<table><tbody>' + match.parts.map(function (row) { return '<tr><th>' + esc(row.key) + '</th><td>' + esc(pointsText(row)) + '</td><td>' + esc(row.reason) + '</td></tr>'; }).join('') +
       '<tr><th>Guide</th><td colspan="2">' + esc(match.supply.guide ? M.money(match.supply.guide) : M.NOT) + '</td></tr>' +
       '<tr><th>Guide per bedroom</th><td colspan="2">' + esc(fact.perBed ? M.money(fact.perBed) : M.NOT) + '</td></tr>' +
@@ -338,23 +348,24 @@
     const blob = new Blob([lines.join('\n')], {type: 'text/csv'});
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'plan2-shortlist.csv';
+    link.download = 'laurito-gates-shortlist.csv';
     link.click();
     URL.revokeObjectURL(link.href);
   }
   function shortlist() {
     const rows = visible();
-    const stats = '<div class="lc-stats"><div><b>' + rows.length + '</b><span>On this filter</span></div><div><b>' + examples().length + '</b><span>Checked examples</span></div><div><b>' + state.matches.length + '</b><span>Ranked</span></div></div>';
+    const stats = '<div class="lc-stats"><div><b>' + rows.length + '</b><span title="Rows on screen after the filters.">Matches shown</span></div><div><b>' + examples().length + '</b><span title="Three framework-to-lot pairs checked against the source files.">Hand-checked</span></div><div><b>' + state.matches.length + '</b><span title="Pairs kept after the cap of twenty live lots and eight watchlist titles per framework.">Total pairs scored</span></div></div>';
     chrome(stats);
     const empty = rows.length ? '' : '<div class="card pipe-empty"><h2>No matches</h2><p class="lead">Nothing on this filter. The files are loaded. Choose another town, or include region matches and the watchlist.</p></div>';
     const checks = examples().map(function (item) {
       return '<button type="button" class="btn sec" data-open="' + esc(item.match.id) + '">' + esc(item.title) + ' ' + item.match.points + '</button>';
     }).join(' ');
-    app.innerHTML = pickBar() + '<div class="ctl noprint"><div class="seg" id="channel">' +
+    app.innerHTML = pickBar() + '<div class="bar noprint"><div class="seg" id="channel">' +
       [['auction', 'Live lots'], ['watchlist', 'Watchlist'], ['both', 'Both']].map(function (pair) {
         return '<button type="button" class="segb' + (state.channel === pair[0] ? ' on' : '') + '" data-c="' + pair[0] + '">' + pair[1] + '</button>';
       }).join('') + '</div>' +
-      '<label><input id="town_only" type="checkbox"' + (state.townOnly ? ' checked' : '') + '> Town named on the framework</label>' +
+      '<label class="tick"><input id="town_only" type="checkbox"' + (state.townOnly ? ' checked' : '') + '> Town named</label>' +
+      '<label class="tick" title="First seen in the last 14 days. A later observation of the same lot and auction date is not a new deal."><input id="new_only" type="checkbox"' + (state.newOnly ? ' checked' : '') + '> New only</label>' +
       '<input id="q" type="search" placeholder="Search" aria-label="Search framework, town or address" value="' + esc(state.q) + '">' +
       '<button type="button" class="btn sec" id="csv">Export CSV</button></div>' +
       (checks ? '<p class="noprint"><span class="foot">Checked examples </span>' + checks + '</p>' : '') +
@@ -368,7 +379,8 @@
           const gapTitle = fact.rent && fact.rent.row ? 'Open-market rent minus the ' + fact.rent.row.brma + ' allowance. Not the lease rent.' : 'Not recorded';
           return '<tr><td class="l">' + whyCell(match) + ' <button type="button" class="btn sec" data-open="' + esc(match.id) + '">Open</button></td><td class="l">' + esc(supply.address) + '</td><td class="l">' + esc(supply.town || M.NOT) + '</td><td>' + (supply.beds == null ? M.NOT : supply.beds) + '</td><td>' + esc(supply.guide ? M.money(supply.guide) : M.NOT) + '</td><td>' + esc(fact.perBed ? M.money(fact.perBed) : M.NOT) + '</td><td title="' + esc(gapTitle) + '">' + esc(fact.gap == null ? M.NOT : M.money(fact.gap)) + '</td><td title="Allowance times 12, divided by the guide. Not the lease rent.">' + esc(pct1(fact.lhaYield)) + '</td><td>' + flag + '</td><td>' + scoreMark(match.points) + '</td></tr>';
         }).join('') + '</tbody></table></div>' : '') +
-      '<p class="foot">Twenty live lots and eight watchlist titles are kept for each framework. £/bed is the guide divided by the recorded bedrooms. LHA yield uses the published allowance, not a lease rent.</p>' +
+      '<p class="foot">New only keeps auction lots first seen in the last 14 days. The same address with a new auction date is a separate deal. £/bed is the guide divided by the recorded bedrooms.</p>' +
+      futureCard() +
       sourceLine();
     wireShortlist();
     wirePick();
@@ -380,6 +392,8 @@
     });
     const townOnly = document.getElementById('town_only');
     if (townOnly) townOnly.onchange = function (event) { state.townOnly = event.target.checked; render(); };
+    const fresh = document.getElementById('new_only');
+    if (fresh) fresh.onchange = function (event) { state.newOnly = event.target.checked; render(); };
     const box = document.getElementById('q');
     if (box) box.oninput = function (event) {
       state.q = event.target.value;
@@ -430,23 +444,55 @@
   function demand(match) {
     const requirement = match.requirement;
     chrome('<div class="lc-stats"><div><b>' + scoreMark(match.points) + '</b><span>/ ' + match.counted + '</span></div></div>');
-    app.innerHTML = pickBar() + '<div class="card"><h2>' + esc(requirement.name) + '</h2><p class="lead">Who already holds this framework, from the partner file and the presence file.</p>' + scoreList(match) +
-      holders(requirement) + '<dl class="kv"><dt>Buyer</dt><dd>' + esc(requirement.buyer) + '</dd><dt>Status</dt><dd>' + esc(requirement.status) + '</dd><dt>Route</dt><dd>' + esc(requirement.investorRoute) + '</dd></dl></div>';
+    app.innerHTML = pickBar() + '<div class="card"><h2>' + esc(requirement.name) + '</h2><p class="lead">' + esc(requirement.status) + (requirement.nextWindow && requirement.nextWindow !== M.NOT ? ' · Next: ' + esc(requirement.nextWindow) : '') + '</p>' + scoreList(match) +
+      holders(requirement) + '</div>' + futureCard();
     wirePick();
+  }
+  function assetCards(requirement) {
+    const rows = requirement.asset || [];
+    const known = rows.filter(function (row) { return row.recorded; });
+    const missing = rows.filter(function (row) { return !row.recorded; });
+    const card = function (row) {
+      return '<div class="need"><span>' + esc(row.label) + '</span><b>' + esc(row.value) + '</b></div>';
+    };
+    return '<div class="need-grid">' + known.map(card).join('') + '</div>' +
+      '<h2>What we still need to know</h2>' +
+      (missing.length ? '<ul class="gaps">' + missing.map(function (row) { return '<li>' + esc(row.label) + '</li>'; }).join('') + '</ul>' : '<p>Nothing on this list is blank.</p>') +
+      '<p class="foot">Find a Tender and Contracts Finder were checked. They publish a contract value and dates when a notice exists. They do not publish units, the rent paid to the owner, or who pays repairs for these frameworks. ' + esc(requirement.rentNote || '') + '</p>';
+  }
+  function homesOf(text) {
+    const hits = String(text || '').match(/\b(?:up to\s+)?\d[\d,]*\s+(?:homes|units|properties|bed\s*spaces)\b/gi);
+    return hits ? hits.join('; ') : M.NOT;
+  }
+  function futureRows(requirements, bip) {
+    const rows = [];
+    const seen = {};
+    ((bip && bip.newItems) || []).forEach(function (item) {
+      const name = item.name || '';
+      if (!name || seen[name]) return;
+      seen[name] = true;
+      rows.push({name: name, start: item.start || M.NOT, buyer: item.buyer || M.NOT, status: item.status || '', homes: homesOf(item.accom_type)});
+    });
+    (requirements || []).forEach(function (requirement) {
+      if (!/forthcoming/i.test(requirement.status || '') || seen[requirement.name]) return;
+      const homes = (requirement.asset || []).filter(function (row) { return row.label === 'Homes needed'; })[0];
+      seen[requirement.name] = true;
+      rows.push({name: requirement.name, start: requirement.opening || M.NOT, buyer: requirement.buyer, status: requirement.status, homes: homes ? homes.value : M.NOT});
+    });
+    return rows;
+  }
+  function futureCard() {
+    const rows = state.future || [];
+    if (!rows.length) return '';
+    return '<details class="card"><summary>Schemes still to open (' + rows.length + ')</summary><div class="scroll"><table><thead><tr><th class="l">Scheme</th><th class="l">Opens</th><th class="l">Buyer</th><th class="l">Homes</th></tr></thead><tbody>' +
+      rows.map(function (row) {
+        return '<tr><td class="l"><b>' + esc(row.name) + '</b><div class="foot">' + esc(row.status || '') + '</div></td><td class="l">' + esc(row.start || M.NOT) + '</td><td class="l">' + esc(row.buyer || M.NOT) + '</td><td class="l">' + esc(row.homes || M.NOT) + '</td></tr>';
+      }).join('') + '</tbody></table></div><p class="foot">Partners site file v4-enrich.json, which carries licensed BiP Intelligence rows. A value in that file is a ceiling unless it says actual. Built ' + esc(state.bipBuilt || M.NOT) + '.</p></details>';
   }
   function requirement(match) {
     const requirement = match.requirement;
     chrome('');
-    app.innerHTML = pickBar() + '<div class="card"><h2>' + esc(requirement.name) + '</h2><p class="lead">Where the framework applies, and the property it asks for. A range is not turned into one number.</p><dl class="kv">' +
-      '<dt>Geography</dt><dd>' + esc(requirement.geography) + '</dd>' +
-      '<dt>Towns used</dt><dd>' + esc(requirement.towns.length ? requirement.towns.join(', ') : 'None named. Region matching is off on the default shortlist.') + '</dd>' +
-      '<dt>Regions</dt><dd>' + esc(requirement.regions.length ? requirement.regions.join(', ') : M.NOT) + '</dd>' +
-      '<dt>Form</dt><dd>' + esc(requirement.spec.forms.length ? requirement.spec.forms.join(', ') : M.NOT) + '</dd>' +
-      '<dt>Beds</dt><dd>' + esc(requirement.spec.bedsMin == null ? M.NOT : requirement.spec.bedsMin + '–' + requirement.spec.bedsMax) + '</dd>' +
-      '<dt>Term</dt><dd>' + esc(requirement.termText) + (requirement.termFrom ? ' (' + esc(requirement.termFrom) + ')' : '') + '</dd>' +
-      '<dt>Rent basis</dt><dd>' + esc(requirement.rentBasis) + (requirement.rentFrom ? ' (' + esc(requirement.rentFrom) + ')' : '') + '</dd>' +
-      '<dt>Rent used</dt><dd>' + esc(requirement.annualRent ? M.money(requirement.annualRent) + ' a year. ' + requirement.rentNote : requirement.rentNote) + '</dd>' +
-      '<dt>Repairs / voids</dt><dd>' + esc(requirement.repairs) + '</dd></dl><p class="foot">' + esc(requirement.spec.text || M.NOT) + '</p></div>';
+    app.innerHTML = pickBar() + '<div class="card"><h2>' + esc(requirement.name) + '</h2><p class="lead">' + esc(requirement.buyer) + ' · ' + esc(requirement.status) + '</p>' + assetCards(requirement) + '</div>';
     wirePick();
   }
   function supply(match) {
@@ -457,6 +503,7 @@
       '<dt>Postcode</dt><dd>' + esc(supply.postcode || M.NOT) + '</dd>' +
       '<dt>Town</dt><dd>' + esc(supply.town || M.NOT) + (supply.region ? ' · region ' + esc(supply.region) : '') + '</dd>' +
       '<dt>Form</dt><dd>' + esc(supply.form) + (supply.beds ? ', ' + supply.beds + '-bed' : ', bedrooms ' + M.NOT) + '</dd>' +
+      '<dt>First seen</dt><dd>' + esc(supply.firstSeen ? supply.firstSeen.slice(0, 10) : M.NOT) + (isFresh(supply) ? ' · new' : '') + '</dd>' +
       '<dt>Guide</dt><dd>' + esc(supply.guide ? M.money(supply.guide) : M.NOT) + '</dd>' +
       '<dt>Auction</dt><dd>' + esc(supply.date || M.NOT) + (supply.source ? ' · ' + esc(supply.source) : '') + '</dd>' +
       '<dt>Distress</dt><dd>' + bandMark(supply.band) + ' ' + esc(supply.band ? supply.bandWhy : part(match, 'distress').reason) + '</dd></dl>' +
@@ -504,7 +551,7 @@
       '<h2>£ per sq ft</h2><p>' + esc(fact.pps.value) + '</p><p class="foot">' + esc(fact.pps.source) + '</p>' +
       '<h2>Guide per bedroom</h2><p>' + esc(fact.perBed ? M.money(fact.perBed) : M.NOT) + '</p><p class="foot">' + (fact.perBed ? 'Guide divided by the bedrooms on the listing. Not a valuation.' : 'Not recorded. Guide or bedrooms are missing.') + '</p>' +
       '<h2>LHA and market rent</h2><p>' + esc(rentLine + wn) + '</p><p class="foot">' + esc(lhaDates) + ' ' + esc(omrDates) + ' Gross yield if the rent were the allowance: ' + esc(pct1(fact.lhaYield)) + '. That is not the lease rent.</p>' +
-      yieldTable(supply) + niyTable(supply) +
+      yieldTable(supply) +
       '<p class="foot">Street-level rows in valuation_audit.json are not joined: the lot has no shared transaction id.</p></div>';
     wirePick();
   }
@@ -521,21 +568,41 @@
       return '<div class="bd-bar ' + esc(gate.status) + '"><span>' + gate.n + ' ' + esc(gate.name) + '</span><em>' + esc(gate.status) + '</em></div>';
     }).join('') + '<p class="foot">' + esc(window.GatesModel.takeaway(scored)) + '</p></div>';
   }
+  const MODEL_FIELDS = [
+    ['price', 'Purchase price, £'], ['rent1', 'Year one rent, £'], ['opexPct', 'Opex, % of rent'], ['growthPct', 'Rent growth, % a year'],
+    ['costsPct', 'Purchase costs, %'], ['ltvPct', 'Loan, % of price'], ['ratePct', 'Interest rate, %'], ['entryMonth', 'Entry month'],
+    ['exitMonth', 'Exit month'], ['exitYieldPct', 'Exit yield, %'], ['saleCostsPct', 'Sale costs, %']
+  ];
+  const LEASE_FIELDS = [
+    ['reviewEvery', 'Years between reviews'], ['reviewUpliftPct', 'Review uplift, %'], ['reviewCapPct', 'Review cap, %'], ['reviewCollarPct', 'Review collar, %'],
+    ['rentFreeMonths', 'Rent-free months'], ['headleaseRent', 'Headlease rent, £ a year'], ['headleaseEvery', 'Headlease review, years'], ['headleaseUpliftPct', 'Headlease uplift, %'],
+    ['headleaseTerm', 'Headlease term, years'], ['groundRent', 'Ground rent, £ a year'], ['groundPct', 'Ground rent, % of rent'], ['groundEvery', 'Ground rent review, years'],
+    ['groundUpliftPct', 'Ground rent uplift, %'], ['scPsf', 'Service charge, £ per sq ft'], ['scTotal', 'Service charge, £ a year'], ['scRecoverPct', 'Service charge recovered, %'],
+    ['nia', 'NIA, sq ft'], ['gia', 'GIA, sq ft'], ['capexAmount', 'Capex, £'], ['capexPct', 'Capex, % of price'], ['renoPsf', 'Renovation, £ per sq ft'],
+    ['capexFrom', 'Capex from month'], ['capexTo', 'Capex to month'], ['acqAmount', 'Purchase loan, £'], ['acqFeePct', 'Arrangement fee, %'], ['acqExitFeePct', 'Exit fee, %'],
+    ['devAmount', 'Construction loan, £'], ['devLtcPct', 'Loan to cost, %'], ['devRatePct', 'Construction rate, %'], ['devFeePct', 'Construction fee, %'], ['devExitFeePct', 'Construction exit fee, %']
+  ];
+  function selectMark(value, option, fallback) {
+    const current = value == null || value === '' ? fallback : value;
+    return current === option ? ' selected' : '';
+  }
   function underwrite(match) {
     const input = inputsFor(match);
-    const under = match.underwrite;
-    const metrics = under && under.ok ? under.result : null;
     chrome('');
-    app.innerHTML = pickBar() + '<div class="card"><h2>Price, rent, debt and exit</h2><p class="lead">Price is the guide where one is recorded. Rent is filled only when the framework states a figure paid to the owner. Purchase costs 6.8%, loan 50%, rate 6.5% and exit yield 6% are the deal sheet starting figures, not facts from this lot. ' +
-      (input.termAssumed ? 'The hold is five years because the framework does not record a single term.' : 'The hold follows the recorded term of ' + input.termYearsUsed + ' years.') + '</p>' +
-      '<div class="dlgrid">' +
-      field('price', 'Guide price, £', input.price) +
-      field('rent1', 'Year one rent, £', input.rent1) +
-      field('opexPct', 'Operating costs, % of rent', input.opexPct) +
-      field('entryMonth', 'Entry month', input.entryMonth) +
-      field('exitMonth', 'Exit month', input.exitMonth) +
-      '</div><div id="uw_out"></div><p><button type="button" class="btn" id="open_sheet">Open the deal sheet</button></p>' +
-      '<p class="foot">The deal sheet is the existing monthly model. This button stores these inputs in this browser and opens it. Qualitative gates stay on needs evidence until someone ticks them there. Screening research, not an investment recommendation.</p></div>';
+    app.innerHTML = pickBar() + '<div class="card"><h2>Monthly cash flow</h2><p class="lead">Price is the guide where one is recorded. Rent stays blank unless the framework states what the owner is paid. 6.8% costs, a 50% loan, 6.5% and a 6% exit are the deal sheet starting figures. ' +
+      (input.termAssumed ? 'The hold is five years because no single term is recorded.' : 'The hold follows the recorded term of ' + input.termYearsUsed + ' years.') + '</p>' +
+      '<div class="dlgrid">' + MODEL_FIELDS.map(function (pair) { return field(pair[0], pair[1], input[pair[0]]); }).join('') +
+      '<label class="dlf"><small>Rent review</small><select data-k="reviewType"><option value="off"' + selectMark(input.reviewType, 'off', 'off') + '>Off</option><option value="fixed"' + selectMark(input.reviewType, 'fixed', 'off') + '>Fixed uplift</option><option value="index"' + selectMark(input.reviewType, 'index', 'off') + '>RPI or CPI</option></select></label>' +
+      '<label class="dlf"><small>Headlease</small><select data-k="headlease"><option value="off"' + selectMark(input.headlease, 'off', 'off') + '>Off</option><option value="on"' + selectMark(input.headlease, 'on', 'off') + '>On</option></select></label>' +
+      '<label class="dlf"><small>Ground rent</small><select data-k="groundBasis"><option value="off"' + selectMark(input.groundBasis, 'off', 'off') + '>Off</option><option value="pa"' + selectMark(input.groundBasis, 'pa', 'off') + '>£ a year</option><option value="pct"' + selectMark(input.groundBasis, 'pct', 'off') + '>% of rent</option></select></label>' +
+      '<label class="dlf"><small>Service charge</small><select data-k="scBasis"><option value="off"' + selectMark(input.scBasis, 'off', 'off') + '>Off</option><option value="psf"' + selectMark(input.scBasis, 'psf', 'off') + '>£ per sq ft</option><option value="total"' + selectMark(input.scBasis, 'total', 'off') + '>£ a year</option></select></label>' +
+      '</div><details><summary>Lease, areas, capex and both loans</summary><div class="dlgrid">' + LEASE_FIELDS.map(function (pair) { return field(pair[0], pair[1], input[pair[0]]); }).join('') +
+      '<label class="dlf"><small>Renovation area</small><select data-k="renoArea"><option value="gia"' + selectMark(input.renoArea, 'gia', 'gia') + '>GIA</option><option value="nia"' + selectMark(input.renoArea, 'nia', 'gia') + '>NIA</option></select></label>' +
+      '<label class="dlf"><small>Capex entered as</small><select data-k="capexBasis"><option value="amount"' + selectMark(input.capexBasis, 'amount', 'amount') + '>£ amount</option><option value="pct"' + selectMark(input.capexBasis, 'pct', 'amount') + '>% of price</option></select></label>' +
+      '<label class="dlf"><small>Construction loan</small><select data-k="devBasis"><option value="off"' + selectMark(input.devBasis, 'off', 'off') + '>Off</option><option value="amount"' + selectMark(input.devBasis, 'amount', 'off') + '>£ amount</option><option value="ltc"' + selectMark(input.devBasis, 'ltc', 'off') + '>% of capex</option></select></label>' +
+      '<label class="dlf"><small>Purchase loan interest</small><select data-k="acqInterest"><option value="serviced"' + selectMark(input.acqInterest, 'serviced', 'serviced') + '>Serviced</option><option value="rolled"' + selectMark(input.acqInterest, 'rolled', 'serviced') + '>Rolled up</option></select></label>' +
+      '</div></details><div id="uw_out"></div><p class="bar"><button type="button" class="btn" id="open_sheet">Open the deal sheet</button><button type="button" class="btn sec" id="save_copy">Download this underwriting</button></p>' +
+      '<p class="foot">Blank lease, area and debt fields change nothing. The download is the inputs and the monthly rows from the shared model. Screening research, not an investment recommendation.</p></div>';
     paintUnderwrite(match);
     app.querySelectorAll('[data-k]').forEach(function (el) {
       el.oninput = function () {
@@ -547,6 +614,7 @@
       };
     });
     document.getElementById('open_sheet').onclick = function () { openSheet(input); };
+    document.getElementById('save_copy').onclick = function () { downloadUnderwrite(match, input); };
     wirePick();
   }
   function namedGates() {
@@ -571,8 +639,32 @@
     }
     const fail = under.gates.gates.filter(function (gate) { return gate.status === 'fail'; }).length;
     const amber = under.gates.gates.filter(function (gate) { return gate.status === 'amber'; }).length;
-    box.innerHTML = '<p class="lead">' + under.gates.cleared + ' pass, ' + fail + ' fail, ' + amber + ' need evidence. Verdict ' + esc(under.gates.verdict) + '.</p>' + metricTiles(under.result) + gateBars(under.gates);
+    const years = (under.result.years || []).map(function (year) {
+      return '<tr><td>Year ' + year.year + '</td><td>' + esc(M.money(year.rent)) + '</td><td>' + esc(M.money(year.noi)) + '</td><td>' + esc(M.money(year.interest)) + '</td><td>' + esc(M.money(year.cash)) + '</td></tr>';
+    }).join('');
+    box.innerHTML = '<p class="lead">' + under.gates.cleared + ' pass, ' + fail + ' fail, ' + amber + ' need evidence. Verdict ' + esc(under.gates.verdict) + '.</p>' + metricTiles(under.result) +
+      (years ? '<div class="scroll"><table><thead><tr><th class="l">Year</th><th>Rent</th><th>NOI</th><th>Interest</th><th>Cash</th></tr></thead><tbody>' + years + '</tbody></table></div>' : '') +
+      gateBars(under.gates);
     fillPrint(match);
+  }
+  function downloadUnderwrite(match, input) {
+    const under = match.underwrite;
+    const copy = {
+      address: match.supply.address,
+      framework: match.requirement.name,
+      saved: new Date().toISOString(),
+      inputs: input,
+      ok: !!(under && under.ok),
+      missing: under && under.missing || [],
+      years: under && under.ok ? under.result.years : [],
+      months: under && under.ok ? under.result.rows : []
+    };
+    const blob = new Blob([JSON.stringify(copy, null, 2)], {type: 'application/json'});
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'laurito-gates-underwrite.json';
+    link.click();
+    URL.revokeObjectURL(link.href);
   }
   function openSheet(input) {
     let saved = {};
@@ -606,7 +698,7 @@
   function loading() {
     setStatus('loading…');
     chrome('');
-    document.getElementById('screen').innerHTML = '<p class="lc-kicker">Plan 2</p><h1>Shortlist</h1><p class="lc-purpose">Loading recorded frameworks and lots.</p>';
+    document.getElementById('screen').innerHTML = '<p class="lc-kicker">Laurito gates</p><h1>Matches</h1><p class="lc-purpose">Loading recorded frameworks and lots.</p>';
     app.innerHTML = '<div class="card"><p class="lead">Loading the Partners frameworks and the auction file.</p></div>';
   }
   function failedLoad() {
@@ -630,7 +722,7 @@
     await ensureRentGap();
     const current = window.lcCurrentLot ? window.lcCurrentLot.currentLot : function () { return true; };
     const repoNote = 'Not published on the Partners site. Loaded from this repository.';
-    const [frameworks, partners, offers, presence, lotsFile, watch, prices, pps, gates, areaYields, auctionYields, rentFile] = await Promise.all([
+    const [frameworks, partners, offers, presence, lotsFile, watch, prices, pps, gates, areaYields, auctionYields, rentFile, bip] = await Promise.all([
       getJson('Frameworks', SRC.frameworks),
       getJson('Partners', SRC.partners),
       getJson('Provider offers', SRC.offers, repoNote),
@@ -642,7 +734,8 @@
       getJson('Gate hurdles', SRC.gates),
       getJson('Area yields', SRC.areaYields),
       getJson('Auction yields', SRC.auctionYields),
-      getJson('LHA and market rent', SRC.rent)
+      getJson('LHA and market rent', SRC.rent),
+      getJson('BiP file on the Partners site', SRC.bip, 'Licensed BiP Intelligence rows published with the Partners site. Not copied into this repository.')
     ]);
     state.prices = prices;
     state.pps = pps;
@@ -657,6 +750,8 @@
     }
     if (!frameworks || !lotsFile) { failedLoad(); return; }
     const requirements = M.buildRequirements(frameworks, partners || {partners: []}, presence || {providers: []}, offers || []);
+    state.bipBuilt = bip && bip.built || '';
+    state.future = futureRows(requirements, bip);
     const auctions = M.auctionSupply((lotsFile && lotsFile.lots) || [], current);
     const watchlist = M.watchSupply(watch || {sites: []});
     state.matches = M.rank(requirements, auctions, 20).concat(M.rank(requirements, watchlist, 8));
