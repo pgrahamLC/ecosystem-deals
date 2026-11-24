@@ -1,8 +1,8 @@
-# Ecosystem Underwrite
+# Plan 2
 
 A separate static page from the Deals screens. It uses the same `assets/laurito.css` and `assets/ios.css` as Deals: the same header, tab bar, cards, tables, pills and buttons. It joins a recorded framework to a recorded lot, shows why the score moved, and opens the existing monthly model.
 
-GitHub Pages serves it at `/underwrite/` on this repository. To move it into its own repository later, copy this folder and the shared scripts listed below, and keep the same relative layout (`../assets`, `../data`, `../comps`) or change the paths in `underwrite.js`.
+GitHub Pages serves it at `/plan2/` on this repository. To move it into its own repository later, copy this folder and the shared scripts listed below, and keep the same relative layout (`../assets`, `../data`, `../comps`) or change the paths in `plan2/underwrite.js`.
 
 ## Flow
 
@@ -10,7 +10,7 @@ GitHub Pages serves it at `/underwrite/` on this repository. To move it into its
 2. **Requirement.** Towns, regions, house / flat / HMO, bed counts, lease term and rent basis are read off the framework text. A range such as “3 or 5 years”, a maximum, or “the council keeps a share” does not become a single number.
 3. **Supply.** Live auction lots use the same current-lot test as Deals (`assets/current-lots.js`). Watchlist titles come from `pre_distress.json`. A commercial, land or development lot is not matched to a residential requirement.
 4. **Evidence.** Sold-price medians, £ per sq ft, Local Housing Allowance against open-market rent, and area yields are the published area figures. They are not a valuation of the lot. `valuation_audit.json` is not joined, because a lot has no shared transaction id.
-5. **Underwrite.** Guide price is prefilled. Rent is prefilled only when the framework states a figure paid to the owner. The 14 gates run through `assets/gates-model.js` on the output of `assets/quick-model.js`. “Open the deal sheet” stores those inputs in this browser and opens the Deals deal sheet.
+5. **Plan 2.** Guide price is prefilled. Rent is prefilled only when the framework states a figure paid to the owner. The 14 gates run through `assets/gates-model.js` on the output of `assets/quick-model.js`. “Open the deal sheet” stores those inputs in this browser and opens the Deals deal sheet.
 
 ## Score
 
@@ -63,4 +63,4 @@ Loaded from `../assets/` and not copied:
 - `area-yields.js` — published yield sets
 - `current-lots.js` — which auction rows are still live
 
-`underwrite/match-model.js` is the scoring for this page. `node --test underwrite/match-model.test.js` checks it against the JSON in this repo.
+`plan2/match-model.js` is the scoring for this page. `node --test plan2/match-model.test.js` checks it against the JSON in this repo.

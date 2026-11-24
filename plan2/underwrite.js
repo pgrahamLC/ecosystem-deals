@@ -1,4 +1,4 @@
-/* Ecosystem Underwrite. Same chrome as Deals. Numbers come from the shared models. */
+/* Plan 2. Same chrome as Deals. Numbers come from the shared models. */
 (function () {
   'use strict';
 
@@ -25,7 +25,7 @@
     requirement: ['Requirement', 'Where and what', 'Town, form, beds, term and rent basis taken from the framework text.'],
     supply: ['Supply', 'The property', 'A live auction lot, or a watchlist title. Commercial lots are left out of a homes requirement.'],
     evidence: ['Evidence', 'Price and rent context', 'Published area figures. Not a valuation of this building.'],
-    underwrite: ['Underwrite', 'Monthly model and 14 gates', 'The guide is filled where one is recorded. Rent is filled only when the framework states what the owner is paid.']
+    underwrite: ['Plan 2', 'Monthly model and 14 gates', 'The guide is filled where one is recorded. Rent is filled only when the framework states what the owner is paid.']
   };
   const app = document.getElementById('app');
   const state = {
@@ -202,7 +202,7 @@
     demand: ['requirement', 'Requirement'],
     requirement: ['supply', 'Supply'],
     supply: ['evidence', 'Evidence'],
-    evidence: ['underwrite', 'Underwrite']
+    evidence: ['underwrite', 'Plan 2']
   };
   function pct1(rate) {
     if (rate == null || !isFinite(rate)) return M.NOT;
@@ -243,7 +243,7 @@
     const summary = under
       ? under.cleared + ' pass, ' + under.gates.filter(function (g) { return g.status === 'fail'; }).length + ' fail, ' + under.gates.filter(function (g) { return g.status === 'amber'; }).length + ' need evidence. ' + window.GatesModel.takeaway(under)
       : 'Not run. Year one rent or operating costs are not recorded, so none of the 14 gates has been tested.';
-    sheet.innerHTML = '<p>Laurito Capital · Underwrite · ' + esc(new Date().toISOString().slice(0, 10)) + '</p><h1>' + esc(match.supply.address) + '</h1><p>' + esc(match.requirement.name) + ' · ' + esc(match.requirement.buyer) + '</p>' +
+    sheet.innerHTML = '<p>Laurito Capital · Plan 2 · ' + esc(new Date().toISOString().slice(0, 10)) + '</p><h1>' + esc(match.supply.address) + '</h1><p>' + esc(match.requirement.name) + ' · ' + esc(match.requirement.buyer) + '</p>' +
       '<table><tbody>' + match.parts.map(function (row) { return '<tr><th>' + esc(row.key) + '</th><td>' + esc(pointsText(row)) + '</td><td>' + esc(row.reason) + '</td></tr>'; }).join('') +
       '<tr><th>Guide</th><td colspan="2">' + esc(match.supply.guide ? M.money(match.supply.guide) : M.NOT) + '</td></tr>' +
       '<tr><th>Guide per bedroom</th><td colspan="2">' + esc(fact.perBed ? M.money(fact.perBed) : M.NOT) + '</td></tr>' +
@@ -338,7 +338,7 @@
     const blob = new Blob([lines.join('\n')], {type: 'text/csv'});
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'underwrite-shortlist.csv';
+    link.download = 'plan2-shortlist.csv';
     link.click();
     URL.revokeObjectURL(link.href);
   }
@@ -606,7 +606,7 @@
   function loading() {
     setStatus('loading…');
     chrome('');
-    document.getElementById('screen').innerHTML = '<p class="lc-kicker">Underwrite</p><h1>Shortlist</h1><p class="lc-purpose">Loading recorded frameworks and lots.</p>';
+    document.getElementById('screen').innerHTML = '<p class="lc-kicker">Plan 2</p><h1>Shortlist</h1><p class="lc-purpose">Loading recorded frameworks and lots.</p>';
     app.innerHTML = '<div class="card"><p class="lead">Loading the Partners frameworks and the auction file.</p></div>';
   }
   function failedLoad() {
