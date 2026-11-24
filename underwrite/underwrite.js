@@ -617,10 +617,17 @@
     if (retry) retry.onclick = function () { start(); };
   }
 
+  async function ensureRentGap() {
+    if (window.lcRentGap) return;
+    const text = await fetch('../assets/rent-gap.js', {cache: 'no-store'}).then(function (response) { return response.text(); });
+    const quiet = text.replace(/\n\s*load\(\);\s*\n\}\)\(\);?\s*$/, '\n})();\n');
+    (0, eval)(quiet);
+  }
   async function start() {
     state.sources = [];
     state.failed = false;
     loading();
+    await ensureRentGap();
     const current = window.lcCurrentLot ? window.lcCurrentLot.currentLot : function () { return true; };
     const repoNote = 'Not published on the Partners site. Loaded from this repository.';
     const [frameworks, partners, offers, presence, lotsFile, watch, prices, pps, gates, areaYields, auctionYields, rentFile] = await Promise.all([

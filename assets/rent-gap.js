@@ -199,8 +199,8 @@
       '<details class="ios-disc"><summary>Sources and dates</summary><p>' + esc(book.omr.source) + '. Month: ' + esc(book.omr.month) + '.</p><p><a href="' + esc(book.omr.url) + '" target="_blank" rel="noopener">ONS private rent series</a></p><p>' + esc(book.lha.note) + ' In force ' + esc(book.lha.valid_from) + ' to ' + esc(book.lha.valid_to) + '. Checked ' + esc(book.lha.checked) + '.</p><p><a href="' + esc(book.lha.publication) + '" target="_blank" rel="noopener">DWP LHA rates 2026/27</a></p><p><a href="' + esc(book.lha.sources.England) + '" target="_blank" rel="noopener">England rate table</a> · <a href="' + esc(book.lha.sources.Scotland) + '" target="_blank" rel="noopener">Scotland rate table</a></p><p>The percentage is the monthly gap divided by the open-market rent.</p></details>';
   }
 
-  function load(url) {
-    return fetch(url || 'data/rent-scenarios.json').then(function (response) { return response.json(); }).then(function (data) {
+  function load() {
+    return fetch('data/rent-scenarios.json').then(function (response) { return response.json(); }).then(function (data) {
       book = data;
       table = build(data);
       const host = document.getElementById('lc_screen');
@@ -211,6 +211,5 @@
   }
 
   window.lcRentGap = { build: build, bedsFrom: bedsFrom, areaOf: areaOf, forLead: forLead, paint: paint, load: load, areas: AREAS, beds: BEDS };
-  // A page in another folder sets lcDataRoot and calls load() with its own path.
-  if (!window.lcDataRoot) load();
+  load();
 })();

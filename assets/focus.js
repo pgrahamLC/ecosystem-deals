@@ -70,6 +70,8 @@
     if (!bar || bar.dataset.focus) return;
     const partner = document.querySelector('#nav2 a.mainb');
     const partnerHref = partner ? partner.href : 'https://pgraham974.github.io/ecosystem-partners/';
+    const underwrite = document.querySelector('#nav2 a.mainb[href*="underwrite"]');
+    const underwriteHref = underwrite ? underwrite.href : 'underwrite/';
     bar.dataset.focus = '1';
     bar.innerHTML = PRIMARY.map(function (pair) {
       return '<button class="mainb" type="button" data-v="' + pair[0] + '">' + pair[1] + '</button>';
@@ -79,7 +81,8 @@
       MORE.map(function (pair) {
         return '<button type="button" data-v="' + pair[0] + '">' + pair[1] + '</button>';
       }).join('') +
-      '<a href="' + esc(partnerHref) + '" target="_blank" rel="noopener">Partner site</a></div></div>';
+      '<a href="' + esc(partnerHref) + '" target="_blank" rel="noopener">Partner site</a>' +
+      '<a href="' + esc(underwriteHref) + '" target="_blank" rel="noopener">Underwrite</a></div></div>';
     bar.addEventListener('click', function (e) {
       const btn = e.target.closest('[data-v]');
       if (!btn || !bar.contains(btn)) return;
