@@ -1,16 +1,39 @@
-# Plan 2
+# Laurito gates
 
 A separate static page from the Deals screens. It uses the same `assets/laurito.css` and `assets/ios.css` as Deals: the same header, tab bar, cards, tables, pills and buttons. It joins a recorded framework to a recorded lot, shows why the score moved, and opens the existing monthly model.
 
-GitHub Pages serves it at `/plan2/` on this repository. To move it into its own repository later, copy this folder and the shared scripts listed below, and keep the same relative layout (`../assets`, `../data`, `../comps`) or change the paths in `plan2/underwrite.js`.
+GitHub Pages serves it at `/plan2/` on this repository. The Deals nav label is Laurito gates. The folder stays `plan2/` so existing links keep working. To move it into its own repository later, copy this folder and the shared scripts listed below, and keep the same relative layout (`../assets`, `../data`, `../comps`) or change the paths in `plan2/underwrite.js`.
 
 ## Flow
 
 1. **Demand.** Frameworks and partners are read from the live Partners site. Each framework is linked to a partner when the partner record names it, or when the framework lists that partner as a supplier. Provider evidence (`presence.json`) adds contract, framework, block-contract, council-report and ownership rows whose text names the framework.
-2. **Requirement.** Towns, regions, house / flat / HMO, bed counts, lease term and rent basis are read off the framework text. A range such as “3 or 5 years”, a maximum, or “the council keeps a share” does not become a single number.
+2. **Requirement.** Each framework shows the asset: homes needed, unit type, bedrooms, locations, lease term, rent basis, rent level, repairs, voids, breaks, indexation, start, end and contract value. A field with no recorded fact says not recorded, and those fields are listed as what is still needed. A range, a maximum, or “the council keeps a share” does not become a single rent.
 3. **Supply.** Live auction lots use the same current-lot test as Deals (`assets/current-lots.js`). Watchlist titles come from `pre_distress.json`. A commercial, land or development lot is not matched to a residential requirement.
 4. **Evidence.** Sold-price medians, £ per sq ft, Local Housing Allowance against open-market rent, and area yields are the published area figures. They are not a valuation of the lot. `valuation_audit.json` is not joined, because a lot has no shared transaction id.
-5. **Plan 2.** Guide price is prefilled. Rent is prefilled only when the framework states a figure paid to the owner. The 14 gates run through `assets/gates-model.js` on the output of `assets/quick-model.js`. “Open the deal sheet” stores those inputs in this browser and opens the Deals deal sheet.
+5. **Underwrite.** The monthly cash flow is `assets/quick-model.js`, the same model as the Deals deal sheet: rent review, rent-free, headlease, ground rent, service charge, NIA and GIA, capex, renovation per sq ft, and the purchase and construction loans. Guide price is prefilled. Rent is prefilled only when the framework states a figure paid to the owner. Blank lease and debt fields change nothing. “Download this underwriting” saves the inputs and the monthly rows. The 14 gates run through `assets/gates-model.js`. Until rent and operating costs are recorded they say needs evidence.
+
+## Procurement feeds
+
+Find a Tender and Contracts Finder both serve OCDS JSON under the Open Government Licence. No API key was required for:
+
+- `https://www.find-tender.service.gov.uk/api/1.0/ocdsReleasePackages`
+- `https://www.contractsfinder.service.gov.uk/Published/Notices/OCDS/Search`
+
+A sample page of 100 Contracts Finder releases, requested with the keyword “temporary accommodation”, still contained unrelated notices (vehicle fit-out, conference venues). The keyword was echoed in the next-page link and did not restrict the page. Where a notice does match, the structured fields are title, description, a contract value and sometimes a contract period. Items in the sample had no quantity and no unit. None of the three checked frameworks (Wigan lease management, Manchester long-term TA, Bristol EA DN677298) is a Contracts Finder notice in the framework source list. Wigan is a council landlord page. Manchester is a council decision. Bristol EA is on other tender sites.
+
+So the feeds cannot fill homes needed, lease term, rent basis or the rent paid to the owner for these frameworks. Patrick does not need to register for the public read. A useful fill would need the notice id for each framework, and even then the rent and repair terms are usually only in the tender documents, which these calls do not return.
+
+## Council leases
+
+`data/land-registry/council-leases.json` is empty of titles. The Use land and property data API refused a request with no key (HTTP 403 on 24 Nov 2026). The pipeline is `node scripts/land-registry/council-leases.mjs`. Patrick’s steps are in `data/land-registry/README.md`: create an account, agree the CCOD licence and a Registered Leases licence, then set the GitHub secret `HMLR_API_KEY` or drop the files in `data/land-registry/inbox/`. Leases of seven years or less are not registered. Rent is not in the files. Each row links to the title-number search, where an online copy of the register is £7. When the file is loaded, a scheme shows the count, typical term and locations of matching council titles as precedent, not as the rent.
+
+## BiP
+
+`BiP` does not appear in this repository. It is on the Partners site. `v4-enrich.json` is published at `https://pgraham974.github.io/ecosystem-partners/v4-enrich.json` (HTTP 200). It was built 3 Nov 2026. The Partners pipeline (`build/enrich_site.py`) rebuilds that file from the Laurito opportunities workbook and overlays `build/bip_refresh.json`. That overlay is the 3 Nov 2026 re-fetch (`get_award` and `search_spend_transactions`). No refresh script and no credential are in the repo, and the BiP connection on this agent did not load. A newer pull needs Patrick’s licensed BiP access: replace `ecosystem-partners/build/bip_refresh.json`, run `python3 build/enrich_site.py`, and publish `v4-enrich.json`. Laurito gates reads the live file and does not copy it. A value there is a ceiling unless the file says actual.
+
+## Supply
+
+Auction lots already in `data/auctions/lots.json` are the supply, plus the watchlist in `pre_distress.json`. The source inventory is `data/auctions/SOURCE-INVENTORY.md`. Rightmove states that scraping is prohibited. OnTheMarket forbids an automated copy of any page except the home page. Zoopla’s terms page returned 403 here and is not collected. BidX1 did not resolve. Those sites are not scraped. New only means the lot was first seen in the last 14 days.
 
 ## Score
 
@@ -41,7 +64,8 @@ Deals files, same paths the Deals page uses, relative to this folder:
 - `../data/auctions/lots.json`
 - `../pre_distress.json`
 - `../data/rent-scenarios.json` via `assets/rent-gap.js` (`build`, `areaOf`)
-- `../comps/area-yields.json` and `../comps/yields.json` via `assets/area-yields.js` and `assets/niy.js`
+- `../comps/area-yields.json` via `assets/area-yields.js`. The NIY comparison is not shown.
+- `https://pgraham974.github.io/ecosystem-partners/v4-enrich.json` for future schemes. That file includes licensed BiP Intelligence rows. It is read from the Partners site and is not copied into this repository.
 - `../comps/home-ppsqft.json`
 - `../prices.json`
 - `../data/market-entry/gates.json`
@@ -59,7 +83,6 @@ Loaded from `../assets/` and not copied:
 - `quick-model.js` — monthly underwriting
 - `gates-model.js` — the 14 gates
 - `rent-gap.js` — Local Housing Allowance against open-market rent
-- `niy.js` — net initial yield comps
 - `area-yields.js` — published yield sets
 - `current-lots.js` — which auction rows are still live
 
