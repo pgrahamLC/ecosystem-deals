@@ -188,6 +188,7 @@
     s.completionMonth = numOr(file.assumptions.completionMonth, 0);
     s.capex = numOr(file.costs.handbackCapex, 0);
     s.capexPerUnit = 0;
+    s.capexMode = 'gbp';
     s.saleCostsPct = numOr(file.costs.saleCostsPct, 0) + numOr(file.costs.lauritoDisposalPct, 0);
     s.acqCostsPct = numOr(file.costs.purchaseCostsPct, 0) + numOr(file.costs.lauritoAcquisitionPct, 0);
     s.exitYield = numOr(file.assumptions.exitYieldPct, s.exitYield);
