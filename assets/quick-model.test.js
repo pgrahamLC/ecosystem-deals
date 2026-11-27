@@ -570,6 +570,188 @@ test('year-one cash on cash leaves capex out, and peak debt includes the constru
   assert.equal(peak.pass, false);
 });
 
+function sameFlows(actual, expected) {
+  assert.equal(actual.ok, true);
+  assert.equal(expected.ok, true);
+  ['noi1', 'exitNoi', 'exitValue', 'unleveredIrr', 'leveredIrr', 'niy'].forEach((key) => near(actual[key], expected[key], 1e-9));
+  assert.equal(actual.rows.length, expected.rows.length);
+  actual.rows.forEach((row, index) => {
+    near(row.ground, expected.rows[index].ground, 1e-6);
+    near(row.noi, expected.rows[index].noi, 1e-6);
+    near(row.rent, expected.rows[index].rent, 1e-6);
+    near(row.sale, expected.rows[index].sale, 1e-6);
+  });
+  actual.years.forEach((year, index) => near(year.ground, expected.years[index].ground, 1e-6));
+}
+
+test('a legacy single ground rent matches one row, and a blank list adds nothing', () => {
+  const legacy = Q.compute(worked);
+  const listed = Q.compute(Object.assign({}, worked, {groundRents: [{label: '', basis: 'pa', amount: 1200}]}));
+  sameFlows(listed, legacy);
+  assert.equal(listed.groundLines.length, 1);
+  assert.equal(listed.groundLines[0].label, '');
+  assert.equal(listed.flags.ground, true);
+  // The list is the whole charge. Leaving the old fields beside an empty list does not bring the old rent back.
+  const cleared = Q.compute(Object.assign({}, flat, {
+    groundBasis: 'pa', groundRent: 2400, groundEvery: 5, groundUpliftPct: 10, groundRents: []
+  }));
+  assert.equal(cleared.rows[0].ground, 0);
+  assert.equal(cleared.flags.ground, false);
+  near(cleared.noi1, Q.compute(flat).noi1, 1e-9);
+  near(cleared.exitNoi, Q.compute(flat).exitNoi, 1e-9);
+  const blank = Q.compute(Object.assign({}, flat, blankLease));
+  const none = Q.compute(Object.assign({}, flat, blankLease, {groundRents: []}));
+  sameFlows(none, blank);
+  const oldShare = Q.compute(Object.assign({}, flat, {
+    ltvPct: 0, exitMonth: '2029-01', reviewType: 'fixed', reviewEvery: 1, reviewUpliftPct: 10,
+    groundBasis: 'pct', groundPct: 5, groundEvery: 1, groundUpliftPct: 10
+  }));
+  const oneShare = Q.compute(Object.assign({}, flat, {
+    ltvPct: 0, exitMonth: '2029-01', reviewType: 'fixed', reviewEvery: 1, reviewUpliftPct: 10,
+    groundBasis: 'pct', groundPct: 5, groundEvery: 1, groundUpliftPct: 10,
+    groundRents: [{basis: 'pct', amount: 5, every: 1, upliftPct: 10}]
+  }));
+  sameFlows(oneShare, oldShare);
+  assert.ok(oneShare.warnings.some((line) => /percentage of the passing rent/i.test(line)));
+  // A saved uplift on the old fields still stops the model when there is no list. A percentage row ignores it.
+  const oldBreak = Q.compute(Object.assign({}, flat, {groundUpliftPct: -100}));
+  assert.equal(oldBreak.ok, false);
+  assert.ok(oldBreak.missing.includes('ground rent uplift'));
+  const ignored = Q.compute(Object.assign({}, flat, {ltvPct: 0, groundRents: [{basis: 'pct', amount: 5, every: 1, upliftPct: -100}]}));
+  assert.equal(ignored.ok, true);
+  near(ignored.rows[0].ground, 100000 / 12 * 0.05);
+  assert.ok(ignored.warnings.some((line) => /percentage of the passing rent/i.test(line)));
+});
+
+test('several flat ground rents each keep their own review', () => {
+  const out = Q.compute(Object.assign({}, flat, {
+    ltvPct: 0, exitMonth: '2031-01',
+    groundRents: [
+      {label: 'Peppercorn', basis: 'pa', amount: 1200, every: 1, upliftPct: 10},
+      {label: 'Garage', basis: 'pa', amount: 2400, every: 3, upliftPct: 5}
+    ]
+  }));
+  assert.equal(out.months, 48);
+  near(out.rows[0].ground, 100 + 200);
+  near(out.rows[0].noi, 80000 / 12 - 300);
+  near(out.rows[12].ground, 1200 * 1.1 / 12 + 200);
+  near(out.rows[36].ground, 1200 * Math.pow(1.1, 3) / 12 + 2400 * 1.05 / 12);
+  const exitGround = 1200 * Math.pow(1.1, 4) + 2400 * 1.05;
+  near(out.exitNoi, 80000 - exitGround);
+  near(out.exitValue, out.exitNoi / 0.08);
+  near(out.years[0].ground, 300 * 12);
+  near(out.years[3].ground, out.rows.slice(36, 48).reduce((sum, row) => sum + row.ground, 0));
+  assert.deepEqual(out.groundLines.map((line) => line.label), ['Peppercorn', 'Garage']);
+});
+
+test('several percentage ground rents add up to one share of the reviewed rent', () => {
+  const many = Q.compute(Object.assign({}, flat, {
+    ltvPct: 0, exitMonth: '2029-01', rentFreeMonths: 2,
+    reviewType: 'fixed', reviewEvery: 1, reviewUpliftPct: 10,
+    groundRents: [
+      {basis: 'pct', amount: 2},
+      {basis: 'pct', amount: 3, every: 1, upliftPct: 10}
+    ]
+  }));
+  const one = Q.compute(Object.assign({}, flat, {
+    ltvPct: 0, exitMonth: '2029-01', rentFreeMonths: 2,
+    reviewType: 'fixed', reviewEvery: 1, reviewUpliftPct: 10,
+    groundBasis: 'pct', groundPct: 5
+  }));
+  assert.equal(many.rows[0].ground, 0);
+  assert.equal(many.rows[1].ground, 0);
+  near(many.rows[2].ground, 100000 / 12 * 0.05);
+  near(many.rows[12].rent, 110000 / 12);
+  near(many.rows[12].ground, 110000 / 12 * 0.05);
+  assert.ok(Math.abs(many.rows[12].ground - 110000 / 12 * 0.055) > 1);
+  sameFlows(many, one);
+  assert.equal(many.warnings.filter((line) => /percentage of the passing rent/i.test(line)).length, 1);
+  near(many.exitNoi, one.exitNoi);
+});
+
+test('flat fees and a percentage are summed, and empty rows are left out', () => {
+  const rows = [
+    {label: 'Peppercorn', basis: 'pa', amount: '1,200', every: 2, upliftPct: 25},
+    {label: 'Garage', basis: 'pa', amount: 600},
+    {label: 'Estate', basis: 'pct', amount: 5, every: 2, upliftPct: 25},
+    {label: 'Blank', basis: 'pa', amount: ''},
+    {basis: 'pa', amount: '   '},
+    {basis: 'off', amount: 9000},
+    null,
+    {label: 'Zero', basis: 'pct', amount: 0}
+  ];
+  const mix = {
+    basis: 'price', price: 1000000, rent1: 120000, opexPct: 20, growthPct: 0, costsPct: 0, ltvPct: 0,
+    entryMonth: '2027-01', exitMonth: '2030-01', exitYieldPct: 8, saleCostsPct: 0,
+    reviewType: 'fixed', reviewEvery: 2, reviewUpliftPct: 10, rentFreeMonths: 3,
+    groundRents: rows
+  };
+  const out = Q.compute(mix);
+  const clean = Q.compute(Object.assign({}, mix, {groundRents: rows.slice(0, 3)}));
+  sameFlows(out, clean);
+  assert.deepEqual(out.groundLines.map((line) => line.label), ['Peppercorn', 'Garage', 'Estate']);
+  assert.equal(out.groundLines[2].upliftPct, null);
+  // Month 1 is rent-free: both flat fees run, the percentage does not.
+  assert.equal(out.rows[0].rent, 0);
+  near(out.rows[0].ground, 150);
+  near(out.rows[0].noi, -150);
+  // Month 4 is full rent, before either review.
+  near(out.rows[3].rent, 10000);
+  near(out.rows[3].ground, 650);
+  near(out.rows[3].noi, 7350);
+  // Month 25: rent and the peppercorn both step. The 5% does not step again.
+  near(out.rows[24].rent, 11000);
+  near(out.rows[24].ground, 725);
+  assert.ok(Math.abs(out.rows[24].ground - (125 + 50 + 11000 * 0.05 * 1.25)) > 1);
+  near(out.rows[24].noi, 8075);
+  near(out.years[0].ground, 6300);
+  near(out.years[1].ground, 7800);
+  near(out.years[2].ground, 8700);
+  near(out.exitNoi, 96900);
+  near(out.exitValue, 1211250);
+  assert.equal(out.warnings.filter((line) => /percentage of the passing rent/i.test(line)).length, 1);
+});
+
+test('every ground rent stops when the headlease ends', () => {
+  const out = Q.compute(Object.assign({}, flat, {
+    ltvPct: 0, exitMonth: '2030-01', rent1: 120000,
+    reviewType: 'fixed', reviewEvery: 2, reviewUpliftPct: 10, rentFreeMonths: 3,
+    headlease: 'on', headleaseTerm: 2.5,
+    groundRents: [
+      {label: 'Peppercorn', basis: 'pa', amount: 1200, every: 2, upliftPct: 25},
+      {label: 'Garage', basis: 'pa', amount: 600},
+      {label: 'Estate', basis: 'pct', amount: 5}
+    ]
+  }));
+  assert.equal(out.exitBasis, 'expired');
+  assert.equal(out.exitValue, 0);
+  assert.equal(out.exitNoi, 0);
+  near(out.rows[0].ground, 150);
+  near(out.rows[24].ground, 725);
+  near(out.rows[29].ground, 725);
+  assert.equal(out.rows[30].rent, 0);
+  assert.equal(out.rows[30].ground, 0);
+  assert.equal(out.rows[30].noi, 0);
+  assert.equal(out.rows[35].ground, 0);
+  near(out.years[2].ground, 725 * 6);
+  assert.ok(out.warnings.some((line) => /expires in month 30/.test(line)));
+});
+
+test('a ground rent above 100%, a flat uplift of -100%, or a negative fee stops the model', () => {
+  const share = Q.compute(Object.assign({}, flat, {groundRents: [{basis: 'pct', amount: 101}, {basis: 'pa', amount: 100}]}));
+  assert.equal(share.ok, false);
+  assert.ok(share.missing.includes('ground rent share of rent'));
+  const uplift = Q.compute(Object.assign({}, flat, {groundRents: [{basis: 'pa', amount: 100, every: 5, upliftPct: -100}]}));
+  assert.equal(uplift.ok, false);
+  assert.ok(uplift.missing.includes('ground rent uplift'));
+  const negative = Q.compute(Object.assign({}, flat, {groundRents: [{basis: 'pa', amount: -1}, {basis: 'pct', amount: -5}]}));
+  assert.equal(negative.ok, false);
+  assert.deepEqual(negative.missing, ['ground rent']);
+  const legacy = Q.compute(Object.assign({}, flat, {groundRent: -1}));
+  assert.equal(legacy.ok, false);
+  assert.ok(legacy.missing.includes('ground rent'));
+});
+
 test('opex is nil in a rent-free month unless void costs are switched on', () => {
   const nil = Q.compute(Object.assign({}, flat, {ltvPct: 0, rentFreeMonths: 3}));
   assert.equal(nil.rows[0].rent, 0);
