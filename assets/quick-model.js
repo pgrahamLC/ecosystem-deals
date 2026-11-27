@@ -69,6 +69,75 @@
     const steps = everyMonths > 0 ? Math.floor((month - 1) / everyMonths) : 0;
     return base * Math.pow(1 + uplift, steps);
   }
+  function pushOnce(list, item) {
+    if (list.indexOf(item) < 0) list.push(item);
+  }
+  // A percentage already follows the passing rent, so a second uplift would compound twice.
+  const GROUND_PCT_UPLIFT = 'Ground rent is a percentage of the passing rent, so the uplift is not applied again. A rent review already changes the rent.';
+  // groundRents, when present, is the whole list. The old single fields are used only when that list is absent.
+  function readGrounds(input, missing, warnings) {
+    if (Array.isArray(input.groundRents)) return groundsFromList(input.groundRents, missing, warnings);
+    return groundsFromLegacy(input, missing, warnings);
+  }
+  function groundsFromLegacy(input, missing, warnings) {
+    const basis = input.groundBasis === 'pa' || input.groundBasis === 'pct' ? input.groundBasis : 'off';
+    const rent = opt(input.groundRent);
+    const share = opt(input.groundPct);
+    const everyYears = opt(input.groundEvery);
+    const upliftPct = opt(input.groundUpliftPct);
+    const uplift = (upliftPct || 0) / 100;
+    const every = everyYears > 0 ? Math.round(everyYears * 12) : 0;
+    if (uplift <= -1) missing.push('ground rent uplift');
+    if (basis === 'pct' && (share || 0) > 100) missing.push('ground rent share of rent');
+    if (basis === 'pct' && (share || 0) > 0 && every > 0 && Math.abs(uplift) > 1e-12) warnings.push(GROUND_PCT_UPLIFT);
+    const rows = [];
+    if (basis === 'pa' && Math.max(0, rent || 0) > 0) {
+      rows.push({label: '', basis: 'pa', amount: Math.max(0, rent || 0), every, everyYears: everyYears > 0 ? everyYears : null, uplift, upliftPct});
+    }
+    if (basis === 'pct' && (share || 0) > 0) {
+      rows.push({label: '', basis: 'pct', amount: share, every, everyYears: everyYears > 0 ? everyYears : null, uplift: 0, upliftPct: null});
+    }
+    return rows;
+  }
+  function groundsFromList(list, missing, warnings) {
+    const rows = [];
+    let pctUplift = false;
+    list.forEach((row) => {
+      if (!row || typeof row !== 'object') return;
+      const basis = row.basis === 'pa' || row.basis === 'pct' ? row.basis : 'off';
+      if (basis === 'off') return;
+      const amount = opt(row.amount);
+      if (amount == null || amount === 0) return;
+      if (amount < 0) {
+        pushOnce(missing, 'ground rent');
+        return;
+      }
+      const everyYears = opt(row.every);
+      const every = everyYears > 0 ? Math.round(everyYears * 12) : 0;
+      const upliftPct = opt(row.upliftPct);
+      const uplift = (upliftPct || 0) / 100;
+      if (basis === 'pa' && uplift <= -1) {
+        pushOnce(missing, 'ground rent uplift');
+        return;
+      }
+      if (basis === 'pct' && amount > 100) {
+        pushOnce(missing, 'ground rent share of rent');
+        return;
+      }
+      if (basis === 'pct' && every > 0 && Math.abs(uplift) > 1e-12) pctUplift = true;
+      rows.push({
+        label: String(row.label == null ? '' : row.label).trim(),
+        basis,
+        amount,
+        every,
+        everyYears: everyYears > 0 ? everyYears : null,
+        uplift: basis === 'pa' ? uplift : 0,
+        upliftPct: basis === 'pa' ? upliftPct : null
+      });
+    });
+    if (pctUplift) warnings.push(GROUND_PCT_UPLIFT);
+    return rows;
+  }
 
   // Every rate comes in as a percentage, for example 6.5 for 6.5%. Rent and rates are yearly figures.
   // Month 1 is the entry month. Anything left blank is off, and the cash flow matches the original model.
@@ -120,15 +189,7 @@
     const headTerm = headOn && headTermYears != null ? Math.round(headTermYears * 12) : null;
     if (headOn && headTermYears != null && !(headTerm > 0)) missing.push('headlease term');
     if (headUplift <= -1) missing.push('headlease uplift');
-    const groundBasis = input.groundBasis === 'pa' || input.groundBasis === 'pct' ? input.groundBasis : 'off';
-    const groundPa = Math.max(0, opt(input.groundRent) || 0);
-    const groundPct = (opt(input.groundPct) || 0) / 100;
-    const groundEvery = opt(input.groundEvery) > 0 ? Math.round(opt(input.groundEvery) * 12) : 0;
-    const groundUplift = (opt(input.groundUpliftPct) || 0) / 100;
-    if (groundUplift <= -1) missing.push('ground rent uplift');
-    if (groundBasis === 'pct' && (opt(input.groundPct) || 0) > 100) missing.push('ground rent share of rent');
-    // A percentage already follows the passing rent, so a second uplift would compound twice.
-    if (groundBasis === 'pct' && groundPct > 0 && groundEvery > 0 && Math.abs(groundUplift) > 1e-12) warnings.push('Ground rent is a percentage of the passing rent, so the uplift is not applied again. A rent review already changes the rent.');
+    const grounds = readGrounds(input, missing, warnings);
     const scBasis = input.scBasis === 'psf' || input.scBasis === 'total' ? input.scBasis : 'off';
     const scRecover = opt(input.scRecoverPct);
     const scRecoverFrac = scRecover == null ? 0 : scRecover / 100;
@@ -137,7 +198,9 @@
     const gia = Math.max(0, opt(input.gia) || 0);
     const renoPsf = Math.max(0, opt(input.renoPsf) || 0);
     const renoArea = input.renoArea === 'nia' ? 'nia' : 'gia';
-    const moneyNames = [['headleaseRent', 'headlease rent'], ['groundRent', 'ground rent'], ['scPsf', 'service charge'], ['scTotal', 'service charge'], ['capexAmount', 'capex'], ['capexPct', 'capex'], ['renoPsf', 'renovation cost'], ['acqAmount', 'purchase loan'], ['acqFeePct', 'arrangement fee'], ['acqExitFeePct', 'exit fee'], ['devAmount', 'construction loan'], ['devLtcPct', 'loan to cost'], ['devFeePct', 'construction arrangement fee'], ['devExitFeePct', 'construction exit fee'], ['acqRefiAmount', 'refinance loan'], ['nia', 'net internal area'], ['gia', 'gross internal area']];
+    const moneyNames = [['headleaseRent', 'headlease rent']];
+    if (!Array.isArray(input.groundRents)) moneyNames.push(['groundRent', 'ground rent']);
+    [['scPsf', 'service charge'], ['scTotal', 'service charge'], ['capexAmount', 'capex'], ['capexPct', 'capex'], ['renoPsf', 'renovation cost'], ['acqAmount', 'purchase loan'], ['acqFeePct', 'arrangement fee'], ['acqExitFeePct', 'exit fee'], ['devAmount', 'construction loan'], ['devLtcPct', 'loan to cost'], ['devFeePct', 'construction arrangement fee'], ['devExitFeePct', 'construction exit fee'], ['acqRefiAmount', 'refinance loan'], ['nia', 'net internal area'], ['gia', 'gross internal area']].forEach((pair) => moneyNames.push(pair));
     moneyNames.forEach(([key, label]) => { if (opt(input[key]) != null && opt(input[key]) < 0) missing.push(label); });
     if (missing.length) return {ok: false, missing};
 
@@ -178,13 +241,15 @@
       const op = (rentFreeNow && opexOnPassing ? contracted : rent) * opex;
       const head = headOn && headRent > 0 ? stepped(headRent, month, headEvery, headUplift) / 12 : 0;
       let ground = 0;
-      if (groundBasis === 'pa' && groundPa > 0) ground = stepped(groundPa, month, groundEvery, groundUplift) / 12;
-      if (groundBasis === 'pct' && groundPct > 0) ground = Math.min(1, groundPct) * rent;
+      grounds.forEach((row) => {
+        if (row.basis === 'pa') ground += stepped(row.amount, month, row.every, row.uplift) / 12;
+        else ground += Math.min(1, row.amount / 100) * rent;
+      });
       const scAnnual = scBasis === 'psf' ? (opt(input.scPsf) || 0) * nia : scBasis === 'total' ? (opt(input.scTotal) || 0) : 0;
       const service = scBasis === 'off' ? 0 : Math.max(0, scAnnual) / 12 * (1 - Math.min(1, Math.max(0, scRecoverFrac)));
       return {rent, opex: op, headlease: head, ground, service, noi: rent - op - head - ground - service};
     }
-    const plainIncome = !reviewApplied && !(rentFree > 0) && !(headOn && (headRent > 0 || headTerm != null)) && groundBasis === 'off' && scBasis === 'off';
+    const plainIncome = !reviewApplied && !(rentFree > 0) && !(headOn && (headRent > 0 || headTerm != null)) && !grounds.length && scBasis === 'off';
     let exitNoi = 0;
     let exitLive = 0;
     for (let month = months + 1; month <= months + 12; month += 1) {
@@ -428,7 +493,7 @@
       review: reviewApplied && (Math.abs(reviewUplift) > 1e-12 || Math.abs(growth) > 1e-12),
       rentFree: rentFree > 0,
       headlease: headOn && headRent > 0,
-      ground: groundBasis !== 'off' && (groundBasis === 'pa' ? groundPa > 0 : groundPct > 0),
+      ground: grounds.length > 0,
       service: scBasis !== 'off' && rows.some((row) => row.service > 0.005),
       areas: nia > 0 || gia > 0,
       capex: totalCapex > 0.5,
@@ -468,6 +533,7 @@
         giaPricePsf: gia > 0 ? price / gia : null, noiPsf: nia > 0 ? noi1 / nia : null,
         capexPsf: nia > 0 ? totalCapex / nia : null, allInPsf: nia > 0 ? allIn / nia : null
       } : null,
+      groundLines: grounds.map((row) => ({label: row.label, basis: row.basis, amount: row.amount, everyYears: row.everyYears, upliftPct: row.upliftPct})),
       flags, warnings,
       flows: {unlevered, levered}
     };

@@ -5,11 +5,50 @@
   const body = document.getElementById('deal_body');
   if (!body || !document.getElementById('deal_view') || !window.QuickModel) return;
   const KEY = 'ed_quick_model';
-  const DEFAULTS = {name: '', route: 'LHA', basis: 'price', price: '', niyPct: '', rent1: '', opexPct: '', growthPct: '', costsPct: '6.8', ltvPct: '50', ratePct: '6.5', loanType: 'io', termYears: '25', entryMonth: '', exitMonth: '', exitYieldPct: '6', saleCostsPct: '2', reviewEvery: '', reviewType: 'off', reviewUpliftPct: '', reviewCapPct: '', reviewCollarPct: '', rentFreeMonths: '', rentFreeOpex: 'off', headlease: 'off', headleaseRent: '', headleaseEvery: '', headleaseUpliftPct: '', headleaseTerm: '', groundBasis: 'off', groundRent: '', groundPct: '', groundEvery: '', groundUpliftPct: '', scBasis: 'off', scPsf: '', scTotal: '', scRecoverPct: '', nia: '', gia: '', capexBasis: 'amount', capexAmount: '', capexPct: '', renoPsf: '', renoArea: 'gia', capexFrom: '', capexTo: '', acqAmount: '', acqFeePct: '', acqExitFeePct: '', acqDraw: '', acqRepay: '', acqInterest: 'serviced', acqRefiMonth: '', acqRefiAmount: '', acqRefiLtvPct: '', acqRefiRatePct: '', acqRefiFeePct: '', devBasis: 'off', devAmount: '', devLtcPct: '', devRatePct: '', devFeePct: '', devExitFeePct: '', devDrawFrom: '', devDrawTo: '', devRepay: '', devInterest: 'rolled'};
+  const DEFAULTS = {name: '', route: 'LHA', basis: 'price', price: '', niyPct: '', rent1: '', opexPct: '', growthPct: '', costsPct: '6.8', ltvPct: '50', ratePct: '6.5', loanType: 'io', termYears: '25', entryMonth: '', exitMonth: '', exitYieldPct: '6', saleCostsPct: '2', reviewEvery: '', reviewType: 'off', reviewUpliftPct: '', reviewCapPct: '', reviewCollarPct: '', rentFreeMonths: '', rentFreeOpex: 'off', headlease: 'off', headleaseRent: '', headleaseEvery: '', headleaseUpliftPct: '', headleaseTerm: '', groundBasis: 'off', groundRent: '', groundPct: '', groundEvery: '', groundUpliftPct: '', groundRents: [], scBasis: 'off', scPsf: '', scTotal: '', scRecoverPct: '', nia: '', gia: '', capexBasis: 'amount', capexAmount: '', capexPct: '', renoPsf: '', renoArea: 'gia', capexFrom: '', capexTo: '', acqAmount: '', acqFeePct: '', acqExitFeePct: '', acqDraw: '', acqRepay: '', acqInterest: 'serviced', acqRefiMonth: '', acqRefiAmount: '', acqRefiLtvPct: '', acqRefiRatePct: '', acqRefiFeePct: '', devBasis: 'off', devAmount: '', devLtcPct: '', devRatePct: '', devFeePct: '', devExitFeePct: '', devDrawFrom: '', devDrawTo: '', devRepay: '', devInterest: 'rolled'};
   const ROUTES = ['LHA', 'Council lease', 'Home Office provider', 'Mack Living', 'Office', 'Other'];
-  let state = Object.assign({}, DEFAULTS);
+  function blankGround() {
+    return {label: '', basis: 'pa', amount: '', every: '', upliftPct: ''};
+  }
+  function freshState() {
+    return Object.assign({}, DEFAULTS, {groundRents: []});
+  }
+  // A saved deal from before the list existed has one ground rent in the old fields.
+  function groundFromLegacy(saved) {
+    const basis = saved && (saved.groundBasis === 'pa' || saved.groundBasis === 'pct') ? saved.groundBasis : 'off';
+    if (basis === 'off') return [];
+    const text = (value) => value == null ? '' : String(value);
+    return [Object.assign(blankGround(), {
+      basis: basis,
+      amount: text(basis === 'pa' ? saved.groundRent : saved.groundPct),
+      every: text(saved.groundEvery),
+      upliftPct: text(saved.groundUpliftPct)
+    })];
+  }
+  function normaliseGrounds(rows) {
+    return rows.map((row) => {
+      const item = Object.assign(blankGround(), row || {});
+      if (item.basis !== 'pa' && item.basis !== 'pct') item.basis = 'pa';
+      item.label = item.label == null ? '' : String(item.label);
+      ['amount', 'every', 'upliftPct'].forEach((key) => { item[key] = item[key] == null ? '' : String(item[key]); });
+      return item;
+    });
+  }
+  let state = freshState();
   let holdOpen = false;
-  try { state = Object.assign(state, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (error) { /* private mode */ }
+  try {
+    const saved = JSON.parse(localStorage.getItem(KEY) || '{}');
+    if (saved && typeof saved === 'object') {
+      const hadList = Array.isArray(saved.groundRents);
+      state = Object.assign(freshState(), saved);
+      state.groundRents = hadList ? normaliseGrounds(saved.groundRents) : groundFromLegacy(saved);
+      state.groundBasis = 'off';
+      state.groundRent = '';
+      state.groundPct = '';
+      state.groundEvery = '';
+      state.groundUpliftPct = '';
+    }
+  } catch (error) { /* private mode */ }
   let config = null;
   const Q = window.QuickModel;
   function thisMonth() {
@@ -46,6 +85,11 @@
     '@media(max-width:1100px){.qm-cols{grid-template-columns:minmax(0,1fr);gap:16px}.qm-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}' +
     '.qm-more{grid-column:1/-1;margin-top:4px}.qm-more>summary{cursor:pointer;font-size:14px;font-weight:600;color:#021a2b;padding:12px 0}' +
     '.qm-hint{grid-column:1/-1;margin:0 0 4px;font-size:12px;color:#5b6472;line-height:1.45}' +
+    '.qm-grounds{grid-column:1/-1}.qm-ground{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:8px 12px;margin:0 0 8px;padding:10px;background:#f7f8fa;border-radius:10px}' +
+    '.qm-ground label{display:block;font-size:12px;line-height:1.3;color:#5b6472}.qm-ground-top{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:8px}' +
+    '.qm-ground-top span{font-size:12px;font-weight:600;color:#021a2b}' +
+    '#quick_model .qm-ground button,#quick_model .qm-add{min-height:0;height:32px;border:1px solid #d5dbe3;background:#fff;border-radius:999px;padding:0 12px;font:inherit;font-size:13px;cursor:pointer;color:#021a2b}' +
+    '#quick_model .qm-add{margin:2px 0 4px}' +
     '.qm-psf{margin:10px 0 0;font-size:13px;line-height:1.45;color:#021a2b}' +
     '@media(max-width:700px){#quick_model{width:calc(100% - 32px);padding:16px;margin:12px auto}.qm-grid,.qm-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.qm-more>summary{padding:14px 0}}';
   document.head.appendChild(style);
@@ -70,14 +114,31 @@
   }
   function leaseOpen() {
     if (holdOpen) return true;
-    const picked = state.reviewType === 'fixed' || state.reviewType === 'index' || state.rentFreeOpex === 'passing' || state.headlease === 'on' || state.groundBasis === 'pa' || state.groundBasis === 'pct' || state.scBasis === 'psf' || state.scBasis === 'total' || state.capexBasis === 'pct' || state.devBasis === 'amount' || state.devBasis === 'ltc' || state.acqInterest === 'rolled';
+    const groundsOn = Array.isArray(state.groundRents) && state.groundRents.length > 0;
+    const picked = state.reviewType === 'fixed' || state.reviewType === 'index' || state.rentFreeOpex === 'passing' || state.headlease === 'on' || groundsOn || state.groundBasis === 'pa' || state.groundBasis === 'pct' || state.scBasis === 'psf' || state.scBasis === 'total' || state.capexBasis === 'pct' || state.devBasis === 'amount' || state.devBasis === 'ltc' || state.acqInterest === 'rolled';
     const typed = ['rentFreeMonths', 'reviewEvery', 'nia', 'gia', 'capexAmount', 'renoPsf', 'capexFrom', 'acqAmount', 'acqFeePct', 'acqExitFeePct', 'acqDraw', 'acqRepay', 'acqRefiMonth', 'devAmount', 'devLtcPct', 'devDrawFrom'].some((key) => String(state[key] == null ? '' : state[key]).trim() !== '');
     return picked || typed;
+  }
+  function groundRows() {
+    const cards = (state.groundRents || []).map((row, index) => {
+      const pct = row.basis === 'pct';
+      const value = (key) => esc(row[key] == null ? '' : row[key]);
+      return '<div class="qm-ground" data-ground="' + index + '">' +
+        '<div class="qm-ground-top"><span>Ground rent ' + (index + 1) + '</span><button type="button" data-ground-remove aria-label="Remove ground rent ' + (index + 1) + '">Remove</button></div>' +
+        '<label>Label, optional<input data-g="label" value="' + value('label') + '" placeholder="For example Peppercorn" autocomplete="off"></label>' +
+        '<label>Charged as<select data-g="basis"><option value="pa"' + (pct ? '' : ' selected') + '>Flat fee (£/year)</option><option value="pct"' + (pct ? ' selected' : '') + '>% of rent</option></select></label>' +
+        (pct
+          ? '<label>Ground rent, % of rent<input data-g="amount" inputmode="decimal" value="' + value('amount') + '" placeholder="For example 5" autocomplete="off"></label>'
+          : '<label>Flat fee, £ a year<input data-g="amount" inputmode="decimal" value="' + value('amount') + '" placeholder="For example 1,200" autocomplete="off"></label>' +
+            '<label>Review every, years<input data-g="every" inputmode="decimal" value="' + value('every') + '" placeholder="Blank = flat" autocomplete="off"></label>' +
+            '<label>Uplift at each review, %<input data-g="upliftPct" inputmode="decimal" value="' + value('upliftPct') + '" placeholder="Blank = no uplift" autocomplete="off"></label>') +
+        '</div>';
+    }).join('');
+    return '<div class="qm-grounds">' + cards + '<button type="button" class="qm-add" id="qm_add_ground">+ Add ground rent</button></div>';
   }
   function leaseInputs() {
     const reviewOn = state.reviewType === 'fixed' || state.reviewType === 'index';
     const indexed = state.reviewType === 'index';
-    const ground = state.groundBasis;
     const sc = state.scBasis;
     const dev = state.devBasis;
     return '<details class="qm-more"' + (leaseOpen() ? ' open' : '') + '><summary>Lease, areas, capex and debt timing</summary><div class="qm-grid">' +
@@ -94,10 +155,8 @@
       (state.headlease === 'on' ? field('headleaseRent', 'Headlease rent, £ a year', 'For example 12,000') + field('headleaseEvery', 'Headlease review every, years', 'Blank = flat') + field('headleaseUpliftPct', 'Headlease uplift, %', 'Fixed uplift at each review') + field('headleaseTerm', 'Unexpired term, years', 'Blank = still running at the sale') : '') +
       '<p class="qm-hint">Headlease rent is deducted while the lease runs, including in a rent-free period. When the unexpired term ends, the occupational rent stops and there is no freehold sale value. A blank term is still running at the sale and is valued on the exit yield.</p>' +
       '<p class="qm-h">Ground rent</p>' +
-      choice('groundBasis', 'Ground rent', [['off', 'Off'], ['pa', '£ a year'], ['pct', '% of rent']]) +
-      (ground === 'pa' ? field('groundRent', 'Ground rent, £ a year', 'For example 1,200') + field('groundEvery', 'Ground rent review every, years', 'Blank = flat') + field('groundUpliftPct', 'Ground rent uplift, %', 'Fixed uplift at each review') : '') +
-      (ground === 'pct' ? field('groundPct', 'Ground rent, % of rent', 'For example 5') : '') +
-      '<p class="qm-hint">' + (ground === 'pct' ? 'This percentage is of the passing rent that month, including after a rent review. It is not increased a second time. It is zero during rent-free.' : 'A percentage is of the passing rent, including after a rent review, and is not increased a second time. A yearly amount is paid anyway, including during rent-free, and can step up at its own review.') + '</p>' +
+      '<p class="qm-hint">Add a row for each ground rent. A flat fee is paid every month, including during rent-free, and can step up at its own review. A percentage is of the passing rent that month, including after a rent review, and is not increased a second time. All of them stop when the headlease ends.</p>' +
+      groundRows() +
       '<p class="qm-h">Service charge</p>' +
       choice('scBasis', 'Service charge', [['off', 'Off'], ['psf', '£ per sq ft a year'], ['total', '£ a year, total']]) +
       (sc === 'psf' ? field('scPsf', 'Service charge, £ per sq ft a year', 'On the net internal area') : '') +
@@ -195,6 +254,32 @@
     if (area.noiPsf != null) bits.push('year one NOI ' + psf(area.noiPsf) + ' per sq ft NIA');
     return '<p class="qm-psf">' + esc(bits.join(' · ')) + '</p>';
   }
+  function numText(value) {
+    const n = Number(value);
+    return Number.isFinite(n) ? n.toLocaleString('en-GB', {maximumFractionDigits: 2}) : '';
+  }
+  function joinAnd(items) {
+    if (items.length < 2) return items[0] || '';
+    if (items.length === 2) return items[0] + ' and ' + items[1];
+    return items.slice(0, -1).join(', ') + ' and ' + items[items.length - 1];
+  }
+  function groundBit(line) {
+    const step = line.basis === 'pa' && line.everyYears > 0 && line.upliftPct ? ', up ' + numText(line.upliftPct) + '% every ' + numText(line.everyYears) + ' years' : '';
+    const core = line.basis === 'pct' ? numText(line.amount) + '% of the passing rent' : money(line.amount) + ' a year' + step;
+    return line.label ? line.label + ', ' + core : core;
+  }
+  function groundSentence(lines) {
+    if (!lines || !lines.length) return '';
+    if (lines.length === 1 && !lines[0].label) {
+      return lines[0].basis === 'pct'
+        ? 'Ground rent is that percentage of the passing rent, including after a review, and is deducted. The percentage itself does not step up.'
+        : 'Ground rent is deducted every month, including during a rent-free period.';
+    }
+    let tail = '';
+    if (lines.some((line) => line.basis === 'pa')) tail += ' A flat fee is deducted every month, including during a rent-free period.';
+    if (lines.some((line) => line.basis === 'pct')) tail += ' A percentage follows the passing rent, including after a review, and is not increased a second time.';
+    return (lines.length === 1 ? 'Ground rent is ' : 'Ground rent is the sum of ') + joinAnd(lines.map(groundBit)) + '.' + tail;
+  }
   function leaseNote(out) {
     const flags = out.flags;
     if (!flags || !flags.any) return '';
@@ -212,7 +297,7 @@
       else if (out.exitBasis === 'remainder') bits.push('The headlease runs out within a year of the sale, so the exit value is the income until then, not a yield.');
       else bits.push('Headlease rent is deducted from income' + (String(state.headleaseTerm || '').trim() ? '. The term still covers the year after the sale, so the exit is a yield on that income' : '. No unexpired term is set, so the lease is treated as still running at the sale') + '.');
     }
-    if (flags.ground) bits.push(state.groundBasis === 'pct' ? 'Ground rent is that percentage of the passing rent, including after a review, and is deducted. The percentage itself does not step up.' : 'Ground rent is deducted every month, including during a rent-free period.');
+    if (flags.ground) bits.push(groundSentence(out.groundLines));
     if (flags.service) bits.push('Only the service charge tenants do not pay is a cost.');
     if (flags.capex) bits.push('Capex of ' + money(out.totalCapex) + (String(state.capexFrom || '').trim() ? ' is spread from month ' + state.capexFrom + ' to month ' + state.capexTo : ' is paid at purchase') + '. It is in the all-in cost and in its own cash flow column, so cash after debt does not repeat it.');
     if (flags.dev) bits.push('The construction loan is ' + money(out.devDebt) + (out.ltc != null ? ' (' + pct(out.ltc) + ' of capex)' : '') + '. Draws follow the capex. Peak debt is ' + money(out.peakDebt) + ', ' + pct(out.peakLtv) + ' of the price, against a purchase loan of ' + pct(out.ltv) + '. Its interest of ' + money(out.finance.devInterest) + (state.devInterest === 'serviced' ? ' is paid each month.' : ' is rolled up and paid with the balance.'));
@@ -312,7 +397,7 @@
   function paint() {
     host.innerHTML = '<p class="qm-k">Quick model</p><h2>Price, rent, debt and exit</h2><p class="qm-sub">Works for any income deal: LHA, a council or Home Office lease, Mack Living or an office. What you type stays in this browser.</p>' +
       '<div class="qm-cols"><div>' + inputs() + '<div class="qm-bar"><button type="button" id="qm_clear">Clear</button></div></div><div id="qm_out">' + results() + '</div></div>';
-    const rebuild = new Set(['basis', 'loanType', 'reviewType', 'headlease', 'groundBasis', 'scBasis', 'capexBasis', 'renoArea', 'acqInterest', 'devBasis', 'devInterest']);
+    const rebuild = new Set(['basis', 'loanType', 'reviewType', 'headlease', 'scBasis', 'capexBasis', 'renoArea', 'acqInterest', 'devBasis', 'devInterest']);
     host.querySelectorAll('[data-k]').forEach((el) => {
       const key = el.dataset.k;
       const on = () => {
@@ -333,7 +418,35 @@
         paintResults();
       });
     });
-    host.querySelector('#qm_clear').onclick = () => { state = Object.assign({}, DEFAULTS); holdOpen = false; seedDates(); save(); paint(); };
+    host.querySelectorAll('[data-g]').forEach((el) => {
+      const index = Number(el.closest('[data-ground]').dataset.ground);
+      const key = el.dataset.g;
+      const on = () => {
+        if (!state.groundRents[index]) return;
+        state.groundRents[index][key] = el.value;
+        save();
+        if (key === 'basis') { holdOpen = true; paint(); }
+        else paintResults();
+      };
+      el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', on);
+    });
+    host.querySelectorAll('[data-ground-remove]').forEach((el) => {
+      el.addEventListener('click', () => {
+        const index = Number(el.closest('[data-ground]').dataset.ground);
+        state.groundRents.splice(index, 1);
+        holdOpen = true;
+        save();
+        paint();
+      });
+    });
+    const addGround = host.querySelector('#qm_add_ground');
+    if (addGround) addGround.addEventListener('click', () => {
+      state.groundRents.push(blankGround());
+      holdOpen = true;
+      save();
+      paint();
+    });
+    host.querySelector('#qm_clear').onclick = () => { state = freshState(); holdOpen = false; seedDates(); save(); paint(); };
   }
 
   paint();
