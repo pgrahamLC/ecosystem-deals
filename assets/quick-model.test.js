@@ -183,7 +183,7 @@ test('a repayment loan needs a term, and no loan needs none', () => {
 });
 
 const blankLease = {
-  reviewEvery: '', reviewType: 'off', reviewUpliftPct: '', reviewCapPct: '', reviewCollarPct: '', rentFreeMonths: '',
+  reviewEvery: '', reviewType: 'off', reviewUpliftPct: '', reviewCapPct: '', reviewCollarPct: '', rentFreeMonths: '', rentFreeOpex: 'off',
   headlease: 'off', headleaseRent: '', headleaseEvery: '', headleaseUpliftPct: '', headleaseTerm: '',
   groundBasis: 'off', groundRent: '', groundPct: '', groundEvery: '', groundUpliftPct: '',
   scBasis: 'off', scPsf: '', scTotal: '', scRecoverPct: '', nia: '', gia: '',
@@ -197,7 +197,7 @@ const blankLease = {
 test('blank lease, area, capex and debt fields leave the original result unchanged', () => {
   const before = Q.compute(flat);
   const after = Q.compute(Object.assign({}, flat, blankLease));
-  ['price', 'niy', 'allIn', 'noi1', 'equity', 'debt', 'unleveredIrr', 'leveredIrr', 'multiple', 'profit', 'interestCover', 'debtCover', 'exitLtv', 'breakEvenYield', 'loanAtExit'].forEach((key) => near(after[key], before[key], 1e-9));
+  ['price', 'niy', 'allIn', 'noi1', 'equity', 'debt', 'unleveredIrr', 'leveredIrr', 'multiple', 'profit', 'interestCover', 'debtCover', 'exitLtv', 'breakEvenYield', 'loanAtExit', 'exitValue', 'cashOnCash'].forEach((key) => near(after[key], before[key], 1e-9));
   assert.equal(after.rows.length, before.rows.length);
   after.rows.forEach((row, index) => {
     near(row.rent, before.rows[index].rent, 1e-9);
@@ -381,5 +381,208 @@ test('an amount overrides the LTV, and a per sq ft service charge uses the net a
   const missingArea = Q.compute(Object.assign({}, flat, {scBasis: 'psf', scPsf: 4}));
   assert.equal(missingArea.rows[0].service, 0);
   assert.ok(missingArea.warnings.some((line) => /net internal area/.test(line)));
+});
+
+// £1m, £100k rent, 20% opex, £12k flat headlease, 8% exit yield, 3-year hold, no debt.
+const leasehold = {
+  basis: 'price', price: 1000000, rent1: 100000, opexPct: 20, growthPct: 0, costsPct: 0, ltvPct: 0,
+  entryMonth: '2027-01', exitMonth: '2030-01', exitYieldPct: 8, saleCostsPct: 0,
+  headlease: 'on', headleaseRent: 12000
+};
+
+test('a headlease that outlasts the hold is still valued on the exit yield', () => {
+  const long = Q.compute(Object.assign({}, leasehold, {headleaseTerm: 99}));
+  const open = Q.compute(Object.assign({}, leasehold, {headleaseTerm: ''}));
+  const covered = Q.compute(Object.assign({}, leasehold, {headleaseTerm: 4}));
+  [long, open, covered].forEach((out) => {
+    assert.equal(out.ok, true);
+    assert.equal(out.exitBasis, 'yield');
+    near(out.exitNoi, 68000);
+    near(out.exitValue, 850000);
+    near(out.years[2].noi, 68000);
+    assert.ok(!out.warnings.some((line) => /exit value is nil|not capitalised/i.test(line)));
+  });
+  near(long.unleveredIrr, open.unleveredIrr, 1e-12);
+  near(long.unleveredIrr * 100, 1.96, 0.02);
+  near(long.rows[35].noi, 68000 / 12);
+  near(long.rows[35].headlease, 1000);
+});
+
+test('a headlease that expires at the sale has income through the hold and a nil residual', () => {
+  const out = Q.compute(Object.assign({}, leasehold, {headleaseTerm: 3}));
+  assert.equal(out.ok, true);
+  assert.equal(out.exitBasis, 'expired');
+  assert.equal(out.exitValue, 0);
+  assert.equal(out.exitNoi, 0);
+  assert.equal(out.breakEvenYield, null);
+  near(out.years[2].noi, 68000);
+  near(out.rows[35].rent, 100000 / 12);
+  near(out.rows[35].headlease, 1000);
+  near(out.rows[35].noi, 68000 / 12);
+  near(out.rows[35].sale, 0);
+  assert.ok(out.unleveredIrr < 0);
+  assert.ok(out.warnings.some((line) => /expires at the sale/.test(line) && /nil/.test(line)));
+  // The loan is still repaid out of a nil sale.
+  const geared = Q.compute(Object.assign({}, leasehold, {headleaseTerm: 3, ltvPct: 50, ratePct: 6}));
+  near(geared.loanAtExit, 500000);
+  near(geared.rows[35].sale, -500000);
+  near(geared.rows[35].acqInterest, 2500);
+});
+
+test('a headlease that expires during the hold stops the income and leaves no residual', () => {
+  const out = Q.compute(Object.assign({}, leasehold, {headleaseTerm: 2, groundBasis: 'pa', groundRent: 1200, scBasis: 'total', scTotal: 2400, scRecoverPct: 0}));
+  assert.equal(out.ok, true);
+  assert.equal(out.exitBasis, 'expired');
+  assert.equal(out.exitValue, 0);
+  near(out.rows[23].rent, 100000 / 12);
+  assert.ok(out.rows[23].headlease > 0);
+  assert.equal(out.rows[24].rent, 0);
+  assert.equal(out.rows[24].opex, 0);
+  assert.equal(out.rows[24].headlease, 0);
+  assert.equal(out.rows[24].ground, 0);
+  assert.equal(out.rows[24].service, 0);
+  assert.equal(out.rows[24].noi, 0);
+  near(out.years[2].noi, 0);
+  near(out.years[2].rent, 0);
+  assert.ok(out.warnings.some((line) => /expires in month 24/.test(line)));
+  const geared = Q.compute(Object.assign({}, leasehold, {headleaseTerm: 2, ltvPct: 50, ratePct: 6}));
+  assert.equal(geared.rows[30].rent, 0);
+  near(geared.rows[30].acqInterest, 2500);
+  near(geared.rows[35].sale, -500000);
+});
+
+test('a headlease that ends within a year of the sale is worth the income left, not a yield', () => {
+  const out = Q.compute(Object.assign({}, leasehold, {headleaseTerm: 3.5}));
+  assert.equal(out.exitBasis, 'remainder');
+  assert.equal(out.months, 36);
+  near(out.rows[35].noi, 68000 / 12);
+  near(out.exitNoi, 6 * 68000 / 12);
+  near(out.exitValue, 34000);
+  assert.ok(Math.abs(out.exitValue - 34000 / 0.08) > 1000);
+  assert.ok(out.warnings.some((line) => /6 months left/.test(line) && /not capitalised/.test(line)));
+});
+
+test('interest cover on the quick screen uses accrued interest, not only the cash debt service', () => {
+  const config = JSON.parse(readFileSync(new URL('../data/market-entry/gates.json', import.meta.url)));
+  const limits = globalThis.GatesModel.thresholds(config);
+  const out = Q.compute(Object.assign({}, worked, {ratePct: 8}));
+  const yearDev = out.rows.slice(0, 12).reduce((sum, row) => sum + row.devInterest, 0);
+  near(out.interestCover, 61800 / (40000 + yearDev));
+  near(out.debtCover, 61800 / 40000);
+  assert.ok(out.interestCover < limits.dscr);
+  assert.ok(out.debtCover >= limits.dscr);
+  const rows = Q.screen(out, limits);
+  const interest = rows.find((row) => row.name === 'Interest cover');
+  const cash = rows.find((row) => row.name === 'Cash debt cover');
+  near(interest.value, out.interestCover);
+  assert.equal(interest.pass, false);
+  near(cash.value, out.debtCover);
+  assert.equal(cash.pass, true);
+  const plain = Q.screen(Q.compute(flat), limits);
+  const covers = plain.filter((row) => /cover/i.test(row.name));
+  assert.deepEqual(covers.map((row) => row.name), ['Interest cover']);
+  near(covers[0].value, Q.compute(flat).interestCover);
+  near(covers[0].value, Q.compute(flat).debtCover);
+  // Rolled up, nothing is paid monthly, so cash cover is blank. The screen still tests the accrued interest.
+  const rolled = Q.compute(Object.assign({}, flat, {acqInterest: 'rolled', ratePct: 20, exitMonth: '2028-01'}));
+  const accrued = rolled.rows.reduce((sum, row) => sum + row.interest, 0);
+  assert.equal(rolled.debtCover, null);
+  assert.ok(accrued > 100000);
+  near(rolled.interestCover, 80000 / accrued);
+  const rolledRows = Q.screen(rolled, limits);
+  const rolledCover = rolledRows.find((row) => row.name === 'Interest cover');
+  near(rolledCover.value, rolled.interestCover);
+  assert.equal(rolledCover.pass, false);
+  assert.equal(rolledRows.some((row) => row.name === 'Cash debt cover'), false);
+});
+
+test('a blank refinance rate uses the purchase loan rate, and a typed rate is kept', () => {
+  const blank = Q.compute(Object.assign({}, flat, {acqRefiMonth: 6, acqRefiAmount: 300000, exitMonth: '2028-01'}));
+  near(blank.rows[4].acqInterest, 2500);
+  near(blank.rows[5].acqInterest, 300000 * 0.06 / 12);
+  assert.equal(blank.refiRateAssumed, true);
+  assert.ok(blank.warnings.some((line) => /refinance rate was left blank/i.test(line) && /purchase loan rate/i.test(line)));
+  const zero = Q.compute(Object.assign({}, flat, {acqRefiMonth: 6, acqRefiAmount: 300000, acqRefiRatePct: 0, exitMonth: '2028-01'}));
+  near(zero.rows[5].acqInterest, 0);
+  assert.equal(zero.refiRateAssumed, false);
+  assert.ok(!zero.warnings.some((line) => /refinance rate/i.test(line)));
+  assert.ok(blank.leveredIrr < zero.leveredIrr);
+  const priced = Q.compute(Object.assign({}, flat, {acqRefiMonth: 6, acqRefiAmount: 300000, acqRefiRatePct: 7, exitMonth: '2028-01'}));
+  near(priced.rows[5].acqInterest, 300000 * 0.07 / 12);
+  assert.equal(priced.refiRateAssumed, false);
+});
+
+test('a blank construction loan rate is not treated as zero', () => {
+  const blank = Q.compute(Object.assign({}, flat, {devBasis: 'amount', devAmount: 100000, capexAmount: 100000}));
+  assert.equal(blank.ok, false);
+  assert.deepEqual(blank.missing, ['construction loan rate']);
+  assert.equal(blank.leveredIrr, undefined);
+  const byCost = Q.compute(Object.assign({}, flat, {capexAmount: 100000, devBasis: 'ltc', devLtcPct: 50}));
+  assert.equal(byCost.ok, false);
+  assert.ok(byCost.missing.includes('construction loan rate'));
+  const zero = Q.compute(Object.assign({}, flat, {devBasis: 'amount', devAmount: 100000, devRatePct: 0, capexAmount: 100000}));
+  assert.equal(zero.ok, true);
+  assert.equal(zero.rows[0].devInterest, 0);
+  const negative = Q.compute(Object.assign({}, flat, {devBasis: 'amount', devAmount: 100000, devRatePct: -1, capexAmount: 100000}));
+  assert.equal(negative.ok, false);
+  assert.ok(negative.missing.includes('construction loan rate'));
+});
+
+test('percentage ground rent stays that share of the reviewed rent', () => {
+  const stepped = Q.compute(Object.assign({}, flat, {
+    ltvPct: 0, exitMonth: '2029-01', reviewType: 'fixed', reviewEvery: 1, reviewUpliftPct: 10,
+    groundBasis: 'pct', groundPct: 5, groundEvery: 1, groundUpliftPct: 10
+  }));
+  near(stepped.rows[0].ground, 100000 / 12 * 0.05);
+  near(stepped.rows[12].rent, 110000 / 12);
+  near(stepped.rows[12].ground, 110000 / 12 * 0.05);
+  assert.ok(Math.abs(stepped.rows[12].ground - 110000 / 12 * 0.055) > 1);
+  assert.ok(stepped.warnings.some((line) => /percentage of the passing rent/i.test(line)));
+  const plain = Q.compute(Object.assign({}, flat, {
+    ltvPct: 0, exitMonth: '2029-01', reviewType: 'fixed', reviewEvery: 1, reviewUpliftPct: 10,
+    groundBasis: 'pct', groundPct: 5
+  }));
+  near(plain.rows[12].ground, 110000 / 12 * 0.05);
+  assert.ok(!plain.warnings.some((line) => /percentage of the passing rent/i.test(line)));
+});
+
+test('year-one cash on cash leaves capex out, and peak debt includes the construction loan', () => {
+  const out = Q.compute(worked);
+  near(out.cashOnCash, (61800 - 30000) / 505000);
+  assert.ok(out.cashOnCash > 0);
+  const operating = out.rows.slice(0, 12).reduce((sum, row) => sum + row.noi - row.debtService, 0);
+  const equityCash = out.rows.slice(0, 12).reduce((sum, row) => sum + row.cash - row.capex, 0);
+  near(out.yearOperatingCash, operating, 0.01);
+  near(out.yearEquityCash, equityCash, 0.01);
+  near(out.yearEquityCash, -210423, 1);
+  near(out.peakDebt, 500000 + out.rows[11].principal, 0.01);
+  near(out.peakLtv, out.peakDebt / 1000000);
+  assert.ok(out.peakLtv > 0.69 && out.peakLtv < 0.70);
+  near(out.exitFees, 5000);
+  near(out.ltc, 0.8);
+  const config = JSON.parse(readFileSync(new URL('../data/market-entry/gates.json', import.meta.url)));
+  const rows = Q.screen(out, globalThis.GatesModel.thresholds(config));
+  const purchase = rows.find((row) => row.name === 'Loan share of price');
+  const peak = rows.find((row) => row.name === 'Peak debt / price');
+  near(purchase.value, 0.5);
+  assert.equal(purchase.pass, true);
+  near(peak.value, out.peakLtv);
+  assert.equal(peak.pass, false);
+});
+
+test('opex is nil in a rent-free month unless void costs are switched on', () => {
+  const nil = Q.compute(Object.assign({}, flat, {ltvPct: 0, rentFreeMonths: 3}));
+  assert.equal(nil.rows[0].rent, 0);
+  assert.equal(nil.rows[0].opex, 0);
+  near(nil.rows[3].opex, 100000 / 12 * 0.2);
+  const blank = Q.compute(Object.assign({}, flat, {ltvPct: 0, rentFreeMonths: 3, rentFreeOpex: ''}));
+  near(blank.noi1, nil.noi1, 1e-9);
+  near(blank.rows[0].opex, 0);
+  const accrue = Q.compute(Object.assign({}, flat, {ltvPct: 0, rentFreeMonths: 3, rentFreeOpex: 'passing'}));
+  assert.equal(accrue.rows[0].rent, 0);
+  near(accrue.rows[0].opex, 100000 / 12 * 0.2);
+  near(accrue.rows[0].noi, -100000 / 12 * 0.2);
+  near(accrue.rows[3].opex, 100000 / 12 * 0.2);
+  assert.ok(accrue.noi1 < nil.noi1);
 });
 

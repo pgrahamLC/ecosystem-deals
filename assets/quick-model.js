@@ -127,6 +127,8 @@
     const groundUplift = (opt(input.groundUpliftPct) || 0) / 100;
     if (groundUplift <= -1) missing.push('ground rent uplift');
     if (groundBasis === 'pct' && (opt(input.groundPct) || 0) > 100) missing.push('ground rent share of rent');
+    // A percentage already follows the passing rent, so a second uplift would compound twice.
+    if (groundBasis === 'pct' && groundPct > 0 && groundEvery > 0 && Math.abs(groundUplift) > 1e-12) warnings.push('Ground rent is a percentage of the passing rent, so the uplift is not applied again. A rent review already changes the rent.');
     const scBasis = input.scBasis === 'psf' || input.scBasis === 'total' ? input.scBasis : 'off';
     const scRecover = opt(input.scRecoverPct);
     const scRecoverFrac = scRecover == null ? 0 : scRecover / 100;
@@ -157,31 +159,57 @@
     }
     if (missing.length) return {ok: false, missing};
     const reviewApplied = reviewMonths >= 1;
-    function passingRent(month) {
-      if (rentFree > 0 && month <= rentFree) return 0;
+    const opexOnPassing = input.rentFreeOpex === 'passing';
+    // The leasehold runs through month headTerm. The sale is the start of the next month, so a term
+    // equal to the hold has nothing left to sell. A blank term is still running at the sale.
+    function leaseHeld(month) {
+      return !(headOn && headTerm != null && month > headTerm);
+    }
+    function contractedRent(month) {
       const annual = reviewApplied ? rent1 * Math.pow(1 + reviewUplift, Math.floor((month - 1) / reviewMonths)) : rent1 * Math.pow(1 + growth, Math.floor((month - 1) / 12));
       return annual / 12;
     }
     function incomeAt(month) {
-      const rent = passingRent(month);
-      const op = rent * opex;
-      const head = headOn && headRent > 0 && !(headTerm != null && month > headTerm) ? stepped(headRent, month, headEvery, headUplift) / 12 : 0;
+      if (!leaseHeld(month)) return {rent: 0, opex: 0, headlease: 0, ground: 0, service: 0, noi: 0};
+      const contracted = contractedRent(month);
+      const rentFreeNow = rentFree > 0 && month <= rentFree;
+      const rent = rentFreeNow ? 0 : contracted;
+      // Opex is a percentage of rent received, so a rent-free month is nil unless void costs are switched on.
+      const op = (rentFreeNow && opexOnPassing ? contracted : rent) * opex;
+      const head = headOn && headRent > 0 ? stepped(headRent, month, headEvery, headUplift) / 12 : 0;
       let ground = 0;
       if (groundBasis === 'pa' && groundPa > 0) ground = stepped(groundPa, month, groundEvery, groundUplift) / 12;
-      if (groundBasis === 'pct' && groundPct > 0) ground = Math.min(1, groundPct * Math.pow(1 + groundUplift, groundEvery > 0 ? Math.floor((month - 1) / groundEvery) : 0)) * rent;
+      if (groundBasis === 'pct' && groundPct > 0) ground = Math.min(1, groundPct) * rent;
       const scAnnual = scBasis === 'psf' ? (opt(input.scPsf) || 0) * nia : scBasis === 'total' ? (opt(input.scTotal) || 0) : 0;
       const service = scBasis === 'off' ? 0 : Math.max(0, scAnnual) / 12 * (1 - Math.min(1, Math.max(0, scRecoverFrac)));
       return {rent, opex: op, headlease: head, ground, service, noi: rent - op - head - ground - service};
     }
-    const plainIncome = !reviewApplied && !(rentFree > 0) && !(headOn && headRent > 0) && groundBasis === 'off' && scBasis === 'off';
+    const plainIncome = !reviewApplied && !(rentFree > 0) && !(headOn && (headRent > 0 || headTerm != null)) && groundBasis === 'off' && scBasis === 'off';
     let exitNoi = 0;
-    for (let month = months + 1; month <= months + 12; month += 1) exitNoi += incomeAt(month).noi;
+    let exitLive = 0;
+    for (let month = months + 1; month <= months + 12; month += 1) {
+      exitNoi += incomeAt(month).noi;
+      if (leaseHeld(month)) exitLive += 1;
+    }
+    // Yield capitalises a full further year. A lease that has ended is worth nil. One that ends
+    // inside that year is worth the income left, not that stub divided by the yield.
+    const leaseLimited = headOn && headTerm != null;
+    let exitBasis = 'yield';
+    if (leaseLimited && headTerm <= months) exitBasis = 'expired';
+    else if (leaseLimited && exitLive < 12) exitBasis = 'remainder';
     const yCount = Math.min(12, months);
     let ySum = 0;
     for (let month = 1; month <= yCount; month += 1) ySum += incomeAt(month).noi;
     const noi1 = plainIncome ? rent1 * (1 - opex) : ySum / (yCount / 12);
     if (basis === 'niy' && !(noi1 > 0)) return {ok: false, missing: ['year one income is not positive, so a yield cannot price the deal']};
-    if (!(exitNoi > 0)) return {ok: false, missing: ['exit income is not positive']};
+    if (exitBasis === 'yield' && !(exitNoi > 0)) return {ok: false, missing: ['exit income is not positive']};
+    if (exitBasis === 'expired') warnings.push(headTerm < months
+      ? 'The headlease expires in month ' + headTerm + ', before the sale. Income stops then, and the exit value is nil. A lapsed leasehold is not valued as a freehold.'
+      : 'The headlease expires at the sale. Income runs to the end of the hold, and the exit value is nil rather than a yield on the following year.');
+    if (exitBasis === 'remainder') {
+      const left = headTerm - months;
+      warnings.push('The headlease has ' + left + ' month' + (left === 1 ? '' : 's') + ' left at the sale, so the exit value is the income over those months. It is not capitalised at the exit yield.');
+    }
 
     const price = basis === 'niy' ? noi1 / ((num(input.niyPct) / 100) * (1 + costs)) : num(input.price);
     const purchaseCosts = price * costs;
@@ -214,13 +242,20 @@
     let refiPrincipal = 0;
     let refiRate = rate;
     let refiFee = 0;
+    let refiRateAssumed = false;
     if (refiMonth != null) {
       if (refiMonth < 1 || refiMonth >= months || refiMonth <= acqDrawMonth) return {ok: false, missing: ['refinance month']};
       if (acqRepayRaw != null && refiMonth >= acqRepayRaw) return {ok: false, missing: ['refinance month before repayment']};
       refiPrincipal = (opt(input.acqRefiAmount) || 0) > 0 ? opt(input.acqRefiAmount) : price * Math.max(0, opt(input.acqRefiLtvPct) || 0) / 100;
       if (!(refiPrincipal > 0)) return {ok: false, missing: ['refinance loan']};
-      refiRate = (Number.isFinite(num(input.acqRefiRatePct)) ? num(input.acqRefiRatePct) : 0) / 100;
+      const refiRateTyped = opt(input.acqRefiRatePct);
+      if (refiRateTyped == null) {
+        refiRate = rate;
+        refiRateAssumed = true;
+      } else if (refiRateTyped < 0) return {ok: false, missing: ['refinance rate']};
+      else refiRate = refiRateTyped / 100;
       refiFee = refiPrincipal * Math.max(0, opt(input.acqRefiFeePct) || 0) / 100;
+      if (refiRateAssumed) warnings.push('The refinance rate was left blank, so the purchase loan rate is used from that month.');
     }
     const devBasis = input.devBasis === 'amount' || input.devBasis === 'ltc' ? input.devBasis : 'off';
     const devRolled = input.devInterest !== 'serviced';
@@ -232,13 +267,16 @@
       if (ltcPct < 0 || ltcPct > 100) return {ok: false, missing: ['loan to cost']};
       devPrincipal = totalCapex * ltcPct / 100;
     }
-    const devRate = (Number.isFinite(num(input.devRatePct)) ? num(input.devRatePct) : 0) / 100;
+    const devRateTyped = opt(input.devRatePct);
+    const devRate = (devRateTyped == null ? 0 : devRateTyped) / 100;
     const devFeePct = Math.max(0, opt(input.devFeePct) || 0) / 100;
     const devExitPct = Math.max(0, opt(input.devExitFeePct) || 0) / 100;
     const devFee = devPrincipal * devFeePct;
     let devFrom = whole(input.devDrawFrom);
     let devTo = whole(input.devDrawTo);
     const devRepayRaw = whole(input.devRepay);
+    // A blank construction rate is not 0%. The purchase rate is a different loan, so it is not borrowed either.
+    if (devPrincipal > 0 && (devRateTyped == null || devRateTyped < 0)) return {ok: false, missing: ['construction loan rate']};
     if (devPrincipal > 0) {
       if ((devFrom == null) !== (devTo == null)) return {ok: false, missing: ['construction loan drawdown months']};
       if (devFrom == null) {
@@ -275,7 +313,7 @@
     if (input.loanType === 'amort' && acqPrincipal > 0 && !doAmort) warnings.push('The repayment schedule applies to a purchase loan drawn at purchase, with interest serviced and no refinance. This one is interest only.');
     const monthlyRate = rate / 12;
     const payment = !doAmort ? 0 : (monthlyRate > 0 ? acqPrincipal * monthlyRate / (1 - Math.pow(1 + monthlyRate, -termMonths)) : acqPrincipal / termMonths);
-    const exitValue = exitNoi / exitYield;
+    const exitValue = exitBasis === 'expired' ? 0 : exitBasis === 'remainder' ? exitNoi : exitNoi / exitYield;
     const netSale = exitValue * (1 - saleCosts);
 
     const rows = [];
@@ -294,6 +332,7 @@
     let devFees = devFrom === 0 ? devFee : 0;
     let loanAtExit = 0;
     let saleFeePaid = 0;
+    let peakDebt = (acqDrawMonth === 0 ? acqPrincipal : 0) + (devDraw[0] || 0);
     for (let month = 1; month <= months; month += 1) {
       const inc = incomeAt(month);
       const last = month === months;
@@ -329,6 +368,8 @@
       }
       if (acqBal < 1e-6) acqBal = 0;
       if (devBal < 1e-6) devBal = 0;
+      // High water mark, including rolled-up interest, before a repayment in this same month.
+      if (acqBal + devBal > peakDebt) peakDebt = acqBal + devBal;
       const repayAcq = acqRepayRaw != null && acqRepayRaw < months && month === acqRepayRaw;
       const repayDev = devRepayRaw != null && devRepayRaw < months && month === devRepayRaw;
       if (repayAcq && acqBal > 0) { const exitFee = acqExitPct * acqExitBase; bullet += acqBal; fee += exitFee; acqFees += exitFee; acqBal = 0; acqClosed = true; }
@@ -378,6 +419,9 @@
     const firstNoi = firstYear.reduce((sum, row) => sum + row.noi, 0) / span;
     const firstInterest = firstYear.reduce((sum, row) => sum + row.interest, 0) / span;
     const firstService = firstYear.reduce((sum, row) => sum + row.debtService, 0) / span;
+    // Cash on cash uses NOI less cash debt service. Equity cash also takes off capex, fees, draws and bullets.
+    const yearOperatingCash = firstYear.reduce((sum, row) => sum + row.noi - row.debtService, 0);
+    const yearEquityCash = firstYear.reduce((sum, row) => sum + row.cash - row.capex, 0);
     const covered = levered[0] + rows.reduce((sum, row) => sum + row.cash - row.capex, 0);
     const neededSale = saleCosts < 1 ? (-covered + loanAtExit + saleFeePaid) / (1 - saleCosts) : null;
     const flags = {
@@ -400,17 +444,20 @@
       debt: acqPrincipal, devDebt: devPrincipal, equity, equityTotal: invested, interest: firstInterest, debtService: firstService, months, holdYears: months / 12,
       loanType: doAmort ? 'amort' : 'io', termMonths: doAmort ? termMonths : null, payment, loanAtExit, loanAtExitAcq, loanRepaid: acqPrincipal - loanAtExitAcq,
       entryLabel: monthLabel(entry), exitLabel: monthLabel(exit - 1), saleLabel: monthLabel(exit),
-      exitNoi, exitValue, netSale, saleCosts: exitValue - netSale,
+      exitNoi, exitValue, exitBasis, netSale, saleCosts: exitValue - netSale, exitFees: saleFeePaid,
       rows, years, unleveredIrr: yearly(irr(unlevered)), leveredIrr: yearly(irr(levered)),
       multiple: invested > 0 ? returned / invested : null, profit: returned - invested,
       profitOnCost: allIn > 0 ? unlevered.reduce((sum, flow) => sum + flow, 0) / allIn : null,
       cashOnCash: equity > 0 ? (firstNoi - firstService) / equity : null,
+      yearOperatingCash, yearEquityCash,
       interestCover: firstInterest > 0 ? firstNoi / firstInterest : null,
       debtCover: firstService > 0 ? firstNoi / firstService : null,
       ltv: price > 0 ? acqPrincipal / price : null,
+      peakDebt, peakLtv: price > 0 ? peakDebt / price : null,
       ltc: totalCapex > 0 && devPrincipal > 0 ? devPrincipal / totalCapex : null,
+      refiRateAssumed,
       exitLtv: exitValue > 0 ? loanAtExit / exitValue : null,
-      breakEvenYield: neededSale > 0 ? exitNoi / neededSale : null,
+      breakEvenYield: exitBasis === 'yield' && neededSale > 0 ? exitNoi / neededSale : null,
       finance: {
         acqInterest, devInterest, acqFees, devFees,
         total: acqInterest + devInterest + acqFees + devFees
@@ -432,16 +479,27 @@
     const row = (name, value, limit, pass, kind) => ({name, value, limit, kind, pass: value == null ? null : pass});
     const atLeast = (value, limit) => value != null && value >= limit - 1e-9;
     const geared = (result.debt || 0) + (result.devDebt || 0) > 0;
-    return [
+    const interestOnly = result.loanType !== 'amort';
+    // Interest cover is the interest accrued, on both loans, including interest rolled into the balance.
+    // Cash debt cover is only the interest and scheduled principal actually paid.
+    const coverValue = interestOnly ? result.interestCover : result.debtCover;
+    const rows = [
       row('Unlevered IRR', result.unleveredIrr, limits.unleveredIrr, atLeast(result.unleveredIrr, limits.unleveredIrr), 'pct'),
       row('Yield on cost', result.yieldOnCost, limits.yoc, atLeast(result.yieldOnCost, limits.yoc), 'pct'),
       row('Levered IRR', result.leveredIrr, limits.leveredIrr, atLeast(result.leveredIrr, limits.leveredIrr), 'pct'),
       row('Equity multiple', result.multiple, limits.multiple, atLeast(result.multiple, limits.multiple), 'times'),
       row('Year one cash on cash', result.cashOnCash, limits.cashOnCash, atLeast(result.cashOnCash, limits.cashOnCash), 'pct'),
-      row('Loan share of price', result.ltv, limits.ltvMax, result.ltv <= limits.ltvMax + 1e-9, 'max'),
-      row(result.loanType === 'amort' ? 'Debt service cover' : 'Interest cover', result.debtCover, limits.dscr, geared ? atLeast(result.debtCover, limits.dscr) : true, 'times'),
-      row('Break even exit yield', result.breakEvenYield, limits.breakEven, atLeast(result.breakEvenYield, limits.breakEven), 'pct')
+      row('Loan share of price', result.ltv, limits.ltvMax, result.ltv <= limits.ltvMax + 1e-9, 'max')
     ];
+    if (result.peakLtv != null && result.peakDebt > (result.debt || 0) + 1) {
+      rows.push(row('Peak debt / price', result.peakLtv, limits.ltvMax, result.peakLtv <= limits.ltvMax + 1e-9, 'max'));
+    }
+    rows.push(row(interestOnly ? 'Interest cover' : 'Debt service cover', coverValue, limits.dscr, geared ? atLeast(coverValue, limits.dscr) : true, 'times'));
+    if (interestOnly && result.interestCover != null && result.debtCover != null && Math.abs(result.interestCover - result.debtCover) > 1e-6) {
+      rows.push(row('Cash debt cover', result.debtCover, limits.dscr, atLeast(result.debtCover, limits.dscr), 'times'));
+    }
+    rows.push(row('Break even exit yield', result.breakEvenYield, limits.breakEven, atLeast(result.breakEvenYield, limits.breakEven), 'pct'));
+    return rows;
   }
 
   root.QuickModel = Object.freeze({compute, screen, irr, num, monthIndex, monthLabel, monthText, MONTHS});

@@ -5,7 +5,7 @@
   const body = document.getElementById('deal_body');
   if (!body || !document.getElementById('deal_view') || !window.QuickModel) return;
   const KEY = 'ed_quick_model';
-  const DEFAULTS = {name: '', route: 'LHA', basis: 'price', price: '', niyPct: '', rent1: '', opexPct: '', growthPct: '', costsPct: '6.8', ltvPct: '50', ratePct: '6.5', loanType: 'io', termYears: '25', entryMonth: '', exitMonth: '', exitYieldPct: '6', saleCostsPct: '2', reviewEvery: '', reviewType: 'off', reviewUpliftPct: '', reviewCapPct: '', reviewCollarPct: '', rentFreeMonths: '', headlease: 'off', headleaseRent: '', headleaseEvery: '', headleaseUpliftPct: '', headleaseTerm: '', groundBasis: 'off', groundRent: '', groundPct: '', groundEvery: '', groundUpliftPct: '', scBasis: 'off', scPsf: '', scTotal: '', scRecoverPct: '', nia: '', gia: '', capexBasis: 'amount', capexAmount: '', capexPct: '', renoPsf: '', renoArea: 'gia', capexFrom: '', capexTo: '', acqAmount: '', acqFeePct: '', acqExitFeePct: '', acqDraw: '', acqRepay: '', acqInterest: 'serviced', acqRefiMonth: '', acqRefiAmount: '', acqRefiLtvPct: '', acqRefiRatePct: '', acqRefiFeePct: '', devBasis: 'off', devAmount: '', devLtcPct: '', devRatePct: '', devFeePct: '', devExitFeePct: '', devDrawFrom: '', devDrawTo: '', devRepay: '', devInterest: 'rolled'};
+  const DEFAULTS = {name: '', route: 'LHA', basis: 'price', price: '', niyPct: '', rent1: '', opexPct: '', growthPct: '', costsPct: '6.8', ltvPct: '50', ratePct: '6.5', loanType: 'io', termYears: '25', entryMonth: '', exitMonth: '', exitYieldPct: '6', saleCostsPct: '2', reviewEvery: '', reviewType: 'off', reviewUpliftPct: '', reviewCapPct: '', reviewCollarPct: '', rentFreeMonths: '', rentFreeOpex: 'off', headlease: 'off', headleaseRent: '', headleaseEvery: '', headleaseUpliftPct: '', headleaseTerm: '', groundBasis: 'off', groundRent: '', groundPct: '', groundEvery: '', groundUpliftPct: '', scBasis: 'off', scPsf: '', scTotal: '', scRecoverPct: '', nia: '', gia: '', capexBasis: 'amount', capexAmount: '', capexPct: '', renoPsf: '', renoArea: 'gia', capexFrom: '', capexTo: '', acqAmount: '', acqFeePct: '', acqExitFeePct: '', acqDraw: '', acqRepay: '', acqInterest: 'serviced', acqRefiMonth: '', acqRefiAmount: '', acqRefiLtvPct: '', acqRefiRatePct: '', acqRefiFeePct: '', devBasis: 'off', devAmount: '', devLtcPct: '', devRatePct: '', devFeePct: '', devExitFeePct: '', devDrawFrom: '', devDrawTo: '', devRepay: '', devInterest: 'rolled'};
   const ROUTES = ['LHA', 'Council lease', 'Home Office provider', 'Mack Living', 'Office', 'Other'];
   let state = Object.assign({}, DEFAULTS);
   let holdOpen = false;
@@ -70,7 +70,7 @@
   }
   function leaseOpen() {
     if (holdOpen) return true;
-    const picked = state.reviewType === 'fixed' || state.reviewType === 'index' || state.headlease === 'on' || state.groundBasis === 'pa' || state.groundBasis === 'pct' || state.scBasis === 'psf' || state.scBasis === 'total' || state.capexBasis === 'pct' || state.devBasis === 'amount' || state.devBasis === 'ltc' || state.acqInterest === 'rolled';
+    const picked = state.reviewType === 'fixed' || state.reviewType === 'index' || state.rentFreeOpex === 'passing' || state.headlease === 'on' || state.groundBasis === 'pa' || state.groundBasis === 'pct' || state.scBasis === 'psf' || state.scBasis === 'total' || state.capexBasis === 'pct' || state.devBasis === 'amount' || state.devBasis === 'ltc' || state.acqInterest === 'rolled';
     const typed = ['rentFreeMonths', 'reviewEvery', 'nia', 'gia', 'capexAmount', 'renoPsf', 'capexFrom', 'acqAmount', 'acqFeePct', 'acqExitFeePct', 'acqDraw', 'acqRepay', 'acqRefiMonth', 'devAmount', 'devLtcPct', 'devDrawFrom'].some((key) => String(state[key] == null ? '' : state[key]).trim() !== '');
     return picked || typed;
   }
@@ -87,16 +87,17 @@
       (reviewOn ? field('reviewEvery', 'Years between reviews', 'For example 5') + field('reviewUpliftPct', indexed ? 'Assumed RPI or CPI, % a year' : 'Uplift at each review, %', indexed ? 'For example 3' : 'For example 10') + field('reviewCapPct', indexed ? 'Cap, % a year' : 'Cap on the uplift, %', 'Optional') + field('reviewCollarPct', indexed ? 'Collar, % a year' : 'Collar on the uplift, %', 'Optional. 0 is upwards only') : '') +
       '<p class="qm-hint">A review replaces the annual growth box. On an RPI or CPI review the cap and collar limit the annual rate, which is then compounded to the review. On a fixed uplift they limit the increase at the review itself.</p>' +
       field('rentFreeMonths', 'Rent-free at the start, months', '0 if none') +
+      choice('rentFreeOpex', 'Opex during rent-free', [['off', 'Nil, it is a % of rent received'], ['passing', 'Accrue on the passing rent']]) +
+      '<p class="qm-hint">Opex is a percentage of the rent received, so a rent-free month has no opex unless you accrue it on the passing rent. Headlease rent, a fixed ground rent and unrecovered service charge are paid either way.</p>' +
       '<p class="qm-h">Headlease</p>' +
       choice('headlease', 'Headlease', [['off', 'Off, freehold'], ['on', 'Leasehold']]) +
       (state.headlease === 'on' ? field('headleaseRent', 'Headlease rent, £ a year', 'For example 12,000') + field('headleaseEvery', 'Headlease review every, years', 'Blank = flat') + field('headleaseUpliftPct', 'Headlease uplift, %', 'Fixed uplift at each review') + field('headleaseTerm', 'Unexpired term, years', 'Blank = still running at the sale') : '') +
-      '<p class="qm-hint">Headlease rent is deducted from income, including while the occupational tenant is in a rent-free period.</p>' +
+      '<p class="qm-hint">Headlease rent is deducted while the lease runs, including in a rent-free period. When the unexpired term ends, the occupational rent stops and there is no freehold sale value. A blank term is still running at the sale and is valued on the exit yield.</p>' +
       '<p class="qm-h">Ground rent</p>' +
       choice('groundBasis', 'Ground rent', [['off', 'Off'], ['pa', '£ a year'], ['pct', '% of rent']]) +
-      (ground === 'pa' ? field('groundRent', 'Ground rent, £ a year', 'For example 1,200') : '') +
+      (ground === 'pa' ? field('groundRent', 'Ground rent, £ a year', 'For example 1,200') + field('groundEvery', 'Ground rent review every, years', 'Blank = flat') + field('groundUpliftPct', 'Ground rent uplift, %', 'Fixed uplift at each review') : '') +
       (ground === 'pct' ? field('groundPct', 'Ground rent, % of rent', 'For example 5') : '') +
-      (ground === 'off' ? '' : field('groundEvery', 'Ground rent review every, years', 'Blank = flat') + field('groundUpliftPct', 'Ground rent uplift, %', 'Fixed uplift at each review')) +
-      '<p class="qm-hint">A percentage is of the rent received that month, so it is zero during rent-free. A yearly amount is paid anyway. Either is deducted from income.</p>' +
+      '<p class="qm-hint">' + (ground === 'pct' ? 'This percentage is of the passing rent that month, including after a rent review. It is not increased a second time. It is zero during rent-free.' : 'A percentage is of the passing rent, including after a rent review, and is not increased a second time. A yearly amount is paid anyway, including during rent-free, and can step up at its own review.') + '</p>' +
       '<p class="qm-h">Service charge</p>' +
       choice('scBasis', 'Service charge', [['off', 'Off'], ['psf', '£ per sq ft a year'], ['total', '£ a year, total']]) +
       (sc === 'psf' ? field('scPsf', 'Service charge, £ per sq ft a year', 'On the net internal area') : '') +
@@ -125,15 +126,15 @@
       field('acqRefiMonth', 'Refinance in month', 'Blank = no refinance') +
       field('acqRefiAmount', 'New loan amount, £', 'Blank = use the % below') +
       field('acqRefiLtvPct', 'New loan, % of price', 'Used if the amount is blank') +
-      field('acqRefiRatePct', 'New loan rate, %', 'From the refinance month') +
+      field('acqRefiRatePct', 'New loan rate, %', 'Blank = the purchase loan rate') +
       field('acqRefiFeePct', 'New loan arrangement fee, %', 'At the refinance') +
-      '<p class="qm-hint">Rolled-up interest is added to the balance instead of being paid each month. A refinance, at the start of that month, repays this loan and draws the new one. The repayment schedule above applies only when the loan is drawn at purchase, interest is serviced and there is no refinance.</p>' +
+      '<p class="qm-hint">Rolled-up interest is added to the balance instead of being paid each month. A refinance, at the start of that month, repays this loan and draws the new one. A blank new rate uses the purchase loan rate, and the note says so. A typed 0% charges no interest. The repayment schedule above applies only when the loan is drawn at purchase, interest is serviced and there is no refinance.</p>' +
       '<p class="qm-h">Construction loan</p>' +
       choice('devBasis', 'Construction loan', [['off', 'Off'], ['amount', 'A £ amount'], ['ltc', '% of capex (loan to cost)']]) +
       (dev === 'amount' ? field('devAmount', 'Construction loan, £', 'For example 180,000') : '') +
       (dev === 'ltc' ? field('devLtcPct', 'Loan to cost, % of capex', 'For example 80') : '') +
-      (dev === 'off' ? '' : field('devRatePct', 'Construction rate, %', 'For example 9') + field('devFeePct', 'Construction arrangement fee, %', 'At the first draw') + field('devExitFeePct', 'Construction exit fee, %', 'When the loan is repaid') + field('devDrawFrom', 'Draw from month', 'Blank = follow the capex') + field('devDrawTo', 'Draw to month', 'Blank = follow the capex') + field('devRepay', 'Construction repayment month', 'Blank = at the sale') + choice('devInterest', 'Construction interest', [['rolled', 'Rolled up into the balance'], ['serviced', 'Serviced each month']])) +
-      '<p class="qm-hint">Draws follow the capex in the draw window. If there is no capex in that window, the draws are equal. Rolled-up interest is not paid monthly. It is repaid with the balance.</p>' +
+      (dev === 'off' ? '' : field('devRatePct', 'Construction rate, %', 'Required. Blank is not 0%') + field('devFeePct', 'Construction arrangement fee, %', 'At the first draw') + field('devExitFeePct', 'Construction exit fee, %', 'When the loan is repaid') + field('devDrawFrom', 'Draw from month', 'Blank = follow the capex') + field('devDrawTo', 'Draw to month', 'Blank = follow the capex') + field('devRepay', 'Construction repayment month', 'Blank = at the sale') + choice('devInterest', 'Construction interest', [['rolled', 'Rolled up into the balance'], ['serviced', 'Serviced each month']])) +
+      '<p class="qm-hint">Draws follow the capex in the draw window. If there is no capex in that window, the draws are equal. Rolled-up interest is not paid monthly. It is repaid with the balance. A blank construction rate stops the model. It is not treated as 0%, and it is not copied from the purchase loan. Type 0 only if the loan really charges nothing.</p>' +
       '</div></details>';
   }
   function dateField(key, label) {
@@ -163,7 +164,7 @@
       field('costsPct', 'Purchase costs, % of price', 'Tax, legal and fees') +
       '<p class="qm-h">Income</p>' +
       field('rent1', 'Year one rent, £', 'Whole deal, per year') +
-      field('opexPct', 'Opex, % of rent', 'For example 20') +
+      field('opexPct', 'Opex, % of rent', 'Of the rent received') +
       field('growthPct', 'Rent growth, % a year', '0 if flat') +
       '<p class="qm-h">Debt</p>' +
       field('ltvPct', 'Loan, % of price', '0 for no debt') +
@@ -199,27 +200,34 @@
     if (!flags || !flags.any) return '';
     const bits = [];
     const free = Math.round(Q.num(state.rentFreeMonths));
-    if (flags.rentFree) bits.push('The first ' + free + ' month' + (free === 1 ? ' is' : 's are') + ' rent-free, then the full passing rent.');
+    if (flags.rentFree) bits.push('The first ' + free + ' month' + (free === 1 ? ' is' : 's are') + ' rent-free, then the full passing rent. ' + (state.rentFreeOpex === 'passing' ? 'Opex in those months is the opex percentage of the passing rent, so the void costs still run.' : 'Opex is a percentage of the rent received, so it is nil in those months. Headlease rent, a fixed ground rent and unrecovered service charge still run.'));
     if (flags.review) {
       const limited = String(state.reviewCapPct || '').trim() || String(state.reviewCollarPct || '').trim();
       bits.push(state.reviewType === 'index'
         ? 'Rent is reviewed every ' + state.reviewEvery + ' years by compounding the assumed RPI or CPI' + (limited ? ', after the cap and collar' : '') + '. The annual growth box is not added on top.'
         : 'Rent steps up by the fixed uplift every ' + state.reviewEvery + ' years' + (limited ? ', limited by the cap and collar' : '') + '. The annual growth box is not added on top.');
     }
-    if (flags.headlease) bits.push('Headlease rent is deducted from income' + (String(state.headleaseTerm || '').trim() ? ', and it stops when the unexpired term ends' : '') + '.');
-    if (flags.ground) bits.push(state.groundBasis === 'pct' ? 'Ground rent is a percentage of the rent received that month and is deducted.' : 'Ground rent is deducted every month, including during a rent-free period.');
+    if (flags.headlease || out.exitBasis === 'expired' || out.exitBasis === 'remainder') {
+      if (out.exitBasis === 'expired') bits.push((flags.headlease ? 'Headlease rent is deducted while the lease runs. ' : '') + 'Income stops when the headlease ends, and the exit value is nil.');
+      else if (out.exitBasis === 'remainder') bits.push('The headlease runs out within a year of the sale, so the exit value is the income until then, not a yield.');
+      else bits.push('Headlease rent is deducted from income' + (String(state.headleaseTerm || '').trim() ? '. The term still covers the year after the sale, so the exit is a yield on that income' : '. No unexpired term is set, so the lease is treated as still running at the sale') + '.');
+    }
+    if (flags.ground) bits.push(state.groundBasis === 'pct' ? 'Ground rent is that percentage of the passing rent, including after a review, and is deducted. The percentage itself does not step up.' : 'Ground rent is deducted every month, including during a rent-free period.');
     if (flags.service) bits.push('Only the service charge tenants do not pay is a cost.');
-    if (flags.capex) bits.push('Capex of ' + money(out.totalCapex) + (String(state.capexFrom || '').trim() ? ' is spread from month ' + state.capexFrom + ' to month ' + state.capexTo : ' is paid at purchase') + '. It is in the all-in cost and in its own cash flow column, so the cash column does not repeat it.');
-    if (flags.dev) bits.push('The construction loan is ' + money(out.devDebt) + (out.ltc != null ? ' (' + pct(out.ltc) + ' of capex)' : '') + '. Draws follow the capex. Its interest of ' + money(out.finance.devInterest) + (state.devInterest === 'serviced' ? ' is paid each month.' : ' is rolled up and paid with the balance.'));
-    if (flags.refi) bits.push('The purchase loan is refinanced at the start of month ' + state.acqRefiMonth + '.');
+    if (flags.capex) bits.push('Capex of ' + money(out.totalCapex) + (String(state.capexFrom || '').trim() ? ' is spread from month ' + state.capexFrom + ' to month ' + state.capexTo : ' is paid at purchase') + '. It is in the all-in cost and in its own cash flow column, so cash after debt does not repeat it.');
+    if (flags.dev) bits.push('The construction loan is ' + money(out.devDebt) + (out.ltc != null ? ' (' + pct(out.ltc) + ' of capex)' : '') + '. Draws follow the capex. Peak debt is ' + money(out.peakDebt) + ', ' + pct(out.peakLtv) + ' of the price, against a purchase loan of ' + pct(out.ltv) + '. Its interest of ' + money(out.finance.devInterest) + (state.devInterest === 'serviced' ? ' is paid each month.' : ' is rolled up and paid with the balance.'));
+    if (flags.refi) bits.push('The purchase loan is refinanced at the start of month ' + state.acqRefiMonth + (out.refiRateAssumed ? '. The new rate was blank, so the purchase loan rate is used' : '') + '.');
     if (state.acqInterest === 'rolled' && out.debt > 0) bits.push('Purchase-loan interest of ' + money(out.finance.acqInterest) + ' is rolled up into the balance.');
     if (out.finance && (flags.dev || flags.fees || flags.rolled)) bits.push('Total finance cost is ' + money(out.finance.total) + '. Purchase-loan interest is ' + money(out.finance.acqInterest) + ' and fees are ' + money(out.finance.acqFees + out.finance.devFees) + '.');
-    if (flags.dev || flags.rolled) bits.push('Interest cover uses the interest accrued on both loans. Debt service cover uses the cash interest and any scheduled principal, not a bullet repayment.');
+    if (flags.dev || flags.rolled) bits.push('Interest cover uses the interest accrued on both loans, including interest rolled up. Cash debt cover uses the cash interest and any scheduled principal, not a bullet repayment.');
     return bits.join(' ');
   }
   function results() {
     const out = window.QuickModel.compute(state);
-    if (!out.ok) return '<p class="qm-need">Still needed: ' + esc(out.missing.join(', ')) + '. Nothing is assumed for these.</p>';
+    if (!out.ok) {
+      const rateNote = out.missing.indexOf('construction loan rate') >= 0 ? ' A blank construction rate is not taken as 0%.' : '';
+      return '<p class="qm-need">Still needed: ' + esc(out.missing.join(', ')) + '. Nothing is assumed for these.' + rateNote + '</p>';
+    }
     const flags = out.flags || {};
     const tile = (label, value, small) => '<div class="qm-tile"><span>' + esc(label) + '</span><b>' + esc(value) + '</b>' + (small ? '<small>' + esc(small) + '</small>' : '') + '</div>';
     let equitySmall = 'Loan ' + money(out.debt);
@@ -227,12 +235,13 @@
     if (out.equityTotal - out.equity > 1) equitySmall += ' · total cheques ' + money(out.equityTotal);
     let costSmall = 'Costs ' + money(out.purchaseCosts);
     if (out.totalCapex > 0.5) costSmall += ' · capex ' + money(out.totalCapex);
-    let exitSmall = 'Sold ' + out.saleLabel + ' at ' + pct(Q.num(state.exitYieldPct) / 100);
-    if (flags.any) exitSmall += ' · exit NOI ' + money(out.exitNoi);
+    let exitSmall = out.exitBasis === 'expired' ? 'Nil. The headlease has ended' : out.exitBasis === 'remainder' ? 'Income until the headlease ends' : 'Sold ' + out.saleLabel + ' at ' + pct(Q.num(state.exitYieldPct) / 100);
+    if (flags.any && out.exitBasis === 'yield') exitSmall += ' · exit NOI ' + money(out.exitNoi);
     let more = '';
     if (flags.any) {
       more += tile('Finance cost', money(out.finance.total), 'Purchase interest ' + money(out.finance.acqInterest) + (out.devDebt > 0.5 ? ' · development ' + money(out.finance.devInterest) : '') + (out.finance.acqFees + out.finance.devFees > 0.5 ? ' · fees ' + money(out.finance.acqFees + out.finance.devFees) : ''));
       if (out.totalCapex > 0.5) more += tile('Profit on cost', pct(out.profitOnCost), 'Unlevered profit divided by all-in cost');
+      if (Math.abs(out.yearEquityCash - out.yearOperatingCash) > 1) more += tile('Year one equity cash', money(out.yearEquityCash), 'Cash after debt, less capex. Cash on cash leaves capex and bullet repayments out');
     }
     const tiles = '<div class="qm-tiles">' +
       tile(out.basis === 'niy' ? 'Price this NIY implies' : 'Entry NIY', out.basis === 'niy' ? money(out.price) : pct(out.niy), out.basis === 'niy' ? 'NIY ' + pct(out.niy) + ' after costs' : 'After purchase costs') +
@@ -262,9 +271,9 @@
     } else columns.push(column('Interest', (row) => money(-row.interest)));
     if (flags.fees) columns.push(column('Fees', (row) => row.fee ? money(-row.fee) : ''));
     if (showPrincipal) columns.push(column('Loan repaid', (row) => money(-row.principal)));
-    columns.push(column('Cash after debt', (row) => money(row.cash)));
+    columns.push(column(flags.capex ? 'Cash after debt, before capex' : 'Cash after debt', (row) => money(row.cash)));
     if (showBalance) columns.push(column('Loan left', (row) => money((row.balance || 0) + (row.devBalance || 0))));
-    columns.push(column('Net sale', (row) => row.sale ? money(row.sale) : ''));
+    columns.push(column('Net sale', (row) => (row.sale || row.month === out.months || row.year === out.years.length) ? money(row.sale) : ''));
     const head = '<thead><tr><th>Cash flow</th>' + columns.map((item) => '<th>' + esc(item.heading) + '</th>').join('') + '</tr></thead>';
     const line = (name, row, dates) => '<tr><td>' + esc(name) + (dates ? '<small>' + esc(dates) + '</small>' : '') + '</td>' + columns.map((item) => '<td>' + item.cell(row) + '</td>').join('') + '</tr>';
     const table = '<div class="qm-wrap"><table class="qm-table">' + head + '<tbody>' +
@@ -279,9 +288,22 @@
     const debtSentence = flags.any
       ? (amort ? 'Purchase loan repaid over ' + (out.termMonths / 12) + ' years at ' + money(out.payment) + ' a month, with ' + money(out.loanAtExitAcq) + ' of it still owed at the sale.' : (state.acqInterest === 'rolled' ? 'Purchase-loan interest is rolled up and paid when that loan is repaid.' : 'Interest-only purchase loan. Any balance is repaid at the sale unless a repayment month is set.'))
       : (amort ? 'Loan repaid over ' + (out.termMonths / 12) + ' years at ' + money(out.payment) + ' a month, with ' + money(out.loanAtExit) + ' still owed and repaid at the sale.' : 'Interest only loan, repaid in full at the sale.');
-    const rhythm = flags.review || flags.rentFree ? 'Rent is monthly. Opex is the opex percentage of that month\'s rent. ' : 'Rent, opex and interest are a twelfth of the yearly figure each month. Rent growth steps up on each anniversary of entry. ';
+    const rhythm = flags.review || flags.rentFree ? 'Rent is monthly. Opex is the opex percentage of the rent received' + (flags.rentFree && state.rentFreeOpex !== 'passing' ? ', so a rent-free month has no opex' : '') + '. ' : 'Rent, opex and interest are a twelfth of the yearly figure each month. Rent growth steps up on each anniversary of entry. ';
+    const netSaleText = 'Net sale is the sale price less sale costs, the loan still owed' + (out.exitFees > 0.5 ? ' and lender exit fees of ' + money(out.exitFees) : ' and any lender exit fee') + '.';
+    const exitText = out.exitBasis === 'expired'
+      ? 'The headlease has ended by the sale, so the exit value is nil rather than a yield. ' + netSaleText
+      : out.exitBasis === 'remainder'
+        ? 'The headlease runs out within a year of the sale, so the exit value is the income until it ends, not a yield. ' + netSaleText
+        : netSaleText + ' Exit value is the twelve months of NOI after the sale divided by the exit yield.';
+    const cashGap = Math.abs(out.yearEquityCash - out.yearOperatingCash) > 1;
+    const coverDiff = !amort && out.debtCover != null && out.interestCover != null && Math.abs(out.debtCover - out.interestCover) > 1e-4;
+    const tail = cashGap || coverDiff
+      ? (cashGap ? 'Year one cash on cash is ' + pct(out.cashOnCash) + '. That is year-one NOI less cash debt service, divided by the day-one equity. It leaves out capex, fees, loan draws and bullet repayments. Year-one equity cash is ' + money(out.yearEquityCash) + '. ' : 'Year one cash on cash ' + pct(out.cashOnCash) + '. ') +
+        (amort ? 'Debt service cover ' + times(out.debtCover) + ' (interest alone ' + times(out.interestCover) + '). ' : coverDiff ? 'Interest cover ' + times(out.interestCover) + ' is accrued interest on both loans, including interest that is rolled up. Cash debt cover ' + times(out.debtCover) + ' is the cash interest and any scheduled principal. ' : 'Interest cover ' + times(out.interestCover) + '. ') +
+        'Loan at exit ' + pct(out.exitLtv) + ' of value. Break even exit yield ' + pct(out.breakEvenYield) + '.'
+      : 'Year one cash on cash ' + pct(out.cashOnCash) + ', ' + (amort ? 'debt service cover ' + times(out.debtCover) + ' (interest alone ' + times(out.interestCover) + ')' : 'interest cover ' + times(out.interestCover)) + ', loan at exit ' + pct(out.exitLtv) + ' of value, break even exit yield ' + pct(out.breakEvenYield) + '.';
     return warn + tiles + areaLine(out) + table + screen +
-      '<p class="qm-note">Monthly model, ' + out.months + ' months: in at the start of ' + esc(out.entryLabel) + ', last rent ' + esc(out.exitLabel) + ', sold at the start of ' + esc(out.saleLabel) + '. ' + rhythm + debtSentence + ' Net sale is the sale price less sale costs and the loan still owed. Exit value is the twelve months of NOI after the sale divided by the exit yield. IRR is the monthly rate compounded to a year. Year one cash on cash ' + pct(out.cashOnCash) + ', ' + (amort ? 'debt service cover ' + times(out.debtCover) + ' (interest alone ' + times(out.interestCover) + ')' : 'interest cover ' + times(out.interestCover)) + ', loan at exit ' + pct(out.exitLtv) + ' of value, break even exit yield ' + pct(out.breakEvenYield) + '.' +
+      '<p class="qm-note">Monthly model, ' + out.months + ' months: in at the start of ' + esc(out.entryLabel) + ', last rent ' + esc(out.exitLabel) + ', sold at the start of ' + esc(out.saleLabel) + '. ' + rhythm + debtSentence + ' ' + exitText + ' IRR is the monthly rate compounded to a year. ' + tail +
       (checks.length ? ' The quick screen covers the numeric hurdles only. The lease, operator and evidence hurdles are in the full test below.' : '') + (extra ? ' ' + extra : '') + ' Screening research, not an investment recommendation.</p>';
   }
 
