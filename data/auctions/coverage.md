@@ -1,33 +1,33 @@
 # Auction collection
 
-Checked: 2026-11-28T07:56:29.310Z
+Checked: 2026-11-28T20:12:20.715Z
 
-Fresh: 806; stale: 440; commercial lots are kept and tagged, not dropped.
+Fresh: 869; stale: 377; commercial lots are kept and tagged, not dropped.
 
 ## Town counts (fresh, deduplicated)
-- Manchester: 280
+- Manchester: 282
 - Glasgow: 94
 - Edinburgh: 23
 - Bristol: 48
 - Cheltenham: 43
-- Liverpool: 142
-- Cheshire: 80
+- Liverpool: 201
+- Cheshire: 82
 - Birmingham: 96
 
 ## Source coverage
 - **Auction House Manchester**: live; 61 lots (Cheshire 1, Manchester 60); tags Auction 61. Public catalogue pages read. Commercial lots are included and tagged. 
 - **Auction House South West (Bristol and Gloucestershire)**: live; 39 lots (Cheltenham 12, Bristol 26, Birmingham 1); tags Auction 39. Public catalogue pages read. Commercial lots are included and tagged. Detail date differs from historical result https://online.auctionhouse.co.uk/lot/redirect/367468; result event date/amount retained.
 - **Auction House Scotland**: live; 18 lots (Edinburgh 6, Glasgow 12); tags Auction 18. Public catalogue pages read. Commercial lots are included and tagged. 
-- **Auction House North West**: live; 214 lots (Manchester 102, Liverpool 88, Birmingham 5, Bristol 3, Cheshire 15, Cheltenham 1); tags Receiver 1, Auction 213. Public catalogue pages read. Commercial lots are included and tagged. Detail failed https://online.auctionhouse.co.uk/lot/redirect/255340: This operation was aborted; PARTIAL: max_details=200 reached; 24 residential/unknown candidates not detail-verified.
+- **Auction House North West**: live; 214 lots (Manchester 102, Liverpool 88, Birmingham 5, Bristol 3, Cheshire 15, Cheltenham 1); tags Receiver 1, Auction 213. Public catalogue pages read. Commercial lots are included and tagged. Detail failed https://online.auctionhouse.co.uk/lot/redirect/303452: This operation was aborted; PARTIAL: max_details=200 reached; 24 residential/unknown candidates not detail-verified.
 - **Auction House Cheshire, Staffordshire and Shropshire**: live; 70 lots (Cheshire 41, Liverpool 24, Manchester 5); tags Auction 70. Public catalogue pages read. Commercial lots are included and tagged. Detail failed https://online.auctionhouse.co.uk/lot/redirect/336246: HTTP 404: https://online.auctionhouse.co.uk/lot/details/efc2b6a5-e7e4-4113-a69a-5d59fd9a1e6e; Detail failed https://online.auctionhouse.co.uk/lot/redirect/335984: HTTP 404: https://online.auctionhouse.co.uk/lot/details/c0dd8c9a-6132-4233-bc25-a725899cd74f; Detail failed https://online.auctionhouse.co.uk/lot/redirect/335370: HTTP 404: https://online.auctionhouse.co.uk/lot/details/ac536e87-aaa8-4795-b64f-672d76c1bc74; Detail failed https://online.auctionhouse.co.uk/lot/redirect/313399: HTTP 404: https://online.auctionhouse.co.uk/lot/details/862e1cae-4853-41c2-b70f-4b3ea17e4b89; Detail failed https://online.auctionhouse.co.uk/lot/redirect/296991: HTTP 404: https://online.auctionhouse.co.uk/lot/details/188c7f61-f3bc-435e-9eb8-2653a7986d21; Detail failed https://online.auctionhouse.co.uk/lot/redirect/297899: HTTP 404: https://online.auctionhouse.co.uk/lot/details/9fa49f01-5f39-4227-8c69-377b391e37a7; Detail failed https://online.auctionhouse.co.uk/lot/redirect/295594: HTTP 404: https://online.auctionhouse.co.uk/lot/details/22269e3e-d032-41d7-a294-1467b5bc07cd; Detail failed https://online.auctionhouse.co.uk/lot/redirect/285504: HTTP 404: https://online.auctionhouse.co.uk/lot/details/b694fe02-1053-4d12-8d66-50a58b109421; Detail failed https://online.auctionhouse.co.uk/lot/redirect/283013: HTTP 404: https://online.auctionhouse.co.uk/lot/details/cb0f2e6e-9470-4719-a6ef-5bd0bfa6f9fb; Detail failed https://online.auctionhouse.co.uk/lot/redirect/281639: HTTP 404: https://online.auctionhouse.co.uk/lot/details/74197b3c-936c-44b2-82fc-3ef0de1eddd4
 - **Auction House Birmingham and Black Country**: live; 67 lots (Birmingham 67); tags Auction 67. Public catalogue pages read. Commercial lots are included and tagged. Detail failed https://online.auctionhouse.co.uk/lot/redirect/95573: HTTP 404: https://online.auctionhouse.co.uk/lot/details/2c905ce6-0716-401d-9671-4ab6701178bc
 - **Future Property Auctions**: live; 90 lots (Glasgow 67, Manchester 6, Edinburgh 15, Bristol 2); tags Auction 90. Public catalogue pages read. Commercial lots are included and tagged. https://www.futurepropertyauctions.co.uk/auctions.asp: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.; https://www.futurepropertyauctions.co.uk/catalogue_viewall_auction_map.asp?id=10703&: no server-rendered detail links found; JS-only catalogues require a discovered HTML alternative, no AJAX endpoints guessed.; Catalogue page limit reached; collection incomplete.
-- **Braveheart Auctions (Edinburgh and Glasgow)**: live; 0 lots (none); tags none. Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them. Robots unavailable: 403
+- **Braveheart Auctions (Edinburgh and Glasgow)**: live; 0 lots (none); tags none. Public catalogue pages read. Commercial lots are included and tagged. Spot-check found "13 Bath Street, Full Fir" on https://braveheartauctions.co.uk/product/13-bath-street-full-first-floor-glasgow-city-centre/
 - **Allsop**: skipped; 0 lots (none); tags none. Removed on 17 Nov 2026. Allsop catalogues are old and are not collected. Do not turn this source back on.
 - **Savills auctions**: live; 0 lots (none); tags none. Public catalogue pages read. Commercial lots are included and tagged. Spot-check found "Flats 1 - 10, 316 Queensbrid" on https://auctions.savills.co.uk/auctions/26-january-2027-256/flats-1-10-316-queensbridge-road-london-e8-3nh-25350 Spot-check found "Old Fire Station Apartments," on https://auctions.savills.co.uk/auctions/26-january-2027-256/old-fire-station-apartments-2-tunnel-avenue-london-se10-0us-25351
 - **Clive Emson**: live; 0 lots (none); tags none. Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them.
 - **Pugh**: live; 126 lots (Manchester 83, Cheshire 17, Glasgow 1, Liverpool 23, Cheltenham 2); tags Auction 126. Public catalogue pages read. Commercial lots are included and tagged. Spot-check found "WN3 4TJ" on https://www.pugh-auctions.com/property/202601231232sq_gm55
-- **SDL**: failed; 0 lots (none); tags none. HTTP 403: https://www.sdlauctions.co.uk/property-auctions/past-auctions/; Login or captcha at https://www.sdlauctions.co.uk/property-auctions/past-auctions/ (page 1)
+- **SDL**: failed; 0 lots (none); tags none. This operation was aborted; Login or captcha at https://www.sdlauctions.co.uk/property-auctions/past-auctions/ (page 1)
 - **Bond Wolfe**: live; 8 lots (Birmingham 8); tags Auction 8. Public catalogue pages read. Commercial lots are included and tagged. Spot-check did not find "Land Adjacent, 75 Norman Str" on https://www.bondwolfe.com/auctions/properties/ Login or bot challenge refused
 - **Barnard Marcus**: live; 45 lots (Bristol 5, Manchester 19, Birmingham 9, Cheltenham 4, Liverpool 7, Cheshire 1); tags Auction 44, Receiver 1. Public catalogue pages read. Commercial lots are included and tagged. Spot-check failed: Login or bot challenge refused
 - **Mark Jenkinson**: live; 5 lots (Liverpool 2, Manchester 3); tags Auction 5. Public catalogue pages read. Commercial lots are included and tagged. 
@@ -35,7 +35,7 @@ Fresh: 806; stale: 440; commercial lots are kept and tagged, not dropped.
 - **Network Auctions**: live; 0 lots (none); tags none. Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them. Login or bot challenge refused
 - **iamsold**: live; 0 lots (none); tags none. Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them.
 - **EIG**: live; 0 lots (none); tags none. Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them.
-- **Countrywide Property Auctions**: live; 0 lots (none); tags none. Public catalogue pages read. Commercial lots are included and tagged. Public pages were read. No in-area lot with a street address or full postcode was on them. Robots unavailable: 403; Robots unavailable: 403
+- **Countrywide Property Auctions**: live; 63 lots (Liverpool 59, Cheshire 2, Manchester 2); tags Auction 63. Public catalogue pages read. Commercial lots are included and tagged. Spot-check found "CH41 9BX" on https://www.countrywidepropertyauctions.co.uk/property_details.php?auction_date=current&auction_location=SK&id=377300
 - **Town And Country**: live; 19 lots (Glasgow 6, Cheshire 4, Birmingham 2, Edinburgh 1, Manchester 4, Bristol 2); tags Auction 19. Public catalogue pages read. Commercial lots are included and tagged. Spot-check found "B92 7BT" on https://www.townandcountrypropertyauctions.co.uk/search?auctionOpen=true
 - **Bradleys**: failed; 0 lots (none); tags none. Robots unavailable: 403; Login or captcha at https://www.bradleys-estate-agents.co.uk/pages/auctions (page 1)
 - **Bruton Knowles**: live; 28 lots (Cheltenham 24, Birmingham 3, Bristol 1); tags Auction 28. Public catalogue pages read. Commercial lots are included and tagged. 
